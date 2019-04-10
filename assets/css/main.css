@@ -22,7 +22,7 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
 }
-#animation_img, button, label {
+button, label {
     cursor: pointer;
 }
 .navbar-inverse {
@@ -86,7 +86,6 @@ img {
 .navbar-brand > span {
     vertical-align: middle;
 }
-/* https://codepen.io/jamesbarnett/pen/yILjk */
 input[type=checkbox] {
     display:none;
 }

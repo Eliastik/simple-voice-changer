@@ -9,12 +9,12 @@
     {
       "src": "favicon.ico",
       "type": "image/x-icon",
-      "sizes": "128x128"
+      "sizes": "256x256"
     },
     {
       "src": "assets/img/favicon.png",
       "type": "image/png",
-      "sizes": "168x168"
+      "sizes": "128x128"
     }
   ],
   "start_url": "index.html?launcher=true"

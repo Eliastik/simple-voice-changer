@@ -20,6 +20,7 @@ Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un 
 * Utilise la bibliothèque logicielle [Boostrap Slider](https://github.com/seiyria/bootstrap-slider), sous [licence MIT](https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md)
 * Utilise la bibliothèque logicielle [Boostrap Native](https://github.com/thednp/bootstrap.native), sous [licence MIT](https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 * Utilise un fichier audio [Impulse Response](https://fr.wikipedia.org/wiki/R%C3%A9ponse_impulsionnelle) (utilisé par la fonction Réverbération) [venant d'ici](http://www.openairlib.net/auralizationdb/content/abernyte-grain-silo) (auteur : Nick Green), sous [licence CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)
+* Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 ## Déclaration de licence
 
