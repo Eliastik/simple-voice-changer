@@ -110,6 +110,8 @@ document.getElementById("inputFile").addEventListener("change", function() {
     var reader = new FileReader();
 
     reader.onload = function(ev) {
+        context.resume();
+
         context.decodeAudioData(ev.target.result, function(buffer) {
             loadPrincipalBuffer(buffer);
         }).catch(function(err) {
@@ -124,6 +126,7 @@ document.getElementById("inputFile").addEventListener("change", function() {
 
 function loadPrincipalBuffer(buffer) {
     if(buffer.numberOfChannels == 1) { // convert to stereo buffer
+        context.resume();
         audio_principal_buffer = context.createBuffer(2, context.sampleRate * buffer.duration + context.sampleRate * 2, context.sampleRate);
 
         for (var channel = 0; channel < audio_principal_buffer.numberOfChannels; channel++) {
@@ -326,6 +329,7 @@ function playBufferAudioAPI(audio) {
     this.interval;
 
     this.init = function() {
+        context.resume();
         this.source = context.createBufferSource();
         this.source.buffer = audio;
         this.source.connect(context.destination);
@@ -494,6 +498,7 @@ function recordVoice() {
         var self = this;
 
         navigator.getUserMedia({audio: true}, function(stream) {
+            context.resume();
             self.input = context.createMediaStreamSource(stream);
             self.stream = stream;
             self.recorder = new Recorder(self.input, { workerPath: "assets/js/recorderWorker.js" });
@@ -535,6 +540,7 @@ function recordVoice() {
             var self = this;
 
             this.recorder.getBuffer(function(buffer) {
+                context.resume();
                 var newSource = context.createBufferSource();
                 var newBuffer = context.createBuffer(2, buffer[0].length, context.sampleRate);
                 newBuffer.getChannelData(0).set(buffer[0]);
