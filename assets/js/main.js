@@ -274,7 +274,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 }
 
                 if(play && save) {
-                    var timer = new timerSaveTime("timeFinishedDownload", Math.round(durationAudio));
+                    var timer = new timerSaveTime("timeFinishedDownload", Math.round(durationAudio), -1);
                     timer.start();
                     rec.record();
 
@@ -486,6 +486,7 @@ function recordVoice() {
     this.stream;
     this.recorder;
     this.alreadyInit;
+    this.timer;
 
     this.init = function() {
         document.getElementById("errorRecord").display = "none";
@@ -497,6 +498,7 @@ function recordVoice() {
             self.stream = stream;
             self.recorder = new Recorder(self.input, { workerPath: "assets/js/recorderWorker.js" });
             self.alreadyInit = true;
+            self.timer = new timerSaveTime("timeRecord", 0, 1);
             document.getElementById("errorRecord").style.display = "none";
             document.getElementById("recordAudioPlay").disabled = false;
             document.getElementById("checkAudioRetour").disabled = false;
@@ -517,6 +519,7 @@ function recordVoice() {
     this.record = function() {
         if(this.alreadyInit) {
             this.recorder && this.recorder.record();
+            this.timer && this.timer.start();
 
             document.getElementById("recordAudioPlay").disabled = true;
             document.getElementById("recordAudioPause").disabled = false;
@@ -527,6 +530,7 @@ function recordVoice() {
     this.stop = function() {
         if(this.alreadyInit) {
             this.recorder && this.recorder.stop();
+            this.timer && this.timer.stop();
 
             var self = this;
 
@@ -546,6 +550,8 @@ function recordVoice() {
     this.pause = function() {
         if(this.alreadyInit) {
             this.recorder && this.recorder.stop();
+            this.timer && this.timer.stop();
+
             document.getElementById("recordAudioPlay").disabled = false;
             document.getElementById("recordAudioPause").disabled = true;
             document.getElementById("recordAudioStop").disabled = false;
@@ -555,6 +561,7 @@ function recordVoice() {
     this.reset = function() {
         this.recorder && this.recorder.stop();
         this.recorder && this.recorder.clear();
+        this.timer && this.timer.stop();
         this.audioFeedback(false);
 
         if(this.stream && this.stream.stop) {
@@ -569,6 +576,7 @@ function recordVoice() {
         this.recorder = null;
         this.stream = null;
         this.alreadyInit = false;
+        this.timer = null;
 
         document.getElementById("recordAudioPlay").disabled = true;
         document.getElementById("recordAudioPause").disabled = true;
@@ -576,6 +584,7 @@ function recordVoice() {
         document.getElementById("checkAudioRetour").checked = false;
         document.getElementById("checkAudioRetour").disabled = true;
         document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
+        document.getElementById("timeRecord").innerHTML = "00:00";
     };
 }
 
@@ -672,13 +681,14 @@ function removeTooltipInfo() {
     }
 }
 
-function timerSaveTime(id, seconds) {
+function timerSaveTime(id, seconds, incr) {
     this.id = id;
     this.seconds = seconds;
     this.interval;
+    this.incr = incr;
 
     this.start = function() {
-        document.getElementById(id).innerHTML = ("0" + Math.round(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.round(this.seconds % 60)).slice(-2);
+        document.getElementById(id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
 
         var self = this;
 
@@ -692,9 +702,9 @@ function timerSaveTime(id, seconds) {
     };
 
     this.count = function() {
-        this.seconds -= 1;
+        this.seconds += this.incr;
 
-        if(document.getElementById(id) != null) document.getElementById(id).innerHTML = ("0" + Math.round(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.round(this.seconds % 60)).slice(-2);
+        if(document.getElementById(id) != null) document.getElementById(id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
 
         if(this.seconds <= 0) {
             this.stop();
