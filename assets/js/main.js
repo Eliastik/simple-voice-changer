@@ -902,7 +902,7 @@ function init(func) {
 
         if(!'AudioContext' in window || audioContextNotSupported) {
             document.getElementById("compa").style.display = "block";
-            document.getElementById("compaInfo").innerHTML = "Désolé votre navigateur n'est pas compatible avec cette application. Mettez-le à jour, puis réessayez.";
+            document.getElementById("compaInfo").innerHTML = "Désolé, votre navigateur n'est pas compatible avec cette application. Mettez-le à jour, puis réessayez.";
             document.getElementById("firstEtape").style.display = "block";
             document.getElementById("fileSelect").disabled = true;
             document.getElementById("fileRecord").disabled = true;
@@ -933,6 +933,10 @@ document.onreadystatechange = function() {
     if (document.readyState === 'complete') {
         init();
     }
+};
+
+window.onbeforeunload = function() {
+    return "Si vous fermez cette page, vous perdrez définitivement toutes vos modifications. Êtes-vous sûr de vouloir quitter cette page ?";
 };
 
 // Do you like ponies ?
