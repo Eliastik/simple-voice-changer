@@ -7,7 +7,7 @@ Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un 
 
 ## À propos du programme
 
-* Version du programme : 1.0 (09/04/2019)
+* Version du programme : 1.0.1 (10/04/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -22,6 +22,16 @@ Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un 
 * Utilise la bibliothèque logicielle [Boostrap Native](https://github.com/thednp/bootstrap.native), sous [licence MIT](https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 * Utilise un fichier audio [Impulse Response](https://fr.wikipedia.org/wiki/R%C3%A9ponse_impulsionnelle) (utilisé par la fonction Réverbération) [venant d'ici](http://www.openairlib.net/auralizationdb/content/abernyte-grain-silo) (auteur : Nick Green), sous [licence CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
+
+## Journal des changements
+
+* Version 1.0.1 (10/04/2019) :
+    - Ajout d'un minuteur lors de l'enregistrement via le micro ;
+    - Affichage d'un message de confirmation lors de l'actualisation/la fermeture de l'application ;
+    - Corrections de bugs et ajustements.
+
+* Version 1.0 (09/04/2019) :
+    - Version initiale
 
 ## Déclaration de licence
 
