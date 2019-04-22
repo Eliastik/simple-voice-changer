@@ -1,5 +1,7 @@
 ﻿# Simple Voice Changer
 
+<img src="https://raw.githubusercontent.com/Eliastik/simple-voice-changer/master/screenshot.png" width="640" alt="Screenshot" />
+
 Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un enregistrement rapidement et simplement : choisissez un fichier audio, ou enregistrez-vous, et vous pouvez modifier et enregistrer ! Tout le traitement audio se fait sur votre appareil et aucune donnée n'est envoyée sur Internet.
 
 Ce programme utilise la Web Audio API. Un navigateur supportant cette API est donc nécessaire. Quasiment tous les navigateurs récents la supporte en date du 23/04/2019 (sauf Internet Explorer).
