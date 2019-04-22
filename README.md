@@ -2,12 +2,14 @@
 
 Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un enregistrement rapidement et simplement : choisissez un fichier audio, ou enregistrez-vous, et vous pouvez modifier et enregistrer ! Tout le traitement audio se fait sur votre appareil et aucune donnée n'est envoyée sur Internet.
 
+Ce programme utilise la Web Audio API. Un navigateur supportant cette API est donc nécessaire. Quasiment tous les navigateurs récents la supporte en date du 23/04/2019 (sauf Internet Explorer).
+
 * Version en ligne de ce programme : [www.eliastiksofts.com/simple-voice-changer/demo](http://www.eliastiksofts.com/simple-voice-changer/demo/)
 * Dépôt Github : [https://github.com/Eliastik/simple-voice-changer](https://github.com/Eliastik/simple-voice-changer)
 
 ## À propos du programme
 
-* Version du programme : 1.0.1 (10/04/2019)
+* Version du programme : 1.0.2 (23/04/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -25,6 +27,11 @@ Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un 
 
 ## Journal des changements
 
+* Version 1.0.2 (23/04/2019) :
+    - Meilleure détection des erreurs de chargement des données ;
+    - Mise à jour des bibliothèques logicielles (Bootstrap Native) ;
+    - Corrections de bugs, ajustements des textes et autres ajustements.
+
 * Version 1.0.1 (10/04/2019) :
     - Ajout d'un minuteur lors de l'enregistrement via le micro ;
     - Affichage d'un message de confirmation lors de l'actualisation/la fermeture de l'application ;
@@ -32,6 +39,12 @@ Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un 
 
 * Version 1.0 (09/04/2019) :
     - Version initiale
+
+## To-do list
+
+* Traduire l'application en anglais (i18next) ;
+* Ajouter plus d'effets ;
+* Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et [La boîte à Emmanuel Macron](https://www.eliastiksofts.com/memes/macron).
 
 ## Déclaration de licence
 

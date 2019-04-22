@@ -48,7 +48,7 @@ img {
 #compa, #errorLoading, #compatAutoDetected, #secondEtape, #thirdEtape, #lastEtape, #firstEtapeBis, #errorLoadingSelectFile, #processingSave {
     display: none;
 }
-#errorLoadingSelectFile, #errorRecord {
+#errorLoadingSelectFile, #errorRecord, #waitRecord {
     width: 50%;
     margin: 0 auto;
     margin-bottom: 16px;

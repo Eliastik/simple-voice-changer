@@ -493,7 +493,8 @@ function recordVoice() {
     this.timer;
 
     this.init = function() {
-        document.getElementById("errorRecord").display = "none";
+        document.getElementById("waitRecord").style.display = "block";
+        document.getElementById("errorRecord").style.display = "none";
 
         var self = this;
 
@@ -505,11 +506,16 @@ function recordVoice() {
             self.alreadyInit = true;
             self.timer = new timerSaveTime("timeRecord", 0, 1);
             document.getElementById("errorRecord").style.display = "none";
+            document.getElementById("waitRecord").style.display = "none";
             document.getElementById("recordAudioPlay").disabled = false;
             document.getElementById("checkAudioRetour").disabled = false;
             document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox");
         }, function(e) {
             document.getElementById("errorRecord").style.display = "block";
+            document.getElementById("waitRecord").style.display = "none";
+            document.getElementById("recordAudioPlay").disabled = true;
+            document.getElementById("checkAudioRetour").disabled = true;
+            document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
         });
     };
 
@@ -899,8 +905,13 @@ function checkAudioBuffer(bufferName) {
 }
 
 function initAudioAPI() {
-    loadAudioAPI(audioArray[0], "audio_impulse_response");
-    loadAudioAPI(audioArray[1], "audio_modulator");
+    loadAudioAPI(audioArray[0], "audio_impulse_response", function() {
+        loadAudioAPI(audioArray[1], "audio_modulator", function() {
+            if(typeof(audio_impulse_response) == "undefined" || audio_impulse_response == null || typeof(audio_modulator) == "undefined" || audio_modulator == null) {
+                document.getElementById("errorLoading").style.display = "block";
+            }
+        });
+    });
 }
 
 function init(func) {
