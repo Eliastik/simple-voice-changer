@@ -11,7 +11,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 1.0.2 (23/04/2019)
+* Version du programme : 1.0.3 (26/04/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -28,6 +28,9 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 ## Journal des changements
+
+* Version 1.0.3 (26/04/2019) :
+    - Étape 2 : Ajout de la possibilité de tirer au hasard des réglages et de réinitialiser les réglages.
 
 * Version 1.0.2 (23/04/2019) :
     - Meilleure détection des erreurs de chargement des données ;

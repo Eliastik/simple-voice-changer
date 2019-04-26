@@ -500,15 +500,15 @@ function randomBool() {
 function randomModify() {
     var checkReverb = document.getElementById("checkReverb");
     var checkVocode = document.getElementById("checkVocode");
-    
+
     if(!checkReverb.disabled) {
         checkReverb.checked = randomBool();
     }
-    
+
     if(!checkVocode.disabled) {
         checkVocode.checked = randomBool();
     }
-    
+
     slider.setValue(randomRange(0.1, 5.0));
     slider2.setValue(randomRange(0.1, 5.0));
 }
