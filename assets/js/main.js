@@ -476,13 +476,41 @@ function launchReset() {
         document.getElementById("lastEtape").style.display = "none";
         document.getElementById("firstEtapeBis").style.display = "none";
         document.getElementById("inputFile").value = "";
-        document.getElementById("checkReverb").checked = false;
-        document.getElementById("checkVocode").checked = false;
-        slider.setValue(1.0);
-        slider2.setValue(1.0);
+        resetModify();
         launchStop();
         recorderVoice.reset();
     }
+}
+
+function resetModify() {
+    document.getElementById("checkReverb").checked = false;
+    document.getElementById("checkVocode").checked = false;
+    slider.setValue(1.0);
+    slider2.setValue(1.0);
+}
+
+function randomRange(min, max) {
+    return ((Math.random() * max) + min).toFixed(1);
+}
+
+function randomBool() {
+    return Math.round(Math.random()) == 0 ? false : true;
+}
+
+function randomModify() {
+    var checkReverb = document.getElementById("checkReverb");
+    var checkVocode = document.getElementById("checkVocode");
+    
+    if(!checkReverb.disabled) {
+        checkReverb.checked = randomBool();
+    }
+    
+    if(!checkVocode.disabled) {
+        checkVocode.checked = randomBool();
+    }
+    
+    slider.setValue(randomRange(0.1, 5.0));
+    slider2.setValue(randomRange(0.1, 5.0));
 }
 
 function recordVoice() {
