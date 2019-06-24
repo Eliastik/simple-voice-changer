@@ -129,10 +129,10 @@ function loadPrincipalBuffer(buffer) {
         context.resume();
         audio_principal_buffer = context.createBuffer(2, context.sampleRate * buffer.duration + context.sampleRate * 2, context.sampleRate);
 
-        for (var channel = 0; channel < audio_principal_buffer.numberOfChannels; channel++) {
+        for(var channel = 0; channel < audio_principal_buffer.numberOfChannels; channel++) {
             var nowBuffering = audio_principal_buffer.getChannelData(channel);
 
-            for (var i = 0; i < buffer.length; i++) {
+            for(var i = 0; i < buffer.length; i++) {
                 nowBuffering[i] = buffer.getChannelData(0)[i];
             }
         }
@@ -985,7 +985,7 @@ function init(func) {
 
 // When the page is entirely loaded, call the init function who load the others assets (images, sounds)
 document.onreadystatechange = function() {
-    if (document.readyState === 'complete') {
+    if(document.readyState === 'complete') {
         init();
     }
 };
