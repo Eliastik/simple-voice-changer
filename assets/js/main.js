@@ -30,7 +30,20 @@ var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.mp3", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
 var app_version = "1.0.3";
 var app_version_date = "2019-4-26";
+var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
 // End of the settings
+
+// Libs
+String.prototype.strcmp = function(str) {
+    return ((this == str) ? 0 : ((this > str) ? 1 : -1));
+};
+
+if(!String.prototype.trim) {
+    String.prototype.trim = function () {
+      return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+    };
+}
+// End libs
 
 if('AudioContext' in window) {
     try {
@@ -949,6 +962,7 @@ function init(func) {
     document.getElementById("errorLoading").style.display = "none";
     document.getElementById("checkAudioRetour").checked = false;
     document.getElementById("version").innerHTML = app_version;
+    document.getElementById("appVersion").innerHTML = app_version;
 
     preloadAudios(audioArray, function(result) {
         document.getElementById("loading").style.display = "none";
@@ -997,43 +1011,103 @@ window.onbeforeunload = function() {
     return window.i18next.t("script.appClosing");
 };
 
+// Updater
+function checkUpdate() {
+    var script = document.createElement("script");
+    script.src = updater_uri;
+
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+function updateCallback(data) {
+    if(typeof(data) !== "undefined" && data !== null && typeof(data.version) !== "undefined" && data.version !== null) {
+        var newVersionTest = app_version.strcmp(data.version);
+
+        if(newVersionTest < 0) {
+            document.getElementById("updateAvailable").style.display = "block";
+            document.getElementById("appUpdateVersion").textContent = data.version;
+
+            var appUpdateDate = app_version_date;
+
+            if(typeof(data.date) !== "undefined" && data.date !== null) {
+                var appUpdateDate = data.date;
+            }
+
+            document.getElementById("appUpdateDate").textContent = appUpdateDate;
+
+            var downloadURL = "http://eliastiksofts.com/simple-voice-changer/downloads/index.php";
+
+            if(typeof(data.url) !== "undefined" && data.url !== null) {
+                var downloadURL = data.url;
+            }
+
+            document.getElementById("appDownloadLink").onclick = function() {
+                window.open(downloadURL, '_blank');
+            };
+
+            document.getElementById("appDownloadURLGet").onclick = function() {
+                prompt(window.i18next.t("update.URLToDownload"), downloadURL);
+            };
+
+            var changes = window.i18next.t("update.noChanges");
+
+            if(typeof(data.changes) !== "undefined" && data.changes !== null) {
+                var changes = data.changes;
+            }
+
+            document.getElementById("appUpdateChanges").onclick = function() {
+                alert(window.i18next.t("update.changes") + "\n" + changes);
+            };
+
+            translateContent();
+        }
+    }
+}
+
+checkUpdate();
+
 // Localization
 function listTranslations(languages) {
-  if(languages != null) {
-    document.getElementById("languageSelect").disabled = true;
-    document.getElementById("languageSelect").innerHTML = "";
+    if(languages != null) {
+      document.getElementById("languageSelect").disabled = true;
+      document.getElementById("languageSelect").innerHTML = "";
 
-    for(var i = 0; i < languages.length; i++) {
-      document.getElementById("languageSelect").innerHTML = document.getElementById("languageSelect").innerHTML + '<option data-i18n="lang.' + languages[i] + '" value="'+ languages[i] +'"></option>';
+      for(var i = 0; i < languages.length; i++) {
+          document.getElementById("languageSelect").innerHTML = document.getElementById("languageSelect").innerHTML + '<option data-i18n="lang.' + languages[i] + '" value="'+ languages[i] +'"></option>';
+      }
+
+      document.getElementById("languageSelect").value = i18next.language.substr(0, 2);
+      document.getElementById("languageSelect").disabled = false;
     }
-
-    document.getElementById("languageSelect").value = i18next.language.substr(0, 2);
-    document.getElementById("languageSelect").disabled = false;
-  }
 }
 
 function translateContent() {
-  listTranslations(i18next.languages);
+    listTranslations(i18next.languages);
 
-  var i18nList = document.querySelectorAll("[data-i18n]");
-  i18nList.forEach(function(v) {
-    v.innerHTML = window.i18next.t(v.dataset.i18n);
-  });
+    var i18nList = document.querySelectorAll("[data-i18n]");
+    i18nList.forEach(function(v) {
+        v.innerHTML = window.i18next.t(v.dataset.i18n);
+    });
 
-  document.getElementById("versionDate").innerHTML = new Intl.DateTimeFormat(i18next.language).format(new Date(app_version_date));
-  initAudioAPI();
+    document.getElementById("versionDate").innerHTML = new Intl.DateTimeFormat(i18next.language).format(new Date(app_version_date));
+    initAudioAPI();
+
+    document.getElementById("appDownloadURLGet").title = window.i18next.t("update.getURL");
+    document.getElementById("appUpdateChanges").title = window.i18next.t("update.getChanges");
+
+    document.getElementById("appUpdateDateLocalized").innerHTML = window.i18next.t("update.versionDate", { date: new Intl.DateTimeFormat(i18next.language).format(new Date(document.getElementById("appUpdateDate").innerHTML)) });
 }
 
 document.getElementById("languageSelect").onchange = function() {
-  i18next.changeLanguage(document.getElementById("languageSelect").value, function(err, t) {
-    translateContent();
-  });
+    i18next.changeLanguage(document.getElementById("languageSelect").value, function(err, t) {
+        translateContent();
+    });
 };
 
 window.addEventListener("load", function() {
-  setTimeout(function() {
-    translateContent();
-  }, 250);
+    setTimeout(function() {
+        translateContent();
+    }, 250);
 });
 
 // Do you like ponies ?

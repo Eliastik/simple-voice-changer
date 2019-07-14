@@ -26,6 +26,19 @@
    "or": "ou",
    "orMaj": "Ou",
    "close": "Fermer",
+   "update": {
+     "updateAvailable": "Une mise à jour de l'application est disponible",
+     "version": "Version",
+     "of": "du",
+     "current": "Vous disposez actuellement de la version",
+     "versionDate": "{{date, DD/MM/YYYY}}",
+     "download": "Télécharger la mise à jour",
+     "getURL": "Obtenir l'adresse URL du téléchargement",
+     "getChanges": "Obtenir la liste des changements",
+     "URLToDownload": "Adresse URL menant au téléchargement :",
+     "noChanges": "Aucun changement renseigné.",
+     "changes": "Changements de la nouvelle version :"
+   },
    "heading": {
      "connectionError": "Une erreur de connexion est survenue lors du chargement de certaines données. Vérifiez votre connexion Internet puis",
      "connectionErrorRetry": "cliquez ici pour tenter de recharger les données",
@@ -134,6 +147,19 @@ i18next.addResourceBundle("en", "translation", {
   "or": "or",
   "orMaj": "Or",
   "close": "Close",
+  "update": {
+    "updateAvailable": "An update of the application is available",
+    "version": "Version",
+    "of": "of",
+    "current": "You currently have the version",
+    "versionDate": "{{date, MM/DD/YYYY}}",
+    "download": "Download the update",
+    "getURL": "Get the URL of the download",
+    "getChanges": "Get the list of changes",
+    "URLToDownload": "Download URL:",
+    "noChanges": "No change filled.",
+    "changes": "Changes in the new version:"
+  },
   "heading": {
     "connectionError": "A connection error has occurred when loading some data. Check your Internet connection then",
     "connectionErrorRetry": "click here to try to reload the data",

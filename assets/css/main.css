@@ -45,7 +45,7 @@ img {
 .center {
     text-align: center;
 }
-#compa, #errorLoading, #compatAutoDetected, #secondEtape, #thirdEtape, #lastEtape, #firstEtapeBis, #errorLoadingSelectFile, #processingSave {
+#compa, #errorLoading, #compatAutoDetected, #secondEtape, #thirdEtape, #lastEtape, #firstEtapeBis, #errorLoadingSelectFile, #processingSave, #updateAvailable, #appUpdateDate {
     display: none;
 }
 #errorLoadingSelectFile, #errorRecord, #waitRecord {
@@ -62,6 +62,12 @@ img {
 }
 .language label {
     line-height: 2.5;
+}
+.vmiddle {
+    margin-top: 8px;
+}
+.vmiddle a {
+    vertical-align: middle;
 }
 .mb {
     margin-bottom: 16px;
