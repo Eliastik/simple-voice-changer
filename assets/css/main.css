@@ -55,6 +55,14 @@ img {
     min-width: 250px;
     text-align: center;
 }
+.language {
+    width: 100%;
+    max-width: 350px;
+    margin: auto;
+}
+.language label {
+    line-height: 2.5;
+}
 .mb {
     margin-bottom: 16px;
 }
@@ -78,7 +86,7 @@ img {
 .bold {
     font-weight: bold;
 }
-#description {
+.description {
     font-size: 12pt;
 }
 .navbar-brand > img {

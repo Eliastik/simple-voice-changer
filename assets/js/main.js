@@ -28,6 +28,8 @@ audio_principal_buffer = audio_impulse_response = audio_modulator = null;
 // Settings
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.mp3", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
+var app_version = "1.0.3";
+var app_version_date = "4-26-2019";
 // End of the settings
 
 if('AudioContext' in window) {
@@ -36,9 +38,9 @@ if('AudioContext' in window) {
         var context = new AudioContext();
     } catch(e) {
         if(typeof(window.console.error) !== 'undefined') {
-            console.error("Error when creating Audio Context (the Web Audio API seem to be unsupported):", e);
+            console.error(window.i18next.t("script.errorAudioContext"), e);
         } else {
-            console.log("Error when creating Audio Context (the Web Audio API seem to be unsupported):", e);
+            console.log(window.i18next.t("script.errorAudioContext"), e);
         }
 
         var audioContextNotSupported = true;
@@ -85,7 +87,7 @@ var checkAudio = checkAudio("audio/mp3");
 function compaMode() {
     if(!audioProcessing) {
         if(document.getElementById("checkCompa").checked == true) {
-            setTooltip("stopAudio", "Non disponible en mode de compatibilité.", true, false, "wrapperStop", true);
+            setTooltip("stopAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperStop", true);
         } else {
             setTooltip("stopAudio", null, false, true, "wrapperStop", true);
         }
@@ -93,7 +95,7 @@ function compaMode() {
         if (typeof(Worker) !== "undefined" && Worker != null) {
             setTooltip("saveInputModify", null, false, true, "wrapperSave", true);
         } else {
-            setTooltip("saveInputModify", "Désolé, cette fonction est incompatible avec votre navigateur.", true, false, "wrapperSave", true);
+            setTooltip("saveInputModify", window.i18next.t("script.notCompatible"), true, false, "wrapperSave", true);
         }
     }
 }
@@ -318,7 +320,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             renderAudio(audio);
         }
     } else {
-        if(typeof(window.console.error) !== 'undefined') console.error("Web Audio API not supported by this browser.");
+        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
         return false;
     }
 }
@@ -348,7 +350,7 @@ function saveBuffer(buffer) {
     if(typeof(Worker) !== "undefined" && Worker != null) {
         var worker = new Worker("assets/js/recorderWorker.js");
     } else {
-        if(typeof(window.console.error) !== 'undefined') console.error("Workers are not supported by this browser.");
+        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.workersNotSupported"));
         return false;
     }
 
@@ -379,7 +381,7 @@ function saveBuffer(buffer) {
             type: "audio/wav"
         });
     } else {
-        if(typeof(window.console.error) !== 'undefined') console.error("Web Audio API not supported by this browser.");
+        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
         return false;
     }
 }
@@ -406,17 +408,17 @@ function validModify(play, save) {
         var tmp_pitch = document.getElementById("pitchRange").value;
         var tmp_speed = document.getElementById("speedRange").value;
     } catch(e) {
-        alert("Une erreur est survenue.");
+        alert(window.i18next.t("script.errorOccured"));
         return false;
     }
 
     if(isNaN(tmp_pitch) || tmp_pitch == "" || tmp_pitch <= 0 || tmp_pitch > 5) {
-        alert("Valeur du pitch invalide !");
+        alert(window.i18next.t("script.invalidPitch"));
         document.getElementById("pitchRange").value = pitchAudio;
         document.getElementById("speedRange").value = speedAudio;
         return false;
     } else if(isNaN(tmp_speed) || tmp_speed == "" || tmp_speed <= 0 || tmp_speed > 5) {
-        alert("Valeur de la vitesse invalide !");
+        alert(window.i18next.t("script.invalidSpeed"));
         document.getElementById("pitchRange").value = pitchAudio;
         document.getElementById("speedRange").value = speedAudio;
         return false;
@@ -469,7 +471,7 @@ function launchSave() {
 }
 
 function launchReset() {
-    if(!audioProcessing && confirm("Vos modifications non enregistrées seront perdues. Êtes-vous sûr de vouloir choisir un autre fichier ou enregistrement ?")) {
+    if(!audioProcessing && confirm(window.i18next.t("script.launchReset"))) {
         document.getElementById("firstEtape").style.display = "block";
         document.getElementById("secondEtape").style.display = "none";
         document.getElementById("thirdEtape").style.display = "none";
@@ -775,7 +777,7 @@ function makeArrayForPreload(array, index, from, to) {
 }
 
 function preloadAudios(array, func) {
-    var msgLoading = "Chargement des données audio : ";
+    var msgLoading = window.i18next.t("loading.audioLoading") + " ";
 
     if(window.HTMLAudioElement) {
         var audioTestMp3 = document.createElement('audio');
@@ -891,7 +893,7 @@ function loadAudioAPI(audio, dest, func) {
 
         request.send();
     } else {
-        if(typeof(window.console.error) !== 'undefined') console.error("Web Audio API is not supported by this browser.");
+        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
 
         if(typeof func !== 'undefined') {
             return func(false);
@@ -902,7 +904,7 @@ function loadAudioAPI(audio, dest, func) {
 }
 
 function checkAudioBuffer(bufferName) {
-    var errorText = "Une erreur est survenue lors du chargement de certaines données. Cette fonctionnalité est donc indisponible. Essayez de recharger la page (F5).";
+    var errorText = window.i18next.t("loading.errorLoadingTooltip");
 
     if ('AudioContext' in window && !audioContextNotSupported) {
         switch(bufferName) {
@@ -946,6 +948,7 @@ function init(func) {
     document.getElementById("loading").style.display = "block";
     document.getElementById("errorLoading").style.display = "none";
     document.getElementById("checkAudioRetour").checked = false;
+    document.getElementById("version").innerHTML = app_version;
 
     preloadAudios(audioArray, function(result) {
         document.getElementById("loading").style.display = "none";
@@ -957,20 +960,20 @@ function init(func) {
 
         if(!'AudioContext' in window || audioContextNotSupported) {
             document.getElementById("compa").style.display = "block";
-            document.getElementById("compaInfo").innerHTML = "Désolé, votre navigateur n'est pas compatible avec cette application. Mettez-le à jour, puis réessayez.";
+            document.getElementById("compaInfo").innerHTML = window.i18next.t("script.browserNotCompatible");
             document.getElementById("firstEtape").style.display = "block";
             document.getElementById("fileSelect").disabled = true;
             document.getElementById("fileRecord").disabled = true;
         }
 
         if(navigator.getUserMedia == null) {
-            setTooltip("fileRecord", "Désolé, cette fonction est incompatible avec votre navigateur. Mettez-le à jour, puis réessayez.", true, false, "wrapperFileRecord", true);
+            setTooltip("fileRecord", window.i18next.t("script.browserNotCompatible"), true, false, "wrapperFileRecord", true);
         }
 
         if(typeof(Worker) !== "undefined" && Worker != null) {
             setTooltip("saveInputModify", "", false, true, "wrapperSave", true);
         } else {
-            setTooltip("saveInputModify", "Désolé, cette fonction est incompatible avec votre navigateur. Mettez-le à jour, puis réessayez.", true, false, "wrapperSave", true);
+            setTooltip("saveInputModify", window.i18next.t("script.browserNotCompatible"), true, false, "wrapperSave", true);
         }
 
         compaMode();
@@ -991,7 +994,46 @@ document.onreadystatechange = function() {
 };
 
 window.onbeforeunload = function() {
-    return "Si vous fermez cette page, vous perdrez définitivement toutes vos modifications. Êtes-vous sûr de vouloir quitter cette page ?";
+    return window.i18next.t("script.appClosing");
 };
+
+// Localization
+function listTranslations(languages) {
+  if(languages != null) {
+    document.getElementById("languageSelect").disabled = true;
+    document.getElementById("languageSelect").innerHTML = "";
+
+    for(var i = 0; i < languages.length; i++) {
+      document.getElementById("languageSelect").innerHTML = document.getElementById("languageSelect").innerHTML + '<option data-i18n="lang.' + languages[i] + '" value="'+ languages[i] +'"></option>';
+    }
+
+    document.getElementById("languageSelect").value = i18next.language.substr(0, 2);
+    document.getElementById("languageSelect").disabled = false;
+  }
+}
+
+function translateContent() {
+  listTranslations(i18next.languages);
+
+  var i18nList = document.querySelectorAll("[data-i18n]");
+  i18nList.forEach(function(v) {
+    v.innerHTML = window.i18next.t(v.dataset.i18n);
+  });
+
+  document.getElementById("versionDate").innerHTML = new Intl.DateTimeFormat(i18next.language).format(new Date(app_version_date));
+  initAudioAPI();
+}
+
+document.getElementById("languageSelect").onchange = function() {
+  i18next.changeLanguage(document.getElementById("languageSelect").value, function(err, t) {
+    translateContent();
+  });
+};
+
+window.addEventListener("load", function() {
+  setTimeout(function() {
+    translateContent();
+  }, 250);
+});
 
 // Do you like ponies ?

@@ -45,11 +45,16 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Version 1.0 (09/04/2019) :
     - Version initiale
 
-## To-do list
+## TO-DO list
 
-* Traduire l'application en anglais (i18next) ;
-* Ajouter plus d'effets ;
-* Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et [La boîte à Emmanuel Macron](https://www.eliastiksofts.com/memes/macron).
+### À faire :
+
+* Ajouter plus d'effets
+
+### Fait :
+
+* Traduire l'application en anglais (i18next)
+* Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
 
 ## Déclaration de licence
 
