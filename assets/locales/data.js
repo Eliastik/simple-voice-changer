@@ -83,6 +83,7 @@
      "reset": "Réinitialiser"
    },
    "lastStep": {
+     "rd": "ème",
      "title": "étape : enregistrez vos modifications",
      "description": "N'oubliez pas de cliquer sur Valider afin de valider vos modifications avant d'enregistrer. L'enregistrement se fera sous le format WAV (non compressé).",
      "saving": "Enregistrement en cours… Veuillez patienter. Votre modification sera téléchargée sous peu.",
@@ -190,6 +191,7 @@ i18next.addResourceBundle("en", "translation", {
     "reset": "Reset"
   },
   "lastStep": {
+    "rd": "rd",
     "title": "step: save your changes",
     "description": "Don't forget to click on Validate to confirm your changes before saving. The save will be in WAV format (uncompressed).",
     "saving": "Saving… Please wait. Your changes will be downloaded shortly.",

@@ -29,7 +29,7 @@ audio_principal_buffer = audio_impulse_response = audio_modulator = null;
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.mp3", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
 var app_version = "1.0.3";
-var app_version_date = "4-26-2019";
+var app_version_date = "2019-4-26";
 // End of the settings
 
 if('AudioContext' in window) {
