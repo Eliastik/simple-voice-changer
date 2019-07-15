@@ -201,20 +201,21 @@ function getTelephonizer(context) {
 }
 
 function returnBuffer(buffer) {
-  context.resume();
-  var bufferReturned = context.createBuffer(2, context.sampleRate * buffer.duration + context.sampleRate * 2, context.sampleRate);
+    context.resume();
 
-  for(var channel = 0; channel < buffer.numberOfChannels; channel++) {
-      var nowBuffering = bufferReturned.getChannelData(channel);
+    var bufferReturned = context.createBuffer(2, context.sampleRate * buffer.duration + context.sampleRate * 2, context.sampleRate);
 
-      for(var i = 0; i < bufferReturned.length; i++) {
-          nowBuffering[i] = buffer.getChannelData(channel)[buffer.length - i];
-      }
-  }
+    for(var channel = 0; channel < buffer.numberOfChannels; channel++) {
+        var nowBuffering = bufferReturned.getChannelData(channel);
 
-  bufferReturned.buffer = nowBuffering;
+        for(var i = 0; i < bufferReturned.length; i++) {
+            nowBuffering[i] = buffer.getChannelData(channel)[buffer.length - 1 - i];
+        }
+    }
 
-  return bufferReturned;
+    bufferReturned.buffer = nowBuffering;
+
+    return bufferReturned;
 }
 
 function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, bassboost, phone, returnAudioParam, rate, BUFFER_SIZE) {
@@ -274,28 +275,23 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             if(bassboost) {
                 var bassBoostFilter = offlineContext.createBiquadFilter();
                 bassBoostFilter.type = "lowshelf";
-                bassBoostFilter.frequency.value = 1000;
-                bassBoostFilter.gain.value = 20;
-                bassBoostFilter.detune.value = 100;
+                bassBoostFilter.frequency.value = 250;
+                bassBoostFilter.gain.value = 15;
             }
 
-            // Limit audio clipping
-            var limiter = offlineContext.createDynamicsCompressor();
-            limiter.threshold.value = -6.0;
-            limiter.knee.value = 0.0;
-            limiter.ratio.value = 20.0;
-            limiter.attack.value = 0.0;
-            limiter.release.value = 0.25;
+            var limiter = new Limiter(context.sampleRate);
+            var limiterProcessor = offlineContext.createScriptProcessor(BUFFER_SIZE, buffer.numberOfChannels, buffer.numberOfChannels);
+	          limiterProcessor.onaudioprocess = limiter.limit;
 
             if(phone) {
                 var tel = getTelephonizer(offlineContext);
             }
 
-            var output = limiter;
+            var output = limiterProcessor;
 
             if(reverb) {
                 convolver.buffer = audio_impulse_response;
-                convolver.connect(limiter);
+                convolver.connect(limiterProcessor);
                 output = convolver;
             }
 
@@ -323,7 +319,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             }
 
             if(!comp) {
-                limiter.connect(offlineContext.destination);
+                limiterProcessor.connect(offlineContext.destination);
 
                 offlineContext.oncomplete = function(e) {
                     window[audioName] = e.renderedBuffer;
@@ -371,7 +367,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 }
 
                 if(play) {
-                    limiter.connect(offlineContext.destination);
+                    limiterProcessor.connect(offlineContext.destination);
 
                     if(save) {
                         var rec = new Recorder(limiter, { workerPath: "assets/js/recorderWorker.js" });
@@ -426,6 +422,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 function playBufferAudioAPI(audio) {
     this.buffer = audio;
     this.source;
+    this.currentTime = 0;
     this.interval;
 
     this.init = function() {
@@ -436,11 +433,22 @@ function playBufferAudioAPI(audio) {
     };
 
     this.stop = function() {
-        this.source.stop(0);
+        clearInterval(this.interval);
+        this.currentTime = 0;
+        this.source.stop(this.currentTime);
     };
 
     this.start = function() {
-        this.source.start(0);
+        this.source.start(this.currentTime);
+
+        this.interval = setInterval(function()  {
+            this.currentTime++;
+        }, 1000);
+    };
+
+    this.pause = function() {
+        clearInterval(this.interval);
+        this.source.stop();
     };
 }
 
