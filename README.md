@@ -112,6 +112,8 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ### À faire :
 
+* Corriger message erreur "Application non compatible" sur le bouton "Enregistrer via le micro" si contexte non sécurisé (http, ...)
+* Corriger le compresseur audio
 * Ajouter plus d'effets
 
 ### Fait :
