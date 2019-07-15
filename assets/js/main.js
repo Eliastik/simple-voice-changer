@@ -19,17 +19,17 @@
 
 // Pure JS. No Jquery.
 // Default variables
-var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, compaAudioAPI, vocoderAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay;
+var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, compaAudioAPI, vocoderAudio, lowpassAudio, phoneAudio, bassboostAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay;
 
 speedAudio = pitchAudio = 1;
-reverbAudio = compaAudioAPI = vocoderAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
+reverbAudio = compaAudioAPI = vocoderAudio = lowpassAudio = bassboostAudio = phoneAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 audio_principal_buffer = audio_impulse_response = audio_modulator = null;
 
 // Settings
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.mp3", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
-var app_version = "1.0.3";
-var app_version_date = "2019-4-26";
+var app_version = "1.1";
+var app_version_date = "2019-7-15";
 var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
 // End of the settings
 
@@ -40,7 +40,7 @@ String.prototype.strcmp = function(str) {
 
 if(!String.prototype.trim) {
     String.prototype.trim = function () {
-      return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+        return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
     };
 }
 // End libs
@@ -176,16 +176,43 @@ function calcAudioDuration(audio, speed, pitch, reverb, vocode) {
     return duration;
 }
 
-function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, rate, BUFFER_SIZE) {
+function getTelephonizer(context) {
+    var lpf1 = context.createBiquadFilter();
+    lpf1.type = "lowpass";
+    lpf1.frequency.value = 2000.0;
+    var lpf2 = context.createBiquadFilter();
+    lpf2.type = "lowpass";
+    lpf2.frequency.value = 2000.0;
+    var hpf1 = context.createBiquadFilter();
+    hpf1.type = "highpass";
+    hpf1.frequency.value = 500.0;
+    var hpf2 = context.createBiquadFilter();
+    hpf2.type = "highpass";
+    hpf2.frequency.value = 500.0;
+    lpf1.connect(lpf2);
+    lpf2.connect(hpf1);
+    hpf1.connect(hpf2);
+    currentEffectNode = lpf1;
+
+    return {
+      "input": lpf1,
+      "output": hpf2
+    };
+}
+
+function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, bassboost, phone, rate, BUFFER_SIZE) {
     // Default parameters
     var speed = speed || 1; // Speed of the audio
     var pitch = pitch || 1; // Pitch of the audio
-    var reverb = reverb || false; // Enable or disable reverb
-    var save = save || false; // Save the audio buffer under a wav file
-    var play = play || false; // Play the audio
+    var reverb = reverb == undefined ? false : reverb; // Enable or disable reverb
+    var save = save == undefined ? false : save; // Save the audio buffer under a wav file
+    var play = play == undefined ? false : play; // Play the audio
     var audioName = audioName || "sample"; // The audio buffer variable name (global)
-    var comp = comp || false; // Enable or disable the compatibility mode
-    var vocode = vocode || false; // Enable or disable vocoder
+    var comp = comp == undefined ? false : comp; // Enable or disable the compatibility mode
+    var vocode = vocode == undefined ? false : vocode; // Enable or disable vocoder
+    var lowpass = lowpass == undefined ? false : lowpass; // Enable lowPass filter
+    var bassboost = bassboost == undefined ? false : bassboost; // Enable Bass Boost
+    var phone = phone == undefined ? false : phone; // Enable Bass Boost
     var rate = rate || 1; // Rate of the audio
     var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
     // End of default parameters
@@ -216,14 +243,65 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             var filter = new soundtouch.SimpleFilter(new soundtouch.WebAudioBufferSource(buffer), st);
             var node = soundtouch.getWebAudioNode(offlineContext, filter);
 
-            if(!comp) {
-                if(reverb) {
-                    convolver.buffer = audio_impulse_response;
-                    node.connect(convolver);
-                    convolver.connect(offlineContext.destination);
+            if(lowpass) {
+                var lowPassFilter = offlineContext.createBiquadFilter();
+                lowPassFilter.type = "lowpass";
+                lowPassFilter.frequency.value = 3500;
+            }
+
+            if(bassboost) {
+                var bassBoostFilter = offlineContext.createBiquadFilter();
+                bassBoostFilter.type = "lowshelf";
+                bassBoostFilter.frequency.value = 1000;
+                bassBoostFilter.gain.value = 20;
+                bassBoostFilter.detune.value = 100;
+            }
+
+            // Limit audio clipping
+            var limiter = offlineContext.createDynamicsCompressor();
+            limiter.threshold.value = -6.0;
+            limiter.knee.value = 0.0;
+            limiter.ratio.value = 20.0;
+            limiter.attack.value = 0.0;
+            limiter.release.value = 0.25;
+
+            if(phone) {
+                var tel = getTelephonizer(offlineContext);
+            }
+
+            var output = limiter;
+
+            if(reverb) {
+                convolver.buffer = audio_impulse_response;
+                convolver.connect(limiter);
+                output = convolver;
+            }
+
+            if(phone) {
+                tel["output"].connect(output);
+                output = tel["input"];
+            }
+
+            if(lowpass) {
+                node.connect(lowPassFilter);
+
+                if(bassboost) {
+                    lowPassFilter.connect(bassBoostFilter);
+                    bassBoostFilter.connect(output);
                 } else {
-                    node.connect(offlineContext.destination);
+                    lowPassFilter.connect(output);
                 }
+            } else {
+                if(bassboost) {
+                    node.connect(bassBoostFilter);
+                    bassBoostFilter.connect(output);
+                } else {
+                    node.connect(output);
+                }
+            }
+
+            if(!comp) {
+                limiter.connect(offlineContext.destination);
 
                 offlineContext.oncomplete = function(e) {
                     window[audioName] = e.renderedBuffer;
@@ -270,47 +348,32 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     document.getElementById("playAudio").disabled = true;
                 }
 
-                if(reverb) {
-                    convolver.buffer = audio_impulse_response;
-                    node.connect(convolver);
+                if(play) {
+                    limiter.connect(offlineContext.destination);
 
-                    if(play) {
-                        convolver.connect(offlineContext.destination);
+                    if(save) {
+                        var rec = new Recorder(limiter, { workerPath: "assets/js/recorderWorker.js" });
 
-                         if(save) {
-                            var rec = new Recorder(convolver, { workerPath: "assets/js/recorderWorker.js" });
-                        }
+                        var timer = new timerSaveTime("timeFinishedDownload", Math.round(durationAudio), -1);
+                        timer.start();
+                        rec.record();
+
+                        setTimeout(function() {
+                            rec.stop();
+
+                            rec.exportWAV(function(blob) {
+                                downloadAudioBlob(blob);
+                                timer.stop();
+
+                                document.getElementById("validInputModify").disabled = false;
+                                document.getElementById("resetAudio").disabled = false;
+                                document.getElementById("playAudio").disabled = false;
+                                document.getElementById("processingSave").style.display = "none";
+                                audioProcessing = false;
+                                compaMode();
+                            });
+                        }, durationAudio * 1000);
                     }
-                } else {
-                    if(play) {
-                        node.connect(offlineContext.destination);
-
-                         if(save) {
-                            var rec = new Recorder(node, { workerPath: "assets/js/recorderWorker.js" });
-                        }
-                    }
-                }
-
-                if(play && save) {
-                    var timer = new timerSaveTime("timeFinishedDownload", Math.round(durationAudio), -1);
-                    timer.start();
-                    rec.record();
-
-                    setTimeout(function() {
-                        rec.stop();
-
-                        rec.exportWAV(function(blob) {
-                            downloadAudioBlob(blob);
-                            timer.stop();
-
-                            document.getElementById("validInputModify").disabled = false;
-                            document.getElementById("resetAudio").disabled = false;
-                            document.getElementById("playAudio").disabled = false;
-                            document.getElementById("processingSave").style.display = "none";
-                            audioProcessing = false;
-                            compaMode();
-                        });
-                    }, durationAudio * 1000);
                 }
             }
         }
@@ -441,6 +504,9 @@ function validModify(play, save) {
         if(document.getElementById("checkReverb").checked == true) reverbAudio = true; else reverbAudio = false;
         if(document.getElementById("checkCompa").checked == true) compaAudioAPI = true; else compaAudioAPI = false;
         if(document.getElementById("checkVocode").checked == true) vocoderAudio = true; else vocoderAudio = false;
+        if(document.getElementById("checkLowpass").checked == true) lowpassAudio = true; else lowpassAudio = false;
+        if(document.getElementById("checkBassBoost").checked == true) bassboostAudio = true; else bassboostAudio = false;
+        if(document.getElementById("checkPhone").checked == true) phoneAudio = true; else phoneAudio = false;
 
         if(compaAudioAPI) {
             if(checkAudio !== true || play !== true) {
@@ -451,7 +517,7 @@ function validModify(play, save) {
                 launchPlay();
             }
         } else {
-            renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, save, play, "audio_principal_processed", compaAudioAPI, vocoderAudio);
+            renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, save, play, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio);
         }
 
         return true;
@@ -467,7 +533,7 @@ function launchPlay() {
         audioBufferPlay.init();
         audioBufferPlay.start();
     } else if(compaAudioAPI) {
-        renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, false, true, "audio_principal_processed", compaAudioAPI, vocoderAudio);
+        renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, false, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio);
     }
 }
 
@@ -479,7 +545,7 @@ function launchSave() {
     if(!audioProcessing && typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
         saveBuffer(audio_principal_processed);
     } else if(compaAudioAPI) {
-        renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, true, true, "audio_principal_processed", compaAudioAPI, vocoderAudio);
+        renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, true, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio);
     }
 }
 
@@ -500,6 +566,9 @@ function launchReset() {
 function resetModify() {
     document.getElementById("checkReverb").checked = false;
     document.getElementById("checkVocode").checked = false;
+    document.getElementById("checkLowpass").checked = false;
+    document.getElementById("checkBassBoost").checked = false;
+    document.getElementById("checkPhone").checked = false;
     slider.setValue(1.0);
     slider2.setValue(1.0);
 }
@@ -515,6 +584,9 @@ function randomBool() {
 function randomModify() {
     var checkReverb = document.getElementById("checkReverb");
     var checkVocode = document.getElementById("checkVocode");
+    var checkLowpass = document.getElementById("checkLowpass");
+    var checkBassBoost = document.getElementById("checkBassBoost");
+    var checkPhone = document.getElementById("checkPhone");
 
     if(!checkReverb.disabled) {
         checkReverb.checked = randomBool();
@@ -522,6 +594,18 @@ function randomModify() {
 
     if(!checkVocode.disabled) {
         checkVocode.checked = randomBool();
+    }
+
+    if(!checkLowpass.disabled) {
+        checkLowpass.checked = randomBool();
+    }
+
+    if(!checkBassBoost.disabled) {
+        checkBassBoost.checked = randomBool();
+    }
+
+    if(!checkPhone.disabled) {
+        checkPhone.checked = randomBool();
     }
 
     slider.setValue(randomRange(0.1, 5.0));
@@ -540,8 +624,13 @@ function recordVoice() {
         document.getElementById("errorRecord").style.display = "none";
 
         var self = this;
+        var constraints = {
+            audio: {
+              noiseSuppression: false
+            }
+        };
 
-        navigator.getUserMedia({audio: true}, function(stream) {
+        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
             context.resume();
             self.input = context.createMediaStreamSource(stream);
             self.stream = stream;
@@ -553,7 +642,7 @@ function recordVoice() {
             document.getElementById("recordAudioPlay").disabled = false;
             document.getElementById("checkAudioRetour").disabled = false;
             document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox");
-        }, function(e) {
+        }).catch(function(e) {
             document.getElementById("errorRecord").style.display = "block";
             document.getElementById("waitRecord").style.display = "none";
             document.getElementById("recordAudioPlay").disabled = true;
@@ -963,6 +1052,8 @@ function init(func) {
     document.getElementById("checkAudioRetour").checked = false;
     document.getElementById("version").innerHTML = app_version;
     document.getElementById("appVersion").innerHTML = app_version;
+    document.getElementById("appUpdateDate").innerHTML = app_version_date;
+    initAudioAPI();
 
     preloadAudios(audioArray, function(result) {
         document.getElementById("loading").style.display = "none";

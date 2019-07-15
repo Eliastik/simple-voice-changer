@@ -87,7 +87,7 @@
             <div class="row" id="secondEtape">
                 <div class="container-fluid">
                     <form class="center">
-                        <i class="fa fa-refresh fa-spin fa-fw"></i> <span class="bold" data-i18n="loadingFile">Chargement en cours… Veuillez patienter.</span>
+                        <i class="fa fa-refresh fa-spin fa-fw"></i> <span class="bold" data-i18n="secondStep.loadingFile">Chargement en cours… Veuillez patienter.</span>
                     </form>
                 </div>
             </div>
@@ -117,6 +117,15 @@
                                 </div>
                                 <div class="checkbox disabled" id="checkVocodeGroup">
                                     <span id="checkVocodeWrapper"><input type="checkbox" id="checkVocode" disabled="disabled" /> <label for="checkVocode" data-i18n="thirdStep.vocoder">Vocoder (voix robotique)</label></span>
+                                </div>
+                                <div class="checkbox" id="checkPhoneGroup">
+                                    <span id="checkPhoneWrapper"><input type="checkbox" id="checkPhone" /> <label for="checkPhone" data-i18n="thirdStep.phone">Appel téléphonique</label></span>
+                                </div>
+                                <div class="checkbox" id="checkBassBoostGroup">
+                                    <span id="checkBassBoostWrapper"><input type="checkbox" id="checkBassBoost" /> <label for="checkBassBoost" data-i18n="thirdStep.bassboost">Boost des basses</label></span>
+                                </div>
+                                <div class="checkbox" id="checkLowpassGroup">
+                                    <span id="checkLowpassWrapper"><input type="checkbox" id="checkLowpass" /> <label for="checkLowpass" data-i18n="thirdStep.lowpass">Filtre passe-bas</label></span>
                                 </div>
                                 <div class="checkbox">
                                     <input type="checkbox" id="checkCompa" onclick="compaMode();" /> <label for="checkCompa" data-i18n="thirdStep.compatibilityMode">Mode de compatibilité (cocher si aucun son n'est diffusé)</label><br />
