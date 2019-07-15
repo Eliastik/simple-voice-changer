@@ -1071,7 +1071,7 @@ function init(func) {
             document.getElementById("fileRecord").disabled = true;
         }
 
-        if(navigator.getUserMedia == null) {
+        if(navigator.mediaDevices.getUserMedia == null) {
             setTooltip("fileRecord", window.i18next.t("script.browserNotCompatible"), true, false, "wrapperFileRecord", true);
         }
 
