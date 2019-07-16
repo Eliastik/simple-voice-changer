@@ -111,7 +111,8 @@
      "saving": "Enregistrement en cours… Veuillez patienter. Votre modification sera téléchargée sous peu.",
      "delay": "L'enregistrement se terminera dans environ",
      "delayInfo": "Il y a un délai car le mode de compatibilité est activé.",
-     "save": "Enregistrer"
+     "save": "Enregistrer",
+     "cancel": "Annuler"
    },
    "footer": {
      "by": "Par",
@@ -241,7 +242,8 @@ i18next.addResourceBundle("en", "translation", {
     "saving": "Saving… Please wait. Your changes will be downloaded shortly.",
     "delay": "The save will end in approximately",
     "delayInfo": "There is a delay because the compatibility mode is enabled.",
-    "save": "Save"
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "footer": {
     "by": "By",

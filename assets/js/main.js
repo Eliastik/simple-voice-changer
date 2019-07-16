@@ -19,7 +19,7 @@
 
 // Pure JS. No Jquery.
 // Default variables
-var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop;
+var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop, compaModeStopSave;
 
 speedAudio = pitchAudio = 1;
 reverbAudio = echoAudio = compaAudioAPI = vocoderAudio = bitCrusherAudio = lowpassAudio = highpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
@@ -28,6 +28,7 @@ audio_principal_buffer = audio_impulse_response = audio_modulator = null;
 var sliderPlayAudio = new Slider("#playAudioRange");
 audioBufferPlay = new BufferPlayer(null);
 compaModeStop = function() { return false };
+compaModeStopSave = function() { return false };
 
 // Settings
 var filesDownloadName = "simple_voice_changer";
@@ -511,22 +512,37 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                         timer.start();
                         rec.record();
 
-                        setTimeout(function() {
+                        function onSaveFinished() {
+                            timer.stop();
+                            document.getElementById("validInputModify").disabled = false;
+                            document.getElementById("resetAudio").disabled = false;
+                            document.getElementById("playAudio").disabled = false;
+                            document.getElementById("stopAudio").disabled = false;
+                            document.getElementById("processingSave").style.display = "none";
+                            audioProcessing = false;
+                            compaMode();
+                        }
+
+                        var compaSaveTimeout = setTimeout(function() {
                             rec.stop();
 
                             rec.exportWAV(function(blob) {
                                 downloadAudioBlob(blob);
-                                timer.stop();
-
-                                document.getElementById("validInputModify").disabled = false;
-                                document.getElementById("resetAudio").disabled = false;
-                                document.getElementById("playAudio").disabled = false;
-                                document.getElementById("stopAudio").disabled = false;
-                                document.getElementById("processingSave").style.display = "none";
-                                audioProcessing = false;
-                                compaMode();
+                                onSaveFinished();
                             });
                         }, durationAudio * 1000);
+
+                        compaModeStopSave = function() {
+                            try {
+                                clearTimeout(compaSaveTimeout);
+                                limiterProcessor.disconnect(offlineContext.destination);
+                                rec.stop();
+                                onSaveFinished();
+                                return true;
+                            } catch(e) {
+                                return false;
+                            }
+                        };
                     }
                 }
             }
