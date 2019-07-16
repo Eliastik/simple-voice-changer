@@ -118,23 +118,29 @@
                                 <div>
                                     <span class="slider-label left" data-i18n="thirdStep.slow">Lent</span> <input type="text" name="speedRange" id="speedRange" data-provide="slider" data-slider-min="0.1" data-slider-max="5" data-slider-step="0.1" data-slider-value="1" data-slider-tooltip="show" data-slider-ticks="[0.1, 1, 2, 5]" data-slider-ticks-snap-bounds="0.1" ticks_positions="[0.1, 1, 2, 5]"> <span class="slider-label right" data-i18n="thirdStep.fast">Rapide</span>
                                 </div>
-                                <div class="checkbox disabled" id="checkReverbGroup">
-                                    <span id="checkReverbWrapper"><input type="checkbox" id="checkReverb" disabled="disabled" /> <label for="checkReverb" data-i18n="thirdStep.reverb">Réverbération</label></span>
-                                </div>
-                                <div class="checkbox disabled" id="checkVocodeGroup">
-                                    <span id="checkVocodeWrapper"><input type="checkbox" id="checkVocode" disabled="disabled" /> <label for="checkVocode" data-i18n="thirdStep.vocoder">Vocoder (voix robotique)</label></span>
-                                </div>
-                                <div class="checkbox" id="checkPhoneGroup">
-                                    <span id="checkPhoneWrapper"><input type="checkbox" id="checkPhone" /> <label for="checkPhone" data-i18n="thirdStep.phone">Appel téléphonique</label></span>
-                                </div>
-                                <div class="checkbox" id="checkReturnAudioGroup">
-                                    <span id="checkReturnAudioWrapper"><input type="checkbox" id="checkReturnAudio" /> <label for="checkReturnAudio" data-i18n="thirdStep.returnAudio">Retourner l'audio</label></span>
-                                </div>
-                                <div class="checkbox" id="checkBassBoostGroup">
-                                    <span id="checkBassBoostWrapper"><input type="checkbox" id="checkBassBoost" /> <label for="checkBassBoost" data-i18n="thirdStep.bassboost">Boost des basses</label></span>
-                                </div>
-                                <div class="checkbox" id="checkLowpassGroup">
-                                    <span id="checkLowpassWrapper"><input type="checkbox" id="checkLowpass" /> <label for="checkLowpass" data-i18n="thirdStep.lowpass">Filtre passe-bas</label></span>
+                                <div class="row row-filters mt">
+                                    <div class="col-xs-6 border-right">
+                                        <div class="checkbox disabled" id="checkReverbGroup">
+                                            <span id="checkReverbWrapper"><input type="checkbox" id="checkReverb" disabled="disabled" /> <label for="checkReverb" data-i18n="thirdStep.reverb">Réverbération</label></span>
+                                        </div>
+                                        <div class="checkbox disabled" id="checkVocodeGroup">
+                                            <span id="checkVocodeWrapper"><input type="checkbox" id="checkVocode" disabled="disabled" /> <label for="checkVocode" data-i18n="thirdStep.vocoder">Vocoder (voix robotique)</label></span>
+                                        </div>
+                                        <div class="checkbox" id="checkPhoneGroup">
+                                            <span id="checkPhoneWrapper"><input type="checkbox" id="checkPhone" /> <label for="checkPhone" data-i18n="thirdStep.phone">Appel téléphonique</label></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="checkbox" id="checkReturnAudioGroup">
+                                            <span id="checkReturnAudioWrapper"><input type="checkbox" id="checkReturnAudio" /> <label for="checkReturnAudio" data-i18n="thirdStep.returnAudio">Retourner l'audio</label></span>
+                                        </div>
+                                        <div class="checkbox" id="checkBassBoostGroup">
+                                            <span id="checkBassBoostWrapper"><input type="checkbox" id="checkBassBoost" /> <label for="checkBassBoost" data-i18n="thirdStep.bassboost">Boost des basses</label></span>
+                                        </div>
+                                        <div class="checkbox" id="checkLowpassGroup">
+                                            <span id="checkLowpassWrapper"><input type="checkbox" id="checkLowpass" /> <label for="checkLowpass" data-i18n="thirdStep.lowpass">Filtre passe-bas</label></span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="checkbox">
                                     <input type="checkbox" id="checkCompa" onclick="compaMode();" /> <label for="checkCompa" data-i18n="thirdStep.compatibilityMode">Mode de compatibilité (cocher si aucun son n'est diffusé)</label><br />

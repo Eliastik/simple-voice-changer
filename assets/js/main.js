@@ -352,9 +352,9 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
                         if(sum == 0) {
                             document.getElementById("checkCompa").checked = true;
-                            compaMode();
                             document.getElementById("compatAutoDetected").style.display = "block";
                             compaAudioAPI = true;
+                            compaMode();
                         }
 
                         compatModeChecked = true;

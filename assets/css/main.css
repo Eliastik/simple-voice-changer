@@ -81,6 +81,13 @@ img {
     max-width: 285px;
     margin: 0 auto;
 }
+.row-filters {
+    max-width: 400px;
+    margin: 0 auto;
+}
+.border-right {
+    border-right: 1px solid lightgrey;
+}
 .mb {
     margin-bottom: 16px;
 }
