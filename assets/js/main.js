@@ -50,6 +50,276 @@ if(!String.prototype.trim) {
 }
 // End libs
 
+// Classes
+function BufferPlayer() {
+    this.buffer;
+    this.source;
+    this.currentTime = 0;
+    this.displayTime = 0;
+    this.duration = 0;
+    this.interval;
+    this.playing = false;
+    this.sliding = false;
+
+    var obj = this;
+
+    if(sliderPlayAudio != undefined) {
+        sliderPlayAudio.on("slideStart", function() {
+            obj.sliding = true;
+        });
+
+        sliderPlayAudio.on("slide", function(value) {
+            obj.displayTime = Math.round(obj.duration * (value / 100));
+            obj.updateInfos();
+        });
+
+        sliderPlayAudio.on("slideStop", function(value) {
+            obj.sliding = false;
+            obj.currentTime = Math.round(obj.duration * (value / 100));
+            obj.displayTime = obj.currentTime;
+
+            if(obj.playing) {
+                obj.pause();
+                obj.start();
+            } else {
+                obj.updateInfos();
+            }
+        });
+    }
+
+    this.init = function() {
+        this.playing = false;
+        context.resume();
+        this.source = context.createBufferSource();
+        this.source.buffer = this.buffer;
+        this.duration = this.buffer.duration;
+        this.source.connect(context.destination);
+        this.updateInfos();
+    };
+
+    this.loadBuffer = function(buffer) {
+        this.reset();
+        this.buffer = buffer;
+        this.init();
+    };
+
+    this.reset = function() {
+        clearInterval(this.interval);
+        this.currentTime = 0;
+        this.displayTime = 0;
+        this.stop();
+    };
+
+    this.stop = function() {
+        if(this.source != undefined && this.source != null && this.playing) {
+            this.source.stop(0);
+            this.playing = false;
+        }
+
+        this.updateInfos();
+    };
+
+    this.start = function() {
+        if(this.source != undefined && this.source != null) {
+            this.stop();
+            this.init();
+            this.source.start(0, this.currentTime);
+            this.playing = true;
+
+            this.interval = setInterval(function() {
+                obj.currentTime += 0.2;
+
+                if(!obj.sliding) {
+                    obj.displayTime = obj.currentTime;
+                }
+
+                obj.updateInfos();
+
+                if(obj.currentTime > obj.duration) {
+                    obj.reset();
+                }
+            }, 200);
+        }
+    };
+
+    this.pause = function() {
+        clearInterval(this.interval);
+        this.stop();
+    };
+
+    this.updateInfos = function() {
+        var percPlaying = Math.round(this.displayTime / this.duration * 100);
+
+        if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
+        if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
+
+        if(!this.sliding && sliderPlayAudio != undefined) {
+            sliderPlayAudio.setValue(percPlaying, false, false);
+        }
+
+        compaMode();
+    };
+}
+
+function VoiceRecorder() {
+    this.input;
+    this.stream;
+    this.recorder;
+    this.alreadyInit;
+    this.timer;
+
+    this.init = function() {
+        document.getElementById("waitRecord").style.display = "block";
+        document.getElementById("errorRecord").style.display = "none";
+
+        var self = this;
+        var constraints = {
+            audio: true
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+            context.resume();
+            self.input = context.createMediaStreamSource(stream);
+            self.stream = stream;
+            self.recorder = new Recorder(self.input, { workerPath: "assets/js/recorderWorker.js" });
+            self.alreadyInit = true;
+            self.timer = new TimerSaveTime("timeRecord", null, 0, 1);
+            document.getElementById("errorRecord").style.display = "none";
+            document.getElementById("waitRecord").style.display = "none";
+            document.getElementById("recordAudioPlay").disabled = false;
+            document.getElementById("checkAudioRetour").disabled = false;
+            document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox");
+        }).catch(function(e) {
+            document.getElementById("errorRecord").style.display = "block";
+            document.getElementById("waitRecord").style.display = "none";
+            document.getElementById("recordAudioPlay").disabled = true;
+            document.getElementById("checkAudioRetour").disabled = true;
+            document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
+        });
+    };
+
+    this.audioFeedback = function(enable) {
+        if(enable) {
+            this.input && this.input.connect(context.destination);
+        } else {
+            this.input && this.input.connect(context.destination) && this.input.disconnect(context.destination);
+        }
+    };
+
+    this.record = function() {
+        if(this.alreadyInit) {
+            this.recorder && this.recorder.record();
+            this.timer && this.timer.start();
+
+            document.getElementById("recordAudioPlay").disabled = true;
+            document.getElementById("recordAudioPause").disabled = false;
+            document.getElementById("recordAudioStop").disabled = false;
+        }
+    };
+
+    this.stop = function() {
+        if(this.alreadyInit) {
+            this.recorder && this.recorder.stop();
+            this.timer && this.timer.stop();
+
+            var self = this;
+
+            this.recorder.getBuffer(function(buffer) {
+                context.resume();
+                var newSource = context.createBufferSource();
+                var newBuffer = context.createBuffer(2, buffer[0].length, context.sampleRate);
+                newBuffer.getChannelData(0).set(buffer[0]);
+                newBuffer.getChannelData(1).set(buffer[1]);
+                newSource.buffer = newBuffer;
+
+                loadPrincipalBuffer(newBuffer);
+                self.reset();
+            });
+        }
+    };
+
+    this.pause = function() {
+        if(this.alreadyInit) {
+            this.recorder && this.recorder.stop();
+            this.timer && this.timer.stop();
+
+            document.getElementById("recordAudioPlay").disabled = false;
+            document.getElementById("recordAudioPause").disabled = true;
+
+            if(this.timer.seconds > 0) {
+                document.getElementById("recordAudioStop").disabled = false;
+            }
+        }
+    };
+
+    this.reset = function() {
+        this.recorder && this.recorder.stop();
+        this.recorder && this.recorder.clear();
+        this.timer && this.timer.stop();
+        this.audioFeedback(false);
+
+        if(this.stream && this.stream.stop) {
+            this.stream.stop();
+        } else if(this.stream) {
+            this.stream.getTracks().forEach(function(track) {
+                track.stop()
+            });
+        }
+
+        this.input = null;
+        this.recorder = null;
+        this.stream = null;
+        this.alreadyInit = false;
+        this.timer = null;
+
+        document.getElementById("recordAudioPlay").disabled = true;
+        document.getElementById("recordAudioPause").disabled = true;
+        document.getElementById("recordAudioStop").disabled = true;
+        document.getElementById("checkAudioRetour").checked = false;
+        document.getElementById("checkAudioRetour").disabled = true;
+        document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
+        document.getElementById("timeRecord").innerHTML = "00:00";
+    };
+}
+
+function TimerSaveTime(id, idProgress, seconds, incr) {
+    this.id = id;
+    this.idProgress = idProgress;
+    this.seconds = seconds;
+    this.initialSeconds = seconds;
+    this.interval;
+    this.incr = incr;
+
+    var obj = this;
+
+    this.start = function() {
+        document.getElementById(this.id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
+
+        if(this.idProgress != null && document.getElementById(this.idProgress) != null) document.getElementById(idProgress).style.width = "0%";
+
+        this.interval = setInterval(function() {
+            obj.count();
+        }, 1000);
+    };
+
+    this.stop = function() {
+        clearInterval(this.interval);
+    };
+
+    this.count = function() {
+        this.seconds += this.incr;
+
+        if(document.getElementById(obj.id) != null) document.getElementById(obj.id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
+
+        if(obj.idProgress != null && document.getElementById(obj.idProgress) != null) document.getElementById(idProgress).style.width = Math.round((obj.initialSeconds - obj.seconds) / obj.initialSeconds * 100) + "%";
+
+        if(this.seconds <= 0) {
+            this.stop();
+        }
+    };
+}
+// End classes
+
 if('AudioContext' in window) {
     try {
         var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -578,116 +848,6 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     }
 }
 
-function BufferPlayer() {
-    this.buffer;
-    this.source;
-    this.currentTime = 0;
-    this.displayTime = 0;
-    this.duration = 0;
-    this.interval;
-    this.playing = false;
-    this.sliding = false;
-
-    var obj = this;
-
-    if(sliderPlayAudio != undefined) {
-        sliderPlayAudio.on("slideStart", function() {
-            obj.sliding = true;
-        });
-
-        sliderPlayAudio.on("slide", function(value) {
-            obj.displayTime = Math.round(obj.duration * (value / 100));
-            obj.updateInfos();
-        });
-
-        sliderPlayAudio.on("slideStop", function(value) {
-            obj.sliding = false;
-            obj.currentTime = Math.round(obj.duration * (value / 100));
-            obj.displayTime = obj.currentTime;
-
-            if(obj.playing) {
-                obj.pause();
-                obj.start();
-            } else {
-                obj.updateInfos();
-            }
-        });
-    }
-
-    this.init = function() {
-        this.playing = false;
-        context.resume();
-        this.source = context.createBufferSource();
-        this.source.buffer = this.buffer;
-        this.duration = this.buffer.duration;
-        this.source.connect(context.destination);
-        this.updateInfos();
-    };
-
-    this.loadBuffer = function(buffer) {
-        this.reset();
-        this.buffer = buffer;
-        this.init();
-    };
-
-    this.reset = function() {
-        clearInterval(this.interval);
-        this.currentTime = 0;
-        this.displayTime = 0;
-        this.stop();
-    };
-
-    this.stop = function() {
-        if(this.source != undefined && this.source != null && this.playing) {
-            this.source.stop(0);
-            this.playing = false;
-        }
-
-        this.updateInfos();
-    };
-
-    this.start = function() {
-        if(this.source != undefined && this.source != null) {
-            this.stop();
-            this.init();
-            this.source.start(0, this.currentTime);
-            this.playing = true;
-
-            this.interval = setInterval(function() {
-                obj.currentTime += 0.2;
-
-                if(!obj.sliding) {
-                    obj.displayTime = obj.currentTime;
-                }
-
-                obj.updateInfos();
-
-                if(obj.currentTime > obj.duration) {
-                    obj.reset();
-                }
-            }, 200);
-        }
-    };
-
-    this.pause = function() {
-        clearInterval(this.interval);
-        this.stop();
-    };
-
-    this.updateInfos = function() {
-        var percPlaying = Math.round(this.displayTime / this.duration * 100);
-
-        if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
-        if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
-
-        if(!this.sliding && sliderPlayAudio != undefined) {
-            sliderPlayAudio.setValue(percPlaying, false, false);
-        }
-
-        compaMode();
-    };
-}
-
 function saveBuffer(buffer) {
     if(typeof(Worker) !== "undefined" && Worker != null) {
         var worker = new Worker("assets/js/recorderWorker.js");
@@ -923,124 +1083,6 @@ function randomModify() {
     slider2.setValue(randomRange(0.1, 5.0));
 }
 
-function VoiceRecorder() {
-    this.input;
-    this.stream;
-    this.recorder;
-    this.alreadyInit;
-    this.timer;
-
-    this.init = function() {
-        document.getElementById("waitRecord").style.display = "block";
-        document.getElementById("errorRecord").style.display = "none";
-
-        var self = this;
-        var constraints = {
-            audio: true
-        };
-
-        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-            context.resume();
-            self.input = context.createMediaStreamSource(stream);
-            self.stream = stream;
-            self.recorder = new Recorder(self.input, { workerPath: "assets/js/recorderWorker.js" });
-            self.alreadyInit = true;
-            self.timer = new TimerSaveTime("timeRecord", null, 0, 1);
-            document.getElementById("errorRecord").style.display = "none";
-            document.getElementById("waitRecord").style.display = "none";
-            document.getElementById("recordAudioPlay").disabled = false;
-            document.getElementById("checkAudioRetour").disabled = false;
-            document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox");
-        }).catch(function(e) {
-            document.getElementById("errorRecord").style.display = "block";
-            document.getElementById("waitRecord").style.display = "none";
-            document.getElementById("recordAudioPlay").disabled = true;
-            document.getElementById("checkAudioRetour").disabled = true;
-            document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
-        });
-    };
-
-    this.audioFeedback = function(enable) {
-        if(enable) {
-            this.input && this.input.connect(context.destination);
-        } else {
-            this.input && this.input.connect(context.destination) && this.input.disconnect(context.destination);
-        }
-    };
-
-    this.record = function() {
-        if(this.alreadyInit) {
-            this.recorder && this.recorder.record();
-            this.timer && this.timer.start();
-
-            document.getElementById("recordAudioPlay").disabled = true;
-            document.getElementById("recordAudioPause").disabled = false;
-            document.getElementById("recordAudioStop").disabled = false;
-        }
-    };
-
-    this.stop = function() {
-        if(this.alreadyInit) {
-            this.recorder && this.recorder.stop();
-            this.timer && this.timer.stop();
-
-            var self = this;
-
-            this.recorder.getBuffer(function(buffer) {
-                context.resume();
-                var newSource = context.createBufferSource();
-                var newBuffer = context.createBuffer(2, buffer[0].length, context.sampleRate);
-                newBuffer.getChannelData(0).set(buffer[0]);
-                newBuffer.getChannelData(1).set(buffer[1]);
-                newSource.buffer = newBuffer;
-
-                loadPrincipalBuffer(newBuffer);
-                self.reset();
-            });
-        }
-    };
-
-    this.pause = function() {
-        if(this.alreadyInit) {
-            this.recorder && this.recorder.stop();
-            this.timer && this.timer.stop();
-
-            document.getElementById("recordAudioPlay").disabled = false;
-            document.getElementById("recordAudioPause").disabled = true;
-            document.getElementById("recordAudioStop").disabled = false;
-        }
-    };
-
-    this.reset = function() {
-        this.recorder && this.recorder.stop();
-        this.recorder && this.recorder.clear();
-        this.timer && this.timer.stop();
-        this.audioFeedback(false);
-
-        if(this.stream && this.stream.stop) {
-            this.stream.stop();
-        } else if(this.stream) {
-            this.stream.getTracks().forEach(function(track) {
-                track.stop()
-            });
-        }
-
-        this.input = null;
-        this.recorder = null;
-        this.stream = null;
-        this.alreadyInit = false;
-        this.timer = null;
-
-        document.getElementById("recordAudioPlay").disabled = true;
-        document.getElementById("recordAudioPause").disabled = true;
-        document.getElementById("recordAudioStop").disabled = true;
-        document.getElementById("checkAudioRetour").checked = false;
-        document.getElementById("checkAudioRetour").disabled = true;
-        document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
-        document.getElementById("timeRecord").innerHTML = "00:00";
-    };
-}
-
 var recorderVoice = new VoiceRecorder();
 
 function recordAudio() {
@@ -1132,43 +1174,6 @@ function removeTooltipInfo() {
         setTooltip("animation_img", "", false, true,  null, true, false);
         removedTooltipInfo = true;
     }
-}
-
-function TimerSaveTime(id, idProgress, seconds, incr) {
-    this.id = id;
-    this.idProgress = idProgress;
-    this.seconds = seconds;
-    this.initialSeconds = seconds;
-    this.interval;
-    this.incr = incr;
-
-    var obj = this;
-
-    this.start = function() {
-        document.getElementById(this.id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
-
-        if(this.idProgress != null && document.getElementById(this.idProgress) != null) document.getElementById(idProgress).style.width = "0%";
-
-        this.interval = setInterval(function() {
-            obj.count();
-        }, 1000);
-    };
-
-    this.stop = function() {
-        clearInterval(this.interval);
-    };
-
-    this.count = function() {
-        this.seconds += this.incr;
-
-        if(document.getElementById(obj.id) != null) document.getElementById(obj.id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
-
-        if(obj.idProgress != null && document.getElementById(obj.idProgress) != null) document.getElementById(idProgress).style.width = Math.round((obj.initialSeconds - obj.seconds) / obj.initialSeconds * 100) + "%";
-
-        if(this.seconds <= 0) {
-            this.stop();
-        }
-    };
 }
 
 function sumImgSizes(array) {
