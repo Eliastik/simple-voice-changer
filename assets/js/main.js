@@ -19,10 +19,11 @@
 
 // Pure JS. No Jquery.
 // Default variables
-var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, compaAudioAPI, vocoderAudio, lowpassAudio, phoneAudio, returnAudio, bassboostAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop;
+var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, compaAudioAPI, vocoderAudio, lowpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop;
 
 speedAudio = pitchAudio = 1;
 reverbAudio = compaAudioAPI = vocoderAudio = lowpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
+limiterAudio = true;
 audio_principal_buffer = audio_impulse_response = audio_modulator = null;
 audioBufferPlay = new playBufferAudioAPI(null);
 compaModeStop = function() { return false };
@@ -234,7 +235,21 @@ function returnBuffer(buffer) {
     return bufferReturned;
 }
 
-function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, bassboost, phone, returnAudioParam, rate, BUFFER_SIZE) {
+function passAll(audioProcessingEvent) {
+    var inputBuffer = audioProcessingEvent.inputBuffer;
+    var outputBuffer = audioProcessingEvent.outputBuffer;
+
+    for(var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+        var inp = inputBuffer.getChannelData(channel);
+        var out = outputBuffer.getChannelData(channel);
+
+        for(var sample = 0; sample < inputBuffer.length; sample++) {
+            out[sample] = inp[sample];
+        }
+    }
+}
+
+function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, bassboost, phone, returnAudioParam, enableLimiter, rate, BUFFER_SIZE) {
     // Default parameters
     var speed = speed || 1; // Speed of the audio
     var pitch = pitch || 1; // Pitch of the audio
@@ -248,6 +263,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     var bassboost = bassboost == undefined ? false : bassboost; // Enable Bass Boost
     var phone = phone == undefined ? false : phone; // Enable Phone Call
     var returnAudioParam = returnAudioParam == undefined ? false : returnAudioParam; // Enable Audio Return
+    var enableLimiter = enableLimiter == undefined ? false : enableLimiter; // Enable Audio Return
     var rate = rate || 1; // Rate of the audio
     var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
     // End of default parameters
@@ -295,9 +311,14 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 bassBoostFilter.gain.value = 15;
             }
 
-            var limiter = new Limiter(context.sampleRate);
             var limiterProcessor = offlineContext.createScriptProcessor(BUFFER_SIZE, buffer.numberOfChannels, buffer.numberOfChannels);
-	          limiterProcessor.onaudioprocess = limiter.limit;
+
+            if(!enableLimiter) {
+                limiterProcessor.onaudioprocess = passAll;
+            } else {
+                var limiter = new Limiter(context.sampleRate);
+                limiterProcessor.onaudioprocess = limiter.limit;
+            }
 
             if(phone) {
                 var tel = getTelephonizer(offlineContext);
@@ -612,6 +633,7 @@ function validModify(play, save) {
         if(document.getElementById("checkBassBoost").checked == true) bassboostAudio = true; else bassboostAudio = false;
         if(document.getElementById("checkPhone").checked == true) phoneAudio = true; else phoneAudio = false;
         if(document.getElementById("checkReturnAudio").checked == true) returnAudio = true; else returnAudio = false;
+        if(document.getElementById("checkLimiter").checked == true) limiterAudio = true; else limiterAudio = false;
 
         launchStop();
         compaMode();
@@ -625,7 +647,7 @@ function validModify(play, save) {
                 launchPlay();
             }
         } else {
-            renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, save, play, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio);
+            renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, save, play, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio, limiterAudio);
         }
 
         return true;
@@ -640,7 +662,7 @@ function launchPlay() {
         checkButtonPlayAudioBuffer();
     } else if(compaAudioAPI) {
         launchStop();
-        renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, false, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio);
+        renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, false, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio, limiterAudio);
     }
 }
 
@@ -662,7 +684,7 @@ function launchSave() {
         saveBuffer(audio_principal_processed);
     } else if(compaAudioAPI) {
         launchStop();
-        renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, true, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio);
+        renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, true, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio, limiterAudio);
     }
 }
 
