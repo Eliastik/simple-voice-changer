@@ -25,14 +25,8 @@ speedAudio = pitchAudio = 1;
 reverbAudio = compaAudioAPI = vocoderAudio = lowpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 limiterAudio = true;
 audio_principal_buffer = audio_impulse_response = audio_modulator = null;
-
-var sliderPlayAudio = new Slider("#playAudioRange", {
-    formatter: function(value) {
-        return value;
-    }
-});
-
-audioBufferPlay = new playBufferAudioAPI(null);
+var sliderPlayAudio = new Slider("#playAudioRange");
+audioBufferPlay = new BufferPlayer(null);
 compaModeStop = function() { return false };
 
 // Settings
@@ -427,7 +421,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     if(save) {
                         var rec = new Recorder(limiterProcessor, { workerPath: "assets/js/recorderWorker.js" });
 
-                        var timer = new timerSaveTime("timeFinishedDownload", "progressProcessingSave", Math.round(durationAudio), -1);
+                        var timer = new TimerSaveTime("timeFinishedDownload", "progressProcessingSave", Math.round(durationAudio), -1);
                         timer.start();
                         rec.record();
 
@@ -482,30 +476,32 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     }
 }
 
-function playBufferAudioAPI() {
+function BufferPlayer() {
     this.buffer;
     this.source;
     this.currentTime = 0;
+    this.displayTime = 0;
     this.duration = 0;
     this.interval;
     this.playing = false;
-    this.onSlide = false;
+    this.sliding = false;
 
     var obj = this;
 
     if(sliderPlayAudio != undefined) {
         sliderPlayAudio.on("slideStart", function() {
-            obj.onSlide = true;
+            obj.sliding = true;
         });
 
         sliderPlayAudio.on("slide", function(value) {
-            obj.currentTime = Math.round(obj.duration * (value / 100));
+            obj.displayTime = Math.round(obj.duration * (value / 100));
             obj.updateInfos();
         });
 
         sliderPlayAudio.on("slideStop", function(value) {
-            obj.onSlide = false;
+            obj.sliding = false;
             obj.currentTime = Math.round(obj.duration * (value / 100));
+            obj.displayTime = obj.currentTime;
 
             if(obj.playing) {
                 obj.pause();
@@ -535,6 +531,7 @@ function playBufferAudioAPI() {
     this.reset = function() {
         clearInterval(this.interval);
         this.currentTime = 0;
+        this.displayTime = 0;
         this.stop();
     };
 
@@ -556,11 +553,15 @@ function playBufferAudioAPI() {
 
             this.interval = setInterval(function() {
                 obj.currentTime += 0.2;
+
+                if(!obj.sliding) {
+                    obj.displayTime = obj.currentTime;
+                }
+
                 obj.updateInfos();
 
                 if(obj.currentTime > obj.duration) {
                     obj.reset();
-                    compaMode();
                 }
             }, 200);
         }
@@ -572,14 +573,16 @@ function playBufferAudioAPI() {
     };
 
     this.updateInfos = function() {
-        var percPlaying = Math.round(this.currentTime / this.duration * 100);
+        var percPlaying = Math.round(this.displayTime / this.duration * 100);
 
-        if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.currentTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.currentTime % 60)).slice(-2);
+        if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
         if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
 
-        if(!this.onSlide && sliderPlayAudio != undefined) {
+        if(!this.sliding && sliderPlayAudio != undefined) {
             sliderPlayAudio.setValue(percPlaying, false, false);
         }
+
+        compaMode();
     };
 }
 
@@ -745,6 +748,7 @@ function resetModify() {
     document.getElementById("checkBassBoost").checked = false;
     document.getElementById("checkPhone").checked = false;
     document.getElementById("checkReturnAudio").checked = false;
+    document.getElementById("checkLimiter").checked = true;
     slider.setValue(1.0);
     slider2.setValue(1.0);
 }
@@ -817,7 +821,7 @@ function recordVoice() {
             self.stream = stream;
             self.recorder = new Recorder(self.input, { workerPath: "assets/js/recorderWorker.js" });
             self.alreadyInit = true;
-            self.timer = new timerSaveTime("timeRecord", null, 0, 1);
+            self.timer = new TimerSaveTime("timeRecord", null, 0, 1);
             document.getElementById("errorRecord").style.display = "none";
             document.getElementById("waitRecord").style.display = "none";
             document.getElementById("recordAudioPlay").disabled = false;
@@ -1006,7 +1010,7 @@ function removeTooltipInfo() {
     }
 }
 
-function timerSaveTime(id, idProgress, seconds, incr) {
+function TimerSaveTime(id, idProgress, seconds, incr) {
     this.id = id;
     this.idProgress = idProgress;
     this.seconds = seconds;

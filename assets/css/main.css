@@ -77,9 +77,8 @@ img {
     margin-left: 30%;
     margin-right: 30%;
 }
-#wrapperProgressPlayingAudio {
-    max-width: 285px;
-    margin: 0 auto;
+#playingAudioInfos .slider.slider-horizontal {
+    width: 270px;
 }
 .row-filters {
     max-width: 400px;
