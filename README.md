@@ -27,7 +27,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses the library [Boostrap Slider](https://github.com/seiyria/bootstrap-slider), under [MIT](https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md) license
 * Uses the library [Boostrap Native](https://github.com/thednp/bootstrap.native), under [MIT](https://github.com/thednp/bootstrap.native/blob/master/LICENSE) license
 * Uses the library [i18next](https://github.com/i18next/i18next) (with the module [i18next-browser-languageDetector](https://github.com/i18next/i18next-browser-languageDetector)) under [MIT](https://opensource.org/licenses/mit-license.php) license for the translation engine
-* Uses an [Impulse Response](https://en.wikipedia.org/wiki/Impulse_response) audio file (used for the Reverberation function) [from here](http://www.openairlib.net/auralizationdb/content/abernyte-grain-silo) (author: Nick Green), under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) license
+* Uses an [Impulse Response](https://en.wikipedia.org/wiki/Impulse_response) audio file (used for the Reverberation function) [from here](http://www.cksde.com/p_6_250.htm) (Medium Damping Cave E002 M2S)
 * Uses [an icon](https://www.flaticon.com/free-icon/microphone_204320) by [Prosymbols](https://www.flaticon.com/authors/prosymbols) from [www.flaticon.com](https://www.flaticon.com/) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/) license
 
 ## Changelog
@@ -80,7 +80,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise la bibliothèque logicielle [Boostrap Slider](https://github.com/seiyria/bootstrap-slider), sous [licence MIT](https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md)
 * Utilise la bibliothèque logicielle [Boostrap Native](https://github.com/thednp/bootstrap.native), sous [licence MIT](https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 * Utilise la bibliothèque logicielle [i18next](https://github.com/i18next/i18next) (avec le module [i18next-browser-languageDetector](https://github.com/i18next/i18next-browser-languageDetector)) sous licence [MIT](https://opensource.org/licenses/mit-license.php) pour le moteur de traduction
-* Utilise un fichier audio [Impulse Response](https://fr.wikipedia.org/wiki/R%C3%A9ponse_impulsionnelle) (utilisé par la fonction Réverbération) [venant d'ici](http://www.openairlib.net/auralizationdb/content/abernyte-grain-silo) (auteur : Nick Green), sous [licence CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)
+* Utilise un fichier audio [Impulse Response](https://fr.wikipedia.org/wiki/R%C3%A9ponse_impulsionnelle) (utilisé par la fonction Réverbération) [venant d'ici](http://www.cksde.com/p_6_250.htm) (Medium Damping Cave E002 M2S)
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 ## Journal des changements
