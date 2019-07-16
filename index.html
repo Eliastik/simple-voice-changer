@@ -98,7 +98,7 @@
                     </form>
                     <h2>2<sup data-i18n="thirdStep.nb">ème</sup> <span data-i18n="thirdStep.title">étape : modifiez et testez</span></h2>
                     <form class="center">
-                        <button class="btn btn-success" type="button" id="playAudio" onclick="launchPlay();"><i class="fa fa-play fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.play">Lire</span></button> <div class="disabled-button-wrapper" id="wrapperStop"><button class="btn btn-danger" type="button" id="stopAudio" onclick="launchStop();"><i class="fa fa-stop fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.stop">Stop</span></button></div>
+                        <div class="disabled-button-wrapper" id="wrapperPlay"><button class="btn btn-success" type="button" id="playAudio" onclick="launchPlay();"><i class="fa fa-play fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.play">Lire</span></button></div> <div class="disabled-button-wrapper" id="wrapperPause"><button class="btn btn-default" type="button" id="pauseAudio" onclick="launchPause();"><i class="fa fa-pause fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.pause">Pause</span></button></div> <div class="disabled-button-wrapper" id="wrapperStop"><button class="btn btn-danger" type="button" id="stopAudio" onclick="launchStop();"><i class="fa fa-stop fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.stop">Stop</span></button></div>
                         <div class="mt">
                             <div class="mb big" id="processingModifLoader">
                                 <i class="fa fa-refresh fa-spin fa-fw"></i> <span class="bold" data-i18n="thirdStep.processing">Traitement en cours… Veuillez patienter.</span>

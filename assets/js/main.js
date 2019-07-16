@@ -24,6 +24,7 @@ var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, compaAudioAPI, vocode
 speedAudio = pitchAudio = 1;
 reverbAudio = compaAudioAPI = vocoderAudio = lowpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 audio_principal_buffer = audio_impulse_response = audio_modulator = null;
+audioBufferPlay = new playBufferAudioAPI(null);
 
 // Settings
 var filesDownloadName = "simple_voice_changer";
@@ -99,9 +100,12 @@ var checkAudio = checkAudio("audio/mp3");
 
 function compaMode() {
     if(!audioProcessing) {
-        if(document.getElementById("checkCompa").checked == true) {
+        if(compaAudioAPI) {
+            setTooltip("playAudio", null, false, true, "wrapperPlay", true);
+            setTooltip("pauseAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperPause", true);
             setTooltip("stopAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperStop", true);
         } else {
+            checkButtonPlayAudioBuffer();
             setTooltip("stopAudio", null, false, true, "wrapperStop", true);
         }
 
@@ -110,6 +114,16 @@ function compaMode() {
         } else {
             setTooltip("saveInputModify", window.i18next.t("script.notCompatible"), true, false, "wrapperSave", true);
         }
+    }
+}
+
+function checkButtonPlayAudioBuffer() {
+    if(audioBufferPlay.playing) {
+        setTooltip("playAudio", null, true, false, "wrapperPlay", true);
+        setTooltip("pauseAudio", null, false, true, "wrapperPause", true);
+    } else {
+        setTooltip("playAudio", null, false, true, "wrapperPlay", true);
+        setTooltip("pauseAudio", null, true, false, "wrapperPause", true);
     }
 }
 
@@ -323,6 +337,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
                 offlineContext.oncomplete = function(e) {
                     window[audioName] = e.renderedBuffer;
+                    audioBufferPlay.loadBuffer(window[audioName]);
 
                     document.getElementById("validInputModify").disabled = false;
                     document.getElementById("resetAudio").disabled = false;
@@ -419,36 +434,58 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     }
 }
 
-function playBufferAudioAPI(audio) {
-    this.buffer = audio;
+function playBufferAudioAPI() {
+    this.buffer;
     this.source;
     this.currentTime = 0;
     this.interval;
+    this.playing = false;
+
+    var obj = this;
 
     this.init = function() {
+        this.playing = false;
         context.resume();
         this.source = context.createBufferSource();
-        this.source.buffer = audio;
+        this.source.buffer = this.buffer;
         this.source.connect(context.destination);
     };
 
-    this.stop = function() {
+    this.loadBuffer = function(buffer) {
+        this.reset();
+        this.buffer = buffer;
+        this.init();
+    };
+
+    this.reset = function() {
         clearInterval(this.interval);
         this.currentTime = 0;
-        this.source.stop(this.currentTime);
+        this.stop();
+    };
+
+    this.stop = function() {
+        if(this.source != undefined && this.source != null && this.playing) {
+            this.source.stop(0);
+            this.playing = false;
+        }
     };
 
     this.start = function() {
-        this.source.start(this.currentTime);
+        if(this.source != undefined && this.source != null) {
+            this.stop();
+            this.init();
+            this.source.start(0, this.currentTime);
+            this.playing = true;
 
-        this.interval = setInterval(function()  {
-            this.currentTime++;
-        }, 1000);
+            this.interval = setInterval(function() {
+                obj.currentTime += 0.2;
+            }, 200);
+        }
     };
 
     this.pause = function() {
         clearInterval(this.interval);
-        this.source.stop();
+        this.stop();
     };
 }
 
@@ -539,6 +576,9 @@ function validModify(play, save) {
         if(document.getElementById("checkPhone").checked == true) phoneAudio = true; else phoneAudio = false;
         if(document.getElementById("checkReturnAudio").checked == true) returnAudio = true; else returnAudio = false;
 
+        audioBufferPlay.reset();
+        compaMode();
+
         if(compaAudioAPI) {
             if(checkAudio !== true || play !== true) {
                 document.getElementById("validInputModify").disabled = false;
@@ -559,17 +599,25 @@ function validModify(play, save) {
 
 function launchPlay() {
     if(typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
-        launchStop();
-        audioBufferPlay = new playBufferAudioAPI(audio_principal_processed);
-        audioBufferPlay.init();
         audioBufferPlay.start();
+        checkButtonPlayAudioBuffer();
     } else if(compaAudioAPI) {
         renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, false, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio);
     }
 }
 
 function launchStop() {
-    if(typeof(audioBufferPlay) !== "undefined" && audioBufferPlay != null && !compaAudioAPI) audioBufferPlay.stop();
+    if(typeof(audioBufferPlay) !== "undefined" && audioBufferPlay != null && !compaAudioAPI) {
+        audioBufferPlay.reset();
+        checkButtonPlayAudioBuffer();
+    }
+}
+
+function launchPause() {
+    if(typeof(audioBufferPlay) !== "undefined" && audioBufferPlay != null && !compaAudioAPI) {
+        audioBufferPlay.pause();
+        checkButtonPlayAudioBuffer();
+    }
 }
 
 function launchSave() {
