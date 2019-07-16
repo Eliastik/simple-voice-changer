@@ -25,6 +25,13 @@ speedAudio = pitchAudio = 1;
 reverbAudio = compaAudioAPI = vocoderAudio = lowpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 limiterAudio = true;
 audio_principal_buffer = audio_impulse_response = audio_modulator = null;
+
+var sliderPlayAudio = new Slider("#playAudioRange", {
+    formatter: function(value) {
+        return value;
+    }
+});
+
 audioBufferPlay = new playBufferAudioAPI(null);
 compaModeStop = function() { return false };
 
@@ -482,8 +489,32 @@ function playBufferAudioAPI() {
     this.duration = 0;
     this.interval;
     this.playing = false;
+    this.onSlide = false;
 
     var obj = this;
+
+    if(sliderPlayAudio != undefined) {
+        sliderPlayAudio.on("slideStart", function() {
+            obj.onSlide = true;
+        });
+
+        sliderPlayAudio.on("slide", function(value) {
+            obj.currentTime = Math.round(obj.duration * (value / 100));
+            obj.updateInfos();
+        });
+
+        sliderPlayAudio.on("slideStop", function(value) {
+            obj.onSlide = false;
+            obj.currentTime = Math.round(obj.duration * (value / 100));
+
+            if(obj.playing) {
+                obj.pause();
+                obj.start();
+            } else {
+                obj.updateInfos();
+            }
+        });
+    }
 
     this.init = function() {
         this.playing = false;
@@ -541,9 +572,14 @@ function playBufferAudioAPI() {
     };
 
     this.updateInfos = function() {
+        var percPlaying = Math.round(this.currentTime / this.duration * 100);
+
         if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.currentTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.currentTime % 60)).slice(-2);
         if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
-        if(document.getElementById("progressPlayingAudio") != null) document.getElementById("progressPlayingAudio").style.width = Math.round(this.currentTime / this.duration * 100) + "%";
+
+        if(!this.onSlide && sliderPlayAudio != undefined) {
+            sliderPlayAudio.setValue(percPlaying, false, false);
+        }
     };
 }
 
