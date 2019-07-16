@@ -834,6 +834,7 @@ function launchSave() {
 
 function launchReset() {
   launchPause();
+  recordPause();
 
     if(!audioProcessing && confirm(window.i18next.t("script.launchReset"))) {
         document.getElementById("firstEtape").style.display = "block";
@@ -922,7 +923,7 @@ function randomModify() {
     slider2.setValue(randomRange(0.1, 5.0));
 }
 
-function recordVoice() {
+function VoiceRecorder() {
     this.input;
     this.stream;
     this.recorder;
@@ -1040,7 +1041,7 @@ function recordVoice() {
     };
 }
 
-var recorderVoice = new recordVoice();
+var recorderVoice = new VoiceRecorder();
 
 function recordAudio() {
     document.getElementById("firstEtape").style.display = "none";
