@@ -104,9 +104,11 @@ function compaMode() {
         if(compaAudioAPI) {
             setTooltip("playAudio", null, false, true, "wrapperPlay", true);
             setTooltip("pauseAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperPause", true);
+            document.getElementById("playingAudioInfos").style.display = "none";
         } else {
             checkButtonPlayAudioBuffer();
             setTooltip("stopAudio", null, false, true, "wrapperStop", true);
+            document.getElementById("playingAudioInfos").style.display = "block";
         }
 
         if (typeof(Worker) !== "undefined" && Worker != null) {
@@ -456,6 +458,7 @@ function playBufferAudioAPI() {
     this.buffer;
     this.source;
     this.currentTime = 0;
+    this.duration = 0;
     this.interval;
     this.playing = false;
 
@@ -466,7 +469,9 @@ function playBufferAudioAPI() {
         context.resume();
         this.source = context.createBufferSource();
         this.source.buffer = this.buffer;
+        this.duration = this.buffer.duration;
         this.source.connect(context.destination);
+        this.updateInfos();
     };
 
     this.loadBuffer = function(buffer) {
@@ -486,6 +491,8 @@ function playBufferAudioAPI() {
             this.source.stop(0);
             this.playing = false;
         }
+
+        this.updateInfos();
     };
 
     this.start = function() {
@@ -497,6 +504,12 @@ function playBufferAudioAPI() {
 
             this.interval = setInterval(function() {
                 obj.currentTime += 0.2;
+                obj.updateInfos();
+
+                if(obj.currentTime > obj.duration) {
+                    obj.reset();
+                    compaMode();
+                }
             }, 200);
         }
     };
@@ -504,6 +517,12 @@ function playBufferAudioAPI() {
     this.pause = function() {
         clearInterval(this.interval);
         this.stop();
+    };
+
+    this.updateInfos = function() {
+        if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.currentTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.currentTime % 60)).slice(-2);
+        if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
+        if(document.getElementById("progressPlayingAudio") != null) document.getElementById("progressPlayingAudio").style.width = Math.round(this.currentTime / this.duration * 100) + "%";
     };
 }
 

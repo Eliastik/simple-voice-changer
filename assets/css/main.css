@@ -73,6 +73,14 @@ img {
     margin-left: 25%;
     margin-right: 25%;
 }
+.progressMini {
+    margin-left: 30%;
+    margin-right: 30%;
+}
+#wrapperProgressPlayingAudio {
+    max-width: 285px;
+    margin: 0 auto;
+}
 .mb {
     margin-bottom: 16px;
 }
