@@ -379,6 +379,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     document.getElementById("processingModifLoader").style.display = "none";
                     document.getElementById("processingSave").style.display = "block";
                     document.getElementById("playAudio").disabled = true;
+                    document.getElementById("stopAudio").disabled = true;
                 }
 
                 if(play) {
@@ -394,7 +395,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     };
 
                     if(save) {
-                        var rec = new Recorder(limiter, { workerPath: "assets/js/recorderWorker.js" });
+                        var rec = new Recorder(limiterProcessor, { workerPath: "assets/js/recorderWorker.js" });
 
                         var timer = new timerSaveTime("timeFinishedDownload", Math.round(durationAudio), -1);
                         timer.start();
@@ -410,6 +411,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                                 document.getElementById("validInputModify").disabled = false;
                                 document.getElementById("resetAudio").disabled = false;
                                 document.getElementById("playAudio").disabled = false;
+                                document.getElementById("stopAudio").disabled = false;
                                 document.getElementById("processingSave").style.display = "none";
                                 audioProcessing = false;
                                 compaMode();
@@ -425,11 +427,18 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
         if(vocode) {
             var offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
 
-            if(comp) document.getElementById("playAudio").disabled = true;
+            if(comp) {
+                document.getElementById("playAudio").disabled = true;
+                document.getElementById("stopAudio").disabled = true;
+            }
 
             offlineContext2.oncomplete = function(e) {
                 renderAudio(e.renderedBuffer);
-                if(comp) document.getElementById("playAudio").disabled = false;
+
+                if(comp) {
+                    document.getElementById("playAudio").disabled = false;
+                    document.getElementById("stopAudio").disabled = false;
+                }
             };
 
             vocoder(offlineContext2, audio_modulator, audio);
@@ -633,6 +642,7 @@ function launchSave() {
     if(!audioProcessing && typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
         saveBuffer(audio_principal_processed);
     } else if(compaAudioAPI) {
+        launchStop();
         renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, true, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio);
     }
 }
