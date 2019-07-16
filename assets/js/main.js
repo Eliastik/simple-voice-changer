@@ -19,12 +19,13 @@
 
 // Pure JS. No Jquery.
 // Default variables
-var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, compaAudioAPI, vocoderAudio, lowpassAudio, phoneAudio, returnAudio, bassboostAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay;
+var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, compaAudioAPI, vocoderAudio, lowpassAudio, phoneAudio, returnAudio, bassboostAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop;
 
 speedAudio = pitchAudio = 1;
 reverbAudio = compaAudioAPI = vocoderAudio = lowpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 audio_principal_buffer = audio_impulse_response = audio_modulator = null;
 audioBufferPlay = new playBufferAudioAPI(null);
+compaModeStop = function() { return false };
 
 // Settings
 var filesDownloadName = "simple_voice_changer";
@@ -103,7 +104,6 @@ function compaMode() {
         if(compaAudioAPI) {
             setTooltip("playAudio", null, false, true, "wrapperPlay", true);
             setTooltip("pauseAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperPause", true);
-            setTooltip("stopAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperStop", true);
         } else {
             checkButtonPlayAudioBuffer();
             setTooltip("stopAudio", null, false, true, "wrapperStop", true);
@@ -384,6 +384,15 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 if(play) {
                     limiterProcessor.connect(offlineContext.destination);
 
+                    compaModeStop = function() {
+                        try {
+                            limiterProcessor.disconnect(offlineContext.destination);
+                            return true;
+                        } catch(e) {
+                            return false;
+                        }
+                    };
+
                     if(save) {
                         var rec = new Recorder(limiter, { workerPath: "assets/js/recorderWorker.js" });
 
@@ -576,7 +585,7 @@ function validModify(play, save) {
         if(document.getElementById("checkPhone").checked == true) phoneAudio = true; else phoneAudio = false;
         if(document.getElementById("checkReturnAudio").checked == true) returnAudio = true; else returnAudio = false;
 
-        audioBufferPlay.reset();
+        launchStop();
         compaMode();
 
         if(compaAudioAPI) {
@@ -602,19 +611,19 @@ function launchPlay() {
         audioBufferPlay.start();
         checkButtonPlayAudioBuffer();
     } else if(compaAudioAPI) {
+        launchStop();
         renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, false, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, bassboostAudio, phoneAudio, returnAudio);
     }
 }
 
 function launchStop() {
-    if(typeof(audioBufferPlay) !== "undefined" && audioBufferPlay != null && !compaAudioAPI) {
-        audioBufferPlay.reset();
-        checkButtonPlayAudioBuffer();
-    }
+    audioBufferPlay.reset();
+    compaModeStop();
+    checkButtonPlayAudioBuffer();
 }
 
 function launchPause() {
-    if(typeof(audioBufferPlay) !== "undefined" && audioBufferPlay != null && !compaAudioAPI) {
+    if(!compaAudioAPI) {
         audioBufferPlay.pause();
         checkButtonPlayAudioBuffer();
     }
