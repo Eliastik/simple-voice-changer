@@ -69,6 +69,10 @@ img {
 .vmiddle a {
     vertical-align: middle;
 }
+.progressCompact {
+    margin-left: 25%;
+    margin-right: 25%;
+}
 .mb {
     margin-bottom: 16px;
 }

@@ -397,7 +397,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     if(save) {
                         var rec = new Recorder(limiterProcessor, { workerPath: "assets/js/recorderWorker.js" });
 
-                        var timer = new timerSaveTime("timeFinishedDownload", Math.round(durationAudio), -1);
+                        var timer = new timerSaveTime("timeFinishedDownload", "progressProcessingSave", Math.round(durationAudio), -1);
                         timer.start();
                         rec.record();
 
@@ -740,7 +740,7 @@ function recordVoice() {
             self.stream = stream;
             self.recorder = new Recorder(self.input, { workerPath: "assets/js/recorderWorker.js" });
             self.alreadyInit = true;
-            self.timer = new timerSaveTime("timeRecord", 0, 1);
+            self.timer = new timerSaveTime("timeRecord", null, 0, 1);
             document.getElementById("errorRecord").style.display = "none";
             document.getElementById("waitRecord").style.display = "none";
             document.getElementById("recordAudioPlay").disabled = false;
@@ -929,19 +929,23 @@ function removeTooltipInfo() {
     }
 }
 
-function timerSaveTime(id, seconds, incr) {
+function timerSaveTime(id, idProgress, seconds, incr) {
     this.id = id;
+    this.idProgress = idProgress;
     this.seconds = seconds;
+    this.initialSeconds = seconds;
     this.interval;
     this.incr = incr;
 
-    this.start = function() {
-        document.getElementById(id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
+    var obj = this;
 
-        var self = this;
+    this.start = function() {
+        document.getElementById(this.id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
+
+        if(this.idProgress != null && document.getElementById(this.idProgress) != null) document.getElementById(idProgress).style.width = "0%";
 
         this.interval = setInterval(function() {
-            self.count();
+            obj.count();
         }, 1000);
     };
 
@@ -952,7 +956,9 @@ function timerSaveTime(id, seconds, incr) {
     this.count = function() {
         this.seconds += this.incr;
 
-        if(document.getElementById(id) != null) document.getElementById(id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
+        if(document.getElementById(obj.id) != null) document.getElementById(obj.id).innerHTML = ("0" + Math.trunc(this.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.seconds % 60)).slice(-2);
+
+        if(obj.idProgress != null && document.getElementById(obj.idProgress) != null) document.getElementById(idProgress).style.width = Math.round((obj.initialSeconds - obj.seconds) / obj.initialSeconds * 100) + "%";
 
         if(this.seconds <= 0) {
             this.stop();

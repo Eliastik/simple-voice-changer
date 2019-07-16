@@ -152,6 +152,9 @@
                         <div class="mb big" id="processingSave">
                             <i class="fa fa-refresh fa-spin fa-fw"></i> <span class="bold" data-i18n="lastStep.saving">Enregistrement en cours… Veuillez patienter. Votre modification sera téléchargée sous peu.</span><br />
                             <span class="bold small"><span data-i18n="lastStep.delay">L'enregistrement se terminera dans environ</span> <span id="timeFinishedDownload">00:00</span>. <span data-i18n="lastStep.delayInfo">Il y a un délai car le mode de compatibilité est activé.</span></span>
+                            <div class="progress progress-striped progressCompact mt active">
+                                <div id="progressProcessingSave" class="progress-bar" style="width: 0%"></div>
+                            </div>
                         </div>
                         <div class="disabled-button-wrapper" id="wrapperSave">
                             <button class="btn btn-default" type="button" id="saveInputModify" onclick="launchSave();" disabled="disabled"><i class="fa fa-save fa-fw" aria-hidden="true"></i> <span data-i18n="lastStep.save">Enregistrer</span></button>
