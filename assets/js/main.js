@@ -420,7 +420,7 @@ document.getElementById("inputFile").addEventListener("change", function() {
 
         context.decodeAudioData(ev.target.result, function(buffer) {
             loadPrincipalBuffer(buffer);
-        }).catch(function(err) {
+        }, function(err) {
             document.getElementById("errorLoadingSelectFile").style.display = "block";
             document.getElementById("firstEtape").style.display = "block";
             document.getElementById("secondEtape").style.display = "none";
@@ -598,6 +598,10 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             var offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
         } else {
             var offlineContext = context;
+            document.getElementById("checkCompa").checked = true;
+            compaAudioAPI = true;
+            comp = true;
+            compaMode();
         }
 
         if(typeof(audio_impulse_response) == "undefined" || audio_impulse_response == null) reverb = false;

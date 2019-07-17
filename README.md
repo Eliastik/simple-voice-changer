@@ -133,6 +133,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 Rien… (ou ajouter encore d'autres effets)
 
 * Problème sur Microsoft Edge : la sauvegarde ne fonctionne pas (aucun téléchargement/enregistrement ne fonctionne)
+* Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
 
 ### Fait :
 
@@ -140,7 +141,6 @@ Rien… (ou ajouter encore d'autres effets)
 * Corriger le compresseur audio
 * Ajouter plus d'effets
 * Traduire l'application en anglais (i18next)
-* Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
 
 ## Déclaration de licence
 
