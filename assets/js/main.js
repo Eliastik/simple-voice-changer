@@ -34,7 +34,7 @@ compaModeStopSave = function() { return false };
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
 var app_version = "1.2";
-var app_version_date = "2019-7-17";
+var app_version_date = "07/17/2019";
 var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
 // End of the settings
 
@@ -261,9 +261,11 @@ function VoiceRecorder() {
         if(this.stream && this.stream.stop) {
             this.stream.stop();
         } else if(this.stream) {
-            this.stream.getTracks().forEach(function(track) {
-                track.stop()
-            });
+            var tracks = this.stream.getTracks();
+
+            for(var i = 0, l = tracks.length; i < l; i++) {
+                tracks[i].stop();
+            }
         }
 
         this.input = null;
@@ -1411,13 +1413,6 @@ function init(func) {
     });
 }
 
-// When the page is entirely loaded, call the init function who load the others assets (images, sounds)
-document.onreadystatechange = function() {
-    if(document.readyState === 'complete') {
-        init();
-    }
-};
-
 window.onbeforeunload = function() {
     return window.i18next.t("script.appClosing");
 };
@@ -1496,9 +1491,10 @@ function translateContent() {
     listTranslations(i18next.languages);
 
     var i18nList = document.querySelectorAll("[data-i18n]");
-    i18nList.forEach(function(v) {
-        v.innerHTML = window.i18next.t(v.dataset.i18n);
-    });
+
+    for(var i = 0, l = i18nList.length; i < l; i++) {
+        i18nList[i].innerHTML = window.i18next.t(i18nList[i].dataset.i18n);
+    }
 
     document.getElementById("versionDate").innerHTML = new Intl.DateTimeFormat(i18next.language).format(new Date(app_version_date));
     initAudioAPI();
@@ -1516,6 +1512,8 @@ document.getElementById("languageSelect").onchange = function() {
 };
 
 window.addEventListener("load", function() {
+    init();
+
     setTimeout(function() {
         translateContent();
     }, 250);

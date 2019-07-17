@@ -132,6 +132,8 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 Rien… (ou ajouter encore d'autres effets)
 
+* Problème sur Microsoft Edge : la sauvegarde ne fonctionne pas (aucun téléchargement/enregistrement ne fonctionne)
+
 ### Fait :
 
 * Corriger message erreur "Application non compatible" sur le bouton "Enregistrer via le micro" si contexte non sécurisé (http, ...)
