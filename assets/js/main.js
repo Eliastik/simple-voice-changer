@@ -895,15 +895,21 @@ function saveBuffer(buffer) {
 }
 
 function downloadAudioBlob(e) {
-    var blob = e;
-    var a = document.createElement("a");
-    var url = URL.createObjectURL(blob);
-    document.body.appendChild(a);
-    a.style = "display: none";
-    a.href = url;
-    a.download = filesDownloadName + "-" + new Date().toISOString() + ".wav";
-    a.click();
-    window.URL.revokeObjectURL(url);
+    var fileName = filesDownloadName + "-" + new Date().toISOString() + ".wav";
+
+    if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(e, fileName);
+    } else {
+        var blob = e;
+        var a = document.createElement("a");
+        var url = URL.createObjectURL(blob);
+        document.body.appendChild(a);
+        a.style = "display: none";
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
 }
 
 function validModify(play, save) {
@@ -1397,7 +1403,7 @@ function init(func) {
             document.getElementById("fileRecord").disabled = true;
         }
 
-        if(navigator.mediaDevices.getUserMedia == undefined) {
+        if(typeof(navigator.mediaDevices) === "undefined" || typeof(navigator.mediaDevices.getUserMedia) === "undefined") {
             setTooltip("fileRecord", window.i18next.t("script.notCompatible"), true, false, "wrapperFileRecord", true);
         }
 
