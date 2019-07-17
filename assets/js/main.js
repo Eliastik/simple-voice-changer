@@ -133,10 +133,10 @@ function BufferPlayer() {
                     obj.displayTime = obj.currentTime;
                 }
 
-                obj.updateInfos();
-
                 if(obj.currentTime > obj.duration) {
                     obj.reset();
+                } else {
+                    obj.updateInfos();
                 }
             }, 200);
         }
