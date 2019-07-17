@@ -13,7 +13,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 1.1 (7/15/2019)
+* Version: 1.2 (7/17/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -32,22 +32,31 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## Changelog
 
-* Version 1.1 (7/15/2019) :
+* Version 1.2 (7/17/2019):
+    - Added new filters: Echo, Flip the audio, 8 bits effect and High-pass filter;
+    - Added an audio limiter (which replaces the audio compressor and works better) to reduce distortion and saturation;
+    - Added a Pause button, a playback slider as well as the total length of the audio in minutes:seconds and the elapsed playing time for step 2 (not available in compatibility mode);
+    - The Stop button when playing audio (step 2) is now available in compatibility mode;
+    - Added a progress bar when saving changes and added the ability to cancel the save (third step) if compatibility mode is enabled;
+    - Reverb filter enhanced (Impulse Response audio file changed);
+    - Bug fixes and other adjustments.
+
+* Version 1.1 (7/15/2019):
     - Integration of the i18next translation engine and translation of the application into English;
     - Added an update module;
     - Added new effects: Phone Call, Bass Boost and Lowpass Filter;
     - Added a compressor to limit saturation;
     - Bug fixes, code simplifications, libraries update, other adjustments.
 
-* Version 1.0.3 (4/26/2019) :
+* Version 1.0.3 (4/26/2019):
     - Step 2: Added random settings and reset settings.
 
-* Version 1.0.2 (4/23/2019) :
+* Version 1.0.2 (4/23/2019):
     - Better detection of data loading errors;
     - Updated library (Bootstrap Native);
     - Bug fixes, text adjustments and other adjustments.
 
-* Version 1.0.1 (10/04/2019) :
+* Version 1.0.1 (10/04/2019):
     - Addition of a timer when recording via the microphone;
     - Display a confirmation message when refreshing/closing the application;
     - Bug fixes and adjustments.
@@ -66,7 +75,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 1.1 (15/07/2019)
+* Version du programme : 1.2 (17/07/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -84,6 +93,15 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 ## Journal des changements
+
+* Version 1.2 (17/07/2019) :
+    - Ajout de nouveaux filtres : Écho, Retourner l'audio, Effet 8 bits et Filtre passe-haut ;
+    - Ajout d'un limiteur audio (qui remplace le compresseur audio et qui fonctionne mieux) pour réduire la distorsion et la saturation ;
+    - Ajout d'un bouton Pause, d'un curseur de lecture ainsi que de la longueur totale de l'audio en minutes:secondes ainsi que du temps de lecture écoulé pour l'étape 2 (non disponible en mode de compatibilité) ;
+    - Le bouton Stop lors de la lecture de l'audio (étape 2) est désormais disponible en mode de compatibilité ;
+    - Ajout d'une jauge de progression lors de l'enregistrement des modifications et ajout de la possibilité d'annuler l'enregistrement (troisième étape) si le mode de compatibilité est activé ;
+    - Amélioration du filtre Réverbération (fichier audio Impulse Response changé) ;
+    - Corrections de bugs et autres ajustements.
 
 * Version 1.1 (15/07/2019) :
     - Intégration du moteur de traduction i18next et traduction de l'application en anglais ;

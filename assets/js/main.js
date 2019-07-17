@@ -33,8 +33,8 @@ compaModeStopSave = function() { return false };
 // Settings
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
-var app_version = "1.1";
-var app_version_date = "2019-7-15";
+var app_version = "1.2";
+var app_version_date = "2019-7-17";
 var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
 // End of the settings
 
