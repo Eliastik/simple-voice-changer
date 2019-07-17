@@ -513,6 +513,7 @@ function getBitCrusher(context, bits, normFreq, bufferSize, channels) {
     var bitCrusher = context.createScriptProcessor(bufferSize, channels, channels);
     var phaser = 0;
     var last = 0;
+    normFreq /= (context.sampleRate / 48000);
 
     bitCrusher.onaudioprocess = function(e) {
         var step = 2 * Math.pow(1 / 2, bits);
