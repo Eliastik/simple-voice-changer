@@ -594,7 +594,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     if ('AudioContext' in window && !audioContextNotSupported) {
         var durationAudio = calcAudioDuration(audio, speed, pitch, reverb, vocode, echo);
 
-        if(!comp) {
+        if(!comp && window.OfflineAudioContext != undefined) {
             var offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
         } else {
             var offlineContext = context;
@@ -822,7 +822,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
         if(reverb) var convolver = offlineContext.createConvolver();
 
-        if(vocode) {
+        if(vocode && window.OfflineAudioContext != undefined) {
             var offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
 
             if(comp) {
@@ -1344,7 +1344,7 @@ function checkAudioBuffer(bufferName) {
                 }
             break;
             case "audio_modulator":
-                if(typeof(audio_modulator) == "undefined" || audio_modulator == null) {
+                if(typeof(audio_modulator) == "undefined" || audio_modulator == null || window.OfflineAudioContext == undefined) {
                     setTooltip("checkVocode", errorText, true, false, "checkVocodeWrapper", true);
                     document.getElementById("checkVocode").checked = false;
                     document.getElementById("checkVocodeGroup").setAttribute("class", "checkbox disabled");
