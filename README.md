@@ -13,7 +13,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 1.2 (7/17/2019)
+* Version: 1.2.1 (7/18/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -31,6 +31,9 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses [an icon](https://www.flaticon.com/free-icon/microphone_204320) by [Prosymbols](https://www.flaticon.com/authors/prosymbols) from [www.flaticon.com](https://www.flaticon.com/) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/) license
 
 ## Changelog
+
+* Version 1.2.1 (7/18/2019):
+    - Bug fixes and compatibility fixes with Microsoft Edge and Safari.
 
 * Version 1.2 (7/17/2019):
     - Added new filters: Echo, Flip the audio, 8 bits effect and High-pass filter;
@@ -75,7 +78,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 1.2 (17/07/2019)
+* Version du programme : 1.2.1 (18/07/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -93,6 +96,9 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 ## Journal des changements
+
+* Version 1.2.1 (18/07/2019) :
+    - Corrections de bugs et correction de la compatibilité avec Microsoft Edge et Safari.
 
 * Version 1.2 (17/07/2019) :
     - Ajout de nouveaux filtres : Écho, Retourner l'audio, Effet 8 bits et Filtre passe-haut ;
