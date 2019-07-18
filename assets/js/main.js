@@ -327,7 +327,7 @@ if('AudioContext' in window) {
         var AudioContext = window.AudioContext || window.webkitAudioContext;
         var context = new AudioContext();
     } catch(e) {
-        if(typeof(window.console.error) !== 'undefined') {
+        if(typeof(window.console.error) !== "undefined") {
             console.error(window.i18next.t("script.errorAudioContext"), e);
         } else {
             console.log(window.i18next.t("script.errorAudioContext"), e);
@@ -570,6 +570,13 @@ function passAll(audioProcessingEvent) {
     }
 }
 
+function enableCompaMode() {
+    document.getElementById("checkCompa").checked = true;
+    document.getElementById("compatAutoDetected").style.display = "block";
+    compaAudioAPI = true;
+    compaMode();
+}
+
 function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, highpass, bassboost, phone, returnAudioParam, echo, bitCrush, enableLimiter, rate, BUFFER_SIZE) {
     // Default parameters
     var speed = speed || 1; // Speed of the audio
@@ -595,14 +602,17 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     if ('AudioContext' in window && !audioContextNotSupported) {
         var durationAudio = calcAudioDuration(audio, speed, pitch, reverb, vocode, echo);
 
-        if(!comp && window.OfflineAudioContext != undefined) {
+        if(!comp && typeof(window.OfflineAudioContext) !== "undefined") {
             var offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+        } else if(!comp && typeof(window.webkitOfflineAudioContext) !== "undefined") {
+            var offlineContext = new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
         } else {
             var offlineContext = context;
-            document.getElementById("checkCompa").checked = true;
-            compaAudioAPI = true;
+        }
+
+        if(typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined") {
+            enableCompaMode();
             comp = true;
-            compaMode();
         }
 
         if(typeof(audio_impulse_response) == "undefined" || audio_impulse_response == null) reverb = false;
@@ -737,10 +747,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                         var sum = e.renderedBuffer.getChannelData(0).reduce(add, 0);
 
                         if(sum == 0) {
-                            document.getElementById("checkCompa").checked = true;
-                            document.getElementById("compatAutoDetected").style.display = "block";
-                            compaAudioAPI = true;
-                            compaMode();
+                            enableCompaMode();
                         }
 
                         compatModeChecked = true;
@@ -827,8 +834,12 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
         if(reverb) var convolver = offlineContext.createConvolver();
 
-        if(vocode && window.OfflineAudioContext != undefined) {
-            var offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+        if(vocode && (typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined")) {
+            if(typeof(window.OfflineAudioContext) !== "undefined") {
+                var offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+            } else if(typeof(window.webkitOfflineAudioContext) !== "undefined") {
+                var offlineContext2 = new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+            }
 
             if(comp) {
                 document.getElementById("playAudio").disabled = true;
@@ -1355,7 +1366,7 @@ function checkAudioBuffer(bufferName) {
                 }
             break;
             case "audio_modulator":
-                if(typeof(audio_modulator) == "undefined" || audio_modulator == null || window.OfflineAudioContext == undefined) {
+                if(typeof(audio_modulator) == "undefined" || audio_modulator == null || (typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined")) {
                     setTooltip("checkVocode", errorText, true, false, "checkVocodeWrapper", true);
                     document.getElementById("checkVocode").checked = false;
                     document.getElementById("checkVocodeGroup").setAttribute("class", "checkbox disabled");
