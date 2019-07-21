@@ -834,7 +834,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
         if(reverb) var convolver = offlineContext.createConvolver();
 
-        if(vocode && (typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined")) {
+        if(vocode && (typeof(window.OfflineAudioContext) !== "undefined" || typeof(window.webkitOfflineAudioContext) !== "undefined")) {
             if(typeof(window.OfflineAudioContext) !== "undefined") {
                 var offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
             } else if(typeof(window.webkitOfflineAudioContext) !== "undefined") {

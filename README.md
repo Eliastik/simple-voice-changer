@@ -136,7 +136,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ### À faire :
 
-Rien… (ou ajouter encore d'autres effets)
+Rien… (ou ajouter encore d'autres effets - autotune essayé)
 
 * Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
 
