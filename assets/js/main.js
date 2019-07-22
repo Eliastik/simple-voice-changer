@@ -33,8 +33,8 @@ compaModeStopSave = function() { return false };
 // Settings
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
-var app_version = "1.2.1";
-var app_version_date = "07/18/2019";
+var app_version = "1.2.1.1";
+var app_version_date = "07/22/2019";
 var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
 // End of the settings
 
@@ -1004,6 +1004,8 @@ function launchPause() {
     if(!compaAudioAPI) {
         audioBufferPlay.pause();
         checkButtonPlayAudioBuffer();
+    } else {
+        launchStop();
     }
 }
 
@@ -1397,6 +1399,7 @@ function init(func) {
     document.getElementById("version").innerHTML = app_version;
     document.getElementById("appVersion").innerHTML = app_version;
     document.getElementById("appUpdateDate").innerHTML = app_version_date;
+    checkUpdate();
     initAudioAPI();
 
     preloadAudios(audioArray, function(result) {
@@ -1491,8 +1494,6 @@ function updateCallback(data) {
         }
     }
 }
-
-checkUpdate();
 
 // Localization
 function listTranslations(languages) {

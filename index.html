@@ -81,7 +81,7 @@
                         </div>
                         <button class="btn btn-success" type="button" id="recordAudioPlay" onclick="recordPlay();" disabled="disabled"><i class="fa fa-play fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.start">Démarrer</span></button> <button class="btn btn-default" type="button" id="recordAudioPause" onclick="recordPause();" disabled="disabled"><i class="fa fa-pause fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.pause">Pause</span></button> <button class="btn btn-danger" type="button" id="recordAudioStop" onclick="recordStop();" disabled="disabled"><i class="fa fa-stop fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.stop">Stop</span></button><br />
                         <span class="bold" data-i18n="firstStepBis.duration">Durée de l'enregistrement :</span> <span id="timeRecord">00:00</span>
-                        <div class="form-group mmt"><button class="btn btn-danger" type="button" onclick="launchReset();"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.cancel">Annuler</span></button></div>
+                        <div class="form-group mmt nmb"><button class="btn btn-danger" type="button" onclick="launchReset();"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.cancel">Annuler</span></button></div>
                     </form>
                 </div>
             </div>
@@ -95,7 +95,7 @@
             <div class="row" id="thirdEtape">
                 <div class="container-fluid">
                     <form class="center">
-                        <button class="btn btn-primary" type="button" id="resetAudio" onclick="launchReset();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.otherFile">Choisir un autre fichier ou enregistrement</span></button>
+                        <button class="btn btn-primary btn-responsive" type="button" id="resetAudio" onclick="launchReset();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.otherFile">Choisir un autre fichier ou enregistrement</span></button>
                     </form>
                     <h2>2<sup data-i18n="thirdStep.nb">ème</sup> <span data-i18n="thirdStep.title">étape : modifiez et testez</span></h2>
                     <form class="center">
@@ -188,8 +188,10 @@
                     </form>
                 </div>
             </div>
-            <p><span data-i18n="footer.by">By</span> <a href="http://www.eliastiksofts.com" target="_blank">Eliastik</a> – <a href="http://www.eliastiksofts.com/simple-voice-changer/downloads/" target="_blank" data-i18n="footer.download">Télécharger le projet</a> – <a href="README.md" target="_blank" data-i18n="footer.readme">Fichier Lisez-moi</a> – <a href="https://github.com/Eliastik/simple-voice-changer" target="_blank" data-i18n="footer.github">Dépôt Github</a> – <a href="#" data-toggle="modal" data-target="#compatibility" data-i18n="footer.browserCompatibility">Voir les navigateurs compatibles</a></p>
-            <p class="small"><span data-i18n="footer.version">Version</span> <span id="version"></span> – <span id="versionDate"></span></p>
+            <div id="bottomPage">
+              <p><span data-i18n="footer.by">By</span> <a href="http://www.eliastiksofts.com" target="_blank">Eliastik</a> – <a href="http://www.eliastiksofts.com/simple-voice-changer/downloads/" target="_blank" data-i18n="footer.download">Télécharger le projet</a> – <a href="README.md" target="_blank" data-i18n="footer.readme">Fichier Lisez-moi</a> – <a href="https://github.com/Eliastik/simple-voice-changer" target="_blank" data-i18n="footer.github">Dépôt Github</a> – <a href="#" data-toggle="modal" data-target="#compatibility" data-i18n="footer.browserCompatibility">Voir les navigateurs compatibles</a></p>
+              <p class="small"><span data-i18n="footer.version">Version</span> <span id="version"></span> – <span id="versionDate"></span></p>
+            </div>
         </div>
         <div id="compatibility" class="modal fade" role="dialog">
           <div class="modal-dialog">

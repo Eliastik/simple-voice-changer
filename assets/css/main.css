@@ -96,6 +96,9 @@ img {
 .mmt {
     margin-top: 8px;
 }
+.nmb {
+    margin-bottom: 0;
+}
 .ml {
     margin-left: 22px;
 }
@@ -204,4 +207,12 @@ label {
 }
 .disabled-button-wrapper {
     cursor: not-allowed;
+}
+.btn-responsive {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    white-space: normal;
+}
+#bottomPage {
+    margin-top: 16px;
 }
