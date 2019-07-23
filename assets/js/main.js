@@ -659,6 +659,11 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 bassBoostFilter.type = "lowshelf";
                 bassBoostFilter.frequency.value = 250;
                 bassBoostFilter.gain.value = 15;
+                var bassBoostFilterHighFreq = offlineContext.createBiquadFilter();
+                bassBoostFilterHighFreq.type = "highshelf";
+                bassBoostFilterHighFreq.frequency.value = 250;
+                bassBoostFilterHighFreq.gain.value = -5;
+                bassBoostFilterHighFreq.connect(bassBoostFilter);
             }
 
             var limiterProcessor = offlineContext.createScriptProcessor(BUFFER_SIZE, buffer.numberOfChannels, buffer.numberOfChannels);
@@ -698,7 +703,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 lowPassFilter.connect(highPassFilter);
 
                 if(bassboost) {
-                    highPassFilter.connect(bassBoostFilter);
+                    highPassFilter.connect(bassBoostFilterHighFreq);
                     bassBoostFilter.connect(output);
                 } else {
                     highPassFilter.connect(output);
@@ -707,7 +712,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 node.connect(lowPassFilter);
 
                 if(bassboost) {
-                    lowPassFilter.connect(bassBoostFilter);
+                    lowPassFilter.connect(bassBoostFilterHighFreq);
                     bassBoostFilter.connect(output);
                 } else {
                     lowPassFilter.connect(output);
@@ -716,14 +721,14 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 node.connect(highPassFilter);
 
                 if(bassboost) {
-                    highPassFilter.connect(bassBoostFilter);
+                    highPassFilter.connect(bassBoostFilterHighFreq);
                     bassBoostFilter.connect(output);
                 } else {
                     highPassFilter.connect(output);
                 }
             } else {
                 if(bassboost) {
-                    node.connect(bassBoostFilter);
+                    node.connect(bassBoostFilterHighFreq);
                     bassBoostFilter.connect(output);
                 } else {
                     node.connect(output);
