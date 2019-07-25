@@ -17,7 +17,7 @@
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
 const CACHE_BASENAME = 'simple-voice-changer';
-const CACHE_VER = '-v1.2.1.1';
+const CACHE_VER = '-v1.2.1.2';
 const CACHE = CACHE_BASENAME + CACHE_VER;
 
 const CACHE_URLS = [
@@ -37,6 +37,15 @@ const CACHE_URLS = [
   "assets/fonts/fontawesome-webfont.woff",
   "assets/fonts/fontawesome-webfont.woff2",
   "assets/fonts/FontAwesome.otf",
+  "assets/fonts/fontawesome-webfont.eot?v=4.7.0",
+  "assets/fonts/fontawesome-webfont.svg?v=4.7.0",
+  "assets/fonts/fontawesome-webfont.ttf?v=4.7.0",
+  "assets/fonts/fontawesome-webfont.woff?v=4.7.0",
+  "assets/fonts/fontawesome-webfont.woff2?v=4.7.0",
+  "assets/fonts/FontAwesome.otf?v=4.7.0",
+  "assets/fonts/SourceSansPro-Bold.ttf",
+  "assets/fonts/SourceSansPro-Light.ttf",
+  "assets/fonts/SourceSansPro-Regular.ttf",
   "assets/img/icon_192.png",
   "assets/img/icon_512.png",
   "assets/js/bootstrap-native-polyfill.min.js",
