@@ -1424,7 +1424,7 @@ function init(func) {
         }
 
         if(typeof(navigator.mediaDevices) === "undefined" || typeof(navigator.mediaDevices.getUserMedia) === "undefined") {
-            setTooltip("fileRecord", window.i18next.t("script.notCompatible"), true, false, "wrapperFileRecord", true);
+            setTooltip("fileRecord", window.i18next.t("script.notAvailable"), true, false, "wrapperFileRecord", true);
         }
 
         if(typeof(Worker) !== "undefined" && Worker != null) {
