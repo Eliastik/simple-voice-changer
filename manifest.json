@@ -4,17 +4,17 @@
   "background_color": "#1ABC9C",
   "theme_color": "#1ABC9C",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "icons": [
     {
-      "src": "favicon.ico",
-      "type": "image/x-icon",
-      "sizes": "256x256"
+      "src": "assets/img/icon_192.png",
+      "type": "image/png",
+      "sizes": "192x192"
     },
     {
-      "src": "assets/img/favicon.png",
+      "src": "assets/img/icon_512.png",
       "type": "image/png",
-      "sizes": "128x128"
+      "sizes": "512x512"
     }
   ],
   "start_url": "index.html?launcher=true"

@@ -1547,4 +1547,9 @@ window.addEventListener("load", function() {
     }, 250);
 });
 
+// Installable app
+if("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+
 // Do you like ponies ?
