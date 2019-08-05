@@ -1405,7 +1405,6 @@ function init(func) {
     document.getElementById("appVersion").innerHTML = app_version;
     document.getElementById("appUpdateDate").innerHTML = app_version_date;
     checkUpdate();
-    initAudioAPI();
 
     preloadAudios(audioArray, function(result) {
         document.getElementById("loading").style.display = "none";
