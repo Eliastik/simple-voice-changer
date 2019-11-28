@@ -30,9 +30,9 @@ function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, thresho
     this.preGain = preGain || 0; // dB
     this.postGain = postGain || 0; // dB
     this.attackTime = attackTime || 0; // s
-    this.releaseTime = releaseTime || 1; // s
-    this.threshold = threshold || 0.5; // dB
-    this.lookAheadTime = lookAheadTime || 0.005; // s
+    this.releaseTime = releaseTime || 2; // s
+    this.threshold = threshold || -0.05; // dB
+    this.lookAheadTime = lookAheadTime || 0.05; // s
     this.delayBuffer = [];
     this.envelopeSample = 0;
 

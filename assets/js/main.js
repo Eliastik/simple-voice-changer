@@ -19,12 +19,12 @@
 
 // Pure JS. No Jquery.
 // Default variables
-var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop, compaModeStopSave;
+var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop, compaModeStopSave, timerPlayingCompaMode, compaPlayTimeout;
 
 speedAudio = pitchAudio = 1;
 reverbAudio = echoAudio = compaAudioAPI = vocoderAudio = bitCrusherAudio = lowpassAudio = highpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 limiterAudio = true;
-audio_principal_buffer = audio_impulse_response = audio_modulator = null;
+audio_principal_buffer = audio_impulse_response = audio_modulator = timerPlayingCompaMode = compaPlayTimeout = null;
 var sliderPlayAudio = new Slider("#playAudioRange");
 audioBufferPlay = new BufferPlayer(null);
 compaModeStop = function() { return false };
@@ -60,6 +60,7 @@ function BufferPlayer() {
     this.interval;
     this.playing = false;
     this.sliding = false;
+    this.loop = true;
 
     var obj = this;
 
@@ -134,7 +135,12 @@ function BufferPlayer() {
                 }
 
                 if(obj.currentTime > obj.duration) {
-                    obj.reset();
+                    if(obj.loop) {
+                        obj.reset();
+                        obj.start();
+                    } else {
+                        obj.reset();
+                    }
                 } else {
                     obj.updateInfos();
                 }
@@ -152,6 +158,14 @@ function BufferPlayer() {
 
         if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
         if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
+        
+        if(document.getElementById("checkLoopPlay") != null) {
+            if(document.getElementById("checkLoopPlay").checked) {
+                this.loop = true;
+            } else {
+                this.loop = false;
+            }
+        } 
 
         if(!this.sliding && sliderPlayAudio != undefined) {
             sliderPlayAudio.setValue(percPlaying, false, false);
@@ -214,6 +228,8 @@ function VoiceRecorder() {
             document.getElementById("recordAudioPlay").disabled = true;
             document.getElementById("recordAudioPause").disabled = false;
             document.getElementById("recordAudioStop").disabled = false;
+            document.getElementById("recordAudioPlay").style.display = "none";
+            document.getElementById("recordAudioPause").style.display = "inline-block";
         }
     };
 
@@ -245,6 +261,8 @@ function VoiceRecorder() {
 
             document.getElementById("recordAudioPlay").disabled = false;
             document.getElementById("recordAudioPause").disabled = true;
+            document.getElementById("recordAudioPlay").style.display = "inline-block";
+            document.getElementById("recordAudioPause").style.display = "none";
 
             if(this.timer.seconds > 0) {
                 document.getElementById("recordAudioStop").disabled = false;
@@ -276,6 +294,8 @@ function VoiceRecorder() {
 
         document.getElementById("recordAudioPlay").disabled = true;
         document.getElementById("recordAudioPause").disabled = true;
+        document.getElementById("recordAudioPlay").style.display = "inline-block";
+        document.getElementById("recordAudioPause").style.display = "none";
         document.getElementById("recordAudioStop").disabled = true;
         document.getElementById("checkAudioRetour").checked = false;
         document.getElementById("checkAudioRetour").disabled = true;
@@ -380,10 +400,12 @@ function compaMode() {
             setTooltip("playAudio", null, false, true, "wrapperPlay", true);
             setTooltip("pauseAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperPause", true);
             document.getElementById("playingAudioInfos").style.display = "none";
+            document.getElementById("checkLoopPlayDiv").style.display = "none";
         } else {
             checkButtonPlayAudioBuffer();
             setTooltip("stopAudio", null, false, true, "wrapperStop", true);
             document.getElementById("playingAudioInfos").style.display = "block";
+            document.getElementById("checkLoopPlayDiv").style.display = "block";
         }
 
         if (typeof(Worker) !== "undefined" && Worker != null) {
@@ -398,9 +420,13 @@ function checkButtonPlayAudioBuffer() {
     if(audioBufferPlay.playing) {
         setTooltip("playAudio", null, true, false, "wrapperPlay", true);
         setTooltip("pauseAudio", null, false, true, "wrapperPause", true);
+        document.getElementById("wrapperPlay").style.display = "none";
+        document.getElementById("wrapperPause").style.display = "inline-block";
     } else {
         setTooltip("playAudio", null, false, true, "wrapperPlay", true);
         setTooltip("pauseAudio", null, true, false, "wrapperPause", true);
+        document.getElementById("wrapperPlay").style.display = "inline-block";
+        document.getElementById("wrapperPause").style.display = "none";
     }
 }
 
@@ -657,12 +683,12 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             if(bassboost) {
                 var bassBoostFilter = offlineContext.createBiquadFilter();
                 bassBoostFilter.type = "lowshelf";
-                bassBoostFilter.frequency.value = 250;
+                bassBoostFilter.frequency.value = 200;
                 bassBoostFilter.gain.value = 15;
                 var bassBoostFilterHighFreq = offlineContext.createBiquadFilter();
                 bassBoostFilterHighFreq.type = "highshelf";
-                bassBoostFilterHighFreq.frequency.value = 250;
-                bassBoostFilterHighFreq.gain.value = -5;
+                bassBoostFilterHighFreq.frequency.value = 200;
+                bassBoostFilterHighFreq.gain.value = -2;
                 bassBoostFilterHighFreq.connect(bassBoostFilter);
             }
 
@@ -785,9 +811,24 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 if(play) {
                     limiterProcessor.connect(offlineContext.destination);
 
+                    if(timerPlayingCompaMode != null) timerPlayingCompaMode.stop();
+                    if(compaPlayTimeout != null) clearTimeout(compaPlayTimeout);
+                    if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(durationAudio / 60)).slice(-2) + ":" + ("0" + Math.trunc(durationAudio % 60)).slice(-2);
+
+                    timerPlayingCompaMode = new TimerSaveTime("timePlayingAudio", null, 0, 1);
+                    timerPlayingCompaMode.start();
+
+                    console.log(durationAudio, durationAudio * 1000);
+
+                    compaSaveTimeout = setTimeout(function() {
+                        timerPlayingCompaMode.stop();
+                    }, durationAudio * 1000);
+
                     compaModeStop = function() {
                         try {
                             limiterProcessor.disconnect(offlineContext.destination);
+                            if(timerPlayingCompaMode != null) timerPlayingCompaMode.stop();
+                            if(compaPlayTimeout != null) clearTimeout(compaPlayTimeout);
                             return true;
                         } catch(e) {
                             return false;
@@ -819,6 +860,9 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                                 downloadAudioBlob(blob);
                                 onSaveFinished();
                             });
+
+                            if(timerPlayingCompaMode != null) timerPlayingCompaMode.stop();
+                            if(compaPlayTimeout != null) clearTimeout(compaPlayTimeout);
                         }, durationAudio * 1000);
 
                         compaModeStopSave = function() {
@@ -826,6 +870,8 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                                 clearTimeout(compaSaveTimeout);
                                 limiterProcessor.disconnect(offlineContext.destination);
                                 rec.stop();
+                                if(timerPlayingCompaMode != null) timerPlayingCompaMode.stop();
+                                if(compaPlayTimeout != null) clearTimeout(compaPlayTimeout);
                                 onSaveFinished();
                                 return true;
                             } catch(e) {
@@ -990,6 +1036,9 @@ function validModify(play, save) {
 }
 
 function launchPlay() {
+    if(timerPlayingCompaMode != null) timerPlayingCompaMode.stop();
+    if(compaPlayTimeout != null) clearTimeout(compaPlayTimeout);
+
     if(typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
         audioBufferPlay.start();
         checkButtonPlayAudioBuffer();
@@ -1000,12 +1049,18 @@ function launchPlay() {
 }
 
 function launchStop() {
+    if(timerPlayingCompaMode != null) timerPlayingCompaMode.stop();
+    if(compaPlayTimeout != null) clearTimeout(compaPlayTimeout);
+
     audioBufferPlay.reset();
     compaModeStop();
     checkButtonPlayAudioBuffer();
 }
 
 function launchPause() {
+    if(timerPlayingCompaMode != null) timerPlayingCompaMode.stop();
+    if(compaPlayTimeout != null) clearTimeout(compaPlayTimeout);
+
     if(!compaAudioAPI) {
         audioBufferPlay.pause();
         checkButtonPlayAudioBuffer();
@@ -1015,6 +1070,9 @@ function launchPause() {
 }
 
 function launchSave() {
+    if(timerPlayingCompaMode != null) timerPlayingCompaMode.stop();
+    if(compaPlayTimeout != null) clearTimeout(compaPlayTimeout);
+
     if(!audioProcessing && typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
         saveBuffer(audio_principal_processed);
     } else if(compaAudioAPI) {
