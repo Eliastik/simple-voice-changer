@@ -30,6 +30,48 @@ audioBufferPlay = new BufferPlayer(null);
 compaModeStop = function() { return false };
 compaModeStopSave = function() { return false };
 
+var limiter = new Limiter(); // audio limiter
+
+// Limiter settings
+function loadLimiterValues() {
+    document.getElementById("preGain").value = limiter.preGain;
+    document.getElementById("postGain").value = limiter.postGain;
+    document.getElementById("attackTime").value = limiter.attackTime;
+    document.getElementById("releaseTime").value = limiter.releaseTime;
+    document.getElementById("threshold").value = limiter.threshold;
+    document.getElementById("lookAheadTime").value = limiter.lookAheadTime;
+}
+
+function setLimiterValues() {
+    var preGain = document.getElementById("preGain").value;
+    var postGain = document.getElementById("postGain").value;
+    var attackTime = document.getElementById("attackTime").value;
+    var releaseTime = document.getElementById("releaseTime").value;
+    var threshold = document.getElementById("threshold").value;
+    var lookAheadTime = document.getElementById("lookAheadTime").value;
+
+    if(preGain != null && preGain.trim() != "" && !isNaN(preGain)) limiter.preGain = preGain;
+    if(postGain != null && postGain.trim() != "" && !isNaN(postGain)) limiter.postGain = postGain;
+    if(attackTime != null && attackTime.trim() != "" && !isNaN(attackTime) && attackTime >= 0) limiter.attackTime = attackTime;
+    if(releaseTime != null && releaseTime.trim() != "" && !isNaN(releaseTime) && releaseTime >= 0) limiter.releaseTime = releaseTime;
+    if(threshold != null && threshold.trim() != "" && !isNaN(threshold)) limiter.threshold = threshold;
+    if(lookAheadTime != null && lookAheadTime.trim() != "" && !isNaN(lookAheadTime) && lookAheadTime >= 0) limiter.lookAheadTime = lookAheadTime;
+
+    loadLimiterValues();
+}
+
+function resetLimiterValues() {
+    limiter.preGain = 0;
+    limiter.postGain = 0;
+    limiter.attackTime = 0;
+    limiter.releaseTime = 2;
+    limiter.threshold = -0.05;
+    limiter.lookAheadTime = 0.05;
+
+    loadLimiterValues();
+}
+// End of limiter settings
+
 // Settings
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
@@ -346,6 +388,7 @@ if('AudioContext' in window) {
     try {
         var AudioContext = window.AudioContext || window.webkitAudioContext;
         var context = new AudioContext();
+        limiter.sampleRate = context.sampleRate;
     } catch(e) {
         if(typeof(window.console.error) !== "undefined") {
             console.error(window.i18next.t("script.errorAudioContext"), e);
@@ -697,7 +740,6 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             if(!enableLimiter) {
                 limiterProcessor.onaudioprocess = passAll;
             } else {
-                var limiter = new Limiter(context.sampleRate);
                 limiterProcessor.onaudioprocess = limiter.limit;
             }
 
@@ -817,8 +859,6 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
                     timerPlayingCompaMode = new TimerSaveTime("timePlayingAudio", null, 0, 1);
                     timerPlayingCompaMode.start();
-
-                    console.log(durationAudio, durationAudio * 1000);
 
                     compaSaveTimeout = setTimeout(function() {
                         timerPlayingCompaMode.stop();
@@ -988,6 +1028,8 @@ function validModify(play, save) {
         alert(window.i18next.t("script.errorOccured"));
         return false;
     }
+
+    loadLimiterValues();
 
     if(isNaN(tmp_pitch) || tmp_pitch == "" || tmp_pitch <= 0 || tmp_pitch > 5) {
         alert(window.i18next.t("script.invalidPitch"));
@@ -1606,7 +1648,7 @@ window.addEventListener("load", function() {
 
 // Installable app
 if("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+    navigator.serviceWorker.register("service-worker.js");
 }
 
 // Do you like ponies ?

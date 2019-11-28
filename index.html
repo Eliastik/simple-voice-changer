@@ -156,7 +156,7 @@
                                     </div>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" id="checkLimiter" checked /> <label for="checkLimiter" data-i18n="thirdStep.limiter">Limiteur (réduit la distorsion/saturation, recommandé)</label>
+                                    <input type="checkbox" id="checkLimiter" checked /> <label for="checkLimiter" data-i18n="thirdStep.limiter">Limiteur (réduit la distorsion/saturation, recommandé)</label> <a href="#" data-toggle="modal" data-target="#limiterSettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
                                 </div>
                                 <div class="checkbox">
                                     <input type="checkbox" id="checkCompa" onclick="compaMode();" /> <label for="checkCompa" data-i18n="thirdStep.compatibilityMode">Mode de compatibilité (cocher si aucun son n'est diffusé)</label><br />
@@ -194,6 +194,64 @@
             <div id="bottomPage">
               <p><span data-i18n="footer.by">By</span> <a href="http://www.eliastiksofts.com" target="_blank">Eliastik</a> – <a href="http://www.eliastiksofts.com/simple-voice-changer/downloads/" target="_blank" data-i18n="footer.download">Télécharger le projet</a> – <a href="README.md" target="_blank" data-i18n="footer.readme">Fichier Lisez-moi</a> – <a href="https://github.com/Eliastik/simple-voice-changer" target="_blank" data-i18n="footer.github">Dépôt Github</a> – <a href="#" data-toggle="modal" data-target="#compatibility" data-i18n="footer.browserCompatibility">Voir les navigateurs compatibles</a></p>
               <p class="small"><span data-i18n="footer.version">Version</span> <span id="version"></span> – <span id="versionDate"></span></p>
+            </div>
+        </div>
+        <div id="limiterSettings" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" data-i18n="limiterSettings.title">Paramètres du limiteur</h4>
+                </div>
+                <div class="modal-body">
+                    <p><span data-i18n="limiterSettings.lead">Vous pouvez régler ici les paramètres du limiteur. Les paramètres par défaut ont été testés sur de nombreux fichiers audios et fonctionnent dans la plupart des cas.</span></p>
+                    <fieldset>
+                        <form action="" method="post" class="col-lg-12 form-horizontal">
+                            <div class="form-group row">
+                                <label data-i18n="limiterSettings.preGain" for="preGain" class="col-lg-4 col-form-label">Pré-gain (en dB) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="preGain" id="preGain" step="0.001">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="limiterSettings.postGain" for="postGain" class="col-lg-4 col-form-label">Post-gain (en dB) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="postGain" id="postGain" step="0.001">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="limiterSettings.attackTime" for="attackTime" class="col-lg-4 col-form-label">Temps d'attaque (en secondes) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="attackTime" id="attackTime" step="0.01" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="limiterSettings.releaseTime" for="releaseTime" class="col-lg-4 col-form-label">Temps de release (en secondes) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="releaseTime" id="releaseTime" step="0.01" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="limiterSettings.threshold" for="threshold" class="col-lg-4 col-form-label">Seuil (en dB) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="threshold" id="threshold" step="0.001">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="limiterSettings.lookAheadTime" for="lookAheadTime" class="col-lg-4 col-form-label">Temps de look-ahead (en secondes) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="lookAheadTime" id="lookAheadTime" step="0.001" min="0">
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="setLimiterValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" onclick="resetLimiterValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
+                </div>
+              </div>
             </div>
         </div>
         <div id="compatibility" class="modal fade" role="dialog">

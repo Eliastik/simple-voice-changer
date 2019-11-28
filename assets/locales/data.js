@@ -26,6 +26,7 @@
    "or": "ou",
    "orMaj": "Ou",
    "close": "Fermer",
+   "reset": "Réinitialiser",
    "update": {
      "updateAvailable": "Une mise à jour de l'application est disponible",
      "version": "Version",
@@ -133,6 +134,16 @@
      "issue1Last": "L'application utilise un mode de compatibilité pour tenter de passer outre ce bug, la sauvegarde peut ainsi prendre plus de temps. Ce problème ne touche pas Chrome, Chromium ainsi que les autres navigateurs basés sur Chromium.",
      "issue2": "Si la carte son de votre appareil est configurée en 192 KHz ou plus (taux d'échantillonnage), le Vocoder fonctionnera mal. Configurez-là en 92 KHz ou moins dans ce cas. Dans la plupart des cas, vous ne devriez pas vous soucier de cela car la plupart des appareils sont configurés par défaut en 44 KHz ou 48 KHz."
    },
+   "limiterSettings": {
+      "title": "Paramètres du limiteur",
+      "lead": "Vous pouvez régler ici les paramètres du limiteur. Les paramètres par défaut ont été testés sur de nombreux fichiers audios et fonctionnent dans la plupart des cas.",
+      "preGain": "Pré-gain (en dB) :",
+      "postGain": "Post-gain (en dB) :",
+      "attackTime": "Temps d'attaque (en secondes) :",
+      "releaseTime": "Temps de release (en secondes) :",
+      "threshold": "Seuil (en dB) :",
+      "lookAheadTime": "Temps de look-ahead (en secondes) :"
+   },
    "script": {
      "errorAudioContext": "Une erreur est survenue lors de la création d'un contexte audio (l'API Web Audio semble ne pas être supportée) :",
      "webAudioNotSupported": "API Web Audio non supportée par ce navigateur.",
@@ -159,6 +170,7 @@ i18next.addResourceBundle("en", "translation", {
   "or": "or",
   "orMaj": "Or",
   "close": "Close",
+  "reset": "Reset",
   "update": {
     "updateAvailable": "An update of the application is available",
     "version": "Version",
@@ -214,7 +226,7 @@ i18next.addResourceBundle("en", "translation", {
     "play": "Play",
     "pause": "Pause",
     "stop": "Stop",
-    "loopPlay": "Loop play",
+    "loopPlay": "Loop playback",
     "processing": "Processing… Please wait.",
     "pitch": "Pitch:",
     "lowPitch": "Low",
@@ -265,6 +277,16 @@ i18next.addResourceBundle("en", "translation", {
     "issue1Link": "on Firefox",
     "issue1Last": "The application use a compatibility mode to work around this bug, the save can take more time. This problem doesn't affect Chrome, Chromium and others browsers based on Chromium.",
     "issue2": "If the sound card of your device is set to 192 KHz or higher (sample rate), the Vocoder will work badly. Set it to 92 KHz or less in this case. In most cases, you should not worry about this because most devices are set to 44 kHz or 48 kHz by default."
+  },
+  "limiterSettings": {
+     "title": "Limiter settings",
+     "lead": "Here you can set the limiter settings. The default settings have been tested with many audio files and work in most cases.",
+     "preGain": "Pre-gain (in dB):",
+     "postGain": "Post-gain (in dB):",
+     "attackTime": "Attack time (in seconds):",
+     "releaseTime": "Release time (in seconds):",
+     "threshold": "Threshold (in dB):",
+     "lookAheadTime": "Look-ahead time (in seconds):"
   },
   "script": {
     "errorAudioContext": "Error when creating Audio Context (the Web Audio API seem to be unsupported):",
