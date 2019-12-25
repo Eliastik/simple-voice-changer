@@ -111,4 +111,9 @@ function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, thresho
             }
         }
     };
+
+    this.reset = function() {
+        this.delayBuffer = [];
+        this.envelopeSample = 0;
+    };
 }

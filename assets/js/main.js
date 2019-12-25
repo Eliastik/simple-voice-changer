@@ -16,21 +16,60 @@
  * You should have received a copy of the GNU General Public License
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
+// Settings
+var filesDownloadName = "simple_voice_changer";
+var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
+var app_version = "1.2.1.2";
+var app_version_date = "07/26/2019";
+var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
+// End of the settings
 
-// Pure JS. No Jquery.
 // Default variables
 var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop, compaModeStopSave, timerPlayingCompaMode, compaPlayTimeout;
 
 speedAudio = pitchAudio = 1;
 reverbAudio = echoAudio = compaAudioAPI = vocoderAudio = bitCrusherAudio = lowpassAudio = highpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 limiterAudio = true;
-audio_principal_buffer = audio_impulse_response = audio_modulator = timerPlayingCompaMode = compaPlayTimeout = null;
+audio_principal_buffer = audio_processing_buffer = processing_context = audio_impulse_response = audio_modulator = timerPlayingCompaMode = compaPlayTimeout = null;
 var sliderPlayAudio = new Slider("#playAudioRange");
 audioBufferPlay = new BufferPlayer(null);
 compaModeStop = function() { return false };
 compaModeStopSave = function() { return false };
 
-var limiter = new Limiter(); // audio limiter
+var slider = new Slider("#pitchRange", {
+    formatter: function(value) {
+        return value;
+    }
+});
+
+var slider2 = new Slider("#speedRange", {
+    formatter: function(value) {
+        return value;
+    }
+});
+
+var limiter = new Limiter(); // Audio limiter
+
+if('AudioContext' in window) {
+    try {
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
+        var context = new AudioContext();
+        limiter.sampleRate = context.sampleRate;
+    } catch(e) {
+        if(typeof(window.console.error) !== "undefined") {
+            console.error(window.i18next.t("script.errorAudioContext"), e);
+        } else {
+            console.log(window.i18next.t("script.errorAudioContext"), e);
+        }
+
+        var audioContextNotSupported = true;
+    }
+} else {
+    var audioContextNotSupported = true;
+}
+
+navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null);
+// End of the default variables
 
 // Limiter settings
 function loadLimiterValues() {
@@ -72,13 +111,253 @@ function resetLimiterValues() {
 }
 // End of limiter settings
 
-// Settings
-var filesDownloadName = "simple_voice_changer";
-var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
-var app_version = "1.2.1.2";
-var app_version_date = "07/26/2019";
-var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
-// End of the settings
+// Soundtouch settings
+var st = new soundtouch.SoundTouch(context.sampleRate);
+var soundtouchFilter = new soundtouch.SimpleFilter();
+var sountouchBuffer = null;
+var sountouchNode = null;
+st.pitch = 1.0;
+st.tempo = 1.0;
+st.rate = 1.0;
+
+slider.on("slide", function(value) {
+    st.pitch = value;
+    pitchAudio = value;
+});
+
+slider.on("click", function(value) {
+    st.pitch = value;
+    pitchAudio = value;
+});
+
+slider2.on("slide", function(value) {
+    st.tempo = value;
+    speedAudio = value;
+});
+
+slider2.on("click", function(value) {
+    st.tempo = value;
+    speedAudio = value;
+});
+// End of Soundtouch settings
+
+// Real time functions
+var limiterProcessor = null;
+var bitCrusher = null;
+var lowPassFilter = null;
+var highPassFilter = null;
+var bassBoostFilter = null;
+var bassBoostFilterHighFreq = null;
+var telephonizer = null;
+var delayFilter = null;
+var convolver = null;
+
+function getCurrentContext(durationAudio, comp) {
+    if(!comp && typeof(window.OfflineAudioContext) !== "undefined") {
+        return new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+    } else if(!comp && typeof(window.webkitOfflineAudioContext) !== "undefined") {
+        return new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+    } else {
+        return context;
+    }
+}
+
+function resetFilter(sourceSound, pipe) {
+    soundtouchFilter._pipe = pipe;
+    soundtouchFilter.sourceSound = sourceSound;
+    soundtouchFilter.historyBufferSize = 22050;
+    soundtouchFilter._sourcePosition = 0;
+    soundtouchFilter.outputBufferPosition = 0;
+    soundtouchFilter._position = 0;
+}
+
+function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highpass, bassboost, phone, returnAudioParam, echo, bitCrush, enableLimiter, rate, BUFFER_SIZE) {
+    // Default parameters
+    var speed = speed || 1; // Speed of the audio
+    var pitch = pitch || 1; // Pitch of the audio
+    var reverb = reverb == undefined ? false : reverb; // Enable or disable reverb
+    var comp = comp == undefined ? false : comp; // Enable or disable the compatibility mode
+    var vocode = vocode == undefined ? false : vocode; // Enable or disable vocoder
+    var lowpass = lowpass == undefined ? false : lowpass; // Enable lowPass filter
+    var highpass = highpass == undefined ? false : highpass; // Enable highPass filter
+    var bassboost = bassboost == undefined ? false : bassboost; // Enable Bass Boost
+    var phone = phone == undefined ? false : phone; // Enable Phone Call
+    var returnAudioParam = returnAudioParam == undefined ? false : returnAudioParam; // Enable Audio Return
+    var enableLimiter = enableLimiter == undefined ? false : enableLimiter; // Enable Limiter
+    var echo = echo == undefined ? false : echo; // Enable Echo
+    var bitCrush = bitCrush == undefined ? false : bitCrush; // Enable BitCrusher
+    var rate = rate || 1; // Rate of the audio
+    var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
+    // End of default parameters
+
+    if('AudioContext' in window && !audioContextNotSupported) {
+        // Disconnect all previous nodes
+        if(bitCrusher != null) bitCrusher.disconnect();
+        if(lowPassFilter != null) lowPassFilter.disconnect();
+        if(highPassFilter != null) highPassFilter.disconnect();
+        if(bassBoostFilter != null) bassBoostFilter.disconnect();
+        if(bassBoostFilterHighFreq != null) bassBoostFilterHighFreq.disconnect();
+        if(delayFilter != null && delayFilter["output"] != null) delayFilter["output"].disconnect();
+        if(telephonizer != null && telephonizer["output"] != null) telephonizer["output"].disconnect();
+        if(convolver != null) convolver.disconnect();
+        if(sountouchNode != null) sountouchNode.disconnect();
+        // End of Disconnecte all previous nodes
+
+        var buffer = audio_processing_buffer;
+
+        // Soundtouch settings
+        st.pitch = pitch;
+        st.tempo = speed;
+        st.rate = rate;
+        sountouchNode = soundtouch.getWebAudioNode(offlineContext, soundtouchFilter);
+        var node = sountouchNode;
+        // End of Soundtouch settings
+
+        if(bitCrush) {
+            bitCrusher = getBitCrusher(offlineContext, 8.0, 0.15, BUFFER_SIZE, buffer.numberOfChannels);
+            node.connect(bitCrusher);
+            node = bitCrusher;
+        }
+
+        if(lowpass) {
+            lowPassFilter = offlineContext.createBiquadFilter();
+            lowPassFilter.type = "lowpass";
+            lowPassFilter.frequency.value = 3500;
+        }
+
+        if(highpass) {
+            highPassFilter = offlineContext.createBiquadFilter();
+            highPassFilter.type = "highpass";
+            highPassFilter.frequency.value = 3500;
+        }
+
+        if(bassboost) {
+            bassBoostFilter = offlineContext.createBiquadFilter();
+            bassBoostFilter.type = "lowshelf";
+            bassBoostFilter.frequency.value = 200;
+            bassBoostFilter.gain.value = 15;
+            bassBoostFilterHighFreq = offlineContext.createBiquadFilter();
+            bassBoostFilterHighFreq.type = "highshelf";
+            bassBoostFilterHighFreq.frequency.value = 200;
+            bassBoostFilterHighFreq.gain.value = -2;
+            bassBoostFilterHighFreq.connect(bassBoostFilter);
+        }
+
+        if(!enableLimiter) {
+            limiterProcessor.onaudioprocess = passAll;
+        } else {
+            limiter.reset();
+            limiterProcessor.onaudioprocess = limiter.limit;
+        }
+
+        if(phone) {
+            telephonizer = getTelephonizer(offlineContext);
+        }
+
+        var output = limiterProcessor;
+
+        if(echo) {
+            delayFilter = getDelay(offlineContext, 0.20, 0.75);
+            delayFilter["output"].connect(output);
+            output = delayFilter["input"];
+        }
+
+        if(reverb) {
+            convolver = offlineContext.createConvolver();
+            convolver.buffer = audio_impulse_response;
+            convolver.connect(output);
+            output = convolver;
+        }
+
+        if(phone) {
+            telephonizer["output"].connect(output);
+            output = telephonizer["input"];
+        }
+
+        if(lowpass && highpass) {
+            node.connect(lowPassFilter);
+            lowPassFilter.connect(highPassFilter);
+
+            if(bassboost) {
+                highPassFilter.connect(bassBoostFilterHighFreq);
+                bassBoostFilter.connect(output);
+            } else {
+                highPassFilter.connect(output);
+            }
+        } else if(lowpass) {
+            node.connect(lowPassFilter);
+
+            if(bassboost) {
+                lowPassFilter.connect(bassBoostFilterHighFreq);
+                bassBoostFilter.connect(output);
+            } else {
+                lowPassFilter.connect(output);
+            }
+        } else if(highpass) {
+            node.connect(highPassFilter);
+
+            if(bassboost) {
+                highPassFilter.connect(bassBoostFilterHighFreq);
+                bassBoostFilter.connect(output);
+            } else {
+                highPassFilter.connect(output);
+            }
+        } else {
+            if(bassboost) {
+                node.connect(bassBoostFilterHighFreq);
+                bassBoostFilter.connect(output);
+            } else {
+                node.connect(output);
+            }
+        }
+    }
+}
+
+function validConnectNodes(BUFFER_SIZE) {
+    var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
+    connectNodes(processing_context, speedAudio, pitchAudio, reverbAudio, compaAudioAPI, lowpassAudio, highpassAudio, bassboostAudio, phoneAudio, returnAudio, echoAudio, bitCrusherAudio, limiterAudio, 1, BUFFER_SIZE);
+}
+
+document.getElementById("checkReverb").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkLowpass").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkHighpass").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkBassBoost").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkPhone").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkLimiter").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkEcho").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkBitCrusher").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+// End of real time functions
 
 // Libs
 String.prototype.strcmp = function(str) {
@@ -384,39 +663,6 @@ function TimerSaveTime(id, idProgress, seconds, incr) {
 }
 // End classes
 
-if('AudioContext' in window) {
-    try {
-        var AudioContext = window.AudioContext || window.webkitAudioContext;
-        var context = new AudioContext();
-        limiter.sampleRate = context.sampleRate;
-    } catch(e) {
-        if(typeof(window.console.error) !== "undefined") {
-            console.error(window.i18next.t("script.errorAudioContext"), e);
-        } else {
-            console.log(window.i18next.t("script.errorAudioContext"), e);
-        }
-
-        var audioContextNotSupported = true;
-    }
-} else {
-    var audioContextNotSupported = true;
-}
-
-navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null);
-// End of the default variables
-
-var slider = new Slider("#pitchRange", {
-    formatter: function(value) {
-        return value;
-    }
-});
-
-var slider2 = new Slider("#speedRange", {
-    formatter: function(value) {
-        return value;
-    }
-});
-
 function checkAudio(type) {
     if(!window.HTMLAudioElement) {
         return false;
@@ -648,36 +894,17 @@ function enableCompaMode() {
 
 function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, highpass, bassboost, phone, returnAudioParam, echo, bitCrush, enableLimiter, rate, BUFFER_SIZE) {
     // Default parameters
-    var speed = speed || 1; // Speed of the audio
-    var pitch = pitch || 1; // Pitch of the audio
-    var reverb = reverb == undefined ? false : reverb; // Enable or disable reverb
     var save = save == undefined ? false : save; // Save the audio buffer under a wav file
     var play = play == undefined ? false : play; // Play the audio
     var audioName = audioName || "sample"; // The audio buffer variable name (global)
     var comp = comp == undefined ? false : comp; // Enable or disable the compatibility mode
-    var vocode = vocode == undefined ? false : vocode; // Enable or disable vocoder
-    var lowpass = lowpass == undefined ? false : lowpass; // Enable lowPass filter
-    var highpass = highpass == undefined ? false : highpass; // Enable highPass filter
-    var bassboost = bassboost == undefined ? false : bassboost; // Enable Bass Boost
-    var phone = phone == undefined ? false : phone; // Enable Phone Call
-    var returnAudioParam = returnAudioParam == undefined ? false : returnAudioParam; // Enable Audio Return
-    var enableLimiter = enableLimiter == undefined ? false : enableLimiter; // Enable Limiter
-    var echo = echo == undefined ? false : echo; // Enable Echo
-    var bitCrush = bitCrush == undefined ? false : bitCrush; // Enable BitCrusher
-    var rate = rate || 1; // Rate of the audio
-    var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
     // End of default parameters
 
-    if ('AudioContext' in window && !audioContextNotSupported) {
+    if('AudioContext' in window && !audioContextNotSupported) {
         var durationAudio = calcAudioDuration(audio, speed, pitch, reverb, vocode, echo);
 
-        if(!comp && typeof(window.OfflineAudioContext) !== "undefined") {
-            var offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
-        } else if(!comp && typeof(window.webkitOfflineAudioContext) !== "undefined") {
-            var offlineContext = new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
-        } else {
-            var offlineContext = context;
-        }
+        offlineContext = getCurrentContext(durationAudio, comp);
+        processing_context = offlineContext;
 
         if(typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined") {
             enableCompaMode();
@@ -695,113 +922,15 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
         function renderAudio(buffer) {
             if(returnAudioParam) {
-                buffer = returnBuffer(buffer);
+                buffer = returnBuffer(audio_processing_buffer);
             }
 
-            var st = new soundtouch.SoundTouch(44100);
-            st.pitch = pitch;
-            st.tempo = speed;
-            st.rate = rate;
-            var filter = new soundtouch.SimpleFilter(new soundtouch.WebAudioBufferSource(buffer), st);
-            var node = soundtouch.getWebAudioNode(offlineContext, filter);
+            st.clear();
+            audio_processing_buffer = buffer;
+            resetFilter(new soundtouch.WebAudioBufferSource(buffer), st);
 
-            if(bitCrush) {
-                var bitCrusher = getBitCrusher(offlineContext, 8.0, 0.15, BUFFER_SIZE, buffer.numberOfChannels);
-                node.connect(bitCrusher);
-                node = bitCrusher;
-            }
-
-            if(lowpass) {
-                var lowPassFilter = offlineContext.createBiquadFilter();
-                lowPassFilter.type = "lowpass";
-                lowPassFilter.frequency.value = 3500;
-            }
-
-            if(highpass) {
-                var highPassFilter = offlineContext.createBiquadFilter();
-                highPassFilter.type = "highpass";
-                highPassFilter.frequency.value = 3500;
-            }
-
-            if(bassboost) {
-                var bassBoostFilter = offlineContext.createBiquadFilter();
-                bassBoostFilter.type = "lowshelf";
-                bassBoostFilter.frequency.value = 200;
-                bassBoostFilter.gain.value = 15;
-                var bassBoostFilterHighFreq = offlineContext.createBiquadFilter();
-                bassBoostFilterHighFreq.type = "highshelf";
-                bassBoostFilterHighFreq.frequency.value = 200;
-                bassBoostFilterHighFreq.gain.value = -2;
-                bassBoostFilterHighFreq.connect(bassBoostFilter);
-            }
-
-            var limiterProcessor = offlineContext.createScriptProcessor(BUFFER_SIZE, buffer.numberOfChannels, buffer.numberOfChannels);
-
-            if(!enableLimiter) {
-                limiterProcessor.onaudioprocess = passAll;
-            } else {
-                limiterProcessor.onaudioprocess = limiter.limit;
-            }
-
-            if(phone) {
-                var tel = getTelephonizer(offlineContext);
-            }
-
-            var output = limiterProcessor;
-
-            if(echo) {
-                var delayFilter = getDelay(offlineContext, 0.20, 0.75);
-                delayFilter["output"].connect(output);
-                output = delayFilter["input"];
-            }
-
-            if(reverb) {
-                convolver.buffer = audio_impulse_response;
-                convolver.connect(output);
-                output = convolver;
-            }
-
-            if(phone) {
-                tel["output"].connect(output);
-                output = tel["input"];
-            }
-
-            if(lowpass && highpass) {
-                node.connect(lowPassFilter);
-                lowPassFilter.connect(highPassFilter);
-
-                if(bassboost) {
-                    highPassFilter.connect(bassBoostFilterHighFreq);
-                    bassBoostFilter.connect(output);
-                } else {
-                    highPassFilter.connect(output);
-                }
-            } else if(lowpass) {
-                node.connect(lowPassFilter);
-
-                if(bassboost) {
-                    lowPassFilter.connect(bassBoostFilterHighFreq);
-                    bassBoostFilter.connect(output);
-                } else {
-                    lowPassFilter.connect(output);
-                }
-            } else if(highpass) {
-                node.connect(highPassFilter);
-
-                if(bassboost) {
-                    highPassFilter.connect(bassBoostFilterHighFreq);
-                    bassBoostFilter.connect(output);
-                } else {
-                    highPassFilter.connect(output);
-                }
-            } else {
-                if(bassboost) {
-                    node.connect(bassBoostFilterHighFreq);
-                    bassBoostFilter.connect(output);
-                } else {
-                    node.connect(output);
-                }
-            }
+            limiterProcessor = processing_context.createScriptProcessor(BUFFER_SIZE, audio_processing_buffer.numberOfChannels, audio_processing_buffer.numberOfChannels);
+            validConnectNodes(BUFFER_SIZE);
 
             if(!comp) {
                 limiterProcessor.connect(offlineContext.destination);
@@ -923,8 +1052,6 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             }
         }
 
-        if(reverb) var convolver = offlineContext.createConvolver();
-
         if(vocode && (typeof(window.OfflineAudioContext) !== "undefined" || typeof(window.webkitOfflineAudioContext) !== "undefined")) {
             if(typeof(window.OfflineAudioContext) !== "undefined") {
                 var offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
@@ -1015,12 +1142,7 @@ function downloadAudioBlob(e) {
     }
 }
 
-function validModify(play, save) {
-    // Default parameters
-    var play = play || false;
-    var save = save || false;
-    // End of default parameters
-
+function validSettings() {
     try {
         var tmp_pitch = document.getElementById("pitchRange").value;
         var tmp_speed = document.getElementById("speedRange").value;
@@ -1055,12 +1177,25 @@ function validModify(play, save) {
         if(document.getElementById("checkLimiter").checked == true) limiterAudio = true; else limiterAudio = false;
         if(document.getElementById("checkEcho").checked == true) echoAudio = true; else echoAudio = false;
         if(document.getElementById("checkBitCrusher").checked == true) bitCrusherAudio = true; else bitCrusherAudio = false;
+    }
 
+    return true;
+}
+
+function validModify(play, save) {
+    // Default parameters
+    var play = play || false;
+    var save = save || false;
+    // End of default parameters
+
+    loadLimiterValues();
+
+    if(validSettings()) {
         launchStop();
         compaMode();
 
         if(compaAudioAPI) {
-            if(checkAudio !== true || play !== true) {
+            if(!checkAudio || !play) {
                 document.getElementById("validInputModify").disabled = false;
             }
 
@@ -1305,18 +1440,6 @@ function removeTooltipInfo() {
         setTooltip("animation_img", "", false, true,  null, true, false);
         removedTooltipInfo = true;
     }
-}
-
-function sumImgSizes(array) {
-    var sum = 0;
-
-    for(var i = 0, l = array.length; i < l; i++) {
-        if(!isNaN(array[i])) {
-            sum += array[i];
-        }
-    }
-
-    return sum;
 }
 
 function makeArrayForPreload(array, index, from, to) {
@@ -1650,5 +1773,3 @@ window.addEventListener("load", function() {
 if("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
 }
-
-// Do you like ponies ?

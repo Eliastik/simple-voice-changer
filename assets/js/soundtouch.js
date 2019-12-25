@@ -787,8 +787,8 @@ function SoundTouch(sampleRate) {
 }
 SoundTouch.prototype = {
     clear: function() {
-        rateTransposer.clear();
-        tdStretch.clear();
+        this.rateTransposer.clear();
+        this.tdStretch.clear();
     },
     get rate() {
         return this._rate;
