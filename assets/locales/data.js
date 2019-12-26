@@ -154,6 +154,16 @@
       "frequencyReduce": "Fréquence d'atténuation (atténue les fréquences au dessus - en Hz) :",
       "dbReduce": "Gain d'atténuation (en dB) :"
    },
+   "highPassSettings" : {
+      "title": "Paramètres du filtre passe-haut",
+      "lead": "Vous pouvez régler ici les paramètres du filtre passe-haut.",
+      "frequencyHighPass": "Fréquence de coupure (en Hz) :"
+   },
+   "lowPassSettings" : {
+      "title": "Paramètres du filtre passe-bas",
+      "lead": "Vous pouvez régler ici les paramètres du filtre passe-bas.",
+      "frequencyLowPass": "Fréquence de coupure (en Hz) :"
+   },
    "script": {
      "errorAudioContext": "Une erreur est survenue lors de la création d'un contexte audio (l'API Web Audio semble ne pas être supportée) :",
      "webAudioNotSupported": "API Web Audio non supportée par ce navigateur.",
@@ -166,7 +176,8 @@
      "invalidSpeed": "Valeur de la vitesse invalide !",
      "launchReset": "Vos modifications non enregistrées seront perdues. Êtes-vous sûr de vouloir choisir un autre fichier ou enregistrement ?",
      "browserNotCompatible": "Désolé, votre navigateur n'est pas compatible avec cette application. Mettez-le à jour, puis réessayez.",
-     "appClosing": "Si vous fermez cette page, vous perdrez définitivement toutes vos modifications. Êtes-vous sûr de vouloir quitter cette page ?"
+     "appClosing": "Si vous fermez cette page, vous perdrez définitivement toutes vos modifications. Êtes-vous sûr de vouloir quitter cette page ?",
+     "workersErrorLoading": "Une erreur est survenue lors du lancement de l'enregistrement. L'enregistrement en désactivant le mode de compatibilité ne fonctionne pas en local. Essayez d'utiliser l'application en ligne."
    }
 }, true, false);
 
@@ -308,6 +319,16 @@ i18next.addResourceBundle("en", "translation", {
      "frequencyReduce": "Attenuation frequency (attenuates frequencies above - in Hz):",
      "dbReduce": "Attenuation gain (in dB):"
   },
+  "highPassSettings" : {
+     "title": "High-pass filter settings",
+     "lead": "Here you can set the high-pass filter settings.",
+     "frequencyHighPass": "Cutoff frequency (in Hz):"
+  },
+  "lowPassSettings" : {
+     "title": "Low-pass filter settings",
+     "lead": "Here you can set the low-pass filter settings.",
+     "frequencyLowPass": "Cutoff frequency (in Hz):"
+  },
   "script": {
     "errorAudioContext": "Error when creating Audio Context (the Web Audio API seem to be unsupported):",
     "webAudioNotSupported": "Web Audio API not supported by this browser.",
@@ -320,6 +341,7 @@ i18next.addResourceBundle("en", "translation", {
     "invalidSpeed": "Speed value invalid!",
     "launchReset": "Your unsaved changes will be lost. Are your sure that you want to choose another file or recording?",
     "browserNotCompatible": "Sorry, your browser isn't compatible with this application. Update it, then try again.",
-    "appClosing": "If you close this page, you will definitely lose all your changes. Are you sure that you want to quit this page?"
+    "appClosing": "If you close this page, you will definitely lose all your changes. Are you sure that you want to quit this page?",
+    "workersErrorLoading": "An error occurred while starting the save. Saving when compatibility mode is disabled doesn't work locally. Try using the online version."
   }
 }, true, false);

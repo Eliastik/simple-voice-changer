@@ -148,10 +148,10 @@
                                             <span id="checkBassBoostWrapper"><input type="checkbox" id="checkBassBoost" /> <label for="checkBassBoost" data-i18n="thirdStep.bassboost">Boost des basses</label></span> <a href="#" data-toggle="modal" data-target="#bassBoostSettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
                                         </div>
                                         <div class="checkbox" id="checkLowpassGroup">
-                                            <span id="checkLowpassWrapper"><input type="checkbox" id="checkLowpass" /> <label for="checkLowpass" data-i18n="thirdStep.lowpass">Filtre passe-bas</label></span>
+                                            <span id="checkLowpassWrapper"><input type="checkbox" id="checkLowpass" /> <label for="checkLowpass" data-i18n="thirdStep.lowpass">Filtre passe-bas</label></span> <a href="#" data-toggle="modal" data-target="#lowPassSettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
                                         </div>
                                         <div class="checkbox" id="checkHighpassGroup">
-                                            <span id="checkHighpassWrapper"><input type="checkbox" id="checkHighpass" /> <label for="checkHighpass" data-i18n="thirdStep.highpass">Filtre passe-haut</label></span>
+                                            <span id="checkHighpassWrapper"><input type="checkbox" id="checkHighpass" /> <label for="checkHighpass" data-i18n="thirdStep.highpass">Filtre passe-haut</label></span> <a href="#" data-toggle="modal" data-target="#highPassSettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -208,7 +208,7 @@
                 <div class="modal-body">
                     <p><span data-i18n="limiterSettings.lead">Vous pouvez régler ici les paramètres du limiteur. Les paramètres par défaut ont été testés sur de nombreux fichiers audios et fonctionnent dans la plupart des cas.</span></p>
                     <fieldset>
-                        <form action="" method="post" class="col-lg-12 form-horizontal">
+                        <form action="" method="post" onsubmit="setLimiterValues(); return false;" class="col-lg-12 form-horizontal">
                             <div class="form-group row">
                                 <label data-i18n="limiterSettings.preGain" for="preGain" class="col-lg-4 col-form-label">Pré-gain (en dB) :</label>
                                 <div class="col-lg-6">
@@ -266,9 +266,9 @@
                 <div class="modal-body">
                     <p><span data-i18n="bassBoostSettings.lead">Vous pouvez régler ici les paramètres du booster des basses.</span></p>
                     <fieldset>
-                        <form action="" method="post" class="col-lg-12 form-horizontal">
+                        <form action="" method="post" onsubmit="validateBassBoostValues(); return false;" class="col-lg-12 form-horizontal">
                             <div class="form-group row">
-                                <label data-i18n="bassBoostSettings.frequencyBooster" for="preGfrequencyBoosterain" class="col-lg-4 col-form-label">Fréquence de boost (booste les fréquences égales ou en dessous - en Hz) :</label>
+                                <label data-i18n="bassBoostSettings.frequencyBooster" for="frequencyBooster" class="col-lg-4 col-form-label">Fréquence de boost (booste les fréquences égales ou en dessous - en Hz) :</label>
                                 <div class="col-lg-6">
                                     <input type="number" class="form-control" name="frequencyBooster" id="frequencyBooster" step="1" min="0">
                                 </div>
@@ -297,6 +297,62 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="validateBassBoostValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
                     <button type="button" class="btn btn-danger" onclick="resetBassBoostValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id="highPassSettings" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" data-i18n="highPassSettings.title">Paramètres du filtre passe-haut</h4>
+                </div>
+                <div class="modal-body">
+                    <p><span data-i18n="highPassSettings.lead">Vous pouvez régler ici les paramètres du filtre passe-haut.</span></p>
+                    <fieldset>
+                        <form action="" method="post" onsubmit="validateHighPassValues(); return false;" class="col-lg-12 form-horizontal">
+                            <div class="form-group row">
+                                <label data-i18n="highPassSettings.frequencyHighPass" for="frequencyHighPass" class="col-lg-4 col-form-label">Fréquence de coupure (en Hz) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="frequencyHighPass" id="frequencyHighPass" step="1" min="0">
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="validateHighPassValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" onclick="resetHighPassValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id="lowPassSettings" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" data-i18n="lowPassSettings.title">Paramètres du filtre passe-bas</h4>
+                </div>
+                <div class="modal-body">
+                    <p><span data-i18n="lowPassSettings.lead">Vous pouvez régler ici les paramètres du filtre passe-bas.</span></p>
+                    <fieldset>
+                        <form action="" method="post" onsubmit="validateLowPassValues(); return false;" class="col-lg-12 form-horizontal">
+                            <div class="form-group row">
+                                <label data-i18n="lowPassSettings.frequencyLowPass" for="frequencyLowPass" class="col-lg-4 col-form-label">Fréquence de coupure (en Hz) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="frequencyLowPass" id="frequencyLowPass" step="1" min="0">
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="validateLowPassValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" onclick="resetLowPassValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>

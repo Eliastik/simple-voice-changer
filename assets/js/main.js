@@ -204,6 +204,63 @@ function resetBassBoostValues() {
 }
 // End of Bass boost options
 
+// Low and high pass filters options
+var highLowPassOptions = {
+    highFrequency: 3500,
+    lowFrequency: 3500
+};
+
+function loadHighPassValues() {
+    document.getElementById("frequencyHighPass").value = highLowPassOptions.highFrequency;
+}
+
+function setHighPassFilter() {
+    if(highPassFilter != null) {
+        highPassFilter.frequency.value = highLowPassOptions.highFrequency;
+    }
+
+    loadHighPassValues();
+}
+
+function validateHighPassValues() {
+    var frequencyHighPass = document.getElementById("frequencyHighPass").value;
+
+    if(frequencyHighPass != null && frequencyHighPass.trim() != "" && !isNaN(frequencyHighPass) && frequencyHighPass >= 0) highLowPassOptions.highFrequency = frequencyHighPass;
+
+    setHighPassFilter();
+}
+
+function resetHighPassValues() {
+    highLowPassOptions.highFrequency = 3500;
+    setHighPassFilter();
+}
+
+function loadLowPassValues() {
+    document.getElementById("frequencyLowPass").value = highLowPassOptions.lowFrequency;
+}
+
+function setLowPassFilter() {
+    if(lowPassFilter != null) {
+        lowPassFilter.frequency.value = highLowPassOptions.lowFrequency;
+    }
+
+    loadLowPassValues();
+}
+
+function validateLowPassValues() {
+    var frequencyLowPass = document.getElementById("frequencyLowPass").value;
+
+    if(frequencyLowPass != null && frequencyLowPass.trim() != "" && !isNaN(frequencyLowPass) && frequencyLowPass >= 0) highLowPassOptions.lowFrequency = frequencyLowPass;
+
+    setLowPassFilter();
+}
+
+function resetLowPassValues() {
+    highLowPassOptions.lowFrequency = 3500;
+    setLowPassFilter();
+}
+// End of low and high pass filters options
+
 // Real time functions
 var limiterProcessor = null;
 var bitCrusher = null;
@@ -275,6 +332,7 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         if(telephonizer != null && telephonizer["output"] != null) telephonizer["output"].disconnect();
         if(convolver != null) convolver.disconnect();
         if(previousSountouchNode != null) previousSountouchNode.disconnect();
+        if(limiterProcessor != null) limiterProcessor.onaudioprocess = null;
         // End of Disconnecte all previous nodes
 
         if(bitCrush) {
@@ -286,13 +344,13 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         if(lowpass) {
             lowPassFilter = offlineContext.createBiquadFilter();
             lowPassFilter.type = "lowpass";
-            lowPassFilter.frequency.value = 3500;
+            lowPassFilter.frequency.value = highLowPassOptions.lowFrequency;
         }
 
         if(highpass) {
             highPassFilter = offlineContext.createBiquadFilter();
             highPassFilter.type = "highpass";
-            highPassFilter.frequency.value = 3500;
+            highPassFilter.frequency.value = highLowPassOptions.highFrequency;
         }
 
         if(bassboost) {
@@ -307,11 +365,11 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
             bassBoostFilterHighFreq.connect(bassBoostFilter);
         }
 
-        limiterProcessor.onaudioprocess = passAll;
-
         if(enableLimiter) {
             limiter.reset();
             limiterProcessor.onaudioprocess = limiter.limit;
+        } else {
+            limiterProcessor.onaudioprocess = passAll;
         }
 
         if(phone) {
@@ -1150,7 +1208,11 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
 function saveBuffer(buffer) {
     if(typeof(Worker) !== "undefined" && Worker != null) {
-        var worker = new Worker("assets/js/recorderWorker.js");
+        try {
+            var worker = new Worker("assets/js/recorderWorker.js");
+        } catch(e) {
+            alert(window.i18next.t("script.workersErrorLoading"));
+        }
     } else {
         if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.workersNotSupported"));
         return false;
@@ -1217,6 +1279,8 @@ function validSettings() {
 
     loadLimiterValues();
     loadBassBoostValues();
+    loadHighPassValues();
+    loadLowPassValues();
 
     if(isNaN(tmp_pitch) || tmp_pitch == "" || tmp_pitch <= 0 || tmp_pitch > 5) {
         alert(window.i18next.t("script.invalidPitch"));
@@ -1255,6 +1319,8 @@ function validModify(play, save) {
 
     loadLimiterValues();
     loadBassBoostValues();
+    loadHighPassValues();
+    loadLowPassValues();
 
     if(validSettings()) {
         launchStop();
@@ -1413,6 +1479,9 @@ function randomModify() {
 
     slider.setValue(randomRange(0.1, 5.0));
     slider2.setValue(randomRange(0.1, 5.0));
+
+    validSettings();
+    validConnectNodes();
 }
 
 var recorderVoice = new VoiceRecorder();
