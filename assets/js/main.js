@@ -112,7 +112,7 @@ function resetLimiterValues() {
 // End of limiter settings
 
 // Soundtouch settings
-var st = new soundtouch.SoundTouch(context.sampleRate);
+var st = new soundtouch.SoundTouch(44100);
 var soundtouchFilter = new soundtouch.SimpleFilter();
 var sountouchBuffer = null;
 var sountouchNode = null;
@@ -125,7 +125,12 @@ slider.on("slide", function(value) {
     pitchAudio = value;
 });
 
-slider.on("click", function(value) {
+slider.on("slideStart", function(value) {
+    st.pitch = value;
+    pitchAudio = value;
+});
+
+slider.on("slideStop", function(value) {
     st.pitch = value;
     pitchAudio = value;
 });
@@ -135,11 +140,69 @@ slider2.on("slide", function(value) {
     speedAudio = value;
 });
 
-slider2.on("click", function(value) {
+slider2.on("slideStart", function(value) {
+    st.tempo = value;
+    speedAudio = value;
+});
+
+slider2.on("slideStop", function(value) {
     st.tempo = value;
     speedAudio = value;
 });
 // End of Soundtouch settings
+
+// Bass boost options
+var bassBoostOptions = {
+    frequencyBooster: 200, // Boost frequency equal or below
+    dbBooster: 15,
+    frequencyReduce: 200, // Reduce frequency equal or above
+    dbReduce: -2
+};
+
+function loadBassBoostValues() {
+    document.getElementById("frequencyBooster").value = bassBoostOptions.frequencyBooster;
+    document.getElementById("dbBooster").value = bassBoostOptions.dbBooster;
+    document.getElementById("frequencyReduce").value = bassBoostOptions.frequencyReduce;
+    document.getElementById("dbReduce").value = bassBoostOptions.dbReduce;
+}
+
+function setBassBoostFilter() {
+    if(bassBoostFilter != null) {
+        bassBoostFilter.frequency.value = bassBoostOptions.frequencyBooster;
+        bassBoostFilter.gain.value = bassBoostOptions.dbBooster;
+    }
+
+    if(bassBoostFilterHighFreq != null) {
+        bassBoostFilterHighFreq.frequency.value = bassBoostOptions.frequencyReduce;
+        bassBoostFilterHighFreq.gain.value = bassBoostOptions.dbReduce;
+    }
+
+    loadBassBoostValues();
+}
+
+function validateBassBoostValues() {
+    var frequencyBooster = document.getElementById("frequencyBooster").value;
+    var dbBooster = document.getElementById("dbBooster").value;
+    var frequencyReduce = document.getElementById("frequencyReduce").value;
+    var dbReduce = document.getElementById("dbReduce").value;
+
+    if(frequencyBooster != null && frequencyBooster.trim() != "" && !isNaN(frequencyBooster) && frequencyBooster >= 0) bassBoostOptions.frequencyBooster = frequencyBooster;
+    if(dbBooster != null && dbBooster.trim() != "" && !isNaN(dbBooster)) bassBoostOptions.dbBooster = dbBooster;
+    if(frequencyReduce != null && frequencyReduce.trim() != "" && !isNaN(frequencyReduce) && frequencyReduce >= 0) bassBoostOptions.frequencyReduce = frequencyReduce;
+    if(dbReduce != null && dbReduce.trim() != "" && !isNaN(dbReduce)) bassBoostOptions.dbReduce = dbReduce;
+
+    setBassBoostFilter();
+}
+
+function resetBassBoostValues() {
+    bassBoostOptions.frequencyBooster = 200;
+    bassBoostOptions.dbBooster = 15;
+    bassBoostOptions.frequencyReduce = 200;
+    bassBoostOptions.dbReduce = -2;
+
+    setBassBoostFilter();
+}
+// End of Bass boost options
 
 // Real time functions
 var limiterProcessor = null;
@@ -191,18 +254,7 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
     // End of default parameters
 
     if('AudioContext' in window && !audioContextNotSupported) {
-        // Disconnect all previous nodes
-        if(bitCrusher != null) bitCrusher.disconnect();
-        if(lowPassFilter != null) lowPassFilter.disconnect();
-        if(highPassFilter != null) highPassFilter.disconnect();
-        if(bassBoostFilter != null) bassBoostFilter.disconnect();
-        if(bassBoostFilterHighFreq != null) bassBoostFilterHighFreq.disconnect();
-        if(delayFilter != null && delayFilter["output"] != null) delayFilter["output"].disconnect();
-        if(telephonizer != null && telephonizer["output"] != null) telephonizer["output"].disconnect();
-        if(convolver != null) convolver.disconnect();
-        if(sountouchNode != null) sountouchNode.disconnect();
-        // End of Disconnecte all previous nodes
-
+        var previousSountouchNode = sountouchNode;
         var buffer = audio_processing_buffer;
 
         // Soundtouch settings
@@ -212,6 +264,18 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         sountouchNode = soundtouch.getWebAudioNode(offlineContext, soundtouchFilter);
         var node = sountouchNode;
         // End of Soundtouch settings
+
+        // Disconnect all previous nodes
+        if(bitCrusher != null) bitCrusher.disconnect();
+        if(lowPassFilter != null) lowPassFilter.disconnect();
+        if(highPassFilter != null) highPassFilter.disconnect();
+        if(bassBoostFilter != null) bassBoostFilter.disconnect();
+        if(bassBoostFilterHighFreq != null) bassBoostFilterHighFreq.disconnect();
+        if(delayFilter != null && delayFilter["output"] != null) delayFilter["output"].disconnect();
+        if(telephonizer != null && telephonizer["output"] != null) telephonizer["output"].disconnect();
+        if(convolver != null) convolver.disconnect();
+        if(previousSountouchNode != null) previousSountouchNode.disconnect();
+        // End of Disconnecte all previous nodes
 
         if(bitCrush) {
             bitCrusher = getBitCrusher(offlineContext, 8.0, 0.15, BUFFER_SIZE, buffer.numberOfChannels);
@@ -234,18 +298,18 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         if(bassboost) {
             bassBoostFilter = offlineContext.createBiquadFilter();
             bassBoostFilter.type = "lowshelf";
-            bassBoostFilter.frequency.value = 200;
-            bassBoostFilter.gain.value = 15;
+            bassBoostFilter.frequency.value = bassBoostOptions.frequencyBooster;
+            bassBoostFilter.gain.value = bassBoostOptions.dbBooster;
             bassBoostFilterHighFreq = offlineContext.createBiquadFilter();
             bassBoostFilterHighFreq.type = "highshelf";
-            bassBoostFilterHighFreq.frequency.value = 200;
-            bassBoostFilterHighFreq.gain.value = -2;
+            bassBoostFilterHighFreq.frequency.value = bassBoostOptions.frequencyReduce;
+            bassBoostFilterHighFreq.gain.value = bassBoostOptions.dbReduce;
             bassBoostFilterHighFreq.connect(bassBoostFilter);
         }
 
-        if(!enableLimiter) {
-            limiterProcessor.onaudioprocess = passAll;
-        } else {
+        limiterProcessor.onaudioprocess = passAll;
+
+        if(enableLimiter) {
             limiter.reset();
             limiterProcessor.onaudioprocess = limiter.limit;
         }
@@ -1152,6 +1216,7 @@ function validSettings() {
     }
 
     loadLimiterValues();
+    loadBassBoostValues();
 
     if(isNaN(tmp_pitch) || tmp_pitch == "" || tmp_pitch <= 0 || tmp_pitch > 5) {
         alert(window.i18next.t("script.invalidPitch"));
@@ -1189,6 +1254,7 @@ function validModify(play, save) {
     // End of default parameters
 
     loadLimiterValues();
+    loadBassBoostValues();
 
     if(validSettings()) {
         launchStop();

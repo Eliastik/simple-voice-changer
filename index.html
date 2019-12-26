@@ -145,7 +145,7 @@
                                             <span id="checkBitCrusherWrapper"><input type="checkbox" id="checkBitCrusher" /> <label for="checkBitCrusher" data-i18n="thirdStep.bitCrusher">Effet 8 bits</label></span>
                                         </div>
                                         <div class="checkbox" id="checkBassBoostGroup">
-                                            <span id="checkBassBoostWrapper"><input type="checkbox" id="checkBassBoost" /> <label for="checkBassBoost" data-i18n="thirdStep.bassboost">Boost des basses</label></span>
+                                            <span id="checkBassBoostWrapper"><input type="checkbox" id="checkBassBoost" /> <label for="checkBassBoost" data-i18n="thirdStep.bassboost">Boost des basses</label></span> <a href="#" data-toggle="modal" data-target="#bassBoostSettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
                                         </div>
                                         <div class="checkbox" id="checkLowpassGroup">
                                             <span id="checkLowpassWrapper"><input type="checkbox" id="checkLowpass" /> <label for="checkLowpass" data-i18n="thirdStep.lowpass">Filtre passe-bas</label></span>
@@ -161,6 +161,7 @@
                                 <div class="checkbox">
                                     <input type="checkbox" id="checkCompa" onclick="compaMode();" /> <label for="checkCompa" data-i18n="thirdStep.compatibilityMode">Mode de compatibilité (cocher si aucun son n'est diffusé)</label><br />
                                     <span class="small ml" id="compatAutoDetected" data-i18n="thirdStep.compatibilityModeAuto">Détecté et activé automatiquement</span>
+                                    <span class="small ml" data-i18n="thirdStep.infosCompatibilityMode">Ce mode vous permet également de modifier le son en temps réel</span>
                                 </div>
                                 <div class="mt">
                                     <button class="btn btn-primary" type="button" id="validInputModify" onclick="validModify(false, false);" disabled="disabled"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
@@ -179,7 +180,8 @@
                     <form class="center">
                         <div class="mb big" id="processingSave">
                             <i class="fa fa-refresh fa-spin fa-fw"></i> <span class="bold" data-i18n="lastStep.saving">Enregistrement en cours… Veuillez patienter. Votre modification sera téléchargée sous peu.</span><br />
-                            <span class="bold small"><span data-i18n="lastStep.delay">L'enregistrement se terminera dans environ</span> <span id="timeFinishedDownload">00:00</span>. <span data-i18n="lastStep.delayInfo">Il y a un délai car le mode de compatibilité est activé.</span></span>
+                            <span class="bold small"><span data-i18n="lastStep.delay">L'enregistrement se terminera dans environ</span> <span id="timeFinishedDownload">00:00</span>. <span data-i18n="lastStep.delayInfo">Il y a un délai car le mode de compatibilité est activé.</span></span><br />
+                            <span class="bold small" data-i18n="lastStep.infosCompatibilityMode">Vous pouvez également modifier le son enregistré en temps réel.</span>
                             <div class="progress progress-striped progressCompact mt active">
                                 <div id="progressProcessingSave" class="progress-bar" style="width: 0%"></div>
                             </div>
@@ -249,6 +251,52 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="setLimiterValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
                     <button type="button" class="btn btn-danger" onclick="resetLimiterValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id="bassBoostSettings" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" data-i18n="bassBoostSettings.title">Paramètres du booster des basses</h4>
+                </div>
+                <div class="modal-body">
+                    <p><span data-i18n="bassBoostSettings.lead">Vous pouvez régler ici les paramètres du booster des basses.</span></p>
+                    <fieldset>
+                        <form action="" method="post" class="col-lg-12 form-horizontal">
+                            <div class="form-group row">
+                                <label data-i18n="bassBoostSettings.frequencyBooster" for="preGfrequencyBoosterain" class="col-lg-4 col-form-label">Fréquence de boost (booste les fréquences égales ou en dessous - en Hz) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="frequencyBooster" id="frequencyBooster" step="1" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="bassBoostSettings.dbBooster" for="dbBooster" class="col-lg-4 col-form-label">Gain de boost (en dB) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="dbBooster" id="dbBooster" step="0.1">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="bassBoostSettings.frequencyReduce" for="frequencyReduce" class="col-lg-4 col-form-label">Fréquence d'atténuation (atténue les fréquences au dessus - en Hz) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="frequencyReduce" id="frequencyReduce" step="1" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="bassBoostSettings.dbReduce" for="dbReduce" class="col-lg-4 col-form-label">Gain d'atténuation (en dB) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="dbReduce" id="dbReduce" step="0.1">
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="validateBassBoostValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" onclick="resetBassBoostValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>

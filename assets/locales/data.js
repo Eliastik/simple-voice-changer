@@ -102,6 +102,7 @@
      "limiter": "Limiteur (réduit la distorsion/saturation, recommandé)",
      "compatibilityMode": "Mode de compatibilité (cocher si aucun son n'est diffusé)",
      "compatibilityModeAuto": "Détecté et activé automatiquement",
+     "infosCompatibilityMode": "Ce mode vous permet également de modifier le son en temps réel",
      "validate": "Valider",
      "random": "Réglages au hasard",
      "reset": "Réinitialiser"
@@ -113,6 +114,7 @@
      "saving": "Enregistrement en cours… Veuillez patienter. Votre modification sera téléchargée sous peu.",
      "delay": "L'enregistrement se terminera dans environ",
      "delayInfo": "Il y a un délai car le mode de compatibilité est activé.",
+     "infosCompatibilityMode": "Vous pouvez également modifier le son enregistré en temps réel.",
      "save": "Enregistrer",
      "cancel": "Annuler"
    },
@@ -143,6 +145,14 @@
       "releaseTime": "Temps de release (en secondes) :",
       "threshold": "Seuil (en dB) :",
       "lookAheadTime": "Temps de look-ahead (en secondes) :"
+   },
+   "bassBoostSettings": {
+      "title": "Paramètres du booster des basses",
+      "lead": "Vous pouvez régler ici les paramètres du booster des basses.",
+      "frequencyBooster": "Fréquence de boost (booste les fréquences égales ou en dessous - en Hz) :",
+      "dbBooster": "Gain de boost (en dB) :",
+      "frequencyReduce": "Fréquence d'atténuation (atténue les fréquences au dessus - en Hz) :",
+      "dbReduce": "Gain d'atténuation (en dB) :"
    },
    "script": {
      "errorAudioContext": "Une erreur est survenue lors de la création d'un contexte audio (l'API Web Audio semble ne pas être supportée) :",
@@ -246,6 +256,7 @@ i18next.addResourceBundle("en", "translation", {
     "limiter": "Limiter (reduces distortion/saturation, recommended)",
     "compatibilityMode": "Compatibility mode (check if no sound is played)",
     "compatibilityModeAuto": "Automatically detected and enabled",
+    "infosCompatibilityMode": "This mode also allows you to edit the sound in real time",
     "validate": "Validate",
     "random": "Random settings",
     "reset": "Reset"
@@ -257,6 +268,7 @@ i18next.addResourceBundle("en", "translation", {
     "saving": "Saving… Please wait. Your changes will be downloaded shortly.",
     "delay": "The save will end in approximately",
     "delayInfo": "There is a delay because the compatibility mode is enabled.",
+    "infosCompatibilityMode": "You can also edit the saved sound in real time.",
     "save": "Save",
     "cancel": "Cancel"
   },
@@ -287,6 +299,14 @@ i18next.addResourceBundle("en", "translation", {
      "releaseTime": "Release time (in seconds):",
      "threshold": "Threshold (in dB):",
      "lookAheadTime": "Look-ahead time (in seconds):"
+  },
+  "bassBoostSettings": {
+     "title": "Bass boost settings",
+     "lead": "Here you can set the bass boost settings.",
+     "frequencyBooster": "Boost frequency (boosts equal frequencies or below - in Hz):",
+     "dbBooster": "Boost gain (in dB):",
+     "frequencyReduce": "Attenuation frequency (attenuates frequencies above - in Hz):",
+     "dbReduce": "Attenuation gain (in dB):"
   },
   "script": {
     "errorAudioContext": "Error when creating Audio Context (the Web Audio API seem to be unsupported):",
