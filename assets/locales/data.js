@@ -154,15 +154,21 @@
       "frequencyReduce": "Fréquence d'atténuation (atténue les fréquences au dessus - en Hz) :",
       "dbReduce": "Gain d'atténuation (en dB) :"
    },
-   "highPassSettings" : {
+   "highPassSettings": {
       "title": "Paramètres du filtre passe-haut",
       "lead": "Vous pouvez régler ici les paramètres du filtre passe-haut.",
       "frequencyHighPass": "Fréquence de coupure (en Hz) :"
    },
-   "lowPassSettings" : {
+   "lowPassSettings": {
       "title": "Paramètres du filtre passe-bas",
       "lead": "Vous pouvez régler ici les paramètres du filtre passe-bas.",
       "frequencyLowPass": "Fréquence de coupure (en Hz) :"
+   },
+   "delaySettings": {
+      "title": "Paramètres du filtre d'écho",
+      "lead": "Vous pouvez régler ici les paramètres du filtre d'écho.",
+      "delaySeconds": "Délai (en secondes) :",
+      "delayGain": "Gain (en dB) :"
    },
    "script": {
      "errorAudioContext": "Une erreur est survenue lors de la création d'un contexte audio (l'API Web Audio semble ne pas être supportée) :",
@@ -328,6 +334,12 @@ i18next.addResourceBundle("en", "translation", {
      "title": "Low-pass filter settings",
      "lead": "Here you can set the low-pass filter settings.",
      "frequencyLowPass": "Cutoff frequency (in Hz):"
+  },
+  "delaySettings": {
+     "title": "Echo filter settings",
+     "lead": "Here you can set the echo filter settings.",
+     "delaySeconds": "Delay (in seconds):",
+     "delayGain": "Gain (in dB):"
   },
   "script": {
     "errorAudioContext": "Error when creating Audio Context (the Web Audio API seem to be unsupported):",

@@ -71,6 +71,18 @@ if('AudioContext' in window) {
 navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null);
 // End of the default variables
 
+// Libs
+String.prototype.strcmp = function(str) {
+    return ((this == str) ? 0 : ((this > str) ? 1 : -1));
+};
+
+if(!String.prototype.trim) {
+    String.prototype.trim = function () {
+        return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+    };
+}
+// End libs
+
 // Limiter settings
 function loadLimiterValues() {
     document.getElementById("preGain").value = limiter.preGain;
@@ -260,6 +272,48 @@ function resetLowPassValues() {
     setLowPassFilter();
 }
 // End of low and high pass filters options
+var delayOptions = {
+    delay: 0.20,
+    gain: 0.75
+};
+
+function loadDelayValues() {
+    document.getElementById("delaySeconds").value = delayOptions.delay;
+    document.getElementById("delayGain").value = delayOptions.gain;
+}
+
+function setDelayFilter() {
+    if(delayFilter != null) {
+        if(delayFilter["input"] != null) {
+            delayFilter["input"].gain.value = delayOptions.gain;
+        }
+
+        if(delayFilter["output"] != null) {
+            delayFilter["output"].delayTime.value = delayOptions.delay;
+        }
+    }
+
+    loadDelayValues();
+}
+
+function validateDelayValues() {
+    var delaySeconds = document.getElementById("delaySeconds").value;
+    var delayGain = document.getElementById("delayGain").value;
+
+    if(delaySeconds != null && delaySeconds.trim() != "" && !isNaN(delaySeconds) && delaySeconds >= 0 && delaySeconds <= 179) delayOptions.delay = delaySeconds;
+    if(delayGain != null && delayGain.trim() != "" && !isNaN(delayGain)) delayOptions.gain = delayGain;
+
+    setDelayFilter();
+}
+
+function resetDelayValues() {
+    delayOptions.delay = 0.20;
+    delayOptions.gain = 0.75;
+    setDelayFilter();
+}
+// Delay options
+
+// End of delay options
 
 // Real time functions
 var limiterProcessor = null;
@@ -379,7 +433,7 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         var output = limiterProcessor;
 
         if(echo) {
-            delayFilter = getDelay(offlineContext, 0.20, 0.75);
+            delayFilter = getDelay(offlineContext, delayOptions.delay, delayOptions.gain);
             delayFilter["output"].connect(output);
             output = delayFilter["input"];
         }
@@ -480,18 +534,6 @@ document.getElementById("checkBitCrusher").onchange = function() {
     validConnectNodes();
 };
 // End of real time functions
-
-// Libs
-String.prototype.strcmp = function(str) {
-    return ((this == str) ? 0 : ((this > str) ? 1 : -1));
-};
-
-if(!String.prototype.trim) {
-    String.prototype.trim = function () {
-        return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
-    };
-}
-// End libs
 
 // Classes
 function BufferPlayer() {
@@ -929,7 +971,7 @@ function getTelephonizer(context) {
 }
 
 function getDelay(context, delay, gain) {
-    var delayNode = context.createDelay();
+    var delayNode = context.createDelay(179);
     delayNode.delayTime.value = delay;
     dtime = delayNode;
 
@@ -1281,6 +1323,7 @@ function validSettings() {
     loadBassBoostValues();
     loadHighPassValues();
     loadLowPassValues();
+    loadDelayValues();
 
     if(isNaN(tmp_pitch) || tmp_pitch == "" || tmp_pitch <= 0 || tmp_pitch > 5) {
         alert(window.i18next.t("script.invalidPitch"));
@@ -1321,6 +1364,7 @@ function validModify(play, save) {
     loadBassBoostValues();
     loadHighPassValues();
     loadLowPassValues();
+    loadDelayValues();
 
     if(validSettings()) {
         launchStop();

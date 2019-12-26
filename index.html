@@ -128,7 +128,7 @@
                                             <span id="checkReverbWrapper"><input type="checkbox" id="checkReverb" disabled="disabled" /> <label for="checkReverb" data-i18n="thirdStep.reverb">Réverbération</label></span>
                                         </div>
                                         <div class="checkbox" id="checkEchoGroup">
-                                            <span id="checkEchoWrapper"><input type="checkbox" id="checkEcho" /> <label for="checkEcho" data-i18n="thirdStep.echo">Écho</label></span>
+                                            <span id="checkEchoWrapper"><input type="checkbox" id="checkEcho" /> <label for="checkEcho" data-i18n="thirdStep.echo">Écho</label></span> <a href="#" data-toggle="modal" data-target="#delaySettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
                                         </div>
                                         <div class="checkbox disabled" id="checkVocodeGroup">
                                             <span id="checkVocodeWrapper"><input type="checkbox" id="checkVocode" disabled="disabled" /> <label for="checkVocode" data-i18n="thirdStep.vocoder">Vocoder (voix robotique)</label></span>
@@ -353,6 +353,40 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="validateLowPassValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
                     <button type="button" class="btn btn-danger" onclick="resetLowPassValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id="delaySettings" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" data-i18n="delaySettings.title">Paramètres du filtre d'écho</h4>
+                </div>
+                <div class="modal-body">
+                    <p><span data-i18n="delaySettings.lead">Vous pouvez régler ici les paramètres du filtre d'écho.</span></p>
+                    <fieldset>
+                        <form action="" method="post" onsubmit="validateDelayValues(); return false;" class="col-lg-12 form-horizontal">
+                            <div class="form-group row">
+                                <label data-i18n="delaySettings.delaySeconds" for="delaySeconds" class="col-lg-4 col-form-label">Délai (en secondes) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="delaySeconds" id="delaySeconds" step="0.01" min="0" max="179">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label data-i18n="delaySettings.delayGain" for="delayGain" class="col-lg-4 col-form-label">Gain (en dB) :</label>
+                                <div class="col-lg-6">
+                                    <input type="number" class="form-control" name="delayGain" id="delayGain" step="0.001" min="0">
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="validateDelayValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" onclick="resetDelayValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>
