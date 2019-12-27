@@ -331,6 +331,7 @@ var bassBoostFilterHighFreq = null;
 var telephonizer = null;
 var delayFilter = null;
 var convolver = null;
+var gainNode = null;
 
 function calcCompaModePlayerTime() {
     if(compaAudioAPI) {
@@ -393,6 +394,9 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         // End of Soundtouch settings
 
         // Disconnect all previous nodes
+        if(limiterProcessor != null) limiterProcessor.onaudioprocess = null;
+        if(previousSountouchNode != null) previousSountouchNode.disconnect();
+        if(gainNode != null) gainNode.disconnect();
         if(bitCrusher != null) bitCrusher.disconnect();
         if(lowPassFilter != null) lowPassFilter.disconnect();
         if(highPassFilter != null) highPassFilter.disconnect();
@@ -401,9 +405,18 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         if(delayFilter != null && delayFilter["output"] != null) delayFilter["output"].disconnect();
         if(telephonizer != null && telephonizer["output"] != null) telephonizer["output"].disconnect();
         if(convolver != null) convolver.disconnect();
-        if(previousSountouchNode != null) previousSountouchNode.disconnect();
-        if(limiterProcessor != null) limiterProcessor.onaudioprocess = null;
         // End of Disconnecte all previous nodes
+
+        // Gain node
+        node.connect(gainNode);
+        node = gainNode;
+
+        if(enableLimiter) {
+            limiter.reset();
+            limiterProcessor.onaudioprocess = limiter.limit;
+        } else {
+            limiterProcessor.onaudioprocess = passAll;
+        }
 
         if(bitCrush) {
             bitCrusher = getBitCrusher(offlineContext, 8.0, 0.15, BUFFER_SIZE, buffer.numberOfChannels);
@@ -433,13 +446,6 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
             bassBoostFilterHighFreq.frequency.value = bassBoostOptions.frequencyReduce;
             bassBoostFilterHighFreq.gain.value = bassBoostOptions.dbReduce;
             bassBoostFilterHighFreq.connect(bassBoostFilter);
-        }
-
-        if(enableLimiter) {
-            limiter.reset();
-            limiterProcessor.onaudioprocess = limiter.limit;
-        } else {
-            limiterProcessor.onaudioprocess = passAll;
         }
 
         if(phone) {
@@ -1141,12 +1147,15 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 buffer = returnBuffer(audio_processing_buffer);
             }
 
-            st.clear();
             audio_processing_buffer = buffer;
+            st.clear();
             resetFilter(new soundtouch.WebAudioBufferSource(buffer), st);
 
             if(limiterProcessor != null) limiterProcessor.disconnect();
-            limiterProcessor = processing_context.createScriptProcessor(BUFFER_SIZE, audio_processing_buffer.numberOfChannels, audio_processing_buffer.numberOfChannels);
+            limiterProcessor = offlineContext.createScriptProcessor(BUFFER_SIZE, audio_processing_buffer.numberOfChannels, audio_processing_buffer.numberOfChannels);
+            gainNode = offlineContext.createGain();
+            gainNode.gain.setValueAtTime(0.0, offlineContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(1.0, offlineContext.currentTime + 0.2);
             validConnectNodes(BUFFER_SIZE);
 
             if(!comp) {
