@@ -64,7 +64,7 @@ img {
 .center {
     text-align: center;
 }
-#compa, #errorLoading, #compatAutoDetected, #secondEtape, #thirdEtape, #lastEtape, #firstEtapeBis, #errorLoadingSelectFile, #processingSave, #updateAvailable, #appUpdateDate, #errorLoadingReverb {
+#compa, #errorLoading, #compatAutoDetected, #secondEtape, #thirdEtape, #lastEtape, #firstEtapeBis, #errorLoadingSelectFile, #processingSave, #updateAvailable, #appUpdateDate, #errorLoadingReverb, #environmentAlreadyDownloaded {
     display: none;
 }
 #errorLoadingSelectFile, #errorRecord, #waitRecord {

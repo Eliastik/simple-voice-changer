@@ -174,7 +174,16 @@
       "title": "Paramètres du filtre réverbération",
       "lead": "Vous pouvez régler ici les paramètres du filtre réverbération.",
       "environmentReverb": "Environnement :",
+      "environmentSize": "Taille de l'environnement :",
+      "unit": {
+          "byte": "o",
+          "kilobyte": "Ko",
+          "megabyte": "Mo",
+          "gigabyte": "Go"
+      },
       "source": "Source",
+      "environmentSettingsInfos": "En cliquant sur Valider, l'environnement sera téléchargé temporairement sur votre appareil. Cela peut engendrer des frais.",
+      "environmentAlreadyDownloaded": "Cet environement a déjà été téléchargé.",
       "loading": "Chargement de l'environnement en cours… Veuillez patienter.",
       "error": "Une erreur est survenue lors du chargement de l'environnement. Veuillez réessayer."
    },
@@ -353,7 +362,16 @@ i18next.addResourceBundle("en", "translation", {
      "title": "Reverb filter settings",
      "lead": "Here you can set the reverb filter settings.",
      "environmentReverb": "Environment:",
+     "environmentSize": "Environment size:",
+     "unit": {
+         "byte": "B",
+         "kilobyte": "KB",
+         "megabyte": "MB",
+         "gigabyte": "GB"
+     },
      "source": "Source",
+     "environmentSettingsInfos": "By clicking on Validate, the environment will be temporarily downloaded to your device. This may incur fees.",
+     "environmentAlreadyDownloaded": "This environment has already been downloaded.",
      "loading": "Loading the environment… Please wait.",
      "error": "An error occurred while loading the environment. Try again."
   },

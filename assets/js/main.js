@@ -90,11 +90,12 @@ var delayOptions = {
 // Impulses responses settings
 var audio_impulse_response = {
     current: 1,
-    nbResponses: 5,
+    nbResponses: 7,
     loading: false,
     1: {
         title: "Medium Damping Cave E002 M2S",
         file: "assets/sounds/impulse_response.wav",
+        size: 1350278,
         buffer: null,
         link: "http://www.cksde.com/p_6_250.htm",
         addDuration: 2
@@ -102,6 +103,7 @@ var audio_impulse_response = {
     2: {
         title: "The Dixon Studio Theatre – University of York",
         file: "assets/sounds/impulse_response_2.wav",
+        size: 2304044,
         buffer: null,
         link: "https://openairlib.net/?page_id=452",
         addDuration: 3
@@ -109,6 +111,7 @@ var audio_impulse_response = {
     3: {
         title: "Creswell Crags",
         file: "assets/sounds/impulse_response_3.wav",
+        size: 1048220,
         buffer: null,
         link: "https://openairlib.net/?page_id=441",
         addDuration: 1
@@ -116,6 +119,7 @@ var audio_impulse_response = {
     4: {
         title: "Jack Lyons Concert Hall – University of York",
         file: "assets/sounds/impulse_response_4.wav",
+        size: 3072044,
         buffer: null,
         link: "https://openairlib.net/?page_id=571",
         addDuration: 4
@@ -123,9 +127,26 @@ var audio_impulse_response = {
     5: {
         title: "Stairway – University of York",
         file: "assets/sounds/impulse_response_5.wav",
+        size: 1728198,
         buffer: null,
         link: "https://openairlib.net/?page_id=678",
         addDuration: 3
+    },
+    6: {
+        title: "1st Baptist Church Nashville",
+        file: "assets/sounds/impulse_response_6.wav",
+        size: 2050318,
+        buffer: null,
+        link: "https://openairlib.net/?page_id=406",
+        addDuration: 4
+    },
+    7: {
+        title: "R1 Nuclear Reactor Hall",
+        file: "assets/sounds/impulse_response_7.wav",
+        size: 5840914,
+        buffer: null,
+        link: "https://openairlib.net/?page_id=626",
+        addDuration: 20
     }
 };
 // End of Impulses responses settings
@@ -585,6 +606,19 @@ function checkAudioBuffer(bufferName, type) {
         }
     }
 }
+
+// Convert bytes to KB/MB or GB
+function autoConvertByte(size) {
+    if(size >= 1000000000) {
+        return (size / 1000000000).toFixed(2).replace(".", ",") + " " + window.i18next.t("reverbSettings.unit.gigabyte");
+    } else if(size >= 1000000) {
+        return (size / 1000000).toFixed(2).replace(".", ",") + " " + window.i18next.t("reverbSettings.unit.megabyte");
+    } else if(size >= 1000) {
+        return (size / 1000).toFixed(2).replace(".", ",") + " " + window.i18next.t("reverbSettings.unit.kilobyte");
+    } else {
+        return size + " " + window.i18next.t("reverbSettings.unit.byte");
+    }
+}
 // End of Audio buffer loader
 
 // File loading functions
@@ -1003,13 +1037,24 @@ function loadReverbValues() {
     }
 
     document.getElementById("environmentReverb").value = current;
-    document.getElementById("linkEnvironmentReverb").href = audio_impulse_response[document.getElementById("environmentReverb").value].link;
-
+    
+    loadInfosCurrentEnvironment();
     reverbStateSettings();
 }
 
-document.getElementById("environmentReverb").onchange = function() {
+function loadInfosCurrentEnvironment() {
     document.getElementById("linkEnvironmentReverb").href = audio_impulse_response[document.getElementById("environmentReverb").value].link;
+    document.getElementById("environmentSize").innerHTML = autoConvertByte(audio_impulse_response[document.getElementById("environmentReverb").value].size);
+
+    if(audio_impulse_response[document.getElementById("environmentReverb").value].buffer != null) {
+        document.getElementById("environmentAlreadyDownloaded").style.display = "block";
+    } else {
+        document.getElementById("environmentAlreadyDownloaded").style.display = "none";
+    }
+}
+
+document.getElementById("environmentReverb").onchange = function() {
+    loadInfosCurrentEnvironment();
 };
 
 function setReverbFilter() {
