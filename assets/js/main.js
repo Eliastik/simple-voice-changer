@@ -16,27 +16,78 @@
  * You should have received a copy of the GNU General Public License
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
-// Settings
+// App infos
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
 var app_version = "1.2.1.2";
 var app_version_date = "07/26/2019";
 var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
-// End of the settings
+// End of app infos
 
 // Default variables
 var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_modulator, audioBufferPlay, compaModeStop, compaModeStopSave;
 
+// Default values
 speedAudio = pitchAudio = 1;
 reverbAudio = echoAudio = compaAudioAPI = vocoderAudio = bitCrusherAudio = lowpassAudio = highpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 limiterAudio = true;
 audio_principal_buffer = audio_processing_buffer = processing_context = audio_modulator = null;
-var sliderPlayAudio = new Slider("#playAudioRange");
-audioBufferPlay = new BufferPlayer(null);
-compaModeStop = function() { return false };
-compaModeStopSave = function() { return false };
+// End of the default values
 
-// Impulses responses
+// Create the sliders (pitch/speed)
+var slider = new Slider("#pitchRange", {
+    formatter: function(value) {
+        return value;
+    }
+});
+
+var slider2 = new Slider("#speedRange", {
+    formatter: function(value) {
+        return value;
+    }
+});
+// End of create the sliders (pitch/speed)
+
+// Create Soundtouch objects
+var st = new soundtouch.SoundTouch(44100);
+var soundtouchFilter = new soundtouch.SimpleFilter();
+var sountouchBuffer = null;
+var sountouchNode = null;
+st.pitch = 1.0;
+st.tempo = 1.0;
+st.rate = 1.0;
+// End of Create Soundtouch objects
+
+var limiter = new Limiter(); // Create an audio limiter
+var recorderVoice = new VoiceRecorder(); // Create a VoiceRecorder
+var sliderPlayAudio = new Slider("#playAudioRange"); // Slider used to control the time in the audio BufferPlayer
+var audioBufferPlay = new BufferPlayer(null); // Create a BufferPlayer
+
+var compaModeStop = function() { return false }; // Function called when the audio playing is stopped
+var compaModeStopSave = function() { return false }; // Function called when the audio saving is stopped
+
+// Filter settings
+// Bass boost settings
+var bassBoostOptions = {
+    frequencyBooster: 200, // Boost frequency equal or below
+    dbBooster: 15,
+    frequencyReduce: 200, // Reduce frequency equal or above
+    dbReduce: -2
+};
+// End of bass boost settings
+// High/low pass settings
+var highLowPassOptions = {
+    highFrequency: 3500,
+    lowFrequency: 3500
+};
+// End of high/low pass settings
+// Delay settings
+var delayOptions = {
+    delay: 0.20,
+    gain: 0.75
+};
+// End of delay settings
+// Impulses responses settings
 var audio_impulse_response = {
     current: 1,
     nbResponses: 5,
@@ -77,22 +128,10 @@ var audio_impulse_response = {
         addDuration: 3
     }
 };
-// End of Impulses responses
+// End of Impulses responses settings
+// End of the filter settings
 
-var slider = new Slider("#pitchRange", {
-    formatter: function(value) {
-        return value;
-    }
-});
-
-var slider2 = new Slider("#speedRange", {
-    formatter: function(value) {
-        return value;
-    }
-});
-
-var limiter = new Limiter(); // Audio limiter
-
+// Check compatibility with Web Audio API
 if('AudioContext' in window) {
     try {
         var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -111,7 +150,26 @@ if('AudioContext' in window) {
     var audioContextNotSupported = true;
 }
 
+// Polyfill navigator.getUserMedia
 navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null);
+
+// Check if an audio type is supported
+function checkAudio(type) {
+    if(!window.HTMLAudioElement) {
+        return false;
+    }
+
+    var audio = document.createElement("audio");
+
+    if(!audio.canPlayType(type)) {
+        return "no mp3 support";
+    }
+
+    return true;
+}
+
+// Check if audio mp3 is supported
+var checkAudio = checkAudio("audio/mp3");
 // End of the default variables
 
 // Libs
@@ -126,578 +184,10 @@ if(!String.prototype.trim) {
 }
 // End libs
 
-// Limiter settings
-function loadLimiterValues() {
-    document.getElementById("preGain").value = limiter.preGain;
-    document.getElementById("postGain").value = limiter.postGain;
-    document.getElementById("attackTime").value = limiter.attackTime;
-    document.getElementById("releaseTime").value = limiter.releaseTime;
-    document.getElementById("threshold").value = limiter.threshold;
-    document.getElementById("lookAheadTime").value = limiter.lookAheadTime;
-}
-
-function setLimiterValues() {
-    var preGain = document.getElementById("preGain").value;
-    var postGain = document.getElementById("postGain").value;
-    var attackTime = document.getElementById("attackTime").value;
-    var releaseTime = document.getElementById("releaseTime").value;
-    var threshold = document.getElementById("threshold").value;
-    var lookAheadTime = document.getElementById("lookAheadTime").value;
-
-    if(preGain != null && preGain.trim() != "" && !isNaN(preGain)) limiter.preGain = preGain;
-    if(postGain != null && postGain.trim() != "" && !isNaN(postGain)) limiter.postGain = postGain;
-    if(attackTime != null && attackTime.trim() != "" && !isNaN(attackTime) && attackTime >= 0) limiter.attackTime = attackTime;
-    if(releaseTime != null && releaseTime.trim() != "" && !isNaN(releaseTime) && releaseTime >= 0) limiter.releaseTime = releaseTime;
-    if(threshold != null && threshold.trim() != "" && !isNaN(threshold)) limiter.threshold = threshold;
-    if(lookAheadTime != null && lookAheadTime.trim() != "" && !isNaN(lookAheadTime) && lookAheadTime >= 0) limiter.lookAheadTime = lookAheadTime;
-
-    loadLimiterValues();
-}
-
-function resetLimiterValues() {
-    limiter.preGain = 0;
-    limiter.postGain = 0;
-    limiter.attackTime = 0;
-    limiter.releaseTime = 2;
-    limiter.threshold = -0.05;
-    limiter.lookAheadTime = 0.05;
-
-    loadLimiterValues();
-}
-// End of limiter settings
-
-// Soundtouch settings
-var st = new soundtouch.SoundTouch(44100);
-var soundtouchFilter = new soundtouch.SimpleFilter();
-var sountouchBuffer = null;
-var sountouchNode = null;
-st.pitch = 1.0;
-st.tempo = 1.0;
-st.rate = 1.0;
-
-slider.on("slide", function(value) {
-    st.pitch = value;
-    pitchAudio = value;
-    calcCompaModePlayerTime();
-});
-
-slider.on("slideStart", function(value) {
-    st.pitch = value;
-    pitchAudio = value;
-    calcCompaModePlayerTime();
-});
-
-slider.on("slideStop", function(value) {
-    st.pitch = value;
-    pitchAudio = value;
-    calcCompaModePlayerTime();
-});
-
-slider2.on("slide", function(value) {
-    st.tempo = value;
-    speedAudio = value;
-    calcCompaModePlayerTime();
-});
-
-slider2.on("slideStart", function(value) {
-    st.tempo = value;
-    speedAudio = value;
-    calcCompaModePlayerTime();
-});
-
-slider2.on("slideStop", function(value) {
-    st.tempo = value;
-    speedAudio = value;
-    calcCompaModePlayerTime();
-});
-// End of Soundtouch settings
-
-// Bass boost options
-var bassBoostOptions = {
-    frequencyBooster: 200, // Boost frequency equal or below
-    dbBooster: 15,
-    frequencyReduce: 200, // Reduce frequency equal or above
-    dbReduce: -2
-};
-
-function loadBassBoostValues() {
-    document.getElementById("frequencyBooster").value = bassBoostOptions.frequencyBooster;
-    document.getElementById("dbBooster").value = bassBoostOptions.dbBooster;
-    document.getElementById("frequencyReduce").value = bassBoostOptions.frequencyReduce;
-    document.getElementById("dbReduce").value = bassBoostOptions.dbReduce;
-}
-
-function setBassBoostFilter() {
-    if(bassBoostFilter != null) {
-        bassBoostFilter.frequency.value = bassBoostOptions.frequencyBooster;
-        bassBoostFilter.gain.value = bassBoostOptions.dbBooster;
-    }
-
-    if(bassBoostFilterHighFreq != null) {
-        bassBoostFilterHighFreq.frequency.value = bassBoostOptions.frequencyReduce;
-        bassBoostFilterHighFreq.gain.value = bassBoostOptions.dbReduce;
-    }
-
-    loadBassBoostValues();
-}
-
-function validateBassBoostValues() {
-    var frequencyBooster = document.getElementById("frequencyBooster").value;
-    var dbBooster = document.getElementById("dbBooster").value;
-    var frequencyReduce = document.getElementById("frequencyReduce").value;
-    var dbReduce = document.getElementById("dbReduce").value;
-
-    if(frequencyBooster != null && frequencyBooster.trim() != "" && !isNaN(frequencyBooster) && frequencyBooster >= 0) bassBoostOptions.frequencyBooster = frequencyBooster;
-    if(dbBooster != null && dbBooster.trim() != "" && !isNaN(dbBooster)) bassBoostOptions.dbBooster = dbBooster;
-    if(frequencyReduce != null && frequencyReduce.trim() != "" && !isNaN(frequencyReduce) && frequencyReduce >= 0) bassBoostOptions.frequencyReduce = frequencyReduce;
-    if(dbReduce != null && dbReduce.trim() != "" && !isNaN(dbReduce)) bassBoostOptions.dbReduce = dbReduce;
-
-    setBassBoostFilter();
-}
-
-function resetBassBoostValues() {
-    bassBoostOptions.frequencyBooster = 200;
-    bassBoostOptions.dbBooster = 15;
-    bassBoostOptions.frequencyReduce = 200;
-    bassBoostOptions.dbReduce = -2;
-
-    setBassBoostFilter();
-}
-// End of Bass boost options
-
-// Low and high pass filters options
-var highLowPassOptions = {
-    highFrequency: 3500,
-    lowFrequency: 3500
-};
-
-function loadHighPassValues() {
-    document.getElementById("frequencyHighPass").value = highLowPassOptions.highFrequency;
-}
-
-function setHighPassFilter() {
-    if(highPassFilter != null) {
-        highPassFilter.frequency.value = highLowPassOptions.highFrequency;
-    }
-
-    loadHighPassValues();
-}
-
-function validateHighPassValues() {
-    var frequencyHighPass = document.getElementById("frequencyHighPass").value;
-
-    if(frequencyHighPass != null && frequencyHighPass.trim() != "" && !isNaN(frequencyHighPass) && frequencyHighPass >= 0) highLowPassOptions.highFrequency = frequencyHighPass;
-
-    setHighPassFilter();
-}
-
-function resetHighPassValues() {
-    highLowPassOptions.highFrequency = 3500;
-    setHighPassFilter();
-}
-
-function loadLowPassValues() {
-    document.getElementById("frequencyLowPass").value = highLowPassOptions.lowFrequency;
-}
-
-function setLowPassFilter() {
-    if(lowPassFilter != null) {
-        lowPassFilter.frequency.value = highLowPassOptions.lowFrequency;
-    }
-
-    loadLowPassValues();
-}
-
-function validateLowPassValues() {
-    var frequencyLowPass = document.getElementById("frequencyLowPass").value;
-
-    if(frequencyLowPass != null && frequencyLowPass.trim() != "" && !isNaN(frequencyLowPass) && frequencyLowPass >= 0) highLowPassOptions.lowFrequency = frequencyLowPass;
-
-    setLowPassFilter();
-}
-
-function resetLowPassValues() {
-    highLowPassOptions.lowFrequency = 3500;
-    setLowPassFilter();
-}
-// End of low and high pass filters options
-
-// Delay options
-var delayOptions = {
-    delay: 0.20,
-    gain: 0.75
-};
-
-function loadDelayValues() {
-    document.getElementById("delaySeconds").value = delayOptions.delay;
-    document.getElementById("delayGain").value = delayOptions.gain;
-}
-
-function setDelayFilter() {
-    if(delayFilter != null) {
-        if(delayFilter["input"] != null) {
-            delayFilter["input"].gain.value = delayOptions.gain;
-        }
-
-        if(delayFilter["output"] != null) {
-            delayFilter["output"].delayTime.value = delayOptions.delay;
-        }
-    }
-
-    loadDelayValues();
-}
-
-function validateDelayValues() {
-    var delaySeconds = document.getElementById("delaySeconds").value;
-    var delayGain = document.getElementById("delayGain").value;
-
-    if(delaySeconds != null && delaySeconds.trim() != "" && !isNaN(delaySeconds) && delaySeconds >= 0 && delaySeconds <= 179) delayOptions.delay = delaySeconds;
-    if(delayGain != null && delayGain.trim() != "" && !isNaN(delayGain)) delayOptions.gain = delayGain;
-
-    setDelayFilter();
-}
-
-function resetDelayValues() {
-    delayOptions.delay = 0.20;
-    delayOptions.gain = 0.75;
-    setDelayFilter();
-}
-// End of delay options
-
-// Reverb options
-function reverbStateSettings() {
-    if(!audio_impulse_response.loading) {
-        document.getElementById("loadingReverb").style.display = "none";
-        document.getElementById("environmentReverb").classList.remove("disabled");
-        document.getElementById("environmentReverb").disabled = false;
-        document.getElementById("validReverbSettings").classList.remove("disabled");
-        document.getElementById("validReverbSettings").disabled = false;
-        document.getElementById("resetReverbSettings").classList.remove("disabled");
-        document.getElementById("resetReverbSettings").disabled = false;
-    } else {
-        document.getElementById("loadingReverb").style.display = "block";
-        document.getElementById("environmentReverb").classList.add("disabled");
-        document.getElementById("environmentReverb").disabled = true;
-        document.getElementById("validReverbSettings").classList.add("disabled");
-        document.getElementById("validReverbSettings").disabled = true;
-        document.getElementById("resetReverbSettings").classList.add("disabled");
-        document.getElementById("resetReverbSettings").disabled = true;
-    }
-}
-
-function loadReverbValues() {
-    var nb = audio_impulse_response.nbResponses;
-    var current = audio_impulse_response.current;
-    document.getElementById("environmentReverb").innerHTML = "";
-
-    for(var i = 1; i <= nb; i++) {
-        var option = document.createElement("option");
-        option.text = audio_impulse_response[i].title;
-        option.value = i;
-        document.getElementById("environmentReverb").add(option);
-    }
-
-    document.getElementById("environmentReverb").value = current;
-    document.getElementById("linkEnvironmentReverb").href = audio_impulse_response[document.getElementById("environmentReverb").value].link;
-
-    reverbStateSettings();
-}
-
-document.getElementById("environmentReverb").onchange = function() {
-    document.getElementById("linkEnvironmentReverb").href = audio_impulse_response[document.getElementById("environmentReverb").value].link;
-};
-
-function setReverbFilter() {
-    var buffer = audio_impulse_response[audio_impulse_response.current].buffer;
-
-    if(convolver != null && buffer != null) {
-        convolver.buffer = buffer;
-        calcCompaModePlayerTime();
-    }
-
-    loadReverbValues();
-}
-
-function validateReverbValues() {
-    if(!audio_impulse_response.loading) {
-        var value = document.getElementById("environmentReverb").value;
-    
-        if(value != null && value.trim() != "" && !isNaN(value) && value >= 1 && value <= audio_impulse_response.nbResponses) {
-            if(audio_impulse_response[value].buffer == null) {
-                audio_impulse_response.loading = true;
-                reverbStateSettings();
-
-                loadAudioAPI(audio_impulse_response[value].file, function(data, success) {
-                    audio_impulse_response[value].buffer = data;
-                    audio_impulse_response.loading = false;
-        
-                    if(success) {
-                        checkAudioBuffer(audio_impulse_response[value].buffer, "audio_impulse_response");
-                        audio_impulse_response.current = value;
-                    } else {
-                        document.getElementById("errorLoadingReverb").style.display = "block";
-                    }
-        
-                    setReverbFilter();
-                });
-            } else {
-                audio_impulse_response.loading = false;
-                document.getElementById("loadingReverb").style.display = "none";
-                checkAudioBuffer(audio_impulse_response[value].buffer, "audio_impulse_response");
-                audio_impulse_response.current = value;
-                setReverbFilter();
-            }
-        }
-    }
-}
-
-function resetReverbValues() {
-    if(!audio_impulse_response.loading) {
-        audio_impulse_response.current = 1;
-        setReverbFilter();
-    }
-}
-// End of delay options
-
-// Real time functions
-var limiterProcessor = null;
-var bitCrusher = null;
-var lowPassFilter = null;
-var highPassFilter = null;
-var bassBoostFilter = null;
-var bassBoostFilterHighFreq = null;
-var telephonizer = null;
-var delayFilter = null;
-var convolver = null;
-var gainNode = null;
-
-function calcCompaModePlayerTime() {
-    if(compaAudioAPI) {
-        audioBufferPlay.duration = calcAudioDuration(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, vocoderAudio, echoAudio);
-    }
-}
-
-function getCurrentContext(durationAudio, comp) {
-    if(!comp && typeof(window.OfflineAudioContext) !== "undefined") {
-        return new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
-    } else if(!comp && typeof(window.webkitOfflineAudioContext) !== "undefined") {
-        return new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
-    } else {
-        return context;
-    }
-}
-
-function resetFilter(sourceSound, pipe) {
-    soundtouchFilter._pipe = pipe;
-    soundtouchFilter.sourceSound = sourceSound;
-    soundtouchFilter.historyBufferSize = 22050;
-    soundtouchFilter._sourcePosition = 0;
-    soundtouchFilter.outputBufferPosition = 0;
-    soundtouchFilter._position = 0;
-}
-
-function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highpass, bassboost, phone, returnAudioParam, echo, bitCrush, enableLimiter, rate, BUFFER_SIZE) {
-    // Default parameters
-    var speed = speed || 1; // Speed of the audio
-    var pitch = pitch || 1; // Pitch of the audio
-    var reverb = reverb == undefined ? false : reverb; // Enable or disable reverb
-    var comp = comp == undefined ? false : comp; // Enable or disable the compatibility mode
-    var vocode = vocode == undefined ? false : vocode; // Enable or disable vocoder
-    var lowpass = lowpass == undefined ? false : lowpass; // Enable lowPass filter
-    var highpass = highpass == undefined ? false : highpass; // Enable highPass filter
-    var bassboost = bassboost == undefined ? false : bassboost; // Enable Bass Boost
-    var phone = phone == undefined ? false : phone; // Enable Phone Call
-    var returnAudioParam = returnAudioParam == undefined ? false : returnAudioParam; // Enable Audio Return
-    var enableLimiter = enableLimiter == undefined ? false : enableLimiter; // Enable Limiter
-    var echo = echo == undefined ? false : echo; // Enable Echo
-    var bitCrush = bitCrush == undefined ? false : bitCrush; // Enable BitCrusher
-    var rate = rate || 1; // Rate of the audio
-    var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
-    // End of default parameters
-
-    if('AudioContext' in window && !audioContextNotSupported) {
-        var previousSountouchNode = sountouchNode;
-        var buffer = audio_processing_buffer;
-
-        if(comp) {
-            calcCompaModePlayerTime();
-        }
-
-        // Soundtouch settings
-        st.pitch = pitch;
-        st.tempo = speed;
-        st.rate = rate;
-        sountouchNode = soundtouch.getWebAudioNode(offlineContext, soundtouchFilter);
-        var node = sountouchNode;
-        // End of Soundtouch settings
-
-        // Disconnect all previous nodes
-        if(limiterProcessor != null) limiterProcessor.onaudioprocess = null;
-        if(previousSountouchNode != null) previousSountouchNode.disconnect();
-        if(gainNode != null) gainNode.disconnect();
-        if(bitCrusher != null) bitCrusher.disconnect();
-        if(lowPassFilter != null) lowPassFilter.disconnect();
-        if(highPassFilter != null) highPassFilter.disconnect();
-        if(bassBoostFilter != null) bassBoostFilter.disconnect();
-        if(bassBoostFilterHighFreq != null) bassBoostFilterHighFreq.disconnect();
-        if(delayFilter != null && delayFilter["output"] != null) delayFilter["output"].disconnect();
-        if(telephonizer != null && telephonizer["output"] != null) telephonizer["output"].disconnect();
-        if(convolver != null) convolver.disconnect();
-        // End of Disconnecte all previous nodes
-
-        // Gain node
-        node.connect(gainNode);
-        node = gainNode;
-
-        if(enableLimiter) {
-            limiter.reset();
-            limiterProcessor.onaudioprocess = limiter.limit;
-        } else {
-            limiterProcessor.onaudioprocess = passAll;
-        }
-
-        if(bitCrush) {
-            bitCrusher = getBitCrusher(offlineContext, 8.0, 0.15, BUFFER_SIZE, buffer.numberOfChannels);
-            node.connect(bitCrusher);
-            node = bitCrusher;
-        }
-
-        if(lowpass) {
-            lowPassFilter = offlineContext.createBiquadFilter();
-            lowPassFilter.type = "lowpass";
-            lowPassFilter.frequency.value = highLowPassOptions.lowFrequency;
-        }
-
-        if(highpass) {
-            highPassFilter = offlineContext.createBiquadFilter();
-            highPassFilter.type = "highpass";
-            highPassFilter.frequency.value = highLowPassOptions.highFrequency;
-        }
-
-        if(bassboost) {
-            bassBoostFilter = offlineContext.createBiquadFilter();
-            bassBoostFilter.type = "lowshelf";
-            bassBoostFilter.frequency.value = bassBoostOptions.frequencyBooster;
-            bassBoostFilter.gain.value = bassBoostOptions.dbBooster;
-            bassBoostFilterHighFreq = offlineContext.createBiquadFilter();
-            bassBoostFilterHighFreq.type = "highshelf";
-            bassBoostFilterHighFreq.frequency.value = bassBoostOptions.frequencyReduce;
-            bassBoostFilterHighFreq.gain.value = bassBoostOptions.dbReduce;
-            bassBoostFilterHighFreq.connect(bassBoostFilter);
-        }
-
-        if(phone) {
-            telephonizer = getTelephonizer(offlineContext);
-        }
-
-        var output = limiterProcessor;
-
-        if(echo) {
-            delayFilter = getDelay(offlineContext, delayOptions.delay, delayOptions.gain);
-            delayFilter["output"].connect(output);
-            output = delayFilter["input"];
-        }
-
-        var reverb_buffer = audio_impulse_response[audio_impulse_response.current].buffer;
-
-        if(reverb && reverb_buffer != null) {
-            convolver = offlineContext.createConvolver();
-            convolver.buffer = reverb_buffer;
-            convolver.connect(output);
-            output = convolver;
-        }
-
-        if(phone) {
-            telephonizer["output"].connect(output);
-            output = telephonizer["input"];
-        }
-
-        if(lowpass && highpass) {
-            node.connect(lowPassFilter);
-            lowPassFilter.connect(highPassFilter);
-
-            if(bassboost) {
-                highPassFilter.connect(bassBoostFilterHighFreq);
-                bassBoostFilter.connect(output);
-            } else {
-                highPassFilter.connect(output);
-            }
-        } else if(lowpass) {
-            node.connect(lowPassFilter);
-
-            if(bassboost) {
-                lowPassFilter.connect(bassBoostFilterHighFreq);
-                bassBoostFilter.connect(output);
-            } else {
-                lowPassFilter.connect(output);
-            }
-        } else if(highpass) {
-            node.connect(highPassFilter);
-
-            if(bassboost) {
-                highPassFilter.connect(bassBoostFilterHighFreq);
-                bassBoostFilter.connect(output);
-            } else {
-                highPassFilter.connect(output);
-            }
-        } else {
-            if(bassboost) {
-                node.connect(bassBoostFilterHighFreq);
-                bassBoostFilter.connect(output);
-            } else {
-                node.connect(output);
-            }
-        }
-    }
-}
-
-function validConnectNodes(BUFFER_SIZE) {
-    var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
-    connectNodes(processing_context, speedAudio, pitchAudio, reverbAudio, compaAudioAPI, lowpassAudio, highpassAudio, bassboostAudio, phoneAudio, returnAudio, echoAudio, bitCrusherAudio, limiterAudio, 1, BUFFER_SIZE);
-}
-
-document.getElementById("checkReverb").onchange = function() {
-    validSettings();
-    validConnectNodes();
-};
-
-document.getElementById("checkLowpass").onchange = function() {
-    validSettings();
-    validConnectNodes();
-};
-
-document.getElementById("checkHighpass").onchange = function() {
-    validSettings();
-    validConnectNodes();
-};
-
-document.getElementById("checkBassBoost").onchange = function() {
-    validSettings();
-    validConnectNodes();
-};
-
-document.getElementById("checkPhone").onchange = function() {
-    validSettings();
-    validConnectNodes();
-};
-
-document.getElementById("checkLimiter").onchange = function() {
-    validSettings();
-    validConnectNodes();
-};
-
-document.getElementById("checkEcho").onchange = function() {
-    validSettings();
-    validConnectNodes();
-};
-
-document.getElementById("checkBitCrusher").onchange = function() {
-    validSettings();
-    validConnectNodes();
-};
-// End of real time functions
-
 // Classes
+// The audio buffer player
+// Used to play the audio buffer, with time controls, pause/play, stop and loop
+// Also used in compatibility mode (which doesn't use audio buffer) with less functions (no time control)
 function BufferPlayer() {
     this.buffer;
     this.source;
@@ -858,6 +348,9 @@ function BufferPlayer() {
     };
 }
 
+// The Voice Recorder class
+// Used to record a sound (voice, etc.) with the user microphone
+// Offer control with play/pause and audio feedback
 function VoiceRecorder() {
     this.input;
     this.stream;
@@ -987,6 +480,7 @@ function VoiceRecorder() {
     };
 }
 
+// A timer class
 function TimerSaveTime(id, idProgress, seconds, incr) {
     this.id = id;
     this.idProgress = idProgress;
@@ -1025,66 +519,82 @@ function TimerSaveTime(id, idProgress, seconds, incr) {
 }
 // End classes
 
-function checkAudio(type) {
-    if(!window.HTMLAudioElement) {
-        return false;
-    }
+// Audio buffer loader
+// Load the file specified (audio parameter) into an audio buffer
+// When loading is done, a callback is returned with the buffer and state (true if loading was done successfully, false otherwise)
+function loadAudioBuffer(audio, func) {
+    if('AudioContext' in window && !audioContextNotSupported) {
+        var request = new XMLHttpRequest();
+        request.open('GET', audio, true);
+        request.responseType = 'arraybuffer';
 
-    var audio = document.createElement("audio");
-
-    if(!audio.canPlayType(type)) {
-        return "no mp3 support";
-    }
-
-    return true;
-}
-
-function reloadData() {
-    init();
-}
-
-var checkAudio = checkAudio("audio/mp3");
-
-function compaMode() {
-    if(!audioProcessing) {
-        if(compaAudioAPI) {
-            setTooltip("playAudio", null, false, true, "wrapperPlay", true);
-            setTooltip("pauseAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperPause", true);
-            document.getElementById("playingAudioInfos").style.display = "block";
-            document.getElementById("checkLoopPlayDiv").style.display = "block";
-        } else {
-            checkButtonPlayAudioBuffer();
-            setTooltip("stopAudio", null, false, true, "wrapperStop", true);
-            document.getElementById("playingAudioInfos").style.display = "block";
-            document.getElementById("checkLoopPlayDiv").style.display = "block";
+        request.onload = function() {
+            context.decodeAudioData(request.response, function(data) {
+                if(typeof func !== 'undefined') {
+                    func(data, true);
+                }
+            }, function() {
+                func(null, false);
+            });
         }
 
-        if (typeof(Worker) !== "undefined" && Worker != null) {
-            setTooltip("saveInputModify", null, false, true, "wrapperSave", true);
-        } else {
-            setTooltip("saveInputModify", window.i18next.t("script.notCompatible"), true, false, "wrapperSave", true);
+        request.onerror = function() {
+            if(typeof func !== 'undefined') {
+                func(null, false);
+            }
         }
-    }
-}
 
-function checkButtonPlayAudioBuffer() {
-    if(audioBufferPlay.playing) {
-        setTooltip("playAudio", null, true, false, "wrapperPlay", true);
-        setTooltip("pauseAudio", null, false, true, "wrapperPause", true);
-        document.getElementById("wrapperPlay").style.display = "none";
-        document.getElementById("wrapperPause").style.display = "inline-block";
+        request.send();
     } else {
-        setTooltip("playAudio", null, false, true, "wrapperPlay", true);
-        setTooltip("pauseAudio", null, true, false, "wrapperPause", true);
-        document.getElementById("wrapperPlay").style.display = "inline-block";
-        document.getElementById("wrapperPause").style.display = "none";
+        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
+
+        if(typeof func !== 'undefined') {
+            func(null, false);
+        } else {
+            return false;
+        }
     }
 }
 
+// Check the audio buffer loaded (two type : "audio_impulse_response" (buffers used for the reverb filter) and "audio_modulator" (buffer used for the vocoder filter))
+function checkAudioBuffer(bufferName, type) {
+    var errorText = window.i18next.t("loading.errorLoadingTooltip");
+
+    if ('AudioContext' in window && !audioContextNotSupported) {
+        switch(type) {
+            case "audio_impulse_response":
+                if(bufferName == null) {
+                    setTooltip("checkReverb", errorText, true, false, "checkReverbWrapper", true);
+                    document.getElementById("checkReverb").checked = false;
+                    document.getElementById("checkReverbGroup").setAttribute("class", "checkbox disabled");
+                } else {
+                    setTooltip("checkReverb", "", false, true, "checkReverbWrapper", true);
+                    document.getElementById("checkReverbGroup").setAttribute("class", "checkbox");
+                }
+            break;
+            case "audio_modulator":
+                if(bufferName == null || (typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined")) {
+                    setTooltip("checkVocode", errorText, true, false, "checkVocodeWrapper", true);
+                    document.getElementById("checkVocode").checked = false;
+                    document.getElementById("checkVocodeGroup").setAttribute("class", "checkbox disabled");
+                } else {
+                    setTooltip("checkVocode", "", false, true, "checkVocodeWrapper", true);
+                    document.getElementById("checkVocodeGroup").setAttribute("class", "checkbox");
+                }
+            break;
+        }
+    }
+}
+// End of Audio buffer loader
+
+// File loading functions
+// Function called when the "Select an audio file" button is pressed
 function selectFile() {
     document.getElementById("inputFile").click();
 }
 
+// Function called when a file is selected
+// Load the file and store it in the audio_principal_buffer variable
 document.getElementById("inputFile").addEventListener("change", function() {
     document.getElementById("errorLoadingSelectFile").style.display = "none";
     document.getElementById("firstEtape").style.display = "none";
@@ -1107,6 +617,8 @@ document.getElementById("inputFile").addEventListener("change", function() {
     reader.readAsArrayBuffer(this.files[0]);
 }, false);
 
+// Load an audio buffer and store it in the audio_principal_buffer variable
+// Launch the edit UI
 function loadPrincipalBuffer(buffer) {
     if(buffer.numberOfChannels == 1) { // convert to stereo buffer
         context.resume();
@@ -1130,26 +642,10 @@ function loadPrincipalBuffer(buffer) {
 
     validModify(false, false);
 }
+// End of File loading functions
 
-function add(a, b) {
-    return a + b;
-}
-
-function calcAudioDuration(audio, speed, pitch, reverb, vocode, echo) {
-    var duration = audio.duration + 1;
-    var reverb_duration = audio_impulse_response[audio_impulse_response.current].addDuration;
-
-    duration = duration / parseFloat(speed);
-
-    if(echo) {
-        duration = duration + 5;
-    } else if(reverb) {
-        duration = duration + reverb_duration;
-    }
-
-    return duration;
-}
-
+// Filters
+// Phone filter
 function getTelephonizer(context) {
     var lpf1 = context.createBiquadFilter();
     lpf1.type = "lowpass";
@@ -1174,6 +670,7 @@ function getTelephonizer(context) {
     };
 }
 
+// Delay filter
 function getDelay(context, delay, gain) {
     var delayNode = context.createDelay(179);
     delayNode.delayTime.value = delay;
@@ -1192,6 +689,7 @@ function getDelay(context, delay, gain) {
     };
 }
 
+// Bitcrusher (8-bit effect) filter
 function getBitCrusher(context, bits, normFreq, bufferSize, channels) {
     var bitCrusher = context.createScriptProcessor(bufferSize, channels, channels);
     var phaser = 0;
@@ -1221,6 +719,7 @@ function getBitCrusher(context, bits, normFreq, bufferSize, channels) {
     return bitCrusher;
 }
 
+// Reverse the audio filter
 function returnBuffer(buffer) {
     context.resume();
 
@@ -1239,6 +738,8 @@ function returnBuffer(buffer) {
     return bufferReturned;
 }
 
+// Passall filter (script processor)
+// Pass all audio without any modification
 function passAll(audioProcessingEvent) {
     var inputBuffer = audioProcessingEvent.inputBuffer;
     var outputBuffer = audioProcessingEvent.outputBuffer;
@@ -1252,14 +753,593 @@ function passAll(audioProcessingEvent) {
         }
     }
 }
+// End of filters
 
-function enableCompaMode() {
-    document.getElementById("checkCompa").checked = true;
-    document.getElementById("compatAutoDetected").style.display = "block";
-    compaAudioAPI = true;
-    compaMode();
+// Filter settings functions
+// Limiter settings
+function loadLimiterValues() {
+    document.getElementById("preGain").value = limiter.preGain;
+    document.getElementById("postGain").value = limiter.postGain;
+    document.getElementById("attackTime").value = limiter.attackTime;
+    document.getElementById("releaseTime").value = limiter.releaseTime;
+    document.getElementById("threshold").value = limiter.threshold;
+    document.getElementById("lookAheadTime").value = limiter.lookAheadTime;
 }
 
+function setLimiterValues() {
+    var preGain = document.getElementById("preGain").value;
+    var postGain = document.getElementById("postGain").value;
+    var attackTime = document.getElementById("attackTime").value;
+    var releaseTime = document.getElementById("releaseTime").value;
+    var threshold = document.getElementById("threshold").value;
+    var lookAheadTime = document.getElementById("lookAheadTime").value;
+
+    if(preGain != null && preGain.trim() != "" && !isNaN(preGain)) limiter.preGain = preGain;
+    if(postGain != null && postGain.trim() != "" && !isNaN(postGain)) limiter.postGain = postGain;
+    if(attackTime != null && attackTime.trim() != "" && !isNaN(attackTime) && attackTime >= 0) limiter.attackTime = attackTime;
+    if(releaseTime != null && releaseTime.trim() != "" && !isNaN(releaseTime) && releaseTime >= 0) limiter.releaseTime = releaseTime;
+    if(threshold != null && threshold.trim() != "" && !isNaN(threshold)) limiter.threshold = threshold;
+    if(lookAheadTime != null && lookAheadTime.trim() != "" && !isNaN(lookAheadTime) && lookAheadTime >= 0) limiter.lookAheadTime = lookAheadTime;
+
+    loadLimiterValues();
+}
+
+function resetLimiterValues() {
+    limiter.preGain = 0;
+    limiter.postGain = 0;
+    limiter.attackTime = 0;
+    limiter.releaseTime = 2;
+    limiter.threshold = -0.05;
+    limiter.lookAheadTime = 0.05;
+
+    loadLimiterValues();
+}
+// End of limiter settings
+
+// Soundtouch settings
+slider.on("slide", function(value) {
+    st.pitch = value;
+    pitchAudio = value;
+    calcCompaModePlayerTime();
+});
+
+slider.on("slideStart", function(value) {
+    st.pitch = value;
+    pitchAudio = value;
+    calcCompaModePlayerTime();
+});
+
+slider.on("slideStop", function(value) {
+    st.pitch = value;
+    pitchAudio = value;
+    calcCompaModePlayerTime();
+});
+
+slider2.on("slide", function(value) {
+    st.tempo = value;
+    speedAudio = value;
+    calcCompaModePlayerTime();
+});
+
+slider2.on("slideStart", function(value) {
+    st.tempo = value;
+    speedAudio = value;
+    calcCompaModePlayerTime();
+});
+
+slider2.on("slideStop", function(value) {
+    st.tempo = value;
+    speedAudio = value;
+    calcCompaModePlayerTime();
+});
+// End of Soundtouch settings
+
+// Bass boost options
+function loadBassBoostValues() {
+    document.getElementById("frequencyBooster").value = bassBoostOptions.frequencyBooster;
+    document.getElementById("dbBooster").value = bassBoostOptions.dbBooster;
+    document.getElementById("frequencyReduce").value = bassBoostOptions.frequencyReduce;
+    document.getElementById("dbReduce").value = bassBoostOptions.dbReduce;
+}
+
+function setBassBoostFilter() {
+    if(bassBoostFilter != null) {
+        bassBoostFilter.frequency.value = bassBoostOptions.frequencyBooster;
+        bassBoostFilter.gain.value = bassBoostOptions.dbBooster;
+    }
+
+    if(bassBoostFilterHighFreq != null) {
+        bassBoostFilterHighFreq.frequency.value = bassBoostOptions.frequencyReduce;
+        bassBoostFilterHighFreq.gain.value = bassBoostOptions.dbReduce;
+    }
+
+    loadBassBoostValues();
+}
+
+function validateBassBoostValues() {
+    var frequencyBooster = document.getElementById("frequencyBooster").value;
+    var dbBooster = document.getElementById("dbBooster").value;
+    var frequencyReduce = document.getElementById("frequencyReduce").value;
+    var dbReduce = document.getElementById("dbReduce").value;
+
+    if(frequencyBooster != null && frequencyBooster.trim() != "" && !isNaN(frequencyBooster) && frequencyBooster >= 0) bassBoostOptions.frequencyBooster = frequencyBooster;
+    if(dbBooster != null && dbBooster.trim() != "" && !isNaN(dbBooster)) bassBoostOptions.dbBooster = dbBooster;
+    if(frequencyReduce != null && frequencyReduce.trim() != "" && !isNaN(frequencyReduce) && frequencyReduce >= 0) bassBoostOptions.frequencyReduce = frequencyReduce;
+    if(dbReduce != null && dbReduce.trim() != "" && !isNaN(dbReduce)) bassBoostOptions.dbReduce = dbReduce;
+
+    setBassBoostFilter();
+}
+
+function resetBassBoostValues() {
+    bassBoostOptions.frequencyBooster = 200;
+    bassBoostOptions.dbBooster = 15;
+    bassBoostOptions.frequencyReduce = 200;
+    bassBoostOptions.dbReduce = -2;
+
+    setBassBoostFilter();
+}
+// End of Bass boost options
+
+// Low and high pass filters options
+function loadHighPassValues() {
+    document.getElementById("frequencyHighPass").value = highLowPassOptions.highFrequency;
+}
+
+function setHighPassFilter() {
+    if(highPassFilter != null) {
+        highPassFilter.frequency.value = highLowPassOptions.highFrequency;
+    }
+
+    loadHighPassValues();
+}
+
+function validateHighPassValues() {
+    var frequencyHighPass = document.getElementById("frequencyHighPass").value;
+
+    if(frequencyHighPass != null && frequencyHighPass.trim() != "" && !isNaN(frequencyHighPass) && frequencyHighPass >= 0) highLowPassOptions.highFrequency = frequencyHighPass;
+
+    setHighPassFilter();
+}
+
+function resetHighPassValues() {
+    highLowPassOptions.highFrequency = 3500;
+    setHighPassFilter();
+}
+
+function loadLowPassValues() {
+    document.getElementById("frequencyLowPass").value = highLowPassOptions.lowFrequency;
+}
+
+function setLowPassFilter() {
+    if(lowPassFilter != null) {
+        lowPassFilter.frequency.value = highLowPassOptions.lowFrequency;
+    }
+
+    loadLowPassValues();
+}
+
+function validateLowPassValues() {
+    var frequencyLowPass = document.getElementById("frequencyLowPass").value;
+
+    if(frequencyLowPass != null && frequencyLowPass.trim() != "" && !isNaN(frequencyLowPass) && frequencyLowPass >= 0) highLowPassOptions.lowFrequency = frequencyLowPass;
+
+    setLowPassFilter();
+}
+
+function resetLowPassValues() {
+    highLowPassOptions.lowFrequency = 3500;
+    setLowPassFilter();
+}
+// End of low and high pass filters options
+
+// Delay options
+function loadDelayValues() {
+    document.getElementById("delaySeconds").value = delayOptions.delay;
+    document.getElementById("delayGain").value = delayOptions.gain;
+}
+
+function setDelayFilter() {
+    if(delayFilter != null) {
+        if(delayFilter["input"] != null) {
+            delayFilter["input"].gain.value = delayOptions.gain;
+        }
+
+        if(delayFilter["output"] != null) {
+            delayFilter["output"].delayTime.value = delayOptions.delay;
+        }
+    }
+
+    loadDelayValues();
+}
+
+function validateDelayValues() {
+    var delaySeconds = document.getElementById("delaySeconds").value;
+    var delayGain = document.getElementById("delayGain").value;
+
+    if(delaySeconds != null && delaySeconds.trim() != "" && !isNaN(delaySeconds) && delaySeconds >= 0 && delaySeconds <= 179) delayOptions.delay = delaySeconds;
+    if(delayGain != null && delayGain.trim() != "" && !isNaN(delayGain)) delayOptions.gain = delayGain;
+
+    setDelayFilter();
+}
+
+function resetDelayValues() {
+    delayOptions.delay = 0.20;
+    delayOptions.gain = 0.75;
+    setDelayFilter();
+}
+// End of delay options
+
+// Reverb options
+function reverbStateSettings() {
+    if(!audio_impulse_response.loading) {
+        document.getElementById("loadingReverb").style.display = "none";
+        document.getElementById("environmentReverb").classList.remove("disabled");
+        document.getElementById("environmentReverb").disabled = false;
+        document.getElementById("validReverbSettings").classList.remove("disabled");
+        document.getElementById("validReverbSettings").disabled = false;
+        document.getElementById("resetReverbSettings").classList.remove("disabled");
+        document.getElementById("resetReverbSettings").disabled = false;
+    } else {
+        document.getElementById("loadingReverb").style.display = "block";
+        document.getElementById("environmentReverb").classList.add("disabled");
+        document.getElementById("environmentReverb").disabled = true;
+        document.getElementById("validReverbSettings").classList.add("disabled");
+        document.getElementById("validReverbSettings").disabled = true;
+        document.getElementById("resetReverbSettings").classList.add("disabled");
+        document.getElementById("resetReverbSettings").disabled = true;
+    }
+}
+
+function loadReverbValues() {
+    var nb = audio_impulse_response.nbResponses;
+    var current = audio_impulse_response.current;
+    document.getElementById("environmentReverb").innerHTML = "";
+
+    for(var i = 1; i <= nb; i++) {
+        var option = document.createElement("option");
+        option.text = audio_impulse_response[i].title;
+        option.value = i;
+        document.getElementById("environmentReverb").add(option);
+    }
+
+    document.getElementById("environmentReverb").value = current;
+    document.getElementById("linkEnvironmentReverb").href = audio_impulse_response[document.getElementById("environmentReverb").value].link;
+
+    reverbStateSettings();
+}
+
+document.getElementById("environmentReverb").onchange = function() {
+    document.getElementById("linkEnvironmentReverb").href = audio_impulse_response[document.getElementById("environmentReverb").value].link;
+};
+
+function setReverbFilter() {
+    var buffer = audio_impulse_response[audio_impulse_response.current].buffer;
+
+    if(convolver != null && buffer != null) {
+        convolver.buffer = buffer;
+        calcCompaModePlayerTime();
+    }
+
+    checkAudioBuffer(buffer, "audio_impulse_response");
+    loadReverbValues();
+}
+
+function validateReverbValues() {
+    if(!audio_impulse_response.loading) {
+        var value = document.getElementById("environmentReverb").value;
+    
+        if(value != null && value.trim() != "" && !isNaN(value) && value >= 1 && value <= audio_impulse_response.nbResponses) {
+            if(audio_impulse_response[value].buffer == null) {
+                document.getElementById("errorLoadingReverb").style.display = "none";
+                audio_impulse_response.loading = true;
+                reverbStateSettings();
+
+                loadAudioBuffer(audio_impulse_response[value].file, function(data, success) {
+                    audio_impulse_response[value].buffer = data;
+                    audio_impulse_response.loading = false;
+        
+                    if(success) {
+                        audio_impulse_response.current = value;
+                    } else {
+                        document.getElementById("errorLoadingReverb").style.display = "block";
+                    }
+        
+                    setReverbFilter();
+                });
+            } else {
+                document.getElementById("loadingReverb").style.display = "none";
+                document.getElementById("errorLoadingReverb").style.display = "none";
+                audio_impulse_response.loading = false;
+                audio_impulse_response.current = value;
+                setReverbFilter();
+            }
+        }
+    }
+}
+
+function resetReverbValues() {
+    if(!audio_impulse_response.loading && audio_impulse_response[1].buffer != null) {
+        audio_impulse_response.current = 1;
+    }
+
+    setReverbFilter();
+}
+// End of delay options
+// End of filter settings functions
+
+// Real time functions
+// Nodes
+var limiterProcessor = null;
+var bitCrusher = null;
+var lowPassFilter = null;
+var highPassFilter = null;
+var bassBoostFilter = null;
+var bassBoostFilterHighFreq = null;
+var telephonizer = null;
+var delayFilter = null;
+var convolver = null;
+var gainNode = null;
+// End of the nodes
+
+// Calculate the audio duration and change the audio duration of the player in compatibility mode
+function calcCompaModePlayerTime() {
+    if(compaAudioAPI) {
+        audioBufferPlay.duration = calcAudioDuration(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, vocoderAudio, echoAudio);
+    }
+}
+
+// Return the current context according to the current mode (compatibility mode or standard mode)
+function getCurrentContext(durationAudio, comp) {
+    if(!comp && typeof(window.OfflineAudioContext) !== "undefined") {
+        return new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+    } else if(!comp && typeof(window.webkitOfflineAudioContext) !== "undefined") {
+        return new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+    } else {
+        return context;
+    }
+}
+
+// Reset the Soundtouch filter
+function resetFilter(sourceSound, pipe) {
+    soundtouchFilter._pipe = pipe;
+    soundtouchFilter.sourceSound = sourceSound;
+    soundtouchFilter.historyBufferSize = 22050;
+    soundtouchFilter._sourcePosition = 0;
+    soundtouchFilter.outputBufferPosition = 0;
+    soundtouchFilter._position = 0;
+}
+
+// Connect the Audio API nodes according to the settings
+function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highpass, bassboost, phone, returnAudioParam, echo, bitCrush, enableLimiter, rate, BUFFER_SIZE) {
+    // Default parameters
+    var speed = speed || 1; // Speed of the audio
+    var pitch = pitch || 1; // Pitch of the audio
+    var reverb = reverb == undefined ? false : reverb; // Enable or disable reverb
+    var comp = comp == undefined ? false : comp; // Enable or disable the compatibility mode
+    var vocode = vocode == undefined ? false : vocode; // Enable or disable vocoder
+    var lowpass = lowpass == undefined ? false : lowpass; // Enable lowPass filter
+    var highpass = highpass == undefined ? false : highpass; // Enable highPass filter
+    var bassboost = bassboost == undefined ? false : bassboost; // Enable Bass Boost
+    var phone = phone == undefined ? false : phone; // Enable Phone Call
+    var returnAudioParam = returnAudioParam == undefined ? false : returnAudioParam; // Enable Audio Return
+    var enableLimiter = enableLimiter == undefined ? false : enableLimiter; // Enable Limiter
+    var echo = echo == undefined ? false : echo; // Enable Echo
+    var bitCrush = bitCrush == undefined ? false : bitCrush; // Enable BitCrusher
+    var rate = rate || 1; // Rate of the audio
+    var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
+    // End of default parameters
+
+    if('AudioContext' in window && !audioContextNotSupported) {
+        var previousSountouchNode = sountouchNode;
+        var buffer = audio_processing_buffer;
+
+        if(comp) {
+            calcCompaModePlayerTime();
+        }
+
+        // Soundtouch settings
+        st.pitch = pitch;
+        st.tempo = speed;
+        st.rate = rate;
+        sountouchNode = soundtouch.getWebAudioNode(offlineContext, soundtouchFilter);
+        var node = sountouchNode;
+        // End of Soundtouch settings
+
+        // Disconnect all previous nodes
+        if(limiterProcessor != null) limiterProcessor.onaudioprocess = null;
+        if(previousSountouchNode != null) previousSountouchNode.disconnect();
+        if(gainNode != null) gainNode.disconnect();
+        if(bitCrusher != null) bitCrusher.disconnect();
+        if(lowPassFilter != null) lowPassFilter.disconnect();
+        if(highPassFilter != null) highPassFilter.disconnect();
+        if(bassBoostFilter != null) bassBoostFilter.disconnect();
+        if(bassBoostFilterHighFreq != null) bassBoostFilterHighFreq.disconnect();
+        if(delayFilter != null && delayFilter["output"] != null) delayFilter["output"].disconnect();
+        if(telephonizer != null && telephonizer["output"] != null) telephonizer["output"].disconnect();
+        if(convolver != null) convolver.disconnect();
+        // End of Disconnecte all previous nodes
+
+        // Gain node
+        node.connect(gainNode);
+        node = gainNode;
+
+        if(enableLimiter) {
+            limiter.reset();
+            limiterProcessor.onaudioprocess = limiter.limit;
+        } else {
+            limiterProcessor.onaudioprocess = passAll;
+        }
+
+        if(bitCrush) {
+            bitCrusher = getBitCrusher(offlineContext, 8.0, 0.15, BUFFER_SIZE, buffer.numberOfChannels);
+            node.connect(bitCrusher);
+            node = bitCrusher;
+        }
+
+        if(lowpass) {
+            lowPassFilter = offlineContext.createBiquadFilter();
+            lowPassFilter.type = "lowpass";
+            lowPassFilter.frequency.value = highLowPassOptions.lowFrequency;
+        }
+
+        if(highpass) {
+            highPassFilter = offlineContext.createBiquadFilter();
+            highPassFilter.type = "highpass";
+            highPassFilter.frequency.value = highLowPassOptions.highFrequency;
+        }
+
+        if(bassboost) {
+            bassBoostFilter = offlineContext.createBiquadFilter();
+            bassBoostFilter.type = "lowshelf";
+            bassBoostFilter.frequency.value = bassBoostOptions.frequencyBooster;
+            bassBoostFilter.gain.value = bassBoostOptions.dbBooster;
+            bassBoostFilterHighFreq = offlineContext.createBiquadFilter();
+            bassBoostFilterHighFreq.type = "highshelf";
+            bassBoostFilterHighFreq.frequency.value = bassBoostOptions.frequencyReduce;
+            bassBoostFilterHighFreq.gain.value = bassBoostOptions.dbReduce;
+            bassBoostFilterHighFreq.connect(bassBoostFilter);
+        }
+
+        if(phone) {
+            telephonizer = getTelephonizer(offlineContext);
+        }
+
+        var output = limiterProcessor;
+
+        if(echo) {
+            delayFilter = getDelay(offlineContext, delayOptions.delay, delayOptions.gain);
+            delayFilter["output"].connect(output);
+            output = delayFilter["input"];
+        }
+
+        var reverb_buffer = audio_impulse_response[audio_impulse_response.current].buffer;
+
+        if(reverb && reverb_buffer != null) {
+            convolver = offlineContext.createConvolver();
+            convolver.buffer = reverb_buffer;
+            convolver.connect(output);
+            output = convolver;
+        }
+
+        if(phone) {
+            telephonizer["output"].connect(output);
+            output = telephonizer["input"];
+        }
+
+        if(lowpass && highpass) {
+            node.connect(lowPassFilter);
+            lowPassFilter.connect(highPassFilter);
+
+            if(bassboost) {
+                highPassFilter.connect(bassBoostFilterHighFreq);
+                bassBoostFilter.connect(output);
+            } else {
+                highPassFilter.connect(output);
+            }
+        } else if(lowpass) {
+            node.connect(lowPassFilter);
+
+            if(bassboost) {
+                lowPassFilter.connect(bassBoostFilterHighFreq);
+                bassBoostFilter.connect(output);
+            } else {
+                lowPassFilter.connect(output);
+            }
+        } else if(highpass) {
+            node.connect(highPassFilter);
+
+            if(bassboost) {
+                highPassFilter.connect(bassBoostFilterHighFreq);
+                bassBoostFilter.connect(output);
+            } else {
+                highPassFilter.connect(output);
+            }
+        } else {
+            if(bassboost) {
+                node.connect(bassBoostFilterHighFreq);
+                bassBoostFilter.connect(output);
+            } else {
+                node.connect(output);
+            }
+        }
+    }
+}
+
+// Launch the connection of the Audio API nodes
+function validConnectNodes(BUFFER_SIZE) {
+    var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
+    connectNodes(processing_context, speedAudio, pitchAudio, reverbAudio, compaAudioAPI, lowpassAudio, highpassAudio, bassboostAudio, phoneAudio, returnAudio, echoAudio, bitCrusherAudio, limiterAudio, 1, BUFFER_SIZE);
+}
+
+// Functions called when a setting is changed
+// Call the validConnectNodes function
+document.getElementById("checkReverb").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkLowpass").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkHighpass").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkBassBoost").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkPhone").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkLimiter").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkEcho").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+
+document.getElementById("checkBitCrusher").onchange = function() {
+    validSettings();
+    validConnectNodes();
+};
+// End of functions called when a setting is changed
+// End of real time functions
+
+// Audio rendering and saving functions
+// Add a to b
+function add(a, b) {
+    return a + b;
+}
+
+// Calculate audio duration according to selected settings
+function calcAudioDuration(audio, speed, pitch, reverb, vocode, echo) {
+    var duration = audio.duration + 1;
+    var reverb_duration = audio_impulse_response[audio_impulse_response.current].addDuration;
+
+    duration = duration / parseFloat(speed);
+
+    if(echo) {
+        duration = duration + 5;
+    } else if(reverb) {
+        duration = duration + reverb_duration;
+    }
+
+    return duration;
+}
+
+// Render the audio according to the settings
+// Core function of the app
+// Use the connectNodes function to do the effective Audio API nodes connection
 function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, highpass, bassboost, phone, returnAudioParam, echo, bitCrush, enableLimiter, rate, BUFFER_SIZE) {
     // Default parameters
     var save = save == undefined ? false : save; // Save the audio buffer under a wav file
@@ -1304,7 +1384,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             gainNode.gain.exponentialRampToValueAtTime(1.0, offlineContext.currentTime + 0.2);
             validConnectNodes(BUFFER_SIZE);
 
-            if(!comp) {
+            if(!comp) { // Standard mode
                 limiterProcessor.connect(offlineContext.destination);
 
                 offlineContext.oncomplete = function(e) {
@@ -1338,7 +1418,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 };
 
                 offlineContext.startRendering();
-            } else {
+            } else { // Compatibility mode
                 if(!save) {
                     document.getElementById("validInputModify").disabled = false;
                     document.getElementById("resetAudio").disabled = false;
@@ -1421,6 +1501,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             }
         }
 
+        // Vocoder filter
         if(vocode && audio_modulator != null && (typeof(window.OfflineAudioContext) !== "undefined" || typeof(window.webkitOfflineAudioContext) !== "undefined")) {
             if(typeof(window.OfflineAudioContext) !== "undefined") {
                 var offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
@@ -1447,12 +1528,13 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
         } else {
             renderAudio(audio);
         }
-    } else if(!audioProcessing) {
+    } else if(!audioProcessing) { // Error (Audio API not supported)
         if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
         return false;
     }
 }
 
+// Save the audio buffer passed in parameter
 function saveBuffer(buffer) {
     if(typeof(Worker) !== "undefined" && Worker != null) {
         try {
@@ -1497,6 +1579,7 @@ function saveBuffer(buffer) {
     }
 }
 
+// Download an audio blob
 function downloadAudioBlob(e) {
     var fileName = filesDownloadName + "-" + new Date().toISOString() + ".wav";
 
@@ -1514,7 +1597,43 @@ function downloadAudioBlob(e) {
         window.URL.revokeObjectURL(url);
     }
 }
+// End of Audio rendering and saving functions
 
+// Voice Recorder UI functions
+// Function called when the button "Record with the microphone" is pressed
+function recordAudio() {
+    document.getElementById("firstEtape").style.display = "none";
+    document.getElementById("firstEtapeBis").style.display = "block";
+    recorderVoice.init(); // Init the VoiceRecorder (ask the user to allow access to the microphone)
+}
+
+// Function called when the button "Start" is pressed
+function recordPlay() {
+    recorderVoice.record(); // Record
+}
+
+// Function called when the button "Pause" is pressed
+function recordPause() {
+    recorderVoice.pause(); // Pause the recording
+}
+
+// Function called when the button "Stop" is pressed
+function recordStop() {
+    recorderVoice.stop(); // Stop the recording and launch the edit interface
+}
+
+// Called when the checkbox "Audio feedback" is checked/unchecked
+document.getElementById("checkAudioRetour").onchange = function() {
+    if(this.checked) {
+        recorderVoice.audioFeedback(true); // Allow audio feedback
+    } else {
+        recorderVoice.audioFeedback(false); // Disallow audio feedback
+    }
+};
+// End of Voice Recorder UI functions
+
+// Edit UI functions
+// Validate the settings entered
 function validSettings() {
     try {
         var tmp_pitch = document.getElementById("pitchRange").value;
@@ -1559,43 +1678,56 @@ function validSettings() {
     return true;
 }
 
+// Validate the settings and launch the audio rendering
+// Fails if another audio rendering is currently running
 function validModify(play, save) {
-    // Default parameters
-    var play = play || false;
-    var save = save || false;
-    // End of default parameters
-
-    loadLimiterValues();
-    loadBassBoostValues();
-    loadHighPassValues();
-    loadLowPassValues();
-    loadDelayValues();
-    loadReverbValues();
-
-    if(validSettings()) {
-        launchStop();
-
-        if(document.getElementById("checkCompa").checked == true) compaAudioAPI = true; else compaAudioAPI = false;
-        compaMode();
-
-        if(compaAudioAPI) {
-            if(!checkAudio || !play) {
-                document.getElementById("validInputModify").disabled = false;
+    if(!audioProcessing) {
+        // Default parameters
+        var play = play || false;
+        var save = save || false;
+        // End of default parameters
+    
+        loadLimiterValues();
+        loadBassBoostValues();
+        loadHighPassValues();
+        loadLowPassValues();
+        loadDelayValues();
+        loadReverbValues();
+    
+        if(validSettings()) {
+            launchStop();
+    
+            if(document.getElementById("checkCompa").checked == true) compaAudioAPI = true; else compaAudioAPI = false;
+            compaMode();
+    
+            if(compaAudioAPI) {
+                if(!checkAudio || !play) {
+                    document.getElementById("validInputModify").disabled = false;
+                }
+    
+                if(play) {
+                    launchPlay();
+                }
+            } else {
+                renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, save, play, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, bassboostAudio, phoneAudio, returnAudio, echoAudio, bitCrusherAudio, limiterAudio);
             }
-
-            if(play) {
-                launchPlay();
-            }
-        } else {
-            renderAudioAPI(audio_principal_buffer, speedAudio, pitchAudio, reverbAudio, save, play, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, bassboostAudio, phoneAudio, returnAudio, echoAudio, bitCrusherAudio, limiterAudio);
+    
+            return true;
         }
-
-        return true;
     }
 
     return false;
 }
 
+// Enable the compatibility mode
+function enableCompaMode() {
+    document.getElementById("checkCompa").checked = true;
+    document.getElementById("compatAutoDetected").style.display = "block";
+    compaAudioAPI = true;
+    compaMode();
+}
+
+// Function called when the "Play" button is pressed
 function launchPlay() {
     if(typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
         audioBufferPlay.start();
@@ -1606,12 +1738,14 @@ function launchPlay() {
     }
 }
 
+// Function called when the "Stop" button is pressed
 function launchStop() {
     audioBufferPlay.reset();
     compaModeStop();
     checkButtonPlayAudioBuffer();
 }
 
+// Function called when the "Pause" button is pressed
 function launchPause() {
     if(!compaAudioAPI) {
         audioBufferPlay.pause();
@@ -1622,6 +1756,7 @@ function launchPause() {
     }
 }
 
+// Function called when the "Save" button is pressed
 function launchSave() {
     if(!audioProcessing && typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
         saveBuffer(audio_principal_processed);
@@ -1631,6 +1766,7 @@ function launchSave() {
     }
 }
 
+// Function called when the "Choose another file or recording" button is pressed
 function launchReset() {
     launchPause();
     recordPause();
@@ -1648,6 +1784,7 @@ function launchReset() {
     }
 }
 
+// Function called when the "Reset" button is pressed
 function resetModify() {
     document.getElementById("checkReverb").checked = false;
     document.getElementById("checkEcho").checked = false;
@@ -1661,16 +1798,22 @@ function resetModify() {
     document.getElementById("checkLimiter").checked = true;
     slider.setValue(1.0);
     slider2.setValue(1.0);
+
+    validSettings();
+    validConnectNodes();
 }
 
+// Return a random number between min (inclusive) and max (inclusive)
 function randomRange(min, max) {
     return ((Math.random() * max) + min).toFixed(1);
 }
 
+// Return a random boolean
 function randomBool() {
     return Math.round(Math.random()) == 0 ? false : true;
 }
 
+// Function called when "Random settings" button is pressed
 function randomModify() {
     var checkReverb = document.getElementById("checkReverb");
     var checkEcho = document.getElementById("checkEcho");
@@ -1724,36 +1867,57 @@ function randomModify() {
     validSettings();
     validConnectNodes();
 }
+// End of Edit UI functions
 
-var recorderVoice = new VoiceRecorder();
-
-function recordAudio() {
-    document.getElementById("firstEtape").style.display = "none";
-    document.getElementById("firstEtapeBis").style.display = "block";
-    recorderVoice.init();
+// Others UI functions
+// Reload all the data
+// Called when the link "click here to try to reload the data" is clicked (displayed if an error during loading of the data occurred)
+function reloadData() {
+    init();
 }
 
-function recordPlay() {
-    recorderVoice.record();
-}
+// Update the UI according to the activation/deactivation of the compatibility mode
+function compaMode() {
+    if(!audioProcessing) {
+        if(compaAudioAPI) {
+            setTooltip("playAudio", null, false, true, "wrapperPlay", true);
+            setTooltip("pauseAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperPause", true);
+            document.getElementById("playingAudioInfos").style.display = "block";
+            document.getElementById("checkLoopPlayDiv").style.display = "block";
+        } else {
+            checkButtonPlayAudioBuffer();
+            setTooltip("stopAudio", null, false, true, "wrapperStop", true);
+            document.getElementById("playingAudioInfos").style.display = "block";
+            document.getElementById("checkLoopPlayDiv").style.display = "block";
+        }
 
-function recordPause() {
-    recorderVoice.pause();
-}
-
-function recordStop() {
-    recorderVoice.stop();
-}
-
-document.getElementById("checkAudioRetour").onchange = function() {
-    if(this.checked) {
-        recorderVoice.audioFeedback(true);
-    } else {
-        recorderVoice.audioFeedback(false);
+        if(typeof(Worker) !== "undefined" && Worker != null) {
+            setTooltip("saveInputModify", null, false, true, "wrapperSave", true);
+        } else {
+            setTooltip("saveInputModify", window.i18next.t("script.notCompatible"), true, false, "wrapperSave", true);
+        }
     }
-};
+}
 
-function setTooltip(element, text, disable, enable,  otherElement, byId, display) {
+// Update the UI according to the audio player state
+function checkButtonPlayAudioBuffer() {
+    if(audioBufferPlay.playing) {
+        setTooltip("playAudio", null, true, false, "wrapperPlay", true);
+        setTooltip("pauseAudio", null, false, true, "wrapperPause", true);
+        document.getElementById("wrapperPlay").style.display = "none";
+        document.getElementById("wrapperPause").style.display = "inline-block";
+    } else {
+        setTooltip("playAudio", null, false, true, "wrapperPlay", true);
+        setTooltip("pauseAudio", null, true, false, "wrapperPause", true);
+        document.getElementById("wrapperPlay").style.display = "inline-block";
+        document.getElementById("wrapperPause").style.display = "none";
+    }
+}
+// Set a tooltip on an element, with a text
+// Can be also used to disabled or re-enable an element
+// ByID specifies if the element need to be find by ID
+// Display control if the element need to be displayed or not
+function setTooltip(element, text, disable, enable, otherElement, byId, display) {
     // Default parameters
     var element = element || null;
     var otherElement = otherElement || null;
@@ -1810,191 +1974,54 @@ function setTooltip(element, text, disable, enable,  otherElement, byId, display
 
     return null;
 }
+// End of the others UI functions
 
-function removeTooltipInfo() {
-    if(!removedTooltipInfo) {
-        setTooltip("animation_img", "", false, true,  null, true, false);
-        removedTooltipInfo = true;
-    }
-}
-
-function makeArrayForPreload(array, index, from, to) {
-    var output = [];
-
-    for(var i = from; i < to; i++) {
-        output.push(array[i][index]);
-    }
-
-    return output;
-}
-
-function preloadAudios(array, func) {
-    var msgLoading = window.i18next.t("loading.audioLoading") + " ";
-
-    if(window.HTMLAudioElement) {
-        var audioTestMp3 = document.createElement('audio');
-
-        if(audioTestMp3.canPlayType && audioTestMp3.canPlayType("audio/mpeg")) {
-            document.getElementById("loadingInfo").innerHTML = msgLoading + "0/" + array.length;
-            document.getElementById("timeLoadingInfo").innerHTML = "";
-
-            var loadedAudioCount = 0;
-            var errorLoadingAudio = false;
-            var audioFiles = array;
-            var audioFilesLoaded = [];
-
-            var errorLoadingAudioFunction = function() {
-                if(audioFilesLoaded.indexOf(this.src) == -1) {
-                    var errorLoadingAudio = true;
-
-                    loadedAudioCount++;
-                    document.getElementById("loadingInfo").innerHTML = msgLoading + loadedAudioCount + "/" + array.length;
-                    document.getElementById("errorLoading").style.display = "block";
-
-                    audioFilesLoaded.push(this.src);
-
-                    if(loadedAudioCount >= audioFiles.length) {
-                        if(typeof func !== 'undefined') {
-                            return func(false);
-                        } else {
-                            return false;
-                        }
-                    }
-                }
-            };
-
-            var timeOutLoading = setTimeout(function() {
-                if(loadedAudioCount == 0) {
-                    if(typeof func !== 'undefined') {
-                        return func(false);
-                    } else {
-                        return false;
-                    }
-                }
-            }, 5000);
-
-            for(var i = 0; i < audioFiles.length; i++) {
-                var audioPreload = new Audio();
-                audioPreload.src = audioFiles[i];
-                audioPreload.preload = "auto";
-
-                audioPreload.oncanplaythrough = function() {
-                    if(audioFilesLoaded.indexOf(this.src) == -1) {
-                        loadedAudioCount++;
-                        document.getElementById("loadingInfo").innerHTML = msgLoading + loadedAudioCount + "/" + array.length;
-
-                        audioFilesLoaded.push(this.src);
-
-                        if(loadedAudioCount >= audioFiles.length) {
-                            if(typeof func !== 'undefined') {
-                                return func(true);
-                            } else {
-                                return true;
-                            }
-                        }
-                    }
-                };
-
-                audioPreload.onerror = errorLoadingAudioFunction;
-                audioPreload.onstalled = errorLoadingAudioFunction;
-            }
-        } else {
-            if(typeof func !== 'undefined') {
-                return func(false);
-            } else {
-                return false;
-            }
-        }
-    } else {
-        if(typeof func !== 'undefined') {
-            return func(false);
-        } else {
-            return false;
-        }
-    }
-}
-
-function loadAudioAPI(audio, func) {
-    if('AudioContext' in window && !audioContextNotSupported) {
-        var request = new XMLHttpRequest();
-        request.open('GET', audio, true);
-        request.responseType = 'arraybuffer';
-
-        request.onload = function() {
-            context.decodeAudioData(request.response, function(data) {
-                if(typeof func !== 'undefined') {
-                    func(data, true);
-                }
-            });
-        }
-
-        request.onerror = function() {
-            if(typeof func !== 'undefined') {
-                func(null, false);
-            }
-        }
-
-        request.send();
-    } else {
-        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
-
-        if(typeof func !== 'undefined') {
-            func(null, false);
-        } else {
-            return false;
-        }
-    }
-}
-
-function checkAudioBuffer(bufferName, type) {
-    var errorText = window.i18next.t("loading.errorLoadingTooltip");
-
-    if ('AudioContext' in window && !audioContextNotSupported) {
-        switch(type) {
-            case "audio_impulse_response":
-                if(bufferName == null) {
-                    setTooltip("checkReverb", errorText, true, false, "checkReverbWrapper", true);
-                    document.getElementById("checkReverb").checked = false;
-                    document.getElementById("checkReverbGroup").setAttribute("class", "checkbox disabled");
-                } else {
-                    setTooltip("checkReverb", "", false, true, "checkReverbWrapper", true);
-                    document.getElementById("checkReverbGroup").setAttribute("class", "checkbox");
-                }
-            break;
-            case "audio_modulator":
-                if(bufferName == null || (typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined")) {
-                    setTooltip("checkVocode", errorText, true, false, "checkVocodeWrapper", true);
-                    document.getElementById("checkVocode").checked = false;
-                    document.getElementById("checkVocodeGroup").setAttribute("class", "checkbox disabled");
-                } else {
-                    setTooltip("checkVocode", "", false, true, "checkVocodeWrapper", true);
-                    document.getElementById("checkVocodeGroup").setAttribute("class", "checkbox");
-                }
-            break;
-        }
-    }
-}
-
-function initAudioAPI() {
+// Initialization
+// Load the audio buffers needed for reverberation and vocoder filters
+function initAudioAPI(func) {
     audio_impulse_response.loading = true;
 
-    loadAudioAPI(audioArray[0], function(data, success) {
+    loadAudioBuffer(audioArray[0], function(data, success) {
         audio_impulse_response[1].buffer = data;
         audio_impulse_response.loading = false;
         checkAudioBuffer(audio_impulse_response[1].buffer, "audio_impulse_response");
         loadReverbValues();
 
-        loadAudioAPI(audioArray[1], function(data2, success2) {
+        loadAudioBuffer(audioArray[1], function(data2, success2) {
             audio_modulator = data2;
             checkAudioBuffer(window["audio_modulator"], "audio_modulator");
 
             if(!success || !success2) {
                 document.getElementById("errorLoading").style.display = "block";
             }
+
+            return func(success && success2);
         });
     });
 }
 
+// Display information abouton compatibility of the app with web browser (if the browser isn't compatible)
+function displayCompatibilityInfos() {
+    if(!'AudioContext' in window || audioContextNotSupported) {
+        document.getElementById("compa").style.display = "block";
+        document.getElementById("compaInfo").innerHTML = window.i18next.t("script.browserNotCompatible");
+        document.getElementById("firstEtape").style.display = "block";
+        document.getElementById("fileSelect").disabled = true;
+        document.getElementById("fileRecord").disabled = true;
+    }
+
+    if(typeof(navigator.mediaDevices) === "undefined" || typeof(navigator.mediaDevices.getUserMedia) === "undefined") {
+        setTooltip("fileRecord", window.i18next.t("script.notAvailable"), true, false, "wrapperFileRecord", true);
+    }
+
+    if(typeof(Worker) !== "undefined" && Worker != null) {
+        setTooltip("saveInputModify", "", false, true, "wrapperSave", true);
+    } else {
+        setTooltip("saveInputModify", window.i18next.t("script.browserNotCompatible"), true, false, "wrapperSave", true);
+    }
+}
+
+// Init the app (called when the app is launched)
 function init(func) {
     document.getElementById("loading").style.display = "block";
     document.getElementById("errorLoading").style.display = "none";
@@ -2004,32 +2031,13 @@ function init(func) {
     document.getElementById("appUpdateDate").innerHTML = app_version_date;
     checkUpdate();
 
-    preloadAudios(audioArray, function(result) {
+    initAudioAPI(function(result) {
         document.getElementById("loading").style.display = "none";
         document.getElementById("fileSelect").disabled = false;
         document.getElementById("fileRecord").disabled = false;
         setTooltip("fileRecord", "", false, true, "wrapperFileRecord", true);
 
-        initAudioAPI();
-
-        if(!'AudioContext' in window || audioContextNotSupported) {
-            document.getElementById("compa").style.display = "block";
-            document.getElementById("compaInfo").innerHTML = window.i18next.t("script.browserNotCompatible");
-            document.getElementById("firstEtape").style.display = "block";
-            document.getElementById("fileSelect").disabled = true;
-            document.getElementById("fileRecord").disabled = true;
-        }
-
-        if(typeof(navigator.mediaDevices) === "undefined" || typeof(navigator.mediaDevices.getUserMedia) === "undefined") {
-            setTooltip("fileRecord", window.i18next.t("script.notAvailable"), true, false, "wrapperFileRecord", true);
-        }
-
-        if(typeof(Worker) !== "undefined" && Worker != null) {
-            setTooltip("saveInputModify", "", false, true, "wrapperSave", true);
-        } else {
-            setTooltip("saveInputModify", window.i18next.t("script.browserNotCompatible"), true, false, "wrapperSave", true);
-        }
-
+        displayCompatibilityInfos();
         compaMode();
 
         if(typeof func !== 'undefined') {
@@ -2040,11 +2048,18 @@ function init(func) {
     });
 }
 
-window.onbeforeunload = function() {
-    return window.i18next.t("script.appClosing");
-};
+// When the app is launched, call init method and translate all the content
+window.addEventListener("load", function() {
+    init();
+
+    setTimeout(function() {
+        translateContent();
+    }, 250);
+});
+// End of initialization
 
 // Updater
+// Begin check for updates
 function checkUpdate() {
     var script = document.createElement("script");
     script.src = updater_uri;
@@ -2052,6 +2067,7 @@ function checkUpdate() {
     document.getElementsByTagName('head')[0].appendChild(script);
 }
 
+// Callback called when the update data has finished to download
 function updateCallback(data) {
     if(typeof(data) !== "undefined" && data !== null && typeof(data.version) !== "undefined" && data.version !== null) {
         var newVersionTest = app_version.strcmp(data.version);
@@ -2096,8 +2112,10 @@ function updateCallback(data) {
         }
     }
 }
+// End of updater
 
 // Localization
+// List all languages supported
 function listTranslations(languages) {
     if(languages != null) {
       document.getElementById("languageSelect").disabled = true;
@@ -2112,6 +2130,7 @@ function listTranslations(languages) {
     }
 }
 
+// Translate the content
 function translateContent() {
     listTranslations(i18next.languages);
 
@@ -2122,29 +2141,30 @@ function translateContent() {
     }
 
     document.getElementById("versionDate").innerHTML = new Intl.DateTimeFormat(i18next.language).format(new Date(app_version_date));
-    initAudioAPI();
 
     document.getElementById("appDownloadURLGet").title = window.i18next.t("update.getURL");
     document.getElementById("appUpdateChanges").title = window.i18next.t("update.getChanges");
 
     document.getElementById("appUpdateDateLocalized").innerHTML = window.i18next.t("update.versionDate", { date: new Intl.DateTimeFormat(i18next.language).format(new Date(document.getElementById("appUpdateDate").innerHTML)) });
+
+    displayCompatibilityInfos();
+    checkAudioBuffer(audio_impulse_response[1].buffer, "audio_impulse_response");
+    checkAudioBuffer(window["audio_modulator"], "audio_modulator");
 }
 
+// When another language is selected, translate the content
 document.getElementById("languageSelect").onchange = function() {
     i18next.changeLanguage(document.getElementById("languageSelect").value, function(err, t) {
         translateContent();
     });
 };
-
-window.addEventListener("load", function() {
-    init();
-
-    setTimeout(function() {
-        translateContent();
-    }, 250);
-});
+// End of localization
 
 // Installable app
 if("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
 }
+
+window.onbeforeunload = function() {
+    return window.i18next.t("script.appClosing");
+};

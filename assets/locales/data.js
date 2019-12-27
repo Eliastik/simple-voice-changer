@@ -49,7 +49,7 @@
      "description": "Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un enregistrement rapidement et simplement : choisissez un fichier audio, ou enregistrez-vous, et vous pouvez modifier et enregistrer ! Tout le traitement audio se fait sur votre appareil et aucune donnée n'est envoyée sur Internet."
    },
    "loading": {
-     "loading": "Chargement",
+     "loading": "Chargement…",
      "audioLoading": "Chargement des données audio :",
      "errorLoadingTooltip": "Une erreur est survenue lors du chargement de certaines données. Cette fonctionnalité est donc indisponible. Essayez de recharger la page (F5).",
    },
@@ -228,7 +228,7 @@ i18next.addResourceBundle("en", "translation", {
     "description": "Simple Voice Changer lets you to edit the voice of an audio file or a recording quicly and easily: choose an audio file, or record your voice, and then you can edit and save! All the audio processing is made on your device and no data is sent over the Internet."
   },
   "loading": {
-    "loading": "Loading",
+    "loading": "Loading…",
     "audioLoading": "Loading audio data:",
     "errorLoadingTooltip": "An error has occurred loading some data. This function is unavailable. Try to refresh the page (F5)."
   },
@@ -272,7 +272,7 @@ i18next.addResourceBundle("en", "translation", {
     "reverb": "Reverberation",
     "echo": "Echo",
     "vocoder": "Vocoder (robotic voice)",
-    "returnAudio": "Flip the audio",
+    "returnAudio": "Reverse the audio",
     "bitCrusher": "8 bits effect",
     "lowpass": "Low-pass filter",
     "highpass": "High-pass filter",
