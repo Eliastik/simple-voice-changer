@@ -1145,6 +1145,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             audio_processing_buffer = buffer;
             resetFilter(new soundtouch.WebAudioBufferSource(buffer), st);
 
+            if(limiterProcessor != null) limiterProcessor.disconnect();
             limiterProcessor = processing_context.createScriptProcessor(BUFFER_SIZE, audio_processing_buffer.numberOfChannels, audio_processing_buffer.numberOfChannels);
             validConnectNodes(BUFFER_SIZE);
 
@@ -1203,7 +1204,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
                     compaModeStop = function() {
                         try {
-                            limiterProcessor.disconnect(offlineContext.destination);
+                            limiterProcessor.disconnect();
                             audioBufferPlay.stop();
                             return true;
                         } catch(e) {
@@ -1212,8 +1213,9 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     };
 
                     function loopAudio() {
+                        compaModeStop();
+
                         if(compaAudioAPI && play && document.getElementById("checkLoopPlay").checked) {
-                            compaModeStop();
                             launchPlay();
                         }
                     }
