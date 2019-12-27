@@ -25,16 +25,59 @@ var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php
 // End of the settings
 
 // Default variables
-var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_impulse_response, audio_modulator, audioBufferPlay, compaModeStop, compaModeStopSave;
+var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audio_principal_buffer, audio_modulator, audioBufferPlay, compaModeStop, compaModeStopSave;
 
 speedAudio = pitchAudio = 1;
 reverbAudio = echoAudio = compaAudioAPI = vocoderAudio = bitCrusherAudio = lowpassAudio = highpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 limiterAudio = true;
-audio_principal_buffer = audio_processing_buffer = processing_context = audio_impulse_response = audio_modulator = null;
+audio_principal_buffer = audio_processing_buffer = processing_context = audio_modulator = null;
 var sliderPlayAudio = new Slider("#playAudioRange");
 audioBufferPlay = new BufferPlayer(null);
 compaModeStop = function() { return false };
 compaModeStopSave = function() { return false };
+
+// Impulses responses
+var audio_impulse_response = {
+    current: 1,
+    nbResponses: 5,
+    loading: false,
+    1: {
+        title: "Medium Damping Cave E002 M2S",
+        file: "assets/sounds/impulse_response.wav",
+        buffer: null,
+        link: "http://www.cksde.com/p_6_250.htm",
+        addDuration: 2
+    },
+    2: {
+        title: "The Dixon Studio Theatre – University of York",
+        file: "assets/sounds/impulse_response_2.wav",
+        buffer: null,
+        link: "https://openairlib.net/?page_id=452",
+        addDuration: 3
+    },
+    3: {
+        title: "Creswell Crags",
+        file: "assets/sounds/impulse_response_3.wav",
+        buffer: null,
+        link: "https://openairlib.net/?page_id=441",
+        addDuration: 1
+    },
+    4: {
+        title: "Jack Lyons Concert Hall – University of York",
+        file: "assets/sounds/impulse_response_4.wav",
+        buffer: null,
+        link: "https://openairlib.net/?page_id=571",
+        addDuration: 4
+    },
+    5: {
+        title: "Stairway – University of York",
+        file: "assets/sounds/impulse_response_5.wav",
+        buffer: null,
+        link: "https://openairlib.net/?page_id=678",
+        addDuration: 3
+    }
+};
+// End of Impulses responses
 
 var slider = new Slider("#pitchRange", {
     formatter: function(value) {
@@ -278,6 +321,8 @@ function resetLowPassValues() {
     setLowPassFilter();
 }
 // End of low and high pass filters options
+
+// Delay options
 var delayOptions = {
     delay: 0.20,
     gain: 0.75
@@ -317,8 +362,101 @@ function resetDelayValues() {
     delayOptions.gain = 0.75;
     setDelayFilter();
 }
-// Delay options
+// End of delay options
 
+// Reverb options
+function reverbStateSettings() {
+    if(!audio_impulse_response.loading) {
+        document.getElementById("loadingReverb").style.display = "none";
+        document.getElementById("environmentReverb").classList.remove("disabled");
+        document.getElementById("environmentReverb").disabled = false;
+        document.getElementById("validReverbSettings").classList.remove("disabled");
+        document.getElementById("validReverbSettings").disabled = false;
+        document.getElementById("resetReverbSettings").classList.remove("disabled");
+        document.getElementById("resetReverbSettings").disabled = false;
+    } else {
+        document.getElementById("loadingReverb").style.display = "block";
+        document.getElementById("environmentReverb").classList.add("disabled");
+        document.getElementById("environmentReverb").disabled = true;
+        document.getElementById("validReverbSettings").classList.add("disabled");
+        document.getElementById("validReverbSettings").disabled = true;
+        document.getElementById("resetReverbSettings").classList.add("disabled");
+        document.getElementById("resetReverbSettings").disabled = true;
+    }
+}
+
+function loadReverbValues() {
+    var nb = audio_impulse_response.nbResponses;
+    var current = audio_impulse_response.current;
+    document.getElementById("environmentReverb").innerHTML = "";
+
+    for(var i = 1; i <= nb; i++) {
+        var option = document.createElement("option");
+        option.text = audio_impulse_response[i].title;
+        option.value = i;
+        document.getElementById("environmentReverb").add(option);
+    }
+
+    document.getElementById("environmentReverb").value = current;
+    document.getElementById("linkEnvironmentReverb").href = audio_impulse_response[document.getElementById("environmentReverb").value].link;
+
+    reverbStateSettings();
+}
+
+document.getElementById("environmentReverb").onchange = function() {
+    document.getElementById("linkEnvironmentReverb").href = audio_impulse_response[document.getElementById("environmentReverb").value].link;
+};
+
+function setReverbFilter() {
+    var buffer = audio_impulse_response[audio_impulse_response.current].buffer;
+
+    if(convolver != null && buffer != null) {
+        convolver.buffer = buffer;
+        calcCompaModePlayerTime();
+    }
+
+    loadReverbValues();
+}
+
+function validateReverbValues() {
+    if(!audio_impulse_response.loading) {
+        var value = document.getElementById("environmentReverb").value;
+    
+        if(value != null && value.trim() != "" && !isNaN(value) && value >= 1 && value <= audio_impulse_response.nbResponses) {
+            if(audio_impulse_response[value].buffer == null) {
+                audio_impulse_response.loading = true;
+                reverbStateSettings();
+
+                loadAudioAPI(audio_impulse_response[value].file, function(data, success) {
+                    audio_impulse_response[value].buffer = data;
+                    audio_impulse_response.loading = false;
+        
+                    if(success) {
+                        checkAudioBuffer(audio_impulse_response[value].buffer, "audio_impulse_response");
+                        audio_impulse_response.current = value;
+                    } else {
+                        document.getElementById("errorLoadingReverb").style.display = "block";
+                    }
+        
+                    setReverbFilter();
+                });
+            } else {
+                audio_impulse_response.loading = false;
+                document.getElementById("loadingReverb").style.display = "none";
+                checkAudioBuffer(audio_impulse_response[value].buffer, "audio_impulse_response");
+                audio_impulse_response.current = value;
+                setReverbFilter();
+            }
+        }
+    }
+}
+
+function resetReverbValues() {
+    if(!audio_impulse_response.loading) {
+        audio_impulse_response.current = 1;
+        setReverbFilter();
+    }
+}
 // End of delay options
 
 // Real time functions
@@ -460,9 +598,11 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
             output = delayFilter["input"];
         }
 
-        if(reverb) {
+        var reverb_buffer = audio_impulse_response[audio_impulse_response.current].buffer;
+
+        if(reverb && reverb_buffer != null) {
             convolver = offlineContext.createConvolver();
-            convolver.buffer = audio_impulse_response;
+            convolver.buffer = reverb_buffer;
             convolver.connect(output);
             output = convolver;
         }
@@ -997,9 +1137,15 @@ function add(a, b) {
 
 function calcAudioDuration(audio, speed, pitch, reverb, vocode, echo) {
     var duration = audio.duration + 1;
+    var reverb_duration = audio_impulse_response[audio_impulse_response.current].addDuration;
 
     duration = duration / parseFloat(speed);
-    if(reverb || echo) duration = duration + 5;
+
+    if(echo) {
+        duration = duration + 5;
+    } else if(reverb) {
+        duration = duration + reverb_duration;
+    }
 
     return duration;
 }
@@ -1275,7 +1421,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             }
         }
 
-        if(vocode && (typeof(window.OfflineAudioContext) !== "undefined" || typeof(window.webkitOfflineAudioContext) !== "undefined")) {
+        if(vocode && audio_modulator != null && (typeof(window.OfflineAudioContext) !== "undefined" || typeof(window.webkitOfflineAudioContext) !== "undefined")) {
             if(typeof(window.OfflineAudioContext) !== "undefined") {
                 var offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
             } else if(typeof(window.webkitOfflineAudioContext) !== "undefined") {
@@ -1383,6 +1529,7 @@ function validSettings() {
     loadHighPassValues();
     loadLowPassValues();
     loadDelayValues();
+    loadReverbValues();
 
     if(isNaN(tmp_pitch) || tmp_pitch == "" || tmp_pitch <= 0 || tmp_pitch > 5) {
         alert(window.i18next.t("script.invalidPitch"));
@@ -1423,6 +1570,7 @@ function validModify(play, save) {
     loadHighPassValues();
     loadLowPassValues();
     loadDelayValues();
+    loadReverbValues();
 
     if(validSettings()) {
         launchStop();
@@ -1766,32 +1914,23 @@ function preloadAudios(array, func) {
     }
 }
 
-function loadAudioAPI(audio, dest, func) {
+function loadAudioAPI(audio, func) {
     if('AudioContext' in window && !audioContextNotSupported) {
         var request = new XMLHttpRequest();
         request.open('GET', audio, true);
         request.responseType = 'arraybuffer';
 
         request.onload = function() {
-            checkAudioBuffer(dest);
-
             context.decodeAudioData(request.response, function(data) {
-                window[dest] = data;
-                checkAudioBuffer(dest);
-
                 if(typeof func !== 'undefined') {
-                    return func(true);
+                    func(data, true);
                 }
             });
         }
 
-        request.onreadystatechange = function() {
-            checkAudioBuffer(dest);
-        }
-
         request.onerror = function() {
             if(typeof func !== 'undefined') {
-                return func(false);
+                func(null, false);
             }
         }
 
@@ -1800,37 +1939,35 @@ function loadAudioAPI(audio, dest, func) {
         if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
 
         if(typeof func !== 'undefined') {
-            return func(false);
+            func(null, false);
         } else {
             return false;
         }
     }
 }
 
-function checkAudioBuffer(bufferName) {
+function checkAudioBuffer(bufferName, type) {
     var errorText = window.i18next.t("loading.errorLoadingTooltip");
 
     if ('AudioContext' in window && !audioContextNotSupported) {
-        switch(bufferName) {
+        switch(type) {
             case "audio_impulse_response":
-                if(typeof(audio_impulse_response) == "undefined" || audio_impulse_response == null) {
+                if(bufferName == null) {
                     setTooltip("checkReverb", errorText, true, false, "checkReverbWrapper", true);
                     document.getElementById("checkReverb").checked = false;
                     document.getElementById("checkReverbGroup").setAttribute("class", "checkbox disabled");
                 } else {
                     setTooltip("checkReverb", "", false, true, "checkReverbWrapper", true);
-                    document.getElementById("checkReverb").checked = false;
                     document.getElementById("checkReverbGroup").setAttribute("class", "checkbox");
                 }
             break;
             case "audio_modulator":
-                if(typeof(audio_modulator) == "undefined" || audio_modulator == null || (typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined")) {
+                if(bufferName == null || (typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined")) {
                     setTooltip("checkVocode", errorText, true, false, "checkVocodeWrapper", true);
                     document.getElementById("checkVocode").checked = false;
                     document.getElementById("checkVocodeGroup").setAttribute("class", "checkbox disabled");
                 } else {
                     setTooltip("checkVocode", "", false, true, "checkVocodeWrapper", true);
-                    document.getElementById("checkVocode").checked = false;
                     document.getElementById("checkVocodeGroup").setAttribute("class", "checkbox");
                 }
             break;
@@ -1839,9 +1976,19 @@ function checkAudioBuffer(bufferName) {
 }
 
 function initAudioAPI() {
-    loadAudioAPI(audioArray[0], "audio_impulse_response", function() {
-        loadAudioAPI(audioArray[1], "audio_modulator", function() {
-            if(typeof(audio_impulse_response) == "undefined" || audio_impulse_response == null || typeof(audio_modulator) == "undefined" || audio_modulator == null) {
+    audio_impulse_response.loading = true;
+
+    loadAudioAPI(audioArray[0], function(data, success) {
+        audio_impulse_response[1].buffer = data;
+        audio_impulse_response.loading = false;
+        checkAudioBuffer(audio_impulse_response[1].buffer, "audio_impulse_response");
+        loadReverbValues();
+
+        loadAudioAPI(audioArray[1], function(data2, success2) {
+            audio_modulator = data2;
+            checkAudioBuffer(window["audio_modulator"], "audio_modulator");
+
+            if(!success || !success2) {
                 document.getElementById("errorLoading").style.display = "block";
             }
         });

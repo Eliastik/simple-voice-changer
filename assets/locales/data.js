@@ -170,6 +170,14 @@
       "delaySeconds": "Délai (en secondes) :",
       "delayGain": "Gain (en dB) :"
    },
+   "reverbSettings": {
+      "title": "Paramètres du filtre réverbération",
+      "lead": "Vous pouvez régler ici les paramètres du filtre réverbération.",
+      "environmentReverb": "Environnement :",
+      "source": "Source",
+      "loading": "Chargement de l'environnement en cours… Veuillez patienter.",
+      "error": "Une erreur est survenue lors du chargement de l'environnement. Veuillez réessayer."
+   },
    "script": {
      "errorAudioContext": "Une erreur est survenue lors de la création d'un contexte audio (l'API Web Audio semble ne pas être supportée) :",
      "webAudioNotSupported": "API Web Audio non supportée par ce navigateur.",
@@ -340,6 +348,14 @@ i18next.addResourceBundle("en", "translation", {
      "lead": "Here you can set the echo filter settings.",
      "delaySeconds": "Delay (in seconds):",
      "delayGain": "Gain (in dB):"
+  },
+  "reverbSettings": {
+     "title": "Reverb filter settings",
+     "lead": "Here you can set the reverb filter settings.",
+     "environmentReverb": "Environment:",
+     "source": "Source",
+     "loading": "Loading the environment… Please wait.",
+     "error": "An error occurred while loading the environment. Try again."
   },
   "script": {
     "errorAudioContext": "Error when creating Audio Context (the Web Audio API seem to be unsupported):",

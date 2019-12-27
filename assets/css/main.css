@@ -64,7 +64,7 @@ img {
 .center {
     text-align: center;
 }
-#compa, #errorLoading, #compatAutoDetected, #secondEtape, #thirdEtape, #lastEtape, #firstEtapeBis, #errorLoadingSelectFile, #processingSave, #updateAvailable, #appUpdateDate {
+#compa, #errorLoading, #compatAutoDetected, #secondEtape, #thirdEtape, #lastEtape, #firstEtapeBis, #errorLoadingSelectFile, #processingSave, #updateAvailable, #appUpdateDate, #errorLoadingReverb {
     display: none;
 }
 #errorLoadingSelectFile, #errorRecord, #waitRecord {
@@ -183,6 +183,9 @@ label {
 }
 .link-contrasted-red:hover {
     color: #0000b5;
+}
+.red {
+    color: red;
 }
 .slider-label {
     font-weight: 100;

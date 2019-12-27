@@ -125,7 +125,7 @@
                                 <div class="row row-filters mt">
                                     <div class="col-xs-6 border-right">
                                         <div class="checkbox disabled" id="checkReverbGroup">
-                                            <span id="checkReverbWrapper"><input type="checkbox" id="checkReverb" disabled="disabled" /> <label for="checkReverb" data-i18n="thirdStep.reverb">Réverbération</label></span>
+                                            <span id="checkReverbWrapper"><input type="checkbox" id="checkReverb" disabled="disabled" /> <label for="checkReverb" data-i18n="thirdStep.reverb">Réverbération</label></span> <a href="#" data-toggle="modal" data-target="#reverbSettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
                                         </div>
                                         <div class="checkbox" id="checkEchoGroup">
                                             <span id="checkEchoWrapper"><input type="checkbox" id="checkEcho" /> <label for="checkEcho" data-i18n="thirdStep.echo">Écho</label></span> <a href="#" data-toggle="modal" data-target="#delaySettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
@@ -387,6 +387,41 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="validateDelayValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
                     <button type="button" class="btn btn-danger" onclick="resetDelayValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id="reverbSettings" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title" data-i18n="reverbSettings.title">Paramètres du filtre réverbération</h4>
+                </div>
+                <div class="modal-body">
+                    <p><span data-i18n="reverbSettings.lead">Vous pouvez régler ici les paramètres du filtre réverbération.</span></p>
+                    <fieldset>
+                        <form action="" method="post" onsubmit="validateReverbValues(); return false;" class="col-lg-12 form-horizontal">
+                            <div class="form-group row">
+                                <label data-i18n="reverbSettings.environmentReverb" for="environmentReverb" class="col-lg-4 col-form-label">Environnement :</label>
+                                <div class="col-lg-6">
+                                    <select class="form-control" name="environmentReverb" id="environmentReverb" class="disabled" disabled="disabled"></select>
+                                    <a target="_blank" data-i18n="reverbSettings.source" href="#null" id="linkEnvironmentReverb">Source</a>
+                                </div>
+                            </div>
+                            <div class="form-group row big center" id="loadingReverb">
+                                <i class="fa fa-refresh fa-spin fa-fw"></i> <span class="bold" data-i18n="reverbSettings.loading">Chargement de l'environnement en cours… Veuillez patienter.</span>
+                            </div>
+                            <div class="form-group row big red center" id="errorLoadingReverb">
+                                <i class="fa fa-times-circle-o fa-fw"></i> <span class="bold" data-i18n="reverbSettings.error">Une erreur est survenue lors du chargement de l'environnement. Veuillez réessayer.</span>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary disabled" disabled="disabled" onclick="validateReverbValues();" id="validReverbSettings"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger disabled" disabled="disabled" onclick="resetReverbValues();" id="resetReverbSettings"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>
