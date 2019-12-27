@@ -51,7 +51,9 @@ var slider2 = new Slider("#speedRange", {
 // Global buffers
 var audioBuffers = {
     principal: null,
+    returned: null,
     vocoded: null,
+    returnedVocoded: null,
     processed: null,
     modulator: null
 };
@@ -1454,19 +1456,16 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
         audioProcessing = true;
 
         function renderAudio(buffer) {
-            if(returnAudioParam) {
-                buffer = returnBuffer(buffer);
-            }
-
             audioBuffers.processed = buffer;
             st.clear();
-            resetFilter(new soundtouch.WebAudioBufferSource(buffer), st);
+            resetFilter(new soundtouch.WebAudioBufferSource(audioBuffers.processed), st);
 
             if(limiterProcessor != null) limiterProcessor.disconnect();
             limiterProcessor = offlineContext.createScriptProcessor(BUFFER_SIZE, audioBuffers.processed.numberOfChannels, audioBuffers.processed.numberOfChannels);
             gainNode = offlineContext.createGain();
             gainNode.gain.setValueAtTime(0.0, offlineContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(1.0, offlineContext.currentTime + 0.2);
+
             validConnectNodes(BUFFER_SIZE);
 
             if(!comp) { // Standard mode
@@ -1586,6 +1585,14 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             }
         }
 
+        if(returnAudioParam && audioBuffers.returned == null) {
+            audioBuffers.returned = returnBuffer(audio);
+        }
+
+        if(returnAudioParam) {
+            audio = audioBuffers.returned;
+        }
+
         // Vocoder filter
         if(vocode && audioBuffers.modulator != null && (typeof(window.OfflineAudioContext) !== "undefined" || typeof(window.webkitOfflineAudioContext) !== "undefined")) {
             if(typeof(window.OfflineAudioContext) !== "undefined") {
@@ -1594,15 +1601,20 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 var offlineContext2 = new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
             }
 
-            if(audioBuffers.vocoded == null) {
+            if((!returnAudioParam && audioBuffers.vocoded == null) || (returnAudioParam && audioBuffers.returnedVocoded == null)) {
                 if(comp) {
                     document.getElementById("playAudio").disabled = true;
                     document.getElementById("stopAudio").disabled = true;
                 }
 
                 offlineContext2.oncomplete = function(e) {
-                    audioBuffers.vocoded = e.renderedBuffer;
-                    renderAudio(audioBuffers.vocoded);
+                    if(returnAudioParam) {
+                        audioBuffers.returnedVocoded = e.renderedBuffer;
+                    } else {
+                        audioBuffers.vocoded = e.renderedBuffer;
+                    }
+
+                    renderAudio(e.renderedBuffer);
     
                     if(comp) {
                         document.getElementById("playAudio").disabled = false;
@@ -1613,7 +1625,11 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 vocoder(offlineContext2, audioBuffers.modulator, audio);
                 offlineContext2.startRendering();
             } else {
-                renderAudio(audioBuffers.vocoded);
+                if(returnAudioParam) {
+                    renderAudio(audioBuffers.returnedVocoded);
+                } else {
+                    renderAudio(audioBuffers.vocoded);
+                }
             }
         } else {
             renderAudio(audio);
@@ -1877,7 +1893,9 @@ function launchReset() {
 
 function resetBuffers() {
     audioBuffers.principal = null;
+    audioBuffers.returned = null;
     audioBuffers.vocoded = null;
+    audioBuffers.returnedVocoded = null;
     audioBuffers.processed = null;
 }
 
