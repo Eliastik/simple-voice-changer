@@ -690,6 +690,11 @@ function BufferPlayer() {
 
         if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
         if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
+
+        if(this.compatibilityMode) {
+            if(document.getElementById("timeFinishedDownload") != null) document.getElementById("timeFinishedDownload").innerHTML = ("0" + Math.trunc((this.duration - this.displayTime) / 60)).slice(-2) + ":" + ("0" + Math.trunc((this.duration - this.displayTime) % 60)).slice(-2);
+            if(document.getElementById("progressProcessingSave") != null) document.getElementById("progressProcessingSave").style.width = (100 - Math.round((this.duration - this.displayTime) / this.duration * 100)) + "%";
+        }
         
         if(document.getElementById("checkLoopPlay") != null) {
             if(document.getElementById("checkLoopPlay").checked) {
@@ -1208,6 +1213,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
                     function loopAudio() {
                         if(compaAudioAPI && play && document.getElementById("checkLoopPlay").checked) {
+                            compaModeStop();
                             launchPlay();
                         }
                     }
@@ -1218,16 +1224,12 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
                     if(save) {
                         var rec = new Recorder(limiterProcessor, { workerPath: "assets/js/recorderWorker.js" });
-
-                        var timer = new TimerSaveTime("timeFinishedDownload", "progressProcessingSave", Math.round(durationAudio), -1);
-                        timer.start();
                         rec.record();
 
                         function onSaveFinished() {
-                            limiterProcessor.disconnect(offlineContext.destination);
+                            compaModeStop();
                             audioBufferPlay.setOnPlayingFinished(null);
                             audioBufferPlay.stop();
-                            timer.stop();
                             document.getElementById("validInputModify").disabled = false;
                             document.getElementById("resetAudio").disabled = false;
                             document.getElementById("playAudio").disabled = false;
@@ -1246,8 +1248,6 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                                     onSaveFinished();
                                 });
                             }
-                            
-                            loopAudio();
                         });
 
                         compaModeStopSave = function() {
@@ -1290,7 +1290,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
         } else {
             renderAudio(audio);
         }
-    } else {
+    } else if(!audioProcessing) {
         if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
         return false;
     }
