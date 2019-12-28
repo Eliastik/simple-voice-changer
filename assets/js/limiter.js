@@ -3,16 +3,20 @@
 // Additions by Eliastik (eliastiksofts.com): Stereo and multi-channel support, code simplified in one object class (Limiter)
 
 function DelayBuffer(n) {
-    n = Math.floor(n);
-    this._array = new Float32Array(2 * n);
+    this.n = Math.floor(n);
+    this.init();
+}
+
+DelayBuffer.prototype.init = function() {
+    this._array = new Float32Array(2 * this.n);
     this.length = this._array.length;
     this.readPointer = 0;
-    this.writePointer = n - 1;
+    this.writePointer = this.n - 1;
 
     for(var i = 0 ; i < this.length; i++) {
         this._array[i] = 0;
     }
-}
+};
 
 DelayBuffer.prototype.read = function() {
     var value = this._array[this.readPointer % this.length];
@@ -23,6 +27,10 @@ DelayBuffer.prototype.read = function() {
 DelayBuffer.prototype.push = function(v) {
     this._array[this.writePointer % this.length] = v;
     this.writePointer++;
+};
+
+DelayBuffer.prototype.reset = function() {
+    this.init();
 };
 
 function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, threshold, lookAheadTime) {
@@ -113,7 +121,12 @@ function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, thresho
     };
 
     this.reset = function() {
-        this.delayBuffer = [];
+        for(var i = 0; i < this.delayBuffer.length; i++) {
+            if(this.delayBuffer[i] != null) {
+                this.delayBuffer[i].reset();
+            }
+        }
+
         this.envelopeSample = 0;
     };
 }

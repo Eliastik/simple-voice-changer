@@ -300,6 +300,7 @@ function BufferPlayer() {
         context.resume();
 
         if(!this.compatibilityMode) {
+            if(this.source != null) this.source.disconnect();
             this.source = context.createBufferSource();
             this.source.buffer = this.buffer;
             this.duration = this.buffer.duration;
@@ -1457,13 +1458,19 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
         function renderAudio(buffer) {
             audioBuffers.processed = buffer;
+
             st.clear();
             resetFilter(new soundtouch.WebAudioBufferSource(audioBuffers.processed), st);
 
-            if(limiterProcessor != null) limiterProcessor.disconnect();
+            if(limiterProcessor != null) {
+                limiterProcessor.onaudioprocess = null;
+                limiterProcessor.disconnect();
+            }
+
             limiterProcessor = offlineContext.createScriptProcessor(BUFFER_SIZE, audioBuffers.processed.numberOfChannels, audioBuffers.processed.numberOfChannels);
+            
             gainNode = offlineContext.createGain();
-            gainNode.gain.setValueAtTime(0.0, offlineContext.currentTime);
+            gainNode.gain.setValueAtTime(0.001, offlineContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(1.0, offlineContext.currentTime + 0.2);
 
             validConnectNodes(BUFFER_SIZE);
