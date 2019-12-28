@@ -13,7 +13,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 1.2.1.2 (7/26/2019)
+* Version: 1.3 (12/28/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -31,6 +31,19 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses [an icon](https://www.flaticon.com/free-icon/microphone_204320) by [Prosymbols](https://www.flaticon.com/authors/prosymbols) from [www.flaticon.com](https://www.flaticon.com/) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/) license
 
 ## Changelog
+
+* Version 1.3 (12/28/2019):
+    - Many filters can now be configured! This includes the Limiter and the filters Bass boost, Reverberation, Echo, Low-pass filter and High-pass filter;
+        - Added many environments for the Reverberation filter, accessible via the settings of this filter;
+    - Compatibility mode now have the same audio player as the standard mode. In addition, this mode now allows you to edit the sounds in real time!;
+    - Added the possibility to enable loop playback of a sound;
+    - Many bug fixes and other improvements of the quality of the application:
+        - Optimizations aimed at reducing memory usage and speed of sound processing;
+        - Adjustment of the default limiter settings in order to improve the quality;
+        - Fixed: the message "A connection error has occurred..." could appear even when no error had occurred;
+        - Simplified and commented code;
+        - Updated software libraries;
+        - Other bug fixes and adjustments.
 
 * Version 1.2.1.2 (7/26/2019):
     - Additions to use the app in offline mode and to be offered installation on compatible platforms;
@@ -85,7 +98,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 1.2.1.2 (26/07/2019)
+* Version du programme : 1.3 (28/12/2019)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -103,6 +116,19 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 ## Journal des changements
+
+* Version 1.3 (28/12/2019) :
+    - De nombreux filtres ont désormais la possibilité d'être paramétrés ! Cela inclus notamment le limiteur, les filtres Boost des basses, Réverbération, Echo, Filtre passe-bas et Filtre passe-haut ;
+        - Ajout de nombreux environnements pour le filtre Réverbération, accessibles via les paramètres de ce filtre ;
+    - Le mode de compatibilité a désormais le même lecteur audio que le mode standard. De plus, ce mode permet désormais de modifier les sons en temps réel ! ;
+    - Ajout de la possibilité de lire en boucle un son ;
+    - De nombreuses corrections de bugs et autres améliorations de la qualité de l'application :
+        - Optimisations visant à réduire l'utilisation mémoire et la rapidité de traitement des sons ;
+        - Ajustement des paramètres par défaut du limiteur afin d'en améliorer la qualité ;
+        - Corrigé : le message "Une erreur de connexion est survenue..." pouvait s'afficher même lorsqu'aucune erreur n'était survenue ;
+        - Code simplifié et commenté ;
+        - Mise à jour des bibliothèques logicielles ;
+        - Autres corrections de bugs et ajustements.
 
 * Version 1.2.1.2 (26/07/2019) :
     - Ajout permettant d'utiliser l'application en mode hors-ligne et de se voir proposer l'installation sur les plateformes compatibles ;

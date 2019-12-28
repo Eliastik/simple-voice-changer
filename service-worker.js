@@ -17,7 +17,7 @@
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
 const CACHE_BASENAME = 'simple-voice-changer';
-const CACHE_VER = '-v1.2.1.2';
+const CACHE_VER = '-v1.3';
 const CACHE = CACHE_BASENAME + CACHE_VER;
 
 const CACHE_URLS = [

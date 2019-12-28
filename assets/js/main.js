@@ -19,8 +19,8 @@
 // App infos
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
-var app_version = "1.2.1.2";
-var app_version_date = "07/26/2019";
+var app_version = "1.3";
+var app_version_date = "12/28/2019";
 var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
 // End of app infos
 
@@ -101,7 +101,7 @@ var delayOptions = {
 // Impulses responses settings
 var audioImpulseResponses = {
     current: 1,
-    nbResponses: 11,
+    nbResponses: 13,
     loading: false,
     1: {
         title: "Medium Damping Cave E002 M2S",
@@ -109,7 +109,7 @@ var audioImpulseResponses = {
         size: 1350278,
         buffer: null,
         link: "http://www.cksde.com/p_6_250.htm",
-        addDuration: 2
+        addDuration: 4
     },
     2: {
         title: "The Dixon Studio Theatre – University of York",
@@ -189,6 +189,22 @@ var audioImpulseResponses = {
         size: 454714,
         buffer: null,
         link: "https://openairlib.net/?page_id=770",
+        addDuration: 5
+    },
+    12: {
+        title: "Hoffmann Lime Kiln – Langcliffe, UK",
+        file: "assets/sounds/impulse_response_12.wav",
+        size: 1536044,
+        buffer: null,
+        link: "https://openairlib.net/?page_id=518",
+        addDuration: 2
+    },
+    13: {
+        title: "Innocent Railway Tunnel (middle)",
+        file: "assets/sounds/impulse_response_13.wav",
+        size: 5760056,
+        buffer: null,
+        link: "https://openairlib.net/?page_id=525",
         addDuration: 5
     }
 };
@@ -1417,7 +1433,10 @@ function calcAudioDuration(audio, speed, pitch, reverb, vocode, echo) {
 
     duration = duration / parseFloat(speed);
 
-    if(echo) {
+    if(echo && reverb) {
+        var addDuration = Math.max(5, reverb_duration);
+        duration = duration + addDuration;
+    } else if(echo) {
         duration = duration + 5;
     } else if(reverb) {
         duration = duration + reverb_duration;
@@ -1660,7 +1679,7 @@ function saveBuffer(buffer) {
         return false;
     }
 
-    if ('AudioContext' in window && !audioContextNotSupported) {
+    if('AudioContext' in window && !audioContextNotSupported && worker != null) {
         worker.postMessage({
             command: "init",
             config: {

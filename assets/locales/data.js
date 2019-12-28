@@ -183,7 +183,7 @@
       },
       "source": "Source",
       "environmentSettingsInfos": "En cliquant sur Valider, l'environnement sera téléchargé temporairement sur votre appareil. Cela peut engendrer des frais.",
-      "environmentAlreadyDownloaded": "Cet environement a déjà été téléchargé.",
+      "environmentAlreadyDownloaded": "Cet environnement a déjà été téléchargé.",
       "loading": "Chargement de l'environnement en cours… Veuillez patienter.",
       "error": "Une erreur est survenue lors du chargement de l'environnement. Veuillez réessayer."
    },
