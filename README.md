@@ -13,7 +13,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 1.3 (12/28/2019)
+* Version: 1.3.0.1 (3/9/2020)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -31,6 +31,9 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses [an icon](https://www.flaticon.com/free-icon/microphone_204320) by [Prosymbols](https://www.flaticon.com/authors/prosymbols) from [www.flaticon.com](https://www.flaticon.com/) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/) license
 
 ## Changelog
+
+* Version 1.3.0.1 (3/9/2020) :
+    - Small fix of the limiter: the same gain reduction is applied to all audio channels at the same time, this improves the sound quality. The default release time has been increased to 3.
 
 * Version 1.3 (12/28/2019):
     - Many filters can now be configured! This includes the Limiter and the filters Bass boost, Reverberation, Echo, Low-pass filter and High-pass filter;
@@ -98,7 +101,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 1.3 (28/12/2019)
+* Version du programme : 1.3.0.1 (09/03/2020)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -116,6 +119,9 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 ## Journal des changements
+
+* Version 1.3.0.1 (09/03/2020) :
+    - Petite correction du limiteur : la même réduction de gain est effectuée sur tous les canaux audio en même temps, cela améliore la qualité sonore. De plus, le temps de release a été augmenté à 3 par défaut.
 
 * Version 1.3 (28/12/2019) :
     - De nombreux filtres ont désormais la possibilité d'être paramétrés ! Cela inclus notamment le limiteur, les filtres Boost des basses, Réverbération, Echo, Filtre passe-bas et Filtre passe-haut ;

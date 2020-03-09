@@ -19,8 +19,8 @@
 // App infos
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
-var app_version = "1.3";
-var app_version_date = "12/28/2019";
+var app_version = "1.3.0.1";
+var app_version_date = "03/09/2020";
 var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
 // End of app infos
 
