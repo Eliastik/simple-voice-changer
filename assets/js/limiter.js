@@ -38,7 +38,7 @@ function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, thresho
     this.preGain = preGain || 0; // dB
     this.postGain = postGain || 0; // dB
     this.attackTime = attackTime || 0; // s
-    this.releaseTime = releaseTime || 2; // s
+    this.releaseTime = releaseTime || 3; // s
     this.threshold = threshold || -0.05; // dB
     this.lookAheadTime = lookAheadTime || 0.05; // s
     this.delayBuffer = [];
@@ -67,6 +67,18 @@ function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, thresho
         return envelope;
     };
 
+    this.getMaxEnvelope = function(envelope, channels, index) {
+        var max = envelope[0][index];
+
+        for(var channel = 0; channel < channels; channel++) {
+            if(envelope[channel][index] > max) {
+                max = envelope[channel][index];
+            }
+        }
+
+        return max;
+    };
+
     this.ampToDB = function(value) {
         return 20 * Math.log10(value);
     };
@@ -78,6 +90,13 @@ function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, thresho
     this.limit = function(audioProcessingEvent) {
         var inputBuffer = audioProcessingEvent.inputBuffer;
         var outputBuffer = audioProcessingEvent.outputBuffer;
+        var envelopeData = [];
+
+        // transform db to amplitude value
+        var postGainAmp = obj.dBToAmp(obj.preGain);
+
+        // apply pre gain to signal
+        var preGainAmp = obj.dBToAmp(obj.preGain);
 
         for(var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
             var inp = inputBuffer.getChannelData(channel);
@@ -87,17 +106,16 @@ function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, thresho
                 obj.delayBuffer[channel] = new DelayBuffer(obj.lookAheadTime * obj.sampleRate);
             }
 
-            // transform db to amplitude value
-            var postGainAmp = obj.dBToAmp(obj.preGain);
-
-            // apply pre gain to signal
-            var preGainAmp = obj.dBToAmp(obj.preGain);
-
             for(var k = 0; k < inp.length; ++k) {
                 out[k] = preGainAmp * inp[k];
             }
 
-            var envelopeData = obj.getEnvelope(out, obj.attackTime, obj.releaseTime, obj.sampleRate, channel);
+            envelopeData[channel] = obj.getEnvelope(out, obj.attackTime, obj.releaseTime, obj.sampleRate, channel);
+        }
+
+        for(var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+            var inp = inputBuffer.getChannelData(channel);
+            var out = outputBuffer.getChannelData(channel);
 
             if(obj.lookAheadTime > 0) {
                 // write signal into buffer and read delayed signal
@@ -111,7 +129,7 @@ function Limiter(sampleRate, preGain, postGain, attackTime, releaseTime, thresho
             var slope = 1;
 
             for(var i = 0; i < inp.length; i++) {
-                var gainDB = slope * (obj.threshold - obj.ampToDB(envelopeData[i]));
+                var gainDB = slope * (obj.threshold - obj.ampToDB(obj.getMaxEnvelope(envelopeData, outputBuffer.numberOfChannels, i)));
                 // is gain below zero?
                 gainDB = Math.min(0, gainDB);
                 var gain = obj.dBToAmp(gainDB);

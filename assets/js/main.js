@@ -882,7 +882,7 @@ function resetLimiterValues() {
     limiter.preGain = 0;
     limiter.postGain = 0;
     limiter.attackTime = 0;
-    limiter.releaseTime = 2;
+    limiter.releaseTime = 3;
     limiter.threshold = -0.05;
     limiter.lookAheadTime = 0.05;
 
