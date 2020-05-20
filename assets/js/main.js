@@ -690,10 +690,6 @@ function selectFile() {
 // Function called when a file is selected
 // Load the file and store it in the audioBuffers.principal variable
 document.getElementById("inputFile").addEventListener("change", function() {
-    document.getElementById("errorLoadingSelectFile").style.display = "none";
-    document.getElementById("firstEtape").style.display = "none";
-    document.getElementById("secondEtape").style.display = "block";
-
     var reader = new FileReader();
 
     reader.onload = function(ev) {
@@ -701,14 +697,20 @@ document.getElementById("inputFile").addEventListener("change", function() {
 
         context.decodeAudioData(ev.target.result, function(buffer) {
             loadPrincipalBuffer(buffer);
-        }, function(err) {
+        }, function() { // Error
             document.getElementById("errorLoadingSelectFile").style.display = "block";
             document.getElementById("firstEtape").style.display = "block";
             document.getElementById("secondEtape").style.display = "none";
         });
     };
 
-    reader.readAsArrayBuffer(this.files[0]);
+    if(this.files && this.files[0]) {
+        document.getElementById("errorLoadingSelectFile").style.display = "none";
+        document.getElementById("firstEtape").style.display = "none";
+        document.getElementById("secondEtape").style.display = "block";
+    
+        reader.readAsArrayBuffer(this.files[0]); // Read the file
+    }
 }, false);
 
 // Load an audio buffer and store it in the audioBuffers.principal variable
