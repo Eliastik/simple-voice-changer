@@ -182,16 +182,14 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ### À faire :
 
-Rien… (ou ajouter encore d'autres effets - autotune essayé)
-
-### Fait :
-
-* Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
-* (Corrigé) Problème sur Microsoft Edge : la sauvegarde ne fonctionne pas (aucun téléchargement/enregistrement ne fonctionne)
-* Corriger message erreur "Application non compatible" sur le bouton "Enregistrer via le micro" si contexte non sécurisé (http, ...)
-* Corriger le compresseur audio
-* Ajouter plus d'effets
-* Traduire l'application en anglais (i18next)
+- [ ] Case à cocher permettant de désactiver la gestion automatique du gain lors de l'enregistrement avec le micro
+- [ ] (Ajouter encore d'autres effets - autotune essayé)
+- [ ] Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
+- [x] (Corrigé) Problème sur Microsoft Edge : la sauvegarde ne fonctionne pas (aucun téléchargement/enregistrement ne fonctionne)
+- [x] Corriger message erreur "Application non compatible" sur le bouton "Enregistrer via le micro" si contexte non sécurisé (http, ...)
+- [x] Corriger le compresseur audio
+- [x] Ajouter plus d'effets
+- [x] Traduire l'application en anglais (i18next)
 
 ## Déclaration de licence
 
