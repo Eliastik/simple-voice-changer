@@ -23,7 +23,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Use the icon font [Font Awesome](https://fontawesome.com/v4.7.0/), under [SIL OFL 1.1](https://tldrlegal.com/license/open-font-license-(ofl)-explained) and [MIT](https://tldrlegal.com/license/mit-license) licenses
 * Uses the library [Soundtouch.js](https://github.com/ZVK/stretcher/blob/master/soundtouch.js) under [GNU LGPL 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html) license
 * Uses the library [Vocoder.js](https://github.com/jergason/Vocoder) under [MIT](https://github.com/jergason/Vocoder/blob/master/LICENSE.txt) license (slightly modified code)
-* Uses the library [Recorderjs](https://github.com/mattdiamond/Recorderjs) and its [Worker version](https://github.com/mattdiamond/Recorderjs/blob/ac0eb8a7c2601fc4ec1cbd1b1ee49f45a6c79580/recorderWorker.js) under [MIT](https://tldrlegal.com/license/mit-license) license.
+* Uses the library [Recorderjs](https://github.com/Eliastik/Recorderjs) (forked) and its [Worker version](https://github.com/mattdiamond/Recorderjs/blob/ac0eb8a7c2601fc4ec1cbd1b1ee49f45a6c79580/recorderWorker.js) under [MIT](https://tldrlegal.com/license/mit-license) license.
 * Uses the library [Boostrap Slider](https://github.com/seiyria/bootstrap-slider), under [MIT](https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md) license
 * Uses the library [Boostrap Native](https://github.com/thednp/bootstrap.native), under [MIT](https://github.com/thednp/bootstrap.native/blob/master/LICENSE) license
 * Uses the library [i18next](https://github.com/i18next/i18next) (with the module [i18next-browser-languageDetector](https://github.com/i18next/i18next-browser-languageDetector)) under [MIT](https://opensource.org/licenses/mit-license.php) license for the translation engine
@@ -111,7 +111,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise la police d'icônes [Font Awesome](https://fontawesome.com/v4.7.0/), sous [licence SIL OFL 1.1](https://tldrlegal.com/license/open-font-license-(ofl)-explained) et [MIT](https://tldrlegal.com/license/mit-license)
 * Utilise la bibliothèque logicielle [Soundtouch.js](https://github.com/ZVK/stretcher/blob/master/soundtouch.js) sous [licence GNU LGPL 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html)
 * Utilise la bibliothèque logicielle [Vocoder.js](https://github.com/jergason/Vocoder) sous [licence MIT](https://github.com/jergason/Vocoder/blob/master/LICENSE.txt) (code légèrement modifié)
-* Utilise la bibliothèque logicielle [Recorderjs](https://github.com/mattdiamond/Recorderjs) et sa [version Worker](https://github.com/mattdiamond/Recorderjs/blob/ac0eb8a7c2601fc4ec1cbd1b1ee49f45a6c79580/recorderWorker.js) sous [licence MIT](https://tldrlegal.com/license/mit-license).
+* Utilise la bibliothèque logicielle [Recorderjs](https://github.com/Eliastik/Recorderjs) (forkée) et sa [version Worker](https://github.com/mattdiamond/Recorderjs/blob/ac0eb8a7c2601fc4ec1cbd1b1ee49f45a6c79580/recorderWorker.js) sous [licence MIT](https://tldrlegal.com/license/mit-license).
 * Utilise la bibliothèque logicielle [Boostrap Slider](https://github.com/seiyria/bootstrap-slider), sous [licence MIT](https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md)
 * Utilise la bibliothèque logicielle [Boostrap Native](https://github.com/thednp/bootstrap.native), sous [licence MIT](https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 * Utilise la bibliothèque logicielle [i18next](https://github.com/i18next/i18next) (avec le module [i18next-browser-languageDetector](https://github.com/i18next/i18next-browser-languageDetector)) sous licence [MIT](https://opensource.org/licenses/mit-license.php) pour le moteur de traduction
@@ -182,6 +182,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ### À faire :
 
+- [ ] Visualisation audio graphique
 - [ ] (Ajouter encore d'autres effets - autotune essayé)
 - [ ] Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
 - [x] Choix du micro pour l'enregistrement

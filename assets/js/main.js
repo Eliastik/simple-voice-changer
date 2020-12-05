@@ -439,6 +439,7 @@ function VoiceRecorder() {
     this.alreadyInit;
     this.timer;
     this.enableAudioFeedback = false;
+    this.recording = false;
     this.constraints = {
         audio: {
             noiseSuppression: true,
@@ -455,43 +456,45 @@ function VoiceRecorder() {
 
         navigator.mediaDevices.getUserMedia(this.constraints).then(function(stream) {
             context.resume();
-            self.input = context.createMediaStreamSource(stream);
-            self.stream = stream;
+            self.setup(stream, false, false);
             self.alreadyInit = true;
             self.timer = new TimerSaveTime("timeRecord", null, 0, 1);
-            self.updateConstraints();
-            self.updateInputList();
-
-            document.getElementById("errorRecord").style.display = "none";
-            document.getElementById("waitRecord").style.display = "none";
-            document.getElementById("recordAudioPlay").disabled = false;
-            document.getElementById("checkAudioRetour").disabled = false;
-            document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox");
-            document.getElementById("checkAudioNoise").disabled = false;
-            document.getElementById("checkAudioNoiseGroup").setAttribute("class", "checkbox");
-            document.getElementById("checkAudioGain").disabled = false;
-            document.getElementById("checkAudioGainGroup").setAttribute("class", "checkbox");
-            document.getElementById("checkAudioEcho").disabled = false;
-            document.getElementById("checkAudioEchoGroup").setAttribute("class", "checkbox");
-            document.getElementById("audioInput").disabled = false;
-        }).catch(function(e) {
-            document.getElementById("errorRecord").style.display = "block";
-            document.getElementById("waitRecord").style.display = "none";
-            document.getElementById("recordAudioPlay").disabled = true;
-            document.getElementById("checkAudioRetour").disabled = true;
-            document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
-            document.getElementById("checkAudioNoise").disabled = true;
-            document.getElementById("checkAudioNoiseGroup").setAttribute("class", "checkbox disabled");
-            document.getElementById("checkAudioGain").disabled = true;
-            document.getElementById("checkAudioGainGroup").setAttribute("class", "checkbox disabled");
-            document.getElementById("checkAudioEcho").disabled = true;
-            document.getElementById("checkAudioEchoGroup").setAttribute("class", "checkbox disabled");
-            document.getElementById("audioInput").disabled = true;
-        });
+            self.successCallback();
+        }).catch(this.errorCallback);
 
         navigator.mediaDevices.ondevicechange = function(event) {
             self.updateInputList();
         };
+    };
+
+    this.successCallback = function() {
+        document.getElementById("errorRecord").style.display = "none";
+        document.getElementById("waitRecord").style.display = "none";
+        document.getElementById("recordAudioPlay").disabled = false;
+        document.getElementById("checkAudioRetour").disabled = false;
+        document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox");
+        document.getElementById("checkAudioNoise").disabled = false;
+        document.getElementById("checkAudioNoiseGroup").setAttribute("class", "checkbox");
+        document.getElementById("checkAudioGain").disabled = false;
+        document.getElementById("checkAudioGainGroup").setAttribute("class", "checkbox");
+        document.getElementById("checkAudioEcho").disabled = false;
+        document.getElementById("checkAudioEchoGroup").setAttribute("class", "checkbox");
+        document.getElementById("audioInput").disabled = false;
+    };
+
+    this.errorCallback = function() {
+        document.getElementById("errorRecord").style.display = "block";
+        document.getElementById("waitRecord").style.display = "none";
+        document.getElementById("recordAudioPlay").disabled = true;
+        document.getElementById("checkAudioRetour").disabled = true;
+        document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
+        document.getElementById("checkAudioNoise").disabled = true;
+        document.getElementById("checkAudioNoiseGroup").setAttribute("class", "checkbox disabled");
+        document.getElementById("checkAudioGain").disabled = true;
+        document.getElementById("checkAudioGainGroup").setAttribute("class", "checkbox disabled");
+        document.getElementById("checkAudioEcho").disabled = true;
+        document.getElementById("checkAudioEchoGroup").setAttribute("class", "checkbox disabled");
+        document.getElementById("audioInput").disabled = true;
     };
 
     this.audioFeedback = function(enable) {
@@ -529,8 +532,9 @@ function VoiceRecorder() {
 
     this.resetConstraints = function(newConstraint) {
         var precAudioFeedback = this.enableAudioFeedback;
+        var precRecording = this.recording;
         var tracks = this.stream.getTracks();
-        
+
         if(newConstraint) {
             this.updateConstraints();
             this.constraints.audio = Object.assign(this.constraints.audio, newConstraint);
@@ -543,25 +547,40 @@ function VoiceRecorder() {
                 var newConstraints = self.getConstraints();
                 var newConstraintName = newConstraint ? Object.keys(newConstraint)[0] : "";
 
+                self.audioFeedback(false);
+                self.pause();
+
                 if(!newConstraint || newConstraints[newConstraintName] != newConstraint[newConstraintName]) {
-                    self.audioFeedback(false);
-                    self.pause();
                     self.stopStream();
-    
+
                     navigator.mediaDevices.getUserMedia(self.constraints).then(function(stream) {
-                        self.input = context.createMediaStreamSource(stream);
-                        self.stream = stream;
-                        if(self.recorder) self.recorder.node = self.input;
-                        self.audioFeedback(precAudioFeedback);
-                        self.updateConstraints();
-                        self.updateInputList();
-                    });
+                        self.setup(stream, precRecording, precAudioFeedback);
+                        self.successCallback();
+                    }).catch(self.errorCallback);
                 } else {
-                    self.updateConstraints();
-                    self.updateInputList();
+                    self.setup(null, precRecording, precAudioFeedback);
                 }
-            });
+            }).catch(this.errorCallback);
         }
+    };
+
+    this.setup = function(stream, precRecording, precAudioFeedback) {
+        if(stream) {
+            this.input = context.createMediaStreamSource(stream);
+            this.stream = stream;
+        }
+
+        if(this.recorder) {
+            this.recorder.setup(this.input);
+
+            if(precRecording) {
+                this.record();
+            }
+        }
+
+        this.audioFeedback(precAudioFeedback);
+        this.updateConstraints();
+        this.updateInputList();
     };
 
     this.setNoiseSuppression = function(enable) {
@@ -607,6 +626,7 @@ function VoiceRecorder() {
             if(!this.recorder) this.recorder = new Recorder(this.input, { workerPath: "assets/js/recorderWorker.js" });
             this.recorder && this.recorder.record();
             this.timer && this.timer.start();
+            this.recording = true;
 
             document.getElementById("recordAudioPlay").disabled = true;
             document.getElementById("recordAudioPause").disabled = false;
@@ -620,6 +640,7 @@ function VoiceRecorder() {
         if(this.alreadyInit) {
             this.recorder && this.recorder.stop();
             this.timer && this.timer.stop();
+            this.recording = false;
 
             var self = this;
 
@@ -641,6 +662,7 @@ function VoiceRecorder() {
         if(this.alreadyInit) {
             this.recorder && this.recorder.stop();
             this.timer && this.timer.stop();
+            this.recording = false;
 
             document.getElementById("recordAudioPlay").disabled = false;
             document.getElementById("recordAudioPause").disabled = true;
