@@ -58,13 +58,13 @@
                         <h3 data-i18n="orMaj">Ou</h3>
                         <div class="disabled-button-wrapper" id="wrapperFileRecord"><button class="btn btn-default" type="button" id="fileRecord" onclick="recordAudio();" disabled="disabled"><i class="fa fa-microphone fa-fw" aria-hidden="true"></i> <span data-i18n="firstStep.record">Enregistrer via le micro</span></button></div>
                         <div class="language">
-                          <hr />
-                          <div class="form-group row">
-                            <label for="languageSelect" class="col-sm-4" data-i18n="language">Langue :</label>
-                            <div class="col-sm-8">
-                              <select id="languageSelect" class="form-control" rows="10" disabled></select>
+                            <hr />
+                            <div class="form-group row">
+                                <label for="languageSelect" class="col-sm-4" data-i18n="language">Langue :</label>
+                                <div class="col-sm-8">
+                                    <select id="languageSelect" class="form-control" rows="10" disabled></select>
+                                </div>
                             </div>
-                          </div>
                         </div>
                     </form>
                 </div>
@@ -76,7 +76,12 @@
                     <div class="alert alert-info" id="waitRecord"><i class="fa fa-info-circle fa-fw"></i> <span class="bold" data-i18n="firstStepBis.info">Autorisez l'accès au microphone sur la notification qui est apparue sur votre navigateur web.</span></div>
                     <p class="description lead" data-i18n="firstStepBis.description">Vous pouvez maintenant vous enregistrer à l'aide de votre micro. Appuyez sur Démarrer pour commencer, et appuyez sur Stop dès que vous avez terminé pour commencer à modifier votre voix. Vous pouvez aussi mettre en pause l'enregistrement quand vous le voulez.</p>
                     <form class="center">
-
+                        <div class="form-group row row-audio-input">
+                            <label for="audioInput" clas="col-sm-4" data-i18n="firstStepBis.audioInput">Périphérique d'entrée :</label>
+                            <div class="col">
+                                <select id="audioInput" class="form-control" rows="10" disabled="disabled"></select>
+                            </div>
+                        </div>
                         <div class="row row-filters mt">
                             <div class="col-xs-6 border-right">
                                 <div class="checkbox disabled" id="checkAudioRetourGroup" style="display: inline-block;">

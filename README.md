@@ -182,10 +182,10 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ### À faire :
 
-- [ ] Choix du micro pour l'enregistrement
-- [ ] Case à cocher permettant de désactiver la gestion automatique du gain lors de l'enregistrement avec le micro
 - [ ] (Ajouter encore d'autres effets - autotune essayé)
 - [ ] Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
+- [x] Choix du micro pour l'enregistrement
+- [x] Case à cocher permettant de désactiver la gestion automatique du gain lors de l'enregistrement avec le micro
 - [x] (Corrigé) Problème sur Microsoft Edge : la sauvegarde ne fonctionne pas (aucun téléchargement/enregistrement ne fonctionne)
 - [x] Corriger message erreur "Application non compatible" sur le bouton "Enregistrer via le micro" si contexte non sécurisé (http, ...)
 - [x] Corriger le compresseur audio

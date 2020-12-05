@@ -460,6 +460,7 @@ function VoiceRecorder() {
             self.alreadyInit = true;
             self.timer = new TimerSaveTime("timeRecord", null, 0, 1);
             self.updateConstraints();
+            self.updateInputList();
 
             document.getElementById("errorRecord").style.display = "none";
             document.getElementById("waitRecord").style.display = "none";
@@ -472,6 +473,7 @@ function VoiceRecorder() {
             document.getElementById("checkAudioGainGroup").setAttribute("class", "checkbox");
             document.getElementById("checkAudioEcho").disabled = false;
             document.getElementById("checkAudioEchoGroup").setAttribute("class", "checkbox");
+            document.getElementById("audioInput").disabled = false;
         }).catch(function(e) {
             document.getElementById("errorRecord").style.display = "block";
             document.getElementById("waitRecord").style.display = "none";
@@ -482,9 +484,14 @@ function VoiceRecorder() {
             document.getElementById("checkAudioNoiseGroup").setAttribute("class", "checkbox disabled");
             document.getElementById("checkAudioGain").disabled = true;
             document.getElementById("checkAudioGainGroup").setAttribute("class", "checkbox disabled");
-            document.getElementById("checkAudioEcho").disabled = truetrue;
+            document.getElementById("checkAudioEcho").disabled = true;
             document.getElementById("checkAudioEchoGroup").setAttribute("class", "checkbox disabled");
+            document.getElementById("audioInput").disabled = true;
         });
+
+        navigator.mediaDevices.ondevicechange = function(event) {
+            self.updateInputList();
+        };
     };
 
     this.audioFeedback = function(enable) {
@@ -523,17 +530,20 @@ function VoiceRecorder() {
     this.resetConstraints = function(newConstraint) {
         var precAudioFeedback = this.enableAudioFeedback;
         var tracks = this.stream.getTracks();
-        this.updateConstraints();
-        this.constraints.audio = Object.assign(this.constraints.audio, newConstraint);
+        
+        if(newConstraint) {
+            this.updateConstraints();
+            this.constraints.audio = Object.assign(this.constraints.audio, newConstraint);
+        }
 
         var self = this;
 
         if(tracks && tracks.length > 0) {
             tracks[0].applyConstraints(this.constraints).then(function() {
                 var newConstraints = self.getConstraints();
-                var newConstraintName = Object.keys(newConstraint)[0];
+                var newConstraintName = newConstraint ? Object.keys(newConstraint)[0] : "";
 
-                if(newConstraints[newConstraintName] != newConstraint[newConstraintName]) {
+                if(!newConstraint || newConstraints[newConstraintName] != newConstraint[newConstraintName]) {
                     self.audioFeedback(false);
                     self.pause();
                     self.stopStream();
@@ -544,9 +554,11 @@ function VoiceRecorder() {
                         if(self.recorder) self.recorder.node = self.input;
                         self.audioFeedback(precAudioFeedback);
                         self.updateConstraints();
+                        self.updateInputList();
                     });
                 } else {
                     self.updateConstraints();
+                    self.updateInputList();
                 }
             });
         }
@@ -562,6 +574,32 @@ function VoiceRecorder() {
 
     this.setEchoCancellation = function(enable) {
         this.resetConstraints({ "echoCancellation": enable });
+    };
+
+    this.updateInputList = function() {
+        var self = this;
+
+        navigator.mediaDevices.enumerateDevices().then(function(devices) {
+            document.getElementById("audioInput").textContent = "";
+
+            devices.forEach(function(device) {
+                if(device.kind == "audioinput") {
+                    var option = document.createElement("option");
+                    option.value = device.deviceId
+                    option.dataset.groupId = device.groupId
+                    option.text = device.label;
+                    document.getElementById("audioInput").appendChild(option);
+                }
+            });
+
+            document.getElementById("audioInput").value = self.constraints.audio.deviceId;
+        });
+    };
+
+    this.changeInput = function(deviceId, groupId) {
+        this.constraints.audio.deviceId = deviceId;
+        this.constraints.audio.groupId = groupId;
+        this.resetConstraints();
     };
 
     this.record = function() {
@@ -1883,6 +1921,10 @@ document.getElementById("checkAudioEcho").onchange = function() {
     } else {
         recorderVoice.setEchoCancellation(false); // Disallow audio feedback
     }
+};
+// Called when the select "Audio input" is changed
+document.getElementById("audioInput").onchange = function() {
+    recorderVoice.changeInput(this.value, this.options[this.selectedIndex].dataset.groupId);
 };
 // End of Voice Recorder UI functions
 

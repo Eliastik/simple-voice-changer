@@ -101,7 +101,7 @@ img {
 #playingAudioInfos .slider.slider-horizontal {
     width: 270px;
 }
-.row-filters {
+.row-filters, .row-audio-input {
     max-width: 400px;
     margin: 0 auto;
 }
