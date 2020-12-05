@@ -2096,7 +2096,6 @@ function launchReset() {
         document.getElementById("lastEtape").style.display = "none";
         document.getElementById("firstEtapeBis").style.display = "none";
         document.getElementById("inputFile").value = "";
-        resetModify();
         launchStop();
         resetBuffers();
         recorderVoice.reset();
