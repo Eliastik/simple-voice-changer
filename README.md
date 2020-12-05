@@ -182,6 +182,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ### À faire :
 
+- [ ] Choix du micro pour l'enregistrement
 - [ ] Case à cocher permettant de désactiver la gestion automatique du gain lors de l'enregistrement avec le micro
 - [ ] (Ajouter encore d'autres effets - autotune essayé)
 - [ ] Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son

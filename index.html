@@ -76,8 +76,24 @@
                     <div class="alert alert-info" id="waitRecord"><i class="fa fa-info-circle fa-fw"></i> <span class="bold" data-i18n="firstStepBis.info">Autorisez l'accès au microphone sur la notification qui est apparue sur votre navigateur web.</span></div>
                     <p class="description lead" data-i18n="firstStepBis.description">Vous pouvez maintenant vous enregistrer à l'aide de votre micro. Appuyez sur Démarrer pour commencer, et appuyez sur Stop dès que vous avez terminé pour commencer à modifier votre voix. Vous pouvez aussi mettre en pause l'enregistrement quand vous le voulez.</p>
                     <form class="center">
-                        <div class="checkbox disabled" id="checkAudioRetourGroup">
-                            <span id="checkAudioRetourWrapper"><input type="checkbox" id="checkAudioRetour" disabled="disabled" /> <label for="checkAudioRetour" data-i18n="firstStepBis.audioFeedback">Retour audio</label></span>
+
+                        <div class="row row-filters mt">
+                            <div class="col-xs-6 border-right">
+                                <div class="checkbox disabled" id="checkAudioRetourGroup" style="display: inline-block;">
+                                    <span id="checkAudioRetourWrapper"><input type="checkbox" id="checkAudioRetour" disabled="disabled" /> <label for="checkAudioRetour" data-i18n="firstStepBis.audioFeedback">Retour audio</label></span>
+                                </div>
+                                <div class="checkbox disabled mr2" id="checkAudioGainGroup" style="display: inline-block;">
+                                    <span id="checkAudioGainWrapper"><input type="checkbox" id="checkAudioGain" disabled="disabled" checked /> <label for="checkAudioGain" data-i18n="firstStepBis.autoGain">Gain automatique</label></span>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="checkbox disabled mr2" id="checkAudioEchoGroup" style="display: inline-block;">
+                                    <span id="checkAudioEchoWrapper"><input type="checkbox" id="checkAudioEcho" disabled="disabled" checked /> <label for="checkAudioEcho" data-i18n="firstStepBis.echoCancellation">Annulation d'écho</label></span>
+                                </div>
+                                <div class="checkbox disabled mr2" id="checkAudioNoiseGroup" style="display: inline-block;">
+                                    <span id="checkAudioNoiseWrapper"><input type="checkbox" id="checkAudioNoise" disabled="disabled" checked /> <label for="checkAudioNoise" data-i18n="firstStepBis.noiseSuppression">Réduction de bruit</label></span>
+                                </div>
+                            </div>
                         </div>
                         <button class="btn btn-success" type="button" id="recordAudioPlay" onclick="recordPlay();" disabled="disabled"><i class="fa fa-play fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.start">Démarrer</span></button> <button class="btn btn-default" type="button" id="recordAudioPause" onclick="recordPause();" disabled="disabled" style="display: none;"><i class="fa fa-pause fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.pause">Pause</span></button> <button class="btn btn-danger" type="button" id="recordAudioStop" onclick="recordStop();" disabled="disabled"><i class="fa fa-stop fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.stop">Stop</span></button><br />
                         <span class="bold" data-i18n="firstStepBis.duration">Durée de l'enregistrement :</span> <span id="timeRecord">00:00</span>

@@ -438,47 +438,135 @@ function VoiceRecorder() {
     this.recorder;
     this.alreadyInit;
     this.timer;
+    this.enableAudioFeedback = false;
+    this.constraints = {
+        audio: {
+            noiseSuppression: true,
+            echoCancellation: true,
+            autoGainControl: true
+        }
+    };
 
     this.init = function() {
         document.getElementById("waitRecord").style.display = "block";
         document.getElementById("errorRecord").style.display = "none";
 
         var self = this;
-        var constraints = {
-            audio: true
-        };
 
-        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+        navigator.mediaDevices.getUserMedia(this.constraints).then(function(stream) {
             context.resume();
             self.input = context.createMediaStreamSource(stream);
             self.stream = stream;
-            self.recorder = new Recorder(self.input, { workerPath: "assets/js/recorderWorker.js" });
             self.alreadyInit = true;
             self.timer = new TimerSaveTime("timeRecord", null, 0, 1);
+            self.updateConstraints();
+
             document.getElementById("errorRecord").style.display = "none";
             document.getElementById("waitRecord").style.display = "none";
             document.getElementById("recordAudioPlay").disabled = false;
             document.getElementById("checkAudioRetour").disabled = false;
             document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox");
+            document.getElementById("checkAudioNoise").disabled = false;
+            document.getElementById("checkAudioNoiseGroup").setAttribute("class", "checkbox");
+            document.getElementById("checkAudioGain").disabled = false;
+            document.getElementById("checkAudioGainGroup").setAttribute("class", "checkbox");
+            document.getElementById("checkAudioEcho").disabled = false;
+            document.getElementById("checkAudioEchoGroup").setAttribute("class", "checkbox");
         }).catch(function(e) {
             document.getElementById("errorRecord").style.display = "block";
             document.getElementById("waitRecord").style.display = "none";
             document.getElementById("recordAudioPlay").disabled = true;
             document.getElementById("checkAudioRetour").disabled = true;
             document.getElementById("checkAudioRetourGroup").setAttribute("class", "checkbox disabled");
+            document.getElementById("checkAudioNoise").disabled = true;
+            document.getElementById("checkAudioNoiseGroup").setAttribute("class", "checkbox disabled");
+            document.getElementById("checkAudioGain").disabled = true;
+            document.getElementById("checkAudioGainGroup").setAttribute("class", "checkbox disabled");
+            document.getElementById("checkAudioEcho").disabled = truetrue;
+            document.getElementById("checkAudioEchoGroup").setAttribute("class", "checkbox disabled");
         });
     };
 
     this.audioFeedback = function(enable) {
         if(enable) {
             this.input && this.input.connect(context.destination);
+            this.enableAudioFeedback = true;
         } else {
             this.input && this.input.connect(context.destination) && this.input.disconnect(context.destination);
+            this.enableAudioFeedback = false;
         }
+    };
+
+    this.getConstraints = function() {
+        if(this.stream) {
+            var tracks = this.stream.getTracks();
+    
+            if(tracks && tracks.length > 0) {
+                return tracks[0].getSettings();
+            }
+        }
+
+        return null;
+    };
+
+    this.updateConstraints = function() {
+        var constraints = this.getConstraints();
+
+        if(constraints) {
+            this.constraints.audio = Object.assign(this.constraints.audio, constraints);
+            document.getElementById("checkAudioGain").checked = this.constraints.audio.autoGainControl;
+            document.getElementById("checkAudioNoise").checked = this.constraints.audio.noiseSuppression;
+            document.getElementById("checkAudioEcho").checked = this.constraints.audio.echoCancellation;
+        }
+    };
+
+    this.resetConstraints = function(newConstraint) {
+        var precAudioFeedback = this.enableAudioFeedback;
+        var tracks = this.stream.getTracks();
+        this.updateConstraints();
+        this.constraints.audio = Object.assign(this.constraints.audio, newConstraint);
+
+        var self = this;
+
+        if(tracks && tracks.length > 0) {
+            tracks[0].applyConstraints(this.constraints).then(function() {
+                var newConstraints = self.getConstraints();
+                var newConstraintName = Object.keys(newConstraint)[0];
+
+                if(newConstraints[newConstraintName] != newConstraint[newConstraintName]) {
+                    self.audioFeedback(false);
+                    self.pause();
+                    self.stopStream();
+    
+                    navigator.mediaDevices.getUserMedia(self.constraints).then(function(stream) {
+                        self.input = context.createMediaStreamSource(stream);
+                        self.stream = stream;
+                        if(self.recorder) self.recorder.node = self.input;
+                        self.audioFeedback(precAudioFeedback);
+                        self.updateConstraints();
+                    });
+                } else {
+                    self.updateConstraints();
+                }
+            });
+        }
+    };
+
+    this.setNoiseSuppression = function(enable) {
+        this.resetConstraints({ "noiseSuppression": enable });
+    };
+
+    this.setAutoGain = function(enable) {
+        this.resetConstraints({ "autoGainControl": enable });
+    };
+
+    this.setEchoCancellation = function(enable) {
+        this.resetConstraints({ "echoCancellation": enable });
     };
 
     this.record = function() {
         if(this.alreadyInit) {
+            if(!this.recorder) this.recorder = new Recorder(this.input, { workerPath: "assets/js/recorderWorker.js" });
             this.recorder && this.recorder.record();
             this.timer && this.timer.start();
 
@@ -527,12 +615,7 @@ function VoiceRecorder() {
         }
     };
 
-    this.reset = function() {
-        this.recorder && this.recorder.stop();
-        this.recorder && this.recorder.clear();
-        this.timer && this.timer.stop();
-        this.audioFeedback(false);
-
+    this.stopStream = function() {
         if(this.stream && this.stream.stop) {
             this.stream.stop();
         } else if(this.stream) {
@@ -542,6 +625,15 @@ function VoiceRecorder() {
                 tracks[i].stop();
             }
         }
+    };
+
+    this.reset = function() {
+        this.recorder && this.recorder.stop();
+        this.recorder && this.recorder.clear();
+        this.timer && this.timer.stop();
+        this.audioFeedback(false);
+
+        this.stopStream();
 
         this.input = null;
         this.recorder = null;
@@ -1236,7 +1328,7 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
     var BUFFER_SIZE = BUFFER_SIZE || 4096; // Buffer size of the audio
     // End of default parameters
 
-    if('AudioContext' in window && !audioContextNotSupported) {
+    if('AudioContext' in window && !audioContextNotSupported && offlineContext != null) {
         var previousSountouchNode = sountouchNode;
         var buffer = audioBuffers.processed;
 
@@ -1430,21 +1522,25 @@ function add(a, b) {
 
 // Calculate audio duration according to selected settings
 function calcAudioDuration(audio, speed, pitch, reverb, vocode, echo) {
-    var duration = audio.duration + 1;
-    var reverb_duration = audioImpulseResponses[audioImpulseResponses.current].addDuration;
-
-    duration = duration / parseFloat(speed);
-
-    if(echo && reverb) {
-        var addDuration = Math.max(5, reverb_duration);
-        duration = duration + addDuration;
-    } else if(echo) {
-        duration = duration + 5;
-    } else if(reverb) {
-        duration = duration + reverb_duration;
+    if(audio) {
+        var duration = audio.duration + 1;
+        var reverb_duration = audioImpulseResponses[audioImpulseResponses.current].addDuration;
+    
+        duration = duration / parseFloat(speed);
+    
+        if(echo && reverb) {
+            var addDuration = Math.max(5, reverb_duration);
+            duration = duration + addDuration;
+        } else if(echo) {
+            duration = duration + 5;
+        } else if(reverb) {
+            duration = duration + reverb_duration;
+        }
+    
+        return duration;
     }
 
-    return duration;
+    return 0;
 }
 
 // Render the audio according to the settings
@@ -1762,6 +1858,30 @@ document.getElementById("checkAudioRetour").onchange = function() {
         recorderVoice.audioFeedback(true); // Allow audio feedback
     } else {
         recorderVoice.audioFeedback(false); // Disallow audio feedback
+    }
+};
+// Called when the checkbox "Noise suppression" is checked/unchecked
+document.getElementById("checkAudioNoise").onchange = function() {
+    if(this.checked) {
+        recorderVoice.setNoiseSuppression(true); // Allow audio feedback
+    } else {
+        recorderVoice.setNoiseSuppression(false); // Disallow audio feedback
+    }
+};
+// Called when the checkbox "Auto gain" is checked/unchecked
+document.getElementById("checkAudioGain").onchange = function() {
+    if(this.checked) {
+        recorderVoice.setAutoGain(true); // Allow audio feedback
+    } else {
+        recorderVoice.setAutoGain(false); // Disallow audio feedback
+    }
+};
+// Called when the checkbox "Echo cancellation" is checked/unchecked
+document.getElementById("checkAudioEcho").onchange = function() {
+    if(this.checked) {
+        recorderVoice.setEchoCancellation(true); // Allow audio feedback
+    } else {
+        recorderVoice.setEchoCancellation(false); // Disallow audio feedback
     }
 };
 // End of Voice Recorder UI functions
