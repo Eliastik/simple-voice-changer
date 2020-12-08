@@ -630,7 +630,7 @@ function VoiceRecorder() {
 
     this.record = function() {
         if(this.alreadyInit) {
-            if(!this.recorder) this.recorder = new Recorder(this.input, { workerPath: "assets/js/recorderWorker.js" });
+            if(!this.recorder) this.recorder = new Recorder(this.input, { workerPath: "src/recorderWorker.js" });
             this.recorder && this.recorder.record();
             this.timer && this.timer.start();
             this.recording = true;
@@ -1737,7 +1737,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     });
 
                     if(save) {
-                        var rec = new Recorder(limiterProcessor, { workerPath: "assets/js/recorderWorker.js" });
+                        var rec = new Recorder(limiterProcessor, { workerPath: "src/recorderWorker.js" });
                         rec.record();
 
                         function onSaveFinished() {
@@ -1836,9 +1836,11 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
 // Save the audio buffer passed in parameter
 function saveBuffer(buffer) {
+    let worker;
+
     if(typeof(Worker) !== "undefined" && Worker != null) {
         try {
-            var worker = new Worker("src/recorderWorker.js");
+            worker = new Worker("src/recorderWorker.js");
         } catch(e) {
             alert(i18next.t("script.workersErrorLoading"));
         }
@@ -1847,7 +1849,7 @@ function saveBuffer(buffer) {
         return false;
     }
 
-    if('AudioContext' in window && !audioContextNotSupported && worker != null) {
+    if('AudioContext' in window && !audioContextNotSupported && worker) {
         worker.postMessage({
             command: "init",
             config: {
@@ -1880,8 +1882,8 @@ function saveBuffer(buffer) {
 }
 
 // Download an audio blob
-function downloadAudioBlob(e) {
-    Recorder.forceDownload(e, filesDownloadName + "-" + new Date().toISOString() + ".wav");
+function downloadAudioBlob(blob) {
+    Recorder.forceDownload(blob, filesDownloadName + "-" + new Date().toISOString() + ".wav");
 }
 // End of Audio rendering and saving functions
 

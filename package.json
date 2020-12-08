@@ -35,7 +35,7 @@
     "bootstrap.native": "^2.0.27",
     "i18next": "^19.8.4",
     "i18next-browser-languagedetector": "^6.0.1",
-    "recorderjs": "git+https://github.com/Eliastik/Recorderjs.git#a963193",
+    "recorderjs": "git+https://github.com/Eliastik/Recorderjs.git#081e597",
     "soundtouchjs": "^0.1.24"
   }
 }
