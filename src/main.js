@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2019-2020 Eliastik (eliastiksofts.com)
  *
  * This file is part of "Simple Voice Changer".
  *
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
+import Slider from "bootstrap-slider";
+import * as soundtouch from "soundtouchjs";
+import i18next from "i18next";
+import Limiter from "./Limiter";
+import BSN from "bootstrap.native/dist/bootstrap-native.min.js";
+import vocoder from "./Vocoder";
+import Recorder from "recorderjs";
+
 // App infos
 var filesDownloadName = "simple_voice_changer";
 var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
@@ -25,13 +33,13 @@ var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php
 // End of app infos
 
 // Default variables
-var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audioBufferPlay, compaModeStop, compaModeStopSave;
+var speedAudio, pitchAudio, modifyFirstClick, reverbAudio, echoAudio, compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, phoneAudio, returnAudio, bassboostAudio, limiterAudio, bitCrusherAudio, compatModeChecked, audioContextNotSupported, audioProcessing, removedTooltipInfo, audioBufferPlay, compaModeStop;
 
 // Default values
 speedAudio = pitchAudio = 1;
 reverbAudio = echoAudio = compaAudioAPI = vocoderAudio = bitCrusherAudio = lowpassAudio = highpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 limiterAudio = true;
-processing_context = null;
+let processing_context = null;
 // End of the default values
 
 // Create the sliders (pitch/speed)
@@ -75,7 +83,6 @@ var sliderPlayAudio = new Slider("#playAudioRange"); // Slider used to control t
 var audioBufferPlay = new BufferPlayer(null); // Create a BufferPlayer
 
 var compaModeStop = function() { return false }; // Function called when the audio playing is stopped
-var compaModeStopSave = function() { return false }; // Function called when the audio saving is stopped
 
 // Filter settings
 // Bass boost settings
@@ -219,9 +226,9 @@ if('AudioContext' in window) {
         limiter.sampleRate = context.sampleRate;
     } catch(e) {
         if(typeof(window.console.error) !== "undefined") {
-            console.error(window.i18next.t("script.errorAudioContext"), e);
+            console.error(i18next.t("script.errorAudioContext"), e);
         } else {
-            console.log(window.i18next.t("script.errorAudioContext"), e);
+            console.log(i18next.t("script.errorAudioContext"), e);
         }
 
         var audioContextNotSupported = true;
@@ -249,7 +256,7 @@ function checkAudio(type) {
 }
 
 // Check if audio mp3 is supported
-var checkAudio = checkAudio("audio/mp3");
+checkAudio = checkAudio("audio/mp3");
 // End of the default variables
 
 // Libs
@@ -779,7 +786,7 @@ function loadAudioBuffer(audio, func) {
 
         request.send();
     } else {
-        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
+        if(typeof(window.console.error) !== 'undefined') console.error(i18next.t("script.webAudioNotSupported"));
 
         if(typeof func !== 'undefined') {
             func(null, false);
@@ -791,7 +798,7 @@ function loadAudioBuffer(audio, func) {
 
 // Check the audio buffer loaded (two type : "audio_impulse_response" (buffers used for the reverb filter) and "audio_modulator" (buffer used for the vocoder filter))
 function checkAudioBuffer(bufferName, type) {
-    var errorText = window.i18next.t("loading.errorLoadingTooltip");
+    var errorText = i18next.t("loading.errorLoadingTooltip");
 
     if ('AudioContext' in window && !audioContextNotSupported) {
         switch(type) {
@@ -822,13 +829,13 @@ function checkAudioBuffer(bufferName, type) {
 // Convert bytes to KB/MB or GB
 function autoConvertByte(size) {
     if(size >= 1000000000) {
-        return (size / 1000000000).toFixed(2).replace(".", ",") + " " + window.i18next.t("reverbSettings.unit.gigabyte");
+        return (size / 1000000000).toFixed(2).replace(".", ",") + " " + i18next.t("reverbSettings.unit.gigabyte");
     } else if(size >= 1000000) {
-        return (size / 1000000).toFixed(2).replace(".", ",") + " " + window.i18next.t("reverbSettings.unit.megabyte");
+        return (size / 1000000).toFixed(2).replace(".", ",") + " " + i18next.t("reverbSettings.unit.megabyte");
     } else if(size >= 1000) {
-        return (size / 1000).toFixed(2).replace(".", ",") + " " + window.i18next.t("reverbSettings.unit.kilobyte");
+        return (size / 1000).toFixed(2).replace(".", ",") + " " + i18next.t("reverbSettings.unit.kilobyte");
     } else {
-        return size + " " + window.i18next.t("reverbSettings.unit.byte");
+        return size + " " + i18next.t("reverbSettings.unit.byte");
     }
 }
 // End of Audio buffer loader
@@ -910,7 +917,6 @@ function getTelephonizer(context) {
     lpf1.connect(lpf2);
     lpf2.connect(hpf1);
     hpf1.connect(hpf2);
-    currentEffectNode = lpf1;
 
     return {
         "input": lpf1,
@@ -922,11 +928,9 @@ function getTelephonizer(context) {
 function getDelay(context, delay, gain) {
     var delayNode = context.createDelay(179);
     delayNode.delayTime.value = delay;
-    dtime = delayNode;
 
     var gainNode = context.createGain();
     gainNode.gain.value = gain;
-    dregen = gainNode;
 
     gainNode.connect(delayNode);
     delayNode.connect(gainNode);
@@ -1424,7 +1428,12 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
 
         if(enableLimiter) {
             limiter.reset();
-            limiterProcessor.onaudioprocess = limiter.limit;
+            limiterProcessor.onaudioprocess = e => {
+                if(limiter && limiter.limit) {
+                    const limit = limiter.limit.bind(limiter);
+                    limit(e);
+                }
+            };
         } else {
             limiterProcessor.onaudioprocess = passAll;
         }
@@ -1617,7 +1626,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     if('AudioContext' in window && !audioContextNotSupported && !audioProcessing) {
         var durationAudio = calcAudioDuration(audio, speed, pitch, reverb, vocode, echo);
 
-        offlineContext = getCurrentContext(durationAudio, comp);
+        const offlineContext = getCurrentContext(durationAudio, comp);
         processing_context = offlineContext;
 
         if(typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined") {
@@ -1755,7 +1764,8 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                             }
                         });
 
-                        compaModeStopSave = function() {
+
+                        document.getElementById("cancelSaveCompaMode").onclick = function() {
                             try {
                                 rec.stop();
                                 onSaveFinished();
@@ -1819,7 +1829,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
             renderAudio(audio);
         }
     } else if(!audioProcessing) { // Error (Audio API not supported)
-        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
+        if(typeof(window.console.error) !== 'undefined') console.error(i18next.t("script.webAudioNotSupported"));
         return false;
     }
 }
@@ -1828,12 +1838,12 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 function saveBuffer(buffer) {
     if(typeof(Worker) !== "undefined" && Worker != null) {
         try {
-            var worker = new Worker("assets/js/recorderWorker.js");
+            var worker = new Worker("src/recorderWorker.js");
         } catch(e) {
-            alert(window.i18next.t("script.workersErrorLoading"));
+            alert(i18next.t("script.workersErrorLoading"));
         }
     } else {
-        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.workersNotSupported"));
+        if(typeof(window.console.error) !== 'undefined') console.error(i18next.t("script.workersNotSupported"));
         return false;
     }
 
@@ -1864,28 +1874,14 @@ function saveBuffer(buffer) {
             type: "audio/wav"
         });
     } else {
-        if(typeof(window.console.error) !== 'undefined') console.error(window.i18next.t("script.webAudioNotSupported"));
+        if(typeof(window.console.error) !== 'undefined') console.error(i18next.t("script.webAudioNotSupported"));
         return false;
     }
 }
 
 // Download an audio blob
 function downloadAudioBlob(e) {
-    var fileName = filesDownloadName + "-" + new Date().toISOString() + ".wav";
-
-    if(window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(e, fileName);
-    } else {
-        var blob = e;
-        var a = document.createElement("a");
-        var url = URL.createObjectURL(blob);
-        document.body.appendChild(a);
-        a.style = "display: none";
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    }
+    Recorder.forceDownload(e, filesDownloadName + "-" + new Date().toISOString() + ".wav");
 }
 // End of Audio rendering and saving functions
 
@@ -1957,7 +1953,7 @@ function validSettings() {
         var tmp_pitch = document.getElementById("pitchRange").value;
         var tmp_speed = document.getElementById("speedRange").value;
     } catch(e) {
-        alert(window.i18next.t("script.errorOccured"));
+        alert(i18next.t("script.errorOccured"));
         return false;
     }
 
@@ -1969,12 +1965,12 @@ function validSettings() {
     loadReverbValues();
 
     if(isNaN(tmp_pitch) || tmp_pitch == "" || tmp_pitch <= 0 || tmp_pitch > 5) {
-        alert(window.i18next.t("script.invalidPitch"));
+        alert(i18next.t("script.invalidPitch"));
         document.getElementById("pitchRange").value = pitchAudio;
         document.getElementById("speedRange").value = speedAudio;
         return false;
     } else if(isNaN(tmp_speed) || tmp_speed == "" || tmp_speed <= 0 || tmp_speed > 5) {
-        alert(window.i18next.t("script.invalidSpeed"));
+        alert(i18next.t("script.invalidSpeed"));
         document.getElementById("pitchRange").value = pitchAudio;
         document.getElementById("speedRange").value = speedAudio;
         return false;
@@ -2089,7 +2085,7 @@ function launchReset() {
     launchPause();
     recordPause();
     
-    if(!audioProcessing && confirm(window.i18next.t("script.launchReset"))) {
+    if(!audioProcessing && confirm(i18next.t("script.launchReset"))) {
         document.getElementById("firstEtape").style.display = "block";
         document.getElementById("secondEtape").style.display = "none";
         document.getElementById("thirdEtape").style.display = "none";
@@ -2207,7 +2203,7 @@ function compaMode() {
     if(!audioProcessing) {
         if(compaAudioAPI) {
             setTooltip("playAudio", null, false, true, "wrapperPlay", true);
-            setTooltip("pauseAudio", window.i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperPause", true);
+            setTooltip("pauseAudio", i18next.t("script.notAvailableCompatibilityMode"), true, false, "wrapperPause", true);
             document.getElementById("playingAudioInfos").style.display = "block";
             document.getElementById("checkLoopPlayDiv").style.display = "block";
         } else {
@@ -2220,7 +2216,7 @@ function compaMode() {
         if(typeof(Worker) !== "undefined" && Worker != null) {
             setTooltip("saveInputModify", null, false, true, "wrapperSave", true);
         } else {
-            setTooltip("saveInputModify", window.i18next.t("script.notCompatible"), true, false, "wrapperSave", true);
+            setTooltip("saveInputModify", i18next.t("script.notCompatible"), true, false, "wrapperSave", true);
         }
     }
 }
@@ -2265,7 +2261,7 @@ function setTooltip(element, text, disable, enable, otherElement, byId, display)
     if(text !== "" && text !== null) {
         if(otherElement !== null) {
             otherElement.setAttribute("data-original-title", text);
-            window[otherElement + "_tooltip"] = new Tooltip(otherElement, {
+            window[otherElement + "_tooltip"] = new BSN.Tooltip(otherElement, {
                 placement: 'bottom',
                 animation: 'fade',
                 delay: 50,
@@ -2274,7 +2270,7 @@ function setTooltip(element, text, disable, enable, otherElement, byId, display)
             if(display) setTimeout(function() { window[otherElement + "_tooltip"].show() }, 150);
         } else {
             element.setAttribute("data-original-title", text);
-            window[element + "_tooltip"] = new Tooltip(element, {
+            window[element + "_tooltip"] = new BSN.Tooltip(element, {
                 placement: 'bottom',
                 animation: 'fade',
                 delay: 50,
@@ -2330,20 +2326,20 @@ function initAudioAPI(func) {
 function displayCompatibilityInfos() {
     if(!'AudioContext' in window || audioContextNotSupported) {
         document.getElementById("compa").style.display = "block";
-        document.getElementById("compaInfo").innerHTML = window.i18next.t("script.browserNotCompatible");
+        document.getElementById("compaInfo").innerHTML = i18next.t("script.browserNotCompatible");
         document.getElementById("firstEtape").style.display = "block";
         document.getElementById("fileSelect").disabled = true;
         document.getElementById("fileRecord").disabled = true;
     }
 
     if(typeof(navigator.mediaDevices) === "undefined" || typeof(navigator.mediaDevices.getUserMedia) === "undefined") {
-        setTooltip("fileRecord", window.i18next.t("script.notAvailable"), true, false, "wrapperFileRecord", true);
+        setTooltip("fileRecord", i18next.t("script.notAvailable"), true, false, "wrapperFileRecord", true);
     }
 
     if(typeof(Worker) !== "undefined" && Worker != null) {
         setTooltip("saveInputModify", "", false, true, "wrapperSave", true);
     } else {
-        setTooltip("saveInputModify", window.i18next.t("script.browserNotCompatible"), true, false, "wrapperSave", true);
+        setTooltip("saveInputModify", i18next.t("script.browserNotCompatible"), true, false, "wrapperSave", true);
     }
 }
 
@@ -2384,6 +2380,36 @@ window.addEventListener("load", function() {
 });
 // End of initialization
 
+// Onclick events
+document.getElementById("connectionErrorRetry").addEventListener("click", reloadData);
+document.getElementById("fileSelect").addEventListener("click", selectFile);
+document.getElementById("fileRecord").addEventListener("click", recordAudio);
+document.getElementById("recordAudioPlay").addEventListener("click", recordPlay);
+document.getElementById("recordAudioPause").addEventListener("click", recordPause);
+document.getElementById("recordAudioStop").addEventListener("click", recordStop);
+document.getElementById("resetRecordAudio").addEventListener("click", launchReset);
+document.getElementById("resetAudio").addEventListener("click", launchReset);
+document.getElementById("playAudio").addEventListener("click", launchPlay);
+document.getElementById("pauseAudio").addEventListener("click", launchPause);
+document.getElementById("stopAudio").addEventListener("click", launchStop);
+document.getElementById("checkCompa").addEventListener("click", compaMode);
+document.getElementById("validInputModify").addEventListener("click", () => validModify(false, false));
+document.getElementById("randomInputModify").addEventListener("click", randomModify);
+document.getElementById("resetInputModify").addEventListener("click", resetModify);
+document.getElementById("saveInputModify").addEventListener("click", launchSave);
+document.getElementById("setLimiterValues").addEventListener("click", setLimiterValues);
+document.getElementById("resetLimiterValues").addEventListener("click", resetLimiterValues);
+document.getElementById("validateBassBoostValues").addEventListener("click", validateBassBoostValues);
+document.getElementById("resetBassBoostValues").addEventListener("click", resetBassBoostValues);
+document.getElementById("validateHighPassValues").addEventListener("click", validateHighPassValues);
+document.getElementById("resetHighPassValues").addEventListener("click", resetHighPassValues);
+document.getElementById("validateLowPassValues").addEventListener("click", validateLowPassValues);
+document.getElementById("resetLowPassValues").addEventListener("click", resetLowPassValues);
+document.getElementById("validateDelayValues").addEventListener("click", validateDelayValues);
+document.getElementById("resetDelayValues").addEventListener("click", resetDelayValues);
+document.getElementById("validReverbSettings").addEventListener("click", validateReverbValues);
+document.getElementById("resetReverbSettings").addEventListener("click", resetReverbValues);
+
 // Updater
 // Begin check for updates
 function checkUpdate() {
@@ -2394,7 +2420,7 @@ function checkUpdate() {
 }
 
 // Callback called when the update data has finished to download
-function updateCallback(data) {
+window.updateCallback = function(data) {
     if(typeof(data) !== "undefined" && data !== null && typeof(data.version) !== "undefined" && data.version !== null) {
         var newVersionTest = app_version.strcmp(data.version);
 
@@ -2421,17 +2447,17 @@ function updateCallback(data) {
             };
 
             document.getElementById("appDownloadURLGet").onclick = function() {
-                prompt(window.i18next.t("update.URLToDownload"), downloadURL);
+                prompt(i18next.t("update.URLToDownload"), downloadURL);
             };
 
-            var changes = window.i18next.t("update.noChanges");
+            var changes = i18next.t("update.noChanges");
 
             if(typeof(data.changes) !== "undefined" && data.changes !== null) {
                 var changes = data.changes;
             }
 
             document.getElementById("appUpdateChanges").onclick = function() {
-                alert(window.i18next.t("update.changes") + "\n" + changes);
+                alert(i18next.t("update.changes") + "\n" + changes);
             };
 
             translateContent();
@@ -2463,15 +2489,15 @@ function translateContent() {
     var i18nList = document.querySelectorAll("[data-i18n]");
 
     for(var i = 0, l = i18nList.length; i < l; i++) {
-        i18nList[i].innerHTML = window.i18next.t(i18nList[i].dataset.i18n);
+        i18nList[i].innerHTML = i18next.t(i18nList[i].dataset.i18n);
     }
 
     document.getElementById("versionDate").innerHTML = new Intl.DateTimeFormat(i18next.language).format(new Date(app_version_date));
 
-    document.getElementById("appDownloadURLGet").title = window.i18next.t("update.getURL");
-    document.getElementById("appUpdateChanges").title = window.i18next.t("update.getChanges");
+    document.getElementById("appDownloadURLGet").title = i18next.t("update.getURL");
+    document.getElementById("appUpdateChanges").title = i18next.t("update.getChanges");
 
-    document.getElementById("appUpdateDateLocalized").innerHTML = window.i18next.t("update.versionDate", { date: new Intl.DateTimeFormat(i18next.language).format(new Date(document.getElementById("appUpdateDate").innerHTML)) });
+    document.getElementById("appUpdateDateLocalized").innerHTML = i18next.t("update.versionDate", { date: new Intl.DateTimeFormat(i18next.language).format(new Date(document.getElementById("appUpdateDate").innerHTML)) });
 
     displayCompatibilityInfos();
     checkAudioBuffer(audioImpulseResponses[1].buffer, "audio_impulse_response");
@@ -2492,5 +2518,5 @@ if("serviceWorker" in navigator) {
 }
 
 window.onbeforeunload = function() {
-    return window.i18next.t("script.appClosing");
+    return i18next.t("script.appClosing");
 };

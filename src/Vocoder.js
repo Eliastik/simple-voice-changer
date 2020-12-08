@@ -30,7 +30,7 @@
 
 // Since all this stuff depends on global data, just wrap it all in a clousure
 // for tidyness, and so we can call it multiple times.
-function vocoder(ctx, cb, mb) {
+export default function vocoder(ctx, cb, mb) {
 
   var audioContext = null;
   var modulatorBuffer = null;

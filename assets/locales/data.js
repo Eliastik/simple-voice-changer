@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
+import i18next from "i18next";
+
  // French
  i18next.addResourceBundle("fr", "translation", {
    "lang": {

@@ -45,7 +45,7 @@
             <div id="updateAvailable" class="alert alert-info"><strong><i class="fa fa-fw fa-info-circle"></i> <span data-i18n="update.updateAvailable">Une mise à jour de l'application est disponible</span> (<span data-i18n="update.version">version</span> <span id="appUpdateVersion">?</span> <span data-i18n="update.of">du</span> <span id="appUpdateDate">?</span><span id="appUpdateDateLocalized">?</span>). <span data-i18n="update.current">Vous disposez actuellement de la version</span> <span id="appVersion">?</span>.</strong>
             <div class="vmiddle"><a href="#" class="btn btn-sm btn-primary" id="appDownloadLink"><i class="fa fa-download fa-fw"></i> <span data-i18n="update.download">Télécharger la mise à jour</span></a> <a href="#" id="appDownloadURLGet" class="btn btn-sm btn-default" title="Obtenir l'adresse URL du téléchargement">&nbsp;<i class="fa fa-link"></i>&nbsp;</a> <a href="#" id="appUpdateChanges" class="btn btn-sm btn-default" title="Obtenir la liste des changements">&nbsp;<i class="fa fa-info-circle"></i>&nbsp;</a></div></div>
             <div class="alert alert-info" id="loading"><i class="fa fa-refresh fa-spin fa-fw"></i> <span id="loadingInfo" data-i18n="loading.loading">Chargement…</span><br /><small id="timeLoadingInfo"></small></div>
-            <div class="alert alert-danger" id="errorLoading"><i class="fa fa-times-circle fa-fw" aria-hidden="true"></i> <span data-i18n="heading.connectionError">Une erreur de connexion est survenue lors du chargement de certaines données. Vérifiez votre connexion Internet puis</span> <a href="#" onclick="reloadData();" class="alert-link" data-i18n="heading.connectionErrorRetry">cliquez ici pour tenter de recharger les données</a>, <span data-i18n="or">ou</span> <a href="#" onclick="location.reload();" class="alert-link" data-i18n="heading.connectionErrorReload">rechargez la page</a>.<br /><span data-i18n="heading.connectionErrorInfo">Si vous utilisez cette application en local et à cause de limitations techniques, le chargement des données est bloqué, ce qui empêchera à certaines fonctionnalités de fonctionner (Vocoder, Réverbération). Dans ce cas,</span> <a href="http://www.eliastiksofts.com/simple-voice-changer/demo/" target="_blank" class="alert-link" data-i18n="heading.connectionErrorOnline">utilisez la version en ligne</a>.</div>
+            <div class="alert alert-danger" id="errorLoading"><i class="fa fa-times-circle fa-fw" aria-hidden="true"></i> <span data-i18n="heading.connectionError">Une erreur de connexion est survenue lors du chargement de certaines données. Vérifiez votre connexion Internet puis</span> <a href="#" id="connectionErrorRetry" class="alert-link" data-i18n="heading.connectionErrorRetry">cliquez ici pour tenter de recharger les données</a>, <span data-i18n="or">ou</span> <a href="#" onclick="location.reload();" class="alert-link" data-i18n="heading.connectionErrorReload">rechargez la page</a>.<br /><span data-i18n="heading.connectionErrorInfo">Si vous utilisez cette application en local et à cause de limitations techniques, le chargement des données est bloqué, ce qui empêchera à certaines fonctionnalités de fonctionner (Vocoder, Réverbération). Dans ce cas,</span> <a href="http://www.eliastiksofts.com/simple-voice-changer/demo/" target="_blank" class="alert-link" data-i18n="heading.connectionErrorOnline">utilisez la version en ligne</a>.</div>
             <div class="alert alert-danger" id="compa"><i class="fa fa-times-circle fa-fw" aria-hidden="true"></i> <span id="compaInfo"></span></div>
             <p class="description lead" data-i18n="heading.description">Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un enregistrement rapidement et simplement : choisissez un fichier audio, ou enregistrez-vous, et vous pouvez modifier et enregistrer ! Tout le traitement audio se fait sur votre appareil et aucune donnée n'est envoyée sur Internet.</p>
             <div class="row" id="firstEtape">
@@ -53,10 +53,10 @@
                     <h2>1<sup data-i18n="firstStep.first">ère</sup> <span data-i18n="firstStep.title">étape : sélectionnez un fichier audio, ou enregistrez votre voix</span></h2>
                     <form class="center">
                         <div class="alert alert-danger" id="errorLoadingSelectFile"><i class="fa fa-times-circle fa-fw"></i> <span class="bold" data-i18n="firstStep.errorLoadingFile">Une erreur est survenue lors du chargement du fichier sélectionné.</span></div>
-                        <button class="btn btn-primary" type="button" id="fileSelect" onclick="selectFile();" disabled="disabled"><i class="fa fa-file-audio-o fa-fw" aria-hidden="true"></i> <span data-i18n="firstStep.selectFile">Sélectionner un fichier audio</span></button>
+                        <button class="btn btn-primary" type="button" id="fileSelect" disabled="disabled"><i class="fa fa-file-audio-o fa-fw" aria-hidden="true"></i> <span data-i18n="firstStep.selectFile">Sélectionner un fichier audio</span></button>
                         <input id="inputFile" type="file" name="inputFile" accept="audio/*" style="display: none;">
                         <h3 data-i18n="orMaj">Ou</h3>
-                        <div class="disabled-button-wrapper" id="wrapperFileRecord"><button class="btn btn-default" type="button" id="fileRecord" onclick="recordAudio();" disabled="disabled"><i class="fa fa-microphone fa-fw" aria-hidden="true"></i> <span data-i18n="firstStep.record">Enregistrer via le micro</span></button></div>
+                        <div class="disabled-button-wrapper" id="wrapperFileRecord"><button class="btn btn-default" type="button" id="fileRecord" disabled="disabled"><i class="fa fa-microphone fa-fw" aria-hidden="true"></i> <span data-i18n="firstStep.record">Enregistrer via le micro</span></button></div>
                         <div class="language">
                             <hr />
                             <div class="form-group row">
@@ -100,9 +100,9 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-success" type="button" id="recordAudioPlay" onclick="recordPlay();" disabled="disabled"><i class="fa fa-play fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.start">Démarrer</span></button> <button class="btn btn-default" type="button" id="recordAudioPause" onclick="recordPause();" disabled="disabled" style="display: none;"><i class="fa fa-pause fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.pause">Pause</span></button> <button class="btn btn-danger" type="button" id="recordAudioStop" onclick="recordStop();" disabled="disabled"><i class="fa fa-stop fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.stop">Stop</span></button><br />
+                        <button class="btn btn-success" type="button" id="recordAudioPlay" disabled="disabled"><i class="fa fa-play fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.start">Démarrer</span></button> <button class="btn btn-default" type="button" id="recordAudioPause" disabled="disabled" style="display: none;"><i class="fa fa-pause fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.pause">Pause</span></button> <button class="btn btn-danger" type="button" id="recordAudioStop" disabled="disabled"><i class="fa fa-stop fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.stop">Stop</span></button><br />
                         <span class="bold" data-i18n="firstStepBis.duration">Durée de l'enregistrement :</span> <span id="timeRecord">00:00</span>
-                        <div class="form-group mmt nmb"><button class="btn btn-danger" type="button" onclick="launchReset();"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.cancel">Annuler</span></button></div>
+                        <div class="form-group mmt nmb"><button class="btn btn-danger" type="button" id="resetRecordAudio"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="firstStepBis.cancel">Annuler</span></button></div>
                     </form>
                 </div>
             </div>
@@ -116,11 +116,11 @@
             <div class="row" id="thirdEtape">
                 <div class="container-fluid">
                     <form class="center">
-                        <button class="btn btn-primary btn-responsive" type="button" id="resetAudio" onclick="launchReset();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.otherFile">Choisir un autre fichier ou enregistrement</span></button>
+                        <button class="btn btn-primary btn-responsive" type="button" id="resetAudio"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.otherFile">Choisir un autre fichier ou enregistrement</span></button>
                     </form>
                     <h2>2<sup data-i18n="thirdStep.nb">ème</sup> <span data-i18n="thirdStep.title">étape : modifiez et testez</span></h2>
                     <form class="center">
-                        <div class="disabled-button-wrapper" id="wrapperPlay"><button class="btn btn-success" type="button" id="playAudio" onclick="launchPlay();"><i class="fa fa-play fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.play">Lire</span></button></div> <div class="disabled-button-wrapper" id="wrapperPause" style="display: none;"><button class="btn btn-default" type="button" id="pauseAudio" onclick="launchPause();"><i class="fa fa-pause fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.pause">Pause</span></button></div> <div class="disabled-button-wrapper" id="wrapperStop"><button class="btn btn-danger" type="button" id="stopAudio" onclick="launchStop();"><i class="fa fa-stop fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.stop">Stop</span></button></div>
+                        <div class="disabled-button-wrapper" id="wrapperPlay"><button class="btn btn-success" type="button" id="playAudio"><i class="fa fa-play fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.play">Lire</span></button></div> <div class="disabled-button-wrapper" id="wrapperPause" style="display: none;"><button class="btn btn-default" type="button" id="pauseAudio"><i class="fa fa-pause fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.pause">Pause</span></button></div> <div class="disabled-button-wrapper" id="wrapperStop"><button class="btn btn-danger" type="button" id="stopAudio"><i class="fa fa-stop fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.stop">Stop</span></button></div>
                         <div id="playingAudioInfos">
                             <div>
                                 <input type="text" name="playAudioRange" id="playAudioRange" data-provide="slider" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
@@ -180,14 +180,14 @@
                                     <input type="checkbox" id="checkLimiter" checked /> <label for="checkLimiter" data-i18n="thirdStep.limiter">Limiteur (réduit la distorsion/saturation, recommandé)</label> <a href="#" data-toggle="modal" data-target="#limiterSettings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i></a>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" id="checkCompa" onclick="compaMode();" /> <label for="checkCompa" data-i18n="thirdStep.compatibilityMode">Mode de compatibilité (cocher si aucun son n'est diffusé)</label><br />
+                                    <input type="checkbox" id="checkCompa" /> <label for="checkCompa" data-i18n="thirdStep.compatibilityMode">Mode de compatibilité (cocher si aucun son n'est diffusé)</label><br />
                                     <span class="small ml" id="compatAutoDetected" data-i18n="thirdStep.compatibilityModeAuto">Détecté et activé automatiquement</span>
                                     <span class="small ml" data-i18n="thirdStep.infosCompatibilityMode">Ce mode vous permet également de modifier le son en temps réel</span>
                                 </div>
                                 <div class="mt">
-                                    <button class="btn btn-primary" type="button" id="validInputModify" onclick="validModify(false, false);" disabled="disabled"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
-                                    <button class="btn btn-default" type="button" id="randomInputModify" onclick="randomModify();"><i class="fa fa-random fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.random">Réglages au hasard</span></button>
-                                    <button class="btn btn-danger" type="button" id="resetInputModify" onclick="resetModify();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.reset">Réinitialiser</span></button>
+                                    <button class="btn btn-primary" type="button" id="validInputModify" disabled="disabled"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                                    <button class="btn btn-default" type="button" id="randomInputModify"><i class="fa fa-random fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.random">Réglages au hasard</span></button>
+                                    <button class="btn btn-danger" type="button" id="resetInputModify"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.reset">Réinitialiser</span></button>
                                 </div>
                             </div>
                         </div>
@@ -206,10 +206,10 @@
                             <div class="progress progress-striped progressCompact mt active">
                                 <div id="progressProcessingSave" class="progress-bar" style="width: 0%"></div>
                             </div>
-                            <button class="btn btn-danger btn-sm" type="button" id="cancelSaveCompaMode" onclick="compaModeStopSave();"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="lastStep.cancel">Annuler</span></button>
+                            <button class="btn btn-danger btn-sm" type="button" id="cancelSaveCompaMode"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="lastStep.cancel">Annuler</span></button>
                         </div>
                         <div class="disabled-button-wrapper" id="wrapperSave">
-                            <button class="btn btn-default" type="button" id="saveInputModify" onclick="launchSave();" disabled="disabled"><i class="fa fa-save fa-fw" aria-hidden="true"></i> <span data-i18n="lastStep.save">Enregistrer</span></button>
+                            <button class="btn btn-default" type="button" id="saveInputModify" disabled="disabled"><i class="fa fa-save fa-fw" aria-hidden="true"></i> <span data-i18n="lastStep.save">Enregistrer</span></button>
                         </div>
                     </form>
                 </div>
@@ -270,8 +270,8 @@
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="setLimiterValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
-                    <button type="button" class="btn btn-danger" onclick="resetLimiterValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-primary" id="setLimiterValues"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" id="resetLimiterValues"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>
@@ -316,8 +316,8 @@
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="validateBassBoostValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
-                    <button type="button" class="btn btn-danger" onclick="resetBassBoostValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-primary" id="validateBassBoostValues"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" id="resetBassBoostValues"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>
@@ -344,8 +344,8 @@
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="validateHighPassValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
-                    <button type="button" class="btn btn-danger" onclick="resetHighPassValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-primary" id="validateHighPassValues"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" id="resetHighPassValues"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>
@@ -372,8 +372,8 @@
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="validateLowPassValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
-                    <button type="button" class="btn btn-danger" onclick="resetLowPassValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-primary" id="validateLowPassValues"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" id="resetLowPassValues"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>
@@ -406,8 +406,8 @@
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="validateDelayValues();"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
-                    <button type="button" class="btn btn-danger" onclick="resetDelayValues();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-primary" id="validateDelayValues"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger" id="resetDelayValues"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>
@@ -446,8 +446,8 @@
                     </fieldset>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary disabled" disabled="disabled" onclick="validateReverbValues();" id="validReverbSettings"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
-                    <button type="button" class="btn btn-danger disabled" disabled="disabled" onclick="resetReverbValues();" id="resetReverbSettings"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
+                    <button type="button" class="btn btn-primary disabled" disabled="disabled" id="validReverbSettings"><i class="fa fa-check fa-fw" aria-hidden="true"></i> <span data-i18n="thirdStep.validate">Valider</span></button>
+                    <button type="button" class="btn btn-danger disabled" disabled="disabled" id="resetReverbSettings"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span data-i18n="reset">Réinitialiser</span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span data-i18n="close">Fermer</span></button>
                 </div>
               </div>
@@ -483,17 +483,6 @@
             </div>
           </div>
         </div>
-        <script type="text/javascript" src="assets/js/soundtouch.js"></script>
-        <script type="text/javascript" src="assets/js/vocoder.js"></script>
-        <script type="text/javascript" src="assets/js/bootstrap-slider.min.js"></script>
-        <script type="text/javascript" src="assets/js/bootstrap-native-polyfill.min.js"></script>
-        <script type="text/javascript" src="assets/js/bootstrap-native.min.js"></script>
-        <script type="text/javascript" src="assets/js/recorder.js"></script>
-        <script type="text/javascript" src="assets/js/i18next.min.js"></script>
-        <script type="text/javascript" src="assets/js/i18nextBrowserLanguageDetector.min.js"></script>
-        <script type="text/javascript" src="assets/locales/init.js"></script>
-        <script type="text/javascript" src="assets/js/limiter.js"></script>
-        <script type="text/javascript" src="assets/js/main.js"></script>
-        <script type="text/javascript" src="assets/locales/data.js"></script>
+        <script type="text/javascript" src="dist/SimpleVoiceChanger.js"></script>
     </body>
 </html>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2019-2020 Eliastik (eliastiksofts.com)
  *
  * This file is part of "Simple Voice Changer".
  *
@@ -16,16 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
-import i18next from "i18next";
-import i18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
+import "../assets/locales/init.js";
+import "../assets/locales/data.js";
+import "./main.js";
 
-i18next.use(i18nextBrowserLanguageDetector).init({
-  fallbackLng: ['en', 'fr'],
-  load: 'languageOnly',
-  detection: {
-    order: ['localStorage', 'querystring', 'navigator', 'htmlTag'],
-    lookupQuerystring: 'lng',
-    lookupLocalStorage: 'i18nextLng',
-    caches: ['localStorage'],
-  },
-});
+export { };

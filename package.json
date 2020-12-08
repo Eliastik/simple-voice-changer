@@ -1,0 +1,41 @@
+{
+  "name": "simple-voice-changer",
+  "version": "1.4.0",
+  "description": "Simple Voice Changer lets you to edit the voice of an audio file or a recording quicly and easily: choose an audio file, or record your voice, and then you can edit and save! All the audio processing is made on your device and no data is sent over the Internet.",
+  "main": "dist/SimpleVoiceChanger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config prod.webpack.config.js",
+    "build-dev": "webpack --config dev.webpack.config.js",
+    "watch": "webpack --config dev.webpack.config.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eliastik/simple-voice-changer.git"
+  },
+  "author": "Eliastik",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Eliastik/simple-voice-changer/issues"
+  },
+  "homepage": "https://github.com/Eliastik/simple-voice-changer#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/runtime": "^7.12.5",
+    "babel-loader": "^8.1.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "bootstrap-slider": "^11.0.2",
+    "bootstrap.native": "^2.0.27",
+    "i18next": "^19.8.4",
+    "i18next-browser-languagedetector": "^6.0.1",
+    "recorderjs": "git+https://github.com/Eliastik/Recorderjs.git#a963193",
+    "soundtouchjs": "^0.1.24"
+  }
+}
