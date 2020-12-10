@@ -23,13 +23,15 @@ import Limiter from "./Limiter";
 import BSN from "bootstrap.native/dist/bootstrap-native.min.js";
 import vocoder from "./Vocoder";
 import Recorder from "recorderjs";
+import modulator_mp3 from "../assets/sounds/modulator.mp3";
+import impulse_response_default_lite from "../assets/sounds/impulse_response.mp3";
 
 // App infos
 var filesDownloadName = "simple_voice_changer";
-var audioArray = ["assets/sounds/impulse_response.wav", "assets/sounds/modulator.mp3"]; // audio to be loaded when launching the app
+var audioArray = [impulse_response_default_lite, modulator_mp3]; // audio to be loaded when launching the app
 var app_version = "1.3.0.1";
 var app_version_date = "03/09/2020";
-var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php"
+var updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php";
 // End of app infos
 
 // Default variables
@@ -116,7 +118,8 @@ var audioImpulseResponses = {
         size: 1350278,
         buffer: null,
         link: "http://www.cksde.com/p_6_250.htm",
-        addDuration: 4
+        addDuration: 4,
+        forceDownloadHigherQuality: true
     },
     2: {
         title: "The Dixon Studio Theatre – University of York",
@@ -1269,6 +1272,12 @@ function loadInfosCurrentEnvironment() {
     } else {
         document.getElementById("environmentAlreadyDownloaded").style.display = "none";
     }
+
+    if(audioImpulseResponses[document.getElementById("environmentReverb").value].buffer != null && audioImpulseResponses[document.getElementById("environmentReverb").value].forceDownloadHigherQuality) {
+        document.getElementById("environmentAlreadyDownloadedLowQuality").style.display = "block";
+    } else {
+        document.getElementById("environmentAlreadyDownloadedLowQuality").style.display = "none";
+    }
 }
 
 document.getElementById("environmentReverb").onchange = function() {
@@ -1292,17 +1301,18 @@ function validateReverbValues() {
         var value = document.getElementById("environmentReverb").value;
     
         if(value != null && value.trim() != "" && !isNaN(value) && value >= 1 && value <= audioImpulseResponses.nbResponses) {
-            if(audioImpulseResponses[value].buffer == null) {
+            if(audioImpulseResponses[value].buffer == null || audioImpulseResponses[value].forceDownloadHigherQuality) {
                 document.getElementById("errorLoadingReverb").style.display = "none";
                 audioImpulseResponses.loading = true;
                 reverbStateSettings();
 
                 loadAudioBuffer(audioImpulseResponses[value].file, function(data, success) {
-                    audioImpulseResponses[value].buffer = data;
                     audioImpulseResponses.loading = false;
         
                     if(success) {
+                        audioImpulseResponses[value].buffer = data;
                         audioImpulseResponses.current = value;
+                        audioImpulseResponses[value].forceDownloadHigherQuality = false;
                     } else {
                         document.getElementById("errorLoadingReverb").style.display = "block";
                     }

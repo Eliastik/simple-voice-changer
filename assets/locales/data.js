@@ -190,6 +190,7 @@ import i18next from "i18next";
       "source": "Source",
       "environmentSettingsInfos": "En cliquant sur Valider, l'environnement sera téléchargé temporairement sur votre appareil. Cela peut engendrer des frais.",
       "environmentAlreadyDownloaded": "Cet environnement a déjà été téléchargé.",
+      "environmentAlreadyDownloadedLowQuality": "Cet environnement a été téléchargé en une version basse qualité pour des raisons de performance. Cliquez sur Valider pour télécharger la version en meilleure qualité.",
       "loading": "Chargement de l'environnement en cours… Veuillez patienter.",
       "error": "Une erreur est survenue lors du chargement de l'environnement. Veuillez réessayer."
    },
@@ -382,6 +383,7 @@ i18next.addResourceBundle("en", "translation", {
      "source": "Source",
      "environmentSettingsInfos": "By clicking on Validate, the environment will be temporarily downloaded to your device. This may incur fees.",
      "environmentAlreadyDownloaded": "This environment has already been downloaded.",
+     "environmentAlreadyDownloadedLowQuality": "This environment has been downloaded in a low quality version for performance reasons. Click on Validate to download the higher quality version.",
      "loading": "Loading the environment… Please wait.",
      "error": "An error occurred while loading the environment. Try again."
   },
