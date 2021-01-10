@@ -73,7 +73,7 @@ var audioBuffers = {
 var st = new soundtouch.SoundTouch(44100);
 var soundtouchFilter = new soundtouch.SimpleFilter();
 var sountouchBuffer = null;
-var sountouchNode = null;
+var soundtouchNode = null;
 st.pitch = 1.0;
 st.tempo = 1.0;
 st.rate = 1.0;
@@ -1405,7 +1405,7 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
     // End of default parameters
 
     if('AudioContext' in window && !audioContextNotSupported && offlineContext != null) {
-        var previousSountouchNode = sountouchNode;
+        var previousSountouchNode = soundtouchNode;
         var buffer = audioBuffers.processed;
 
         if(comp) {
@@ -1416,8 +1416,9 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         st.pitch = pitch;
         st.tempo = speed;
         st.rate = rate;
-        sountouchNode = soundtouch.getWebAudioNode(offlineContext, soundtouchFilter);
-        var node = sountouchNode;
+        soundtouchNode = soundtouch.getWebAudioNode(offlineContext, soundtouchFilter);
+        soundtouchFilter.callback = () => soundtouchNode.disconnect();
+        var node = soundtouchNode;
         // End of Soundtouch settings
 
         // Disconnect all previous nodes
@@ -1778,7 +1779,6 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                             }
                         });
 
-
                         document.getElementById("cancelSaveCompaMode").onclick = function() {
                             try {
                                 rec.stop();
@@ -1856,6 +1856,7 @@ function saveBuffer(buffer) {
         try {
             worker = new Worker("src/recorderWorker.js");
         } catch(e) {
+            launchPause();
             alert(i18next.t("script.workersErrorLoading"));
         }
     } else {
@@ -1969,6 +1970,7 @@ function validSettings() {
         var tmp_pitch = document.getElementById("pitchRange").value;
         var tmp_speed = document.getElementById("speedRange").value;
     } catch(e) {
+        launchPause();
         alert(i18next.t("script.errorOccured"));
         return false;
     }
@@ -1981,11 +1983,13 @@ function validSettings() {
     loadReverbValues();
 
     if(isNaN(tmp_pitch) || tmp_pitch == "" || tmp_pitch <= 0 || tmp_pitch > 5) {
+        launchPause();
         alert(i18next.t("script.invalidPitch"));
         document.getElementById("pitchRange").value = pitchAudio;
         document.getElementById("speedRange").value = speedAudio;
         return false;
     } else if(isNaN(tmp_speed) || tmp_speed == "" || tmp_speed <= 0 || tmp_speed > 5) {
+        launchPause();
         alert(i18next.t("script.invalidSpeed"));
         document.getElementById("pitchRange").value = pitchAudio;
         document.getElementById("speedRange").value = speedAudio;
@@ -2473,6 +2477,7 @@ window.updateCallback = function(data) {
             }
 
             document.getElementById("appUpdateChanges").onclick = function() {
+                launchPause();
                 alert(i18next.t("update.changes") + "\n" + changes);
             };
 
@@ -2534,5 +2539,6 @@ if("serviceWorker" in navigator) {
 }
 
 window.onbeforeunload = function() {
+    launchPause();
     return i18next.t("script.appClosing");
 };
