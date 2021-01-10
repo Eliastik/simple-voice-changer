@@ -22,7 +22,7 @@ import i18next from "i18next";
 import Limiter from "./Limiter";
 import BSN from "bootstrap.native/dist/bootstrap-native.min.js";
 import vocoder from "./Vocoder";
-import Recorder from "recorderjs";
+import { Recorder, getRecorderWorker } from "recorderjs";
 import modulator_mp3 from "../assets/sounds/modulator.mp3";
 import impulse_response_default_lite from "../assets/sounds/impulse_response.mp3";
 
@@ -1856,7 +1856,7 @@ function saveBuffer(buffer) {
 
     if(typeof(Worker) !== "undefined" && Worker != null) {
         try {
-            worker = new Worker("src/recorderWorker.js");
+            worker = getRecorderWorker.default();
         } catch(e) {
             launchPause();
             alert(i18next.t("script.workersErrorLoading"));
@@ -1867,6 +1867,12 @@ function saveBuffer(buffer) {
     }
 
     if('AudioContext' in window && !audioContextNotSupported && worker) {
+        worker.onmessage = function(e) {
+            if(e.data.command == 'exportWAV') {
+                downloadAudioBlob(e.data.data);
+            }
+        };
+
         worker.postMessage({
             command: "init",
             config: {
@@ -1874,10 +1880,6 @@ function saveBuffer(buffer) {
                 numChannels: 2
             }
         });
-
-        worker.onmessage = function(e) {
-            downloadAudioBlob(e.data);
-        };
 
         worker.postMessage({
             command: "record",
