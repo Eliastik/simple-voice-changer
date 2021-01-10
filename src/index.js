@@ -22,5 +22,6 @@ import "./main.js";
 import DelayBuffer from "./DelayBuffer";
 import Limiter from "./Limiter";
 import Vocoder from "./Vocoder";
+import BufferPlayer from "./BufferPlayer";
 
-export default { DelayBuffer, Limiter, Vocoder };
+export default { DelayBuffer, Limiter, Vocoder, BufferPlayer };

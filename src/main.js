@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2020 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2019-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of "Simple Voice Changer".
  *
@@ -25,6 +25,7 @@ import vocoder from "./Vocoder";
 import { Recorder, getRecorderWorker } from "recorderjs";
 import modulator_mp3 from "../assets/sounds/modulator.mp3";
 import impulse_response_default_lite from "../assets/sounds/impulse_response.mp3";
+import BufferPlayer from "./BufferPlayer";
 
 // App infos
 var filesDownloadName = "simple_voice_changer";
@@ -43,6 +44,27 @@ reverbAudio = echoAudio = compaAudioAPI = vocoderAudio = bitCrusherAudio = lowpa
 limiterAudio = true;
 let processing_context = null;
 // End of the default values
+
+// Check compatibility with Web Audio API
+if('AudioContext' in window) {
+    try {
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
+        var context = new AudioContext();
+    } catch(e) {
+        if(typeof(window.console.error) !== "undefined") {
+            console.error(i18next.t("script.errorAudioContext"), e);
+        } else {
+            console.log(i18next.t("script.errorAudioContext"), e);
+        }
+
+        var audioContextNotSupported = true;
+    }
+} else {
+    var audioContextNotSupported = true;
+}
+
+// Polyfill navigator.getUserMedia
+navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null);
 
 // Create the sliders (pitch/speed)
 var slider = new Slider("#pitchRange", {
@@ -80,9 +102,35 @@ st.rate = 1.0;
 // End of Create Soundtouch objects
 
 var limiter = new Limiter(); // Create an audio limiter
+limiter.sampleRate = context.sampleRate;
 var recorderVoice = new VoiceRecorder(); // Create a VoiceRecorder
 var sliderPlayAudio = new Slider("#playAudioRange"); // Slider used to control the time in the audio BufferPlayer
-var audioBufferPlay = new BufferPlayer(null); // Create a BufferPlayer
+var audioBufferPlay = new BufferPlayer(context, sliderPlayAudio); // Create a BufferPlayer
+audioBufferPlay.onUpdate = function() { // Update UI for BufferPlayer
+    let percPlaying = Math.round(audioBufferPlay.displayTime / audioBufferPlay.duration * 100);
+
+    if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(audioBufferPlay.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(audioBufferPlay.displayTime % 60)).slice(-2);
+    if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(audioBufferPlay.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(audioBufferPlay.duration % 60)).slice(-2);
+
+    if(audioBufferPlay.compatibilityMode) {
+        if(document.getElementById("timeFinishedDownload") != null) document.getElementById("timeFinishedDownload").innerHTML = ("0" + Math.trunc((audioBufferPlay.duration - audioBufferPlay.displayTime) / 60)).slice(-2) + ":" + ("0" + Math.trunc((audioBufferPlay.duration - audioBufferPlay.displayTime) % 60)).slice(-2);
+        if(document.getElementById("progressProcessingSave") != null) document.getElementById("progressProcessingSave").style.width = (100 - Math.round((audioBufferPlay.duration - audioBufferPlay.displayTime) / audioBufferPlay.duration * 100)) + "%";
+    }
+    
+    if(document.getElementById("checkLoopPlay") != null) {
+        if(document.getElementById("checkLoopPlay").checked) {
+            audioBufferPlay.loop = true;
+        } else {
+            audioBufferPlay.loop = false;
+        }
+    }
+
+    if(!audioBufferPlay.sliding && audioBufferPlay.sliderPlayAudio != undefined) {
+        audioBufferPlay.sliderPlayAudio.setValue(percPlaying, false, false);
+    }
+    
+    compaMode();
+};
 
 var compaModeStop = function() { return false; }; // Function called when the audio playing is stopped
 var compaModeSaveStop = function() { return false; };
@@ -222,28 +270,6 @@ var audioImpulseResponses = {
 // End of Impulses responses settings
 // End of the filter settings
 
-// Check compatibility with Web Audio API
-if('AudioContext' in window) {
-    try {
-        var AudioContext = window.AudioContext || window.webkitAudioContext;
-        var context = new AudioContext();
-        limiter.sampleRate = context.sampleRate;
-    } catch(e) {
-        if(typeof(window.console.error) !== "undefined") {
-            console.error(i18next.t("script.errorAudioContext"), e);
-        } else {
-            console.log(i18next.t("script.errorAudioContext"), e);
-        }
-
-        var audioContextNotSupported = true;
-    }
-} else {
-    var audioContextNotSupported = true;
-}
-
-// Polyfill navigator.getUserMedia
-navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null);
-
 // Check if an audio type is supported
 function checkAudio(type) {
     if(!window.HTMLAudioElement) {
@@ -276,171 +302,6 @@ if(!String.prototype.trim) {
 // End libs
 
 // Classes
-// The audio buffer player
-// Used to play the audio buffer, with time controls, pause/play, stop and loop
-// Also used in compatibility mode (which doesn't use audio buffer) with less functions (no time control)
-function BufferPlayer() {
-    this.buffer;
-    this.source;
-    this.currentTime = 0;
-    this.displayTime = 0;
-    this.duration = 0;
-    this.interval;
-    this.playing = false;
-    this.sliding = false;
-    this.loop = true;
-    this.compatibilityMode = false;
-    this.onPlayingFinished;
-    this.speedAudio = 1;
-
-    var obj = this;
-
-    if(sliderPlayAudio != undefined) {
-        sliderPlayAudio.on("slideStart", function() {
-            if(!obj.compatibilityMode) obj.sliding = true;
-        });
-
-        sliderPlayAudio.on("slide", function(value) {
-            if(!obj.compatibilityMode) {
-                obj.displayTime = Math.round(obj.duration * (value / 100));
-                obj.updateInfos();
-            }
-        });
-
-        sliderPlayAudio.on("slideStop", function(value) {
-            if(!obj.compatibilityMode) {
-                obj.sliding = false;
-                obj.currentTime = Math.round(obj.duration * (value / 100));
-                obj.displayTime = obj.currentTime;
-
-                if(obj.playing) {
-                    obj.pause();
-                    obj.start();
-                } else {
-                    obj.updateInfos();
-                }
-            }
-        });
-    }
-
-    this.init = function(duration) {
-        this.playing = false;
-        context.resume();
-
-        if(!this.compatibilityMode) {
-            if(this.source != null) this.source.disconnect();
-            this.source = context.createBufferSource();
-            this.source.buffer = this.buffer;
-            this.duration = this.buffer.duration * this.speedAudio;
-            this.source.connect(context.destination);
-        }
-
-        this.updateInfos();
-    };
-
-    this.loadBuffer = function(buffer) {
-        this.compatibilityMode = false;
-        this.reset();
-        this.buffer = buffer;
-        this.init();
-    };
-
-    this.setCompatibilityMode = function(duration) {
-        this.compatibilityMode = true;
-        this.reset();
-        this.init();
-        this.duration = duration * this.speedAudio;
-    };
-
-    this.reset = function() {
-        clearInterval(this.interval);
-        this.currentTime = 0;
-        this.displayTime = 0;
-        this.stop();
-    };
-
-    this.stop = function() {
-        clearInterval(this.interval);
-        
-        if(this.source != undefined && this.source != null && this.playing && !this.compatibilityMode) {
-            this.source.stop(0);
-            this.playing = false;
-        }
-
-        this.updateInfos();
-    };
-
-    this.start = function() {
-        if((this.source != undefined && this.source != null) || this.compatibilityMode) {
-            this.stop();
-            this.init();
-
-            if(!this.compatibilityMode) {
-                this.source.start(0, this.currentTime / this.speedAudio);
-                this.playing = true;
-            }
-
-            this.interval = setInterval(function() {
-                obj.currentTime += 0.2 * obj.speedAudio;
-
-                if(!obj.sliding) {
-                    obj.displayTime = obj.currentTime;
-                }
-
-                if(obj.currentTime > obj.duration) {
-                    if(obj.loop && !obj.compatibilityMode) {
-                        obj.reset();
-                        obj.start();
-                    } else {
-                        obj.reset();
-                    }
-
-                    if(obj.onPlayingFinished != null) {
-                        obj.onPlayingFinished();
-                    }
-                } else {
-                    obj.updateInfos();
-                }
-            }, 200);
-        }
-    };
-
-    this.pause = function() {
-        clearInterval(this.interval);
-        this.stop();
-    };
-
-    this.setOnPlayingFinished = function(func) {
-        this.onPlayingFinished = func;
-    };
-
-    this.updateInfos = function() {
-        var percPlaying = Math.round(this.displayTime / this.duration * 100);
-
-        if(document.getElementById("timePlayingAudio") != null) document.getElementById("timePlayingAudio").innerHTML = ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
-        if(document.getElementById("totalTimePlayingAudio") != null) document.getElementById("totalTimePlayingAudio").innerHTML = ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
-
-        if(this.compatibilityMode) {
-            if(document.getElementById("timeFinishedDownload") != null) document.getElementById("timeFinishedDownload").innerHTML = ("0" + Math.trunc((this.duration - this.displayTime) / 60)).slice(-2) + ":" + ("0" + Math.trunc((this.duration - this.displayTime) % 60)).slice(-2);
-            if(document.getElementById("progressProcessingSave") != null) document.getElementById("progressProcessingSave").style.width = (100 - Math.round((this.duration - this.displayTime) / this.duration * 100)) + "%";
-        }
-        
-        if(document.getElementById("checkLoopPlay") != null) {
-            if(document.getElementById("checkLoopPlay").checked) {
-                this.loop = true;
-            } else {
-                this.loop = false;
-            }
-        }
-
-        if(!this.sliding && sliderPlayAudio != undefined) {
-            sliderPlayAudio.setValue(percPlaying, false, false);
-        }
-
-        compaMode();
-    };
-}
-
 // The Voice Recorder class
 // Used to record a sound (voice, etc.) with the user microphone
 // Offer control with play/pause and audio feedback

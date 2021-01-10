@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2020 Eliastik (eliastiksofts.com)
+ * Copyright (C) 2019-2021 Eliastik (eliastiksofts.com)
  *
  * This file is part of "Simple Voice Changer".
  *
