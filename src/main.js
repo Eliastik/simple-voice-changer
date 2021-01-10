@@ -330,7 +330,7 @@ function BufferPlayer() {
             if(this.source != null) this.source.disconnect();
             this.source = context.createBufferSource();
             this.source.buffer = this.buffer;
-            this.duration = this.buffer.duration;
+            this.duration = this.buffer.duration * this.speedAudio;
             this.source.connect(context.destination);
         }
 
@@ -348,7 +348,7 @@ function BufferPlayer() {
         this.compatibilityMode = true;
         this.reset();
         this.init();
-        this.duration = duration;
+        this.duration = duration * this.speedAudio;
     };
 
     this.reset = function() {
@@ -1636,7 +1636,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     // End of default parameters
 
     if('AudioContext' in window && !audioContextNotSupported && !audioProcessing) {
-        var durationAudio = calcAudioDuration(audio, save ? speed : null, pitch, reverb, vocode, echo);
+        var durationAudio = calcAudioDuration(audio, speed, pitch, reverb, vocode, echo);
 
         const offlineContext = getCurrentContext(durationAudio, comp);
         processing_context = offlineContext;
@@ -1679,8 +1679,8 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 offlineContext.oncomplete = function(e) {
                     window[audioName] = e.renderedBuffer;
                     audioBufferPlay.setOnPlayingFinished(null);
-                    audioBufferPlay.loadBuffer(window[audioName]);
                     audioBufferPlay.speedAudio = speedAudio;
+                    audioBufferPlay.loadBuffer(window[audioName]);
 
                     document.getElementById("validInputModify").disabled = false;
                     document.getElementById("resetAudio").disabled = false;
@@ -1723,8 +1723,8 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 }
 
                 if(play) {
-                    audioBufferPlay.setCompatibilityMode(Math.round(durationAudio));
                     audioBufferPlay.speedAudio = speedAudio;
+                    audioBufferPlay.setCompatibilityMode(Math.round(durationAudio));
                     limiterProcessor.connect(offlineContext.destination);
                     audioBufferPlay.start();
 
@@ -2089,11 +2089,7 @@ function launchPause() {
 // Function called when the "Save" button is pressed
 function launchSave() {
     if(!audioProcessing && typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
-        if(speedAudio != 1) {
-            validModify(false, true);
-        } else {
-            saveBuffer(audio_principal_processed);
-        }
+        saveBuffer(audio_principal_processed);
     } else if(compaAudioAPI) {
         launchStop();
         renderAudioAPI(audioBuffers.principal, speedAudio, pitchAudio, reverbAudio, true, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, bassboostAudio, phoneAudio, returnAudio, echoAudio, bitCrusherAudio, limiterAudio);
