@@ -19,5 +19,8 @@
 import "../assets/locales/init.js";
 import "../assets/locales/data.js";
 import "./main.js";
+import DelayBuffer from "./DelayBuffer";
+import Limiter from "./Limiter";
+import Vocoder from "./Vocoder";
 
-export { };
+export default { DelayBuffer, Limiter, Vocoder };

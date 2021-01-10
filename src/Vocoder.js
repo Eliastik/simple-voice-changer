@@ -212,6 +212,7 @@ export default function vocoder(ctx, cb, mb) {
       // Populate with a "curve" that does an abs()
       var n = 65536;
       var n2 = n / 2;
+      var x;
 
       for (var i = 0; i < n2; ++i) {
         x = i / n2;
