@@ -290,6 +290,7 @@ function BufferPlayer() {
     this.loop = true;
     this.compatibilityMode = false;
     this.onPlayingFinished;
+    this.speedAudio = 1;
 
     var obj = this;
 
@@ -374,12 +375,12 @@ function BufferPlayer() {
             this.init();
 
             if(!this.compatibilityMode) {
-                this.source.start(0, this.currentTime);
+                this.source.start(0, this.currentTime / this.speedAudio);
                 this.playing = true;
             }
 
             this.interval = setInterval(function() {
-                obj.currentTime += 0.2;
+                obj.currentTime += 0.2 * obj.speedAudio;
 
                 if(!obj.sliding) {
                     obj.displayTime = obj.currentTime;
@@ -1055,37 +1056,37 @@ function resetLimiterValues() {
 slider.on("slide", function(value) {
     st.pitch = value;
     pitchAudio = value;
-    calcCompaModePlayerTime();
+    calcBufferPlayerTime();
 });
 
 slider.on("slideStart", function(value) {
     st.pitch = value;
     pitchAudio = value;
-    calcCompaModePlayerTime();
+    calcBufferPlayerTime();
 });
 
 slider.on("slideStop", function(value) {
     st.pitch = value;
     pitchAudio = value;
-    calcCompaModePlayerTime();
+    calcBufferPlayerTime();
 });
 
 slider2.on("slide", function(value) {
     st.tempo = value;
     speedAudio = value;
-    calcCompaModePlayerTime();
+    calcBufferPlayerTime();
 });
 
 slider2.on("slideStart", function(value) {
     st.tempo = value;
     speedAudio = value;
-    calcCompaModePlayerTime();
+    calcBufferPlayerTime();
 });
 
 slider2.on("slideStop", function(value) {
     st.tempo = value;
     speedAudio = value;
-    calcCompaModePlayerTime();
+    calcBufferPlayerTime();
 });
 // End of Soundtouch settings
 
@@ -1289,7 +1290,7 @@ function setReverbFilter() {
 
     if(convolver != null && buffer != null) {
         convolver.buffer = buffer;
-        calcCompaModePlayerTime();
+        calcBufferPlayerTime();
     }
 
     checkAudioBuffer(buffer, "audio_impulse_response");
@@ -1355,9 +1356,10 @@ var gainNode = null;
 // End of the nodes
 
 // Calculate the audio duration and change the audio duration of the player in compatibility mode
-function calcCompaModePlayerTime() {
+function calcBufferPlayerTime() {
     if(compaAudioAPI) {
-        audioBufferPlay.duration = calcAudioDuration(audioBuffers.principal, speedAudio, pitchAudio, reverbAudio, vocoderAudio, echoAudio);
+        audioBufferPlay.duration = calcAudioDuration(audioBuffers.principal, null, pitchAudio, reverbAudio, vocoderAudio, echoAudio);
+        audioBufferPlay.speedAudio = speedAudio;
     }
 }
 
@@ -1407,7 +1409,7 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         var buffer = audioBuffers.processed;
 
         if(comp) {
-            calcCompaModePlayerTime();
+            calcBufferPlayerTime();
         }
 
         // Soundtouch settings
@@ -1605,7 +1607,7 @@ function calcAudioDuration(audio, speed, pitch, reverb, vocode, echo) {
         var duration = audio.duration + 1;
         var reverb_duration = audioImpulseResponses[audioImpulseResponses.current].addDuration;
     
-        duration = duration / parseFloat(speed);
+        if(speed) duration = duration / parseFloat(speed);
     
         if(echo && reverb) {
             var addDuration = Math.max(5, reverb_duration);
@@ -1634,7 +1636,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     // End of default parameters
 
     if('AudioContext' in window && !audioContextNotSupported && !audioProcessing) {
-        var durationAudio = calcAudioDuration(audio, speed, pitch, reverb, vocode, echo);
+        var durationAudio = calcAudioDuration(audio, save ? speed : null, pitch, reverb, vocode, echo);
 
         const offlineContext = getCurrentContext(durationAudio, comp);
         processing_context = offlineContext;
@@ -1678,6 +1680,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     window[audioName] = e.renderedBuffer;
                     audioBufferPlay.setOnPlayingFinished(null);
                     audioBufferPlay.loadBuffer(window[audioName]);
+                    audioBufferPlay.speedAudio = speedAudio;
 
                     document.getElementById("validInputModify").disabled = false;
                     document.getElementById("resetAudio").disabled = false;
@@ -1721,6 +1724,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
                 if(play) {
                     audioBufferPlay.setCompatibilityMode(Math.round(durationAudio));
+                    audioBufferPlay.speedAudio = speedAudio;
                     limiterProcessor.connect(offlineContext.destination);
                     audioBufferPlay.start();
 
@@ -2085,7 +2089,11 @@ function launchPause() {
 // Function called when the "Save" button is pressed
 function launchSave() {
     if(!audioProcessing && typeof(audio_principal_processed) !== "undefined" && audio_principal_processed != null && !compaAudioAPI) {
-        saveBuffer(audio_principal_processed);
+        if(speedAudio != 1) {
+            validModify(false, true);
+        } else {
+            saveBuffer(audio_principal_processed);
+        }
     } else if(compaAudioAPI) {
         launchStop();
         renderAudioAPI(audioBuffers.principal, speedAudio, pitchAudio, reverbAudio, true, true, "audio_principal_processed", compaAudioAPI, vocoderAudio, lowpassAudio, highpassAudio, bassboostAudio, phoneAudio, returnAudio, echoAudio, bitCrusherAudio, limiterAudio);
