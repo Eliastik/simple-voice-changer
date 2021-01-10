@@ -84,7 +84,8 @@ var recorderVoice = new VoiceRecorder(); // Create a VoiceRecorder
 var sliderPlayAudio = new Slider("#playAudioRange"); // Slider used to control the time in the audio BufferPlayer
 var audioBufferPlay = new BufferPlayer(null); // Create a BufferPlayer
 
-var compaModeStop = function() { return false }; // Function called when the audio playing is stopped
+var compaModeStop = function() { return false; }; // Function called when the audio playing is stopped
+var compaModeSaveStop = function() { return false; };
 
 // Filter settings
 // Bass boost settings
@@ -1729,10 +1730,11 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     limiterProcessor.connect(offlineContext.destination);
                     audioBufferPlay.start();
 
-                    compaModeStop = function() {
+                    compaModeStop = function(stopSave) {
                         try {
                             limiterProcessor.disconnect();
                             audioBufferPlay.stop();
+                            if(stopSave) compaModeSaveStop();
                             return true;
                         } catch(e) {
                             return false;
@@ -1740,7 +1742,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     };
 
                     function loopAudio() {
-                        compaModeStop();
+                        compaModeStop(true);
 
                         if(compaAudioAPI && play && document.getElementById("checkLoopPlay").checked) {
                             launchPlay();
@@ -1756,7 +1758,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                         rec.record();
 
                         function onSaveFinished() {
-                            compaModeStop();
+                            compaModeStop(false);
                             audioBufferPlay.setOnPlayingFinished(null);
                             audioBufferPlay.stop();
                             document.getElementById("validInputModify").disabled = false;
@@ -1779,7 +1781,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                             }
                         });
 
-                        document.getElementById("cancelSaveCompaMode").onclick = function() {
+                        compaModeSaveStop = function() {
                             try {
                                 rec.stop();
                                 onSaveFinished();
@@ -2075,7 +2077,7 @@ function launchPlay() {
 // Function called when the "Stop" button is pressed
 function launchStop() {
     audioBufferPlay.reset();
-    compaModeStop();
+    compaModeStop(true);
     checkButtonPlayAudioBuffer();
 }
 
@@ -2429,6 +2431,7 @@ document.getElementById("validateDelayValues").addEventListener("click", validat
 document.getElementById("resetDelayValues").addEventListener("click", resetDelayValues);
 document.getElementById("validReverbSettings").addEventListener("click", validateReverbValues);
 document.getElementById("resetReverbSettings").addEventListener("click", resetReverbValues);
+document.getElementById("cancelSaveCompaMode").addEventListener("click", () => { compaModeSaveStop(); });
 
 // Updater
 // Begin check for updates
@@ -2540,5 +2543,6 @@ if("serviceWorker" in navigator) {
 
 window.onbeforeunload = function() {
     launchPause();
+    recordPause();
     return i18next.t("script.appClosing");
 };
