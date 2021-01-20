@@ -162,4 +162,20 @@ export default class BufferPlayer {
     updateInfos() {
         if(this.onUpdate) this.onUpdate();
     }
+
+    get currentTimeDisplay() {
+        return ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
+    }
+
+    get maxTimeDisplay() {
+        return ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
+    }
+
+    get percent() {
+        return (100 - Math.round((this.duration - this.displayTime) / this.duration * 100));
+    }
+
+    get remainingTimeDisplay() {
+        return ("0" + Math.trunc((this.duration - this.displayTime) / 60)).slice(-2) + ":" + ("0" + Math.trunc((this.duration - this.displayTime) % 60)).slice(-2);
+    }
 }
