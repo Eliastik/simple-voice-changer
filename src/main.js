@@ -32,8 +32,8 @@ import "./Shim";
 // App infos
 const filesDownloadName = "simple_voice_changer";
 const audioArray = [impulse_response_default_lite, modulator_mp3]; // audio to be loaded when launching the app
-const app_version = "1.3.0.1";
-const app_version_date = "03/09/2020";
+const app_version = "1.4";
+const app_version_date = "1/21/2021";
 const updater_uri = "https://www.eliastiksofts.com/simple-voice-changer/update.php";
 // End of app infos
 
@@ -229,7 +229,7 @@ const delayOptions = {
 // Impulses responses settings
 const audioImpulseResponses = {
     current: 1,
-    nbResponses: 13,
+    nbResponses: 18,
     loading: false,
     1: {
         title: "Medium Damping Cave E002 M2S",
@@ -334,6 +334,46 @@ const audioImpulseResponses = {
         size: 5760056,
         buffer: null,
         link: "https://openairlib.net/?page_id=525",
+        addDuration: 5
+    },
+    14: {
+        title: "Hamilton Mausoleum",
+        file: "assets/sounds/impulse_response_14.wav",
+        size: 4320044,
+        buffer: null,
+        link: "https://www.openair.hosted.york.ac.uk/?page_id=502",
+        addDuration: 15
+    },
+    15: {
+        title: "Lady Chapel – St Albans Cathedral",
+        file: "assets/sounds/impulse_response_15.wav",
+        size: 1587706,
+        buffer: null,
+        link: "https://www.openair.hosted.york.ac.uk/?page_id=595",
+        addDuration: 6
+    },
+    16: {
+        title: "Sports Centre – University of York",
+        file: "assets/sounds/impulse_response_16.wav",
+        size: 5644996,
+        buffer: null,
+        link: "https://www.openair.hosted.york.ac.uk/?page_id=665",
+        addDuration: 10
+    },
+    17: {
+        title: "Elveden Hall  – Suffolk England",
+        file: "assets/sounds/impulse_response_17.wav",
+        size: 1416536,
+        buffer: null,
+        link: "https://www.openair.hosted.york.ac.uk/?page_id=459",
+        addDuration: 9
+    },
+    18: {
+        title: "York Guildhall Council Chamber",
+        file: "assets/sounds/impulse_response_18.wav",
+        size: 5760044,
+        buffer: null,
+        link: "https://www.openair.hosted.york.ac.uk/?page_id=790",
         addDuration: 5
     }
 };

@@ -61,7 +61,7 @@ export default class VoiceRecorder {
             this.alreadyInit = true;
             this.timer = new TimerSaveTime("timeRecord", null, 0, 1);
             this.successCallback();
-        }).catch(this.errorCallback);
+        }).catch(e => this.errorCallback(e));
 
         navigator.mediaDevices.ondevicechange = () => this.updateInputList();
     }

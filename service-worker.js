@@ -17,7 +17,7 @@
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
 const CACHE_BASENAME = 'simple-voice-changer';
-const CACHE_VER = '-v1.3.0.1';
+const CACHE_VER = '-v1.4.0';
 const CACHE = CACHE_BASENAME + CACHE_VER;
 
 const CACHE_URLS = [
@@ -49,9 +49,7 @@ const CACHE_URLS = [
   "assets/img/icon_192.png",
   "assets/img/icon_512.png",
   "assets/img/favicon.png",
-  "dist/SimpleVoiceChanger.js",
-  "assets/sounds/impulse_response.wav",
-  "assets/sounds/modulator.mp3"
+  "dist/SimpleVoiceChanger.js"
 ];
 
 self.addEventListener('install', event => {

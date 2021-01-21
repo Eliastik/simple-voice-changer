@@ -13,7 +13,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 1.3.0.1 (3/9/2020)
+* Version: 1.4 (01/21/2021)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -31,6 +31,20 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses [an icon](https://www.flaticon.com/free-icon/microphone_204320) by [Prosymbols](https://www.flaticon.com/authors/prosymbols) from [www.flaticon.com](https://www.flaticon.com/) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/) license
 
 ## Changelog
+
+* Version 1.4 (21/01/2021) :
+    - Improved audio recorder: it's now possible to choose the input device, and change some settings (automatic gain, echo cancellation, noise cancellation, etc.)
+    - Better support of audio speed change: the audio player speeds up, previously the audio duration was increased which caused problems when the speed was changed again
+    - Settings aren't reseted when changing audio file/recording
+    - It's now possible to record audio with the offline version when the compatibility mode is disabled
+    - The essential audio files are integrated within the JavaScript file of the application, which allows the Vocoder and the reverb function to work with the version in offline mode
+    - A lighter version of the first reverb environment is loaded when the application is launched, which improves performance
+    - Added new environments for the reverb function
+    - Bug fixes and other adjustments
+    - Technical improvements:
+        - Use of Webpack and Babel, use of npm to manage dependencies
+        - Conversion to ES6
+        - Use of the latest versions of dependencies
 
 * Version 1.3.0.1 (3/9/2020) :
     - Small fix of the limiter: the same gain reduction is applied to all audio channels at the same time, this improves the sound quality. The default release time has been increased to 3.
@@ -101,7 +115,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 1.3.0.1 (09/03/2020)
+* Version du programme : 1.4 (21/01/2021)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -119,6 +133,20 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
 
 ## Journal des changements
+
+* Version 1.4 (21/01/2021) :
+    - Amélioration de l'enregistreur audio : il est possible de choisir le périphérique d'entrée, et de modifier certains paramètres (gain automatique, annulation d'écho, suppression de bruit, etc.)
+    - Meilleure prise en charge de la modification de la vitesse audio : le lecteur audio accélère, auparavant la durée de l'audio était augmentée ce qui engendrait des problèmes lorsque la vitesse était modifiée à nouveau
+    - Les paramètres ne sont pas réinitialisés lors du changement de fichier audio/enregistrement
+    - Il est désormais possible d'enregistrer l'audio avec la version en mode hors ligne lorsque le mode de compatibilité est désactivé
+    - Les fichiers audio essentiels sont intégrés au sein du fichier JavaScript de l'application, ce qui permet au Vocoder et à la fonction réverbération de fonctionner avec la version en mode hors ligne
+    - Une version plus légère du premier environnement de réverbération est chargée au lancement de l'application, ce qui améliore les performances
+    - Ajout de nouveaux environnements pour la fonction réverbération
+    - Correction de bugs et autres ajustements
+    - Amélioration techniques :
+        - Utilisation de Webpack et Babel, utilisation de npm pour gérer les dépendances
+        - Conversion en ES6
+        - Utilisation des dernières versions des dépendances
 
 * Version 1.3.0.1 (09/03/2020) :
     - Petite correction du limiteur : la même réduction de gain est effectuée sur tous les canaux audio en même temps, cela améliore la qualité sonore. De plus, le temps de release a été augmenté à 3 par défaut.
@@ -182,10 +210,13 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ### À faire :
 
-- [ ] ES6 + babel ?
+- [ ] Transformer l'application en classe réutilisable (permet le point suivant)
+- [ ] Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
+- [ ] Possibilité de modifier le volume/gain
+- [ ] Possibilité d'importer ses propres convolvers audio
 - [ ] Visualisation audio graphique
 - [ ] (Ajouter encore d'autres effets - autotune essayé)
-- [ ] Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
+- [x] ES6 + babel ?
 - [x] Choix du micro pour l'enregistrement
 - [x] Case à cocher permettant de désactiver la gestion automatique du gain lors de l'enregistrement avec le micro
 - [x] (Corrigé) Problème sur Microsoft Edge : la sauvegarde ne fonctionne pas (aucun téléchargement/enregistrement ne fonctionne)
@@ -196,7 +227,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## Déclaration de licence
 
-Copyright (C) 2019 Eliastik (eliastiksofts.com)
+Copyright (C) 2019-2021 Eliastik (eliastiksofts.com)
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes de la GNU General Public License telle que publiée par la Free Software Foundation ; soit la version 3 de la licence, soit (à votre gré) toute version ultérieure.
 
@@ -206,7 +237,7 @@ Vous devez avoir reçu une copie de la GNU General Public License en même temps
 
 ----
 
-Copyright (C) 2019 Eliastik (eliastiksofts.com)
+Copyright (C) 2019-2021 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
