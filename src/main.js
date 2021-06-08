@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with "Simple Voice Changer".  If not, see <http://www.gnu.org/licenses/>.
  */
+import regeneratorRuntime from "regenerator-runtime";
 import Slider from "bootstrap-slider";
 import * as soundtouch from "soundtouchjs";
 import i18next from "i18next";
@@ -28,6 +29,8 @@ import impulse_response_default_lite from "../assets/sounds/impulse_response.mp3
 import BufferPlayer from "./BufferPlayer";
 import VoiceRecorder from "./VoiceRecorder";
 import "./Shim";
+import createSoundTouchNode from "soundtouchjs-audio-worklet";
+const soundtouchWorklet = "soundtouch-worklet.js";
 
 // App infos
 const filesDownloadName = "simple_voice_changer";
@@ -44,29 +47,69 @@ let speedAudio = 1;
 let pitchAudio = 1;
 reverbAudio = echoAudio = compaAudioAPI = vocoderAudio = bitCrusherAudio = lowpassAudio = highpassAudio = bassboostAudio = phoneAudio = returnAudio = compatModeChecked = audioContextNotSupported = audioProcessing = removedTooltipInfo = false;
 let limiterAudio = true;
+let workletMode = false; // Enable or disable the usage of AudioWorklet
 let processing_context = null;
 // End of the default values
 
-// Check compatibility with Web Audio API
-if('AudioContext' in window) {
-    try {
-        let AudioContext = window.AudioContext || window.webkitAudioContext;
-        context = new AudioContext();
-    } catch(e) {
-        if(typeof(window.console.error) !== "undefined") {
-            console.error(i18next.t("script.errorAudioContext"), e);
-        } else {
-            console.log(i18next.t("script.errorAudioContext"), e);
-        }
+setupContext();
 
-        audioContextNotSupported = true;
-    }
-} else {
-    audioContextNotSupported = true;
+if(workletMode) {
+    enableCompaMode();
 }
 
 // Polyfill navigator.getUserMedia
 navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null);
+
+// Setup context
+function getContext() {
+    const Context = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new Context();
+
+    if(workletMode) {
+        try {
+            audioCtx.audioWorklet.addModule("dist/" + soundtouchWorklet);
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
+    return audioCtx;
+}
+
+function setupContext() {
+    // Check compatibility with Web Audio API
+    if('AudioContext' in window) {
+        try {
+            context = getContext();
+        } catch(e) {
+            if(typeof(window.console.error) !== "undefined") {
+                console.error(i18next.t("script.errorAudioContext"), e);
+            } else {
+                console.log(i18next.t("script.errorAudioContext"), e);
+            }
+    
+            audioContextNotSupported = true;
+        }
+    } else {
+        audioContextNotSupported = true;
+    }
+}
+
+// Return the current context according to the current mode (compatibility mode or standard mode)
+async function getCurrentContext(durationAudio, comp) {
+    const OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    let ctx = context;
+
+    if(!comp && OfflineContext) {
+        ctx = new OfflineContext(2, context.sampleRate * durationAudio, context.sampleRate);
+
+        if(workletMode) {
+            await ctx.audioWorklet.addModule("dist/" + soundtouchWorklet);
+        }
+    }
+    
+    return ctx;
+}
 
 // Create the sliders (pitch/speed)
 const slider = new Slider("#pitchRange", {
@@ -84,6 +127,7 @@ const slider2 = new Slider("#speedRange", {
 
 // Global buffers
 const audioBuffers = {
+    principalRaw: null,
     principal: null,
     returned: null,
     vocoded: null,
@@ -94,12 +138,29 @@ const audioBuffers = {
 // End of global buffers
 
 // Create Soundtouch objects
-const st = new soundtouch.SoundTouch(44100);
-const soundtouchFilter = new soundtouch.SimpleFilter();
-let soundtouchNode = null;
-st.pitch = 1.0;
-st.tempo = 1.0;
-st.rate = 1.0;
+let st, soundtouchNode, soundtouchFilter = null;
+
+async function setupSoundtouch(ctx, buffer) {
+    if(workletMode) {
+        if(st) {
+            st.off();
+        }
+        
+        st = createSoundTouchNode(ctx, AudioWorkletNode, buffer);
+    
+        return new Promise((resolve) => {
+            st.on("initialized", () => resolve());
+        });
+    } else {
+        st = new soundtouch.SoundTouch(44100);
+        soundtouchFilter = new soundtouch.SimpleFilter();
+        soundtouchNode = null;
+        st.pitch = 1.0;
+        st.tempo = 1.0;
+        st.rate = 1.0;
+        return true;
+    }
+}
 // End of Create Soundtouch objects
 
 const limiter = new Limiter(); // Create an audio limiter
@@ -488,9 +549,11 @@ document.getElementById("inputFile").addEventListener("change", function() {
     const reader = new FileReader();
 
     reader.onload = ev => {
+        const rawBuffer = ev.target.result;
+        audioBuffers.principalRaw = rawBuffer;
         context.resume();
 
-        context.decodeAudioData(ev.target.result, buffer => {
+        context.decodeAudioData(rawBuffer, buffer => {
             loadPrincipalBuffer(buffer);
         }, () => { // Error
             document.getElementById("errorLoadingSelectFile").style.display = "block";
@@ -993,25 +1056,23 @@ function calcBufferPlayerTime() {
     }
 }
 
-// Return the current context according to the current mode (compatibility mode or standard mode)
-function getCurrentContext(durationAudio, comp) {
-    if(!comp && typeof(window.OfflineAudioContext) !== "undefined") {
-        return new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
-    } else if(!comp && typeof(window.webkitOfflineAudioContext) !== "undefined") {
-        return new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
-    } else {
-        return context;
-    }
-}
-
 // Reset the Soundtouch filter
 function resetFilter(sourceSound, pipe) {
-    soundtouchFilter._pipe = pipe;
-    soundtouchFilter.sourceSound = sourceSound;
-    soundtouchFilter.historyBufferSize = 22050;
-    soundtouchFilter._sourcePosition = 0;
-    soundtouchFilter.outputBufferPosition = 0;
-    soundtouchFilter._position = 0;
+    if(workletMode) {
+        soundtouch._pipe = pipe;
+        soundtouch.sourceSound = sourceSound;
+        soundtouch.historyBufferSize = 22050;
+        soundtouch._sourcePosition = 0;
+        soundtouch.outputBufferPosition = 0;
+        soundtouch._position = 0;
+    } else {
+        soundtouchFilter._pipe = pipe;
+        soundtouchFilter.sourceSound = sourceSound;
+        soundtouchFilter.historyBufferSize = 22050;
+        soundtouchFilter._sourcePosition = 0;
+        soundtouchFilter.outputBufferPosition = 0;
+        soundtouchFilter._position = 0;
+    }
 }
 
 // Connect the Audio API nodes according to the settings
@@ -1042,12 +1103,26 @@ function connectNodes(offlineContext, speed, pitch, reverb, comp, lowpass, highp
         }
 
         // Soundtouch settings
+        let node;
+
         st.pitch = pitch;
         st.tempo = speed;
         st.rate = rate;
-        soundtouchNode = soundtouch.getWebAudioNode(offlineContext, soundtouchFilter);
-        soundtouchFilter.callback = () => soundtouchNode.disconnect();
-        let node = soundtouchNode;
+
+        if(workletMode) {
+            soundtouchNode = st.connectToBuffer();
+
+            st.on("end", () => {
+                st.disconnect();
+                st.disconnectFromBuffer();
+            });
+
+            node = st;
+        } else {
+            soundtouchNode = soundtouch.getWebAudioNode(offlineContext, soundtouchFilter);
+            soundtouchFilter.callback = () => soundtouchNode.disconnect();
+            node = soundtouchNode;
+        }
         // End of Soundtouch settings
 
         // Disconnect all previous nodes
@@ -1257,7 +1332,7 @@ function calcAudioDuration(audio, speed, pitch, reverb, vocode, echo) {
 // Render the audio according to the settings
 // Core function of the app
 // Use the connectNodes function to do the effective Audio API nodes connection
-function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, highpass, bassboost, phone, returnAudioParam, echo, bitCrush, enableLimiter, rate, BUFFER_SIZE) {
+async function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp, vocode, lowpass, highpass, bassboost, phone, returnAudioParam, echo, bitCrush, enableLimiter, rate, BUFFER_SIZE) {
     // Default parameters
     save = save == undefined ? false : save; // Save the audio buffer under a wav file
     play = play == undefined ? false : play; // Play the audio
@@ -1268,8 +1343,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
     if('AudioContext' in window && !audioContextNotSupported && !audioProcessing) {
         const durationAudio = calcAudioDuration(audio, speed, pitch, reverb, vocode, echo);
 
-        const offlineContext = getCurrentContext(durationAudio, comp);
-        processing_context = offlineContext;
+        processing_context = await getCurrentContext(durationAudio, comp);
 
         if(typeof(window.OfflineAudioContext) === "undefined" && typeof(window.webkitOfflineAudioContext) === "undefined") {
             enableCompaMode();
@@ -1284,29 +1358,42 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
         document.getElementById("resetAudio").disabled = true;
         audioProcessing = true;
 
-        function renderAudio(buffer) {
+        async function prepareSoundtouch(buffer) {
+            await setupSoundtouch(processing_context, buffer);
+            renderAudio(buffer);
+        }
+
+        async function renderAudio(buffer) {
             audioBuffers.processed = buffer;
 
-            st.clear();
-            resetFilter(new soundtouch.WebAudioBufferSource(audioBuffers.processed), st);
+            if(workletMode) {
+                await st.stop();
+            } else {
+                st.clear();
+                resetFilter(new soundtouch.WebAudioBufferSource(audioBuffers.processed), st);
+            }
 
             if(limiterProcessor != null) {
                 limiterProcessor.onaudioprocess = null;
                 limiterProcessor.disconnect();
             }
 
-            limiterProcessor = offlineContext.createScriptProcessor(BUFFER_SIZE, audioBuffers.processed.numberOfChannels, audioBuffers.processed.numberOfChannels);
+            limiterProcessor = processing_context.createScriptProcessor(BUFFER_SIZE, audioBuffers.processed.numberOfChannels, audioBuffers.processed.numberOfChannels);
             
-            gainNode = offlineContext.createGain();
-            gainNode.gain.setValueAtTime(0.001, offlineContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(1.0, offlineContext.currentTime + 0.2);
+            gainNode = processing_context.createGain();
+            gainNode.gain.setValueAtTime(0.001, processing_context.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(1.0, processing_context.currentTime + 0.2);
 
-            validConnectNodes(BUFFER_SIZE);
+            await validConnectNodes(BUFFER_SIZE);
+
+            if(workletMode) {
+                st.play();
+            }
 
             if(!comp) { // Standard mode
-                limiterProcessor.connect(offlineContext.destination);
+                limiterProcessor.connect(processing_context.destination);
 
-                offlineContext.oncomplete = e => {
+                processing_context.oncomplete = e => {
                     window[audioName] = e.renderedBuffer;
                     audioBufferPlay.setOnPlayingFinished(null);
                     audioBufferPlay.speedAudio = speedAudio;
@@ -1337,7 +1424,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     }
                 };
 
-                offlineContext.startRendering();
+                processing_context.startRendering();
             } else { // Compatibility mode
                 if(!save) {
                     document.getElementById("validInputModify").disabled = false;
@@ -1355,7 +1442,7 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                 if(play) {
                     audioBufferPlay.speedAudio = speedAudio;
                     audioBufferPlay.setCompatibilityMode(Math.round(durationAudio));
-                    limiterProcessor.connect(offlineContext.destination);
+                    limiterProcessor.connect(processing_context.destination);
                     audioBufferPlay.start();
 
                     compaModeStop = stopSave => {
@@ -1433,12 +1520,12 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
 
         // Vocoder filter
         if(vocode && audioBuffers.modulator != null && (typeof(window.OfflineAudioContext) !== "undefined" || typeof(window.webkitOfflineAudioContext) !== "undefined")) {
-            let offlineContext2;
+            let processing_context2;
 
             if(typeof(window.OfflineAudioContext) !== "undefined") {
-                offlineContext2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+                processing_context2 = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
             } else if(typeof(window.webkitOfflineAudioContext) !== "undefined") {
-                offlineContext2 = new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
+                processing_context2 = new webkitOfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
             }
 
             if((!returnAudioParam && audioBuffers.vocoded == null) || (returnAudioParam && audioBuffers.returnedVocoded == null)) {
@@ -1447,14 +1534,14 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     document.getElementById("stopAudio").disabled = true;
                 }
 
-                offlineContext2.oncomplete = e => {
+                processing_context2.oncomplete = e => {
                     if(returnAudioParam) {
                         audioBuffers.returnedVocoded = e.renderedBuffer;
                     } else {
                         audioBuffers.vocoded = e.renderedBuffer;
                     }
 
-                    renderAudio(e.renderedBuffer);
+                    prepareSoundtouch(e.renderedBuffer);
     
                     if(comp) {
                         document.getElementById("playAudio").disabled = false;
@@ -1462,17 +1549,17 @@ function renderAudioAPI(audio, speed, pitch, reverb, save, play, audioName, comp
                     }
                 };
     
-                vocoder(offlineContext2, audioBuffers.modulator, audio);
-                offlineContext2.startRendering();
+                vocoder(processing_context2, audioBuffers.modulator, audio);
+                processing_context2.startRendering();
             } else {
                 if(returnAudioParam) {
-                    renderAudio(audioBuffers.returnedVocoded);
+                    prepareSoundtouch(audioBuffers.returnedVocoded);
                 } else {
-                    renderAudio(audioBuffers.vocoded);
+                    prepareSoundtouch(audioBuffers.vocoded);
                 }
             }
         } else {
-            renderAudio(audio);
+            prepareSoundtouch(audio);
         }
     } else if(!audioProcessing) { // Error (Audio API not supported)
         if(typeof(window.console.error) !== 'undefined') console.error(i18next.t("script.webAudioNotSupported"));
@@ -1759,6 +1846,7 @@ function launchReset() {
 
 function resetBuffers() {
     audioBuffers.principal = null;
+    audioBuffers.principalRaw = null;
     audioBuffers.returned = null;
     audioBuffers.vocoded = null;
     audioBuffers.returnedVocoded = null;

@@ -210,6 +210,8 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ### À faire :
 
+- [ ] Utiliser Audio Worklet -> permet de corriger de nombreux soucis
+- [ ] Afficher temps restant quand mode de compatibilité désactivé
 - [ ] Transformer l'application en classe réutilisable (permet le point suivant)
 - [ ] Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
 - [ ] Possibilité de modifier le volume/gain

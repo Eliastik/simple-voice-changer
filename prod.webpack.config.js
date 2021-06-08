@@ -17,20 +17,26 @@ const config = {
     rules: [
       {
         test: /\.m?js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env"],
-            plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-transform-runtime"]
+        exclude: /(node_modules)|\.worklet\.js$/,
+        use: { loader: "babel-loader" }
+      },
+      {
+        test: /\-worklet\.js$/,
+        use: [
+          {
+            loader: "worklet-loader",
+            options: {
+              inline: false,
+              publicPath: "dist/"
+            }
           }
-        }
+        ]
       },
       {
         test: /\.(png|jpg|gif|wav|mp3)$/i,
         use: [
           {
-            loader: 'url-loader'
+            loader: "url-loader"
           },
         ],
       }
