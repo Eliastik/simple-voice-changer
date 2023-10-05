@@ -1,6 +1,6 @@
 import AbstractAudioFilter from "../AbstractAudioFilter";
 
-export default class BassBooster extends AbstractAudioFilter {
+export default class BassBoosterFilter extends AbstractAudioFilter {
     frequencyBooster = 200;
     frequencyReduce = 200;
     dbBooster = 15;
@@ -14,11 +14,7 @@ export default class BassBooster extends AbstractAudioFilter {
         this.dbReduce = dbReduce;
     }
 
-    render(): JSX.Element {
-        throw new Error("Method not implemented.");
-    }
-
-    getNode(context: AudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext): AudioFilterNodes {
         const bassBoostFilter = context.createBiquadFilter();
         bassBoostFilter.type = "lowshelf";
         bassBoostFilter.frequency.value = this.frequencyBooster;
@@ -31,8 +27,16 @@ export default class BassBooster extends AbstractAudioFilter {
         bassBoostFilterHighFreq.connect(bassBoostFilter);
 
         return {
-            input: bassBoostFilter,
-            output: bassBoostFilterHighFreq
+            input: bassBoostFilterHighFreq,
+            output: bassBoostFilter
         };
+    }
+    
+    getOrder(): number {
+        return 3;
+    }
+
+    isEnabled(): boolean {
+        return true;
     }
 }

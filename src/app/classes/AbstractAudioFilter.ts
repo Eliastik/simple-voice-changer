@@ -1,4 +1,5 @@
-export default abstract class AbstractAudioFilter {
-    abstract render(): JSX.Element;
-    abstract getNode(context: AudioContext): AudioFilterNodes;
+import AbstractAudioElement from "./AbstractAudioElement";
+
+export default abstract class AbstractAudioFilter extends AbstractAudioElement {
+    abstract getNode(context: BaseAudioContext): AudioFilterNodes;
 }

@@ -22,7 +22,7 @@
 import AbstractAudioFilter from "../AbstractAudioFilter";
 import DelayBuffer from "../utils/DelayBuffer";
 
-export default class Limiter extends AbstractAudioFilter {
+export default class LimiterFilter extends AbstractAudioFilter {
     sampleRate = 44100; // Hz
     preGain = 0; // dB
     postGain = 0; // dB
@@ -144,13 +144,9 @@ export default class Limiter extends AbstractAudioFilter {
         }
     }
 
-    render(): JSX.Element {
-        throw new Error("Method not implemented.");
-    }
-
-    getNode(context: AudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext): AudioFilterNodes {
         const limiterProcessor = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
-        limiterProcessor.onaudioprocess = e => this.limit;
+        limiterProcessor.onaudioprocess = e => this.limit(e);
         
         return {
             input: limiterProcessor,
@@ -166,5 +162,13 @@ export default class Limiter extends AbstractAudioFilter {
         }
 
         this.envelopeSample = 0;
+    }
+    
+    getOrder(): number {
+        return 10;
+    }
+
+    isEnabled(): boolean {
+        return true;
     }
 }

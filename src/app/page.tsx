@@ -1,6 +1,6 @@
 "use client";
 
-import MainComponent from "./components/mainComponent";
+import MainComponent from "./components/MainComponent";
 
 const Home = () => {
   return (

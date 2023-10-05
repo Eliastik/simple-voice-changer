@@ -1,18 +1,14 @@
 import AbstractAudioFilter from "../AbstractAudioFilter";
 
-export default class LowPass extends AbstractAudioFilter {
+export default class LowPassFilter extends AbstractAudioFilter {
     lowFrequency = 3500;
 
     constructor(lowFrequency: number) {
         super();
         this.lowFrequency = lowFrequency;
     }
-
-    render(): JSX.Element {
-        throw new Error("Method not implemented.");
-    }
-
-    getNode(context: AudioContext): AudioFilterNodes {
+    
+    getNode(context: BaseAudioContext): AudioFilterNodes {
         const lowPassFilter = context.createBiquadFilter();
         lowPassFilter.type = "lowpass";
         lowPassFilter.frequency.value = this.lowFrequency;
@@ -21,5 +17,9 @@ export default class LowPass extends AbstractAudioFilter {
             input: lowPassFilter,
             output: lowPassFilter
         };
+    }
+    
+    getOrder(): number {
+        return 5;
     }
 }

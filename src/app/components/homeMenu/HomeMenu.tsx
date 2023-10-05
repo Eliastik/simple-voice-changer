@@ -1,16 +1,15 @@
 "use client";
 
+import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import { useRef } from "react";
-import { setBlob } from "../../slices/loadAudio";
-import { useDispatch, connect } from "react-redux";
 
 const HomeMenu = () => {
     const inputFile = useRef<HTMLInputElement | null>(null);
-    const dispatch = useDispatch();
+    const { loadAudioPrincipalBuffer } = useAudioEditor();
 
     return (
         <div className="flex justify-center items-center flex-grow gap-6 flex-col lg:flex-row">
-            <input type="file" id="file" ref={inputFile} style={{ display: "none" }} accept="audio/*" onChange={(e) => dispatch(setBlob(URL.createObjectURL(e.target.files![0])))} />
+            <input type="file" id="file" ref={inputFile} style={{ display: "none" }} accept="audio/*" onChange={(e) => loadAudioPrincipalBuffer(e.target.files![0])} />
             <button className="btn flex-col w-48 h-64 gap-8" onClick={() => {
                 inputFile.current?.click();
             }}>
@@ -33,8 +32,4 @@ const HomeMenu = () => {
     );
 };
 
-const mapStateToProps = (state: any) => {
-    return {};
-};
-
-export default connect(mapStateToProps)(HomeMenu);
+export default HomeMenu;

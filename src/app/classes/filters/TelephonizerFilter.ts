@@ -1,12 +1,8 @@
 import AbstractFilter from "../AbstractAudioFilter";
 
-export default class BitCrusher extends AbstractFilter {
-    
-    render(): JSX.Element {
-        throw new Error("Method not implemented.");
-    }
+export default class BitCrusherFilter extends AbstractFilter {
 
-    getNode(context: AudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext): AudioFilterNodes {
         const lpf1 = context.createBiquadFilter();
         lpf1.type = "lowpass";
         lpf1.frequency.value = 2000.0;
@@ -27,5 +23,9 @@ export default class BitCrusher extends AbstractFilter {
             input: lpf1,
             output: hpf2
         };
+    }
+    
+    getOrder(): number {
+        return 7;
     }
 }

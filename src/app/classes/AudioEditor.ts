@@ -1,46 +1,127 @@
-import * as soundtouch from "soundtocuchjs";
+import AbstractAudioElement from "./AbstractAudioElement";
+import AbstractAudioFilter from "./AbstractAudioFilter";
+import AbstractAudioFilterEntrypoint from "./AbstractAudioFilterEntrypoint";
+import AbstractAudioRenderer from "./AbstractAudioRenderer";
+import BassBoosterFilter from "./filters/BassBoosterFilter";
+import BitCrusherFilter from "./filters/BitCrusherFilter";
+import EchoFilter from "./filters/EchoFilter";
+import HighPassFilter from "./filters/HighPassFilter";
+import LimiterFilter from "./filters/LimiterFilter";
+import LowPassFilter from "./filters/LowPassFilter";
+import ReturnAudioRenderer from "./filters/ReturnAudioRenderer";
+import ReverbFilter from "./filters/ReverbFilter";
+import SoundtouchWrapperFilter from "./filters/SountouchWrapperFilter";
+import TelephonizerFilter from "./filters/TelephonizerFilter";
+import VocoderRenderer from "./filters/VocoderRenderer";
+import utils from "./utils/Functions";
 
-class AudioEditor {
-    speed = 1;
-    pitch = 1;
-    reverb = false;
-    comp = false;
-    lowpass = false;
-    highpass = false;
-    bassboost = false;
-    phone = false;
-    returnAudioParam = false;
-    echo = false;
-    bitCrush = false;
-    enableLimiter = false;
-    rate = 1;
-    BUFFER_SIZE = 4096;
-    st = new soundtouch.SoundTouch(44100);
-    soundtouchFilter = new soundtouch.SimpleFilter();
-    soundtouchNode: any = null;
-    context: AudioContext | null = null;
+export default class AudioEditor extends AbstractAudioElement {
 
-    connectNodes() {
-        if('AudioContext' in window && this.context != null) {
-            let previousSountouchNode = this.soundtouchNode;
-            const buffer = audioBuffers.processed;
+    private currentContext = new AudioContext();
+
+    private entrypointFilter: AbstractAudioFilterEntrypoint | null = null;
+    private filters: AbstractAudioFilter[] = [];
+    private renderers: AbstractAudioRenderer[] = [];
+    private currentNode: AudioNode | undefined;
+
+    principalBuffer: AudioBuffer | null = null;
+    renderedBuffer: AudioBuffer | null = null;
+
+    constructor() {
+        super();
+        this.setupFilters();
+        this.setupRenderers();
+    }
+
+    setupFilters() {
+        const bassBooster = new BassBoosterFilter(200, 20, 200, 0);
+        const bitCrusher = new BitCrusherFilter(4096, 2, 8, 0.15);
+        const echo = new EchoFilter(0.2, 0.75);
+        const highPass = new HighPassFilter(3500);
+        const lowPass = new LowPassFilter(3500);
+        const reverb = new ReverbFilter(null); // Todo
+        const soundtouchWrapper = new SoundtouchWrapperFilter();
+        const limiterFilter = new LimiterFilter(44100, 0, 0, 0, 3, -0.05, 0.05, 4096, 2);
+        const telephonizerFilter = new TelephonizerFilter();
+
+        this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter);
+
+        this.entrypointFilter = soundtouchWrapper;
+    }
+
+    setupRenderers() {
+        const returnAudio = new ReturnAudioRenderer();
+        const vocoder = new VocoderRenderer(null); // Todo
+
+        this.renderers.push(returnAudio, vocoder);
+    }
+
+    private connectNodes(context: BaseAudioContext, buffer: AudioBuffer) {
+        let previousNode: AudioNode | undefined = this.entrypointFilter?.getNode(context, buffer).input;
+
+        for(const filter of this.filters.sort((a, b) => a.getOrder() - b.getOrder())) {
+            if(filter.isEnabled()) {
+                const node = filter.getNode(context);
+                console.log(node, previousNode);
     
-            // Soundtouch settings
-            this.st.pitch = this.pitch;
-            this.st.tempo = this.speed;
-            this.st.rate = this.rate;
-            this.soundtouchNode = soundtouch.getWebAudioNode(this.context, this.soundtouchFilter);
-            this.soundtouchFilter.callback = () => this.soundtouchNode?.disconnect();
-            let node = this.soundtouchNode;
-            // End of Soundtouch settings
+                if(previousNode) {
+                    previousNode.connect(node.input);
+                }
     
-            // Disconnect all previous nodes
-    
-            // Gain node
-            node.connect(gainNode);
-            node = gainNode;
-    
-            // Connect other nodes
+                previousNode = node.output;
+            }
         }
+
+        this.currentNode = previousNode;
+    }
+
+    async renderAudio(): Promise<void> {
+        this.currentContext.resume();
+
+        const durationAudio = utils.calcAudioDuration(this.principalBuffer!, 1, false, 1, false);
+        const offlineContext = new OfflineAudioContext(2, this.currentContext.sampleRate * durationAudio, this.currentContext.sampleRate);
+
+        let currentBuffer = this.principalBuffer!;
+
+        for(const renderer of this.renderers.sort((a,b ) => a.getOrder() - b.getOrder())) {
+            if(renderer.isEnabled()) {
+                currentBuffer = await renderer.renderAudio(offlineContext, currentBuffer);
+            }
+        }
+
+        this.connectNodes(offlineContext, currentBuffer);
+            
+        const gainNode = offlineContext.createGain();
+        gainNode.gain.setValueAtTime(0.001, offlineContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(1.0, offlineContext.currentTime + 0.2);
+        
+        this.currentNode!.connect(offlineContext.destination);
+
+        this.renderedBuffer = await offlineContext.startRendering();
+        /*audioBufferPlay.setOnPlayingFinished(null);
+        audioBufferPlay.speedAudio = speedAudio;
+        audioBufferPlay.loadBuffer(window[audioName]);*/
+
+        /*if(!compatModeChecked) {
+            const sum = e.renderedBuffer.getChannelData(0).reduce(add, 0);
+
+            if(sum == 0) {
+                enableCompaMode();
+            }
+
+            compatModeChecked = true;
+        }*/
+        const source = this.currentContext.createBufferSource();
+        source.buffer = this.renderedBuffer;
+        source.connect(this.currentContext.destination);
+        source.start(0);
+    }
+
+    getOrder(): number {
+        return -1;
+    }
+
+    isEnabled(): boolean {
+        return true;
     }
 }

@@ -1,6 +1,6 @@
 import AbstractAudioFilter from "../AbstractAudioFilter";
 
-export default class Echo extends AbstractAudioFilter {
+export default class EchoFilter extends AbstractAudioFilter {
     delay = 0.2;
     gain = 0.75;
 
@@ -10,11 +10,7 @@ export default class Echo extends AbstractAudioFilter {
         this.gain = gain;
     }
 
-    render(): JSX.Element {
-        throw new Error("Method not implemented.");
-    }
-
-    getNode(context: AudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext): AudioFilterNodes {
         const delayNode = context.createDelay(179);
         delayNode.delayTime.value = this.delay;
 
@@ -28,5 +24,9 @@ export default class Echo extends AbstractAudioFilter {
             input: gainNode,
             output: delayNode
         };
+    }
+    
+    getOrder(): number {
+        return 7;
     }
 }

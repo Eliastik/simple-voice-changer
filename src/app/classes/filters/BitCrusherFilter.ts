@@ -1,6 +1,6 @@
 import AbstractAudioFilter from "../AbstractAudioFilter";
 
-export default class BitCrusher extends AbstractAudioFilter {
+export default class BitCrusherFilter extends AbstractAudioFilter {
     bufferSize = 4096;
     channels = 2;
     bits = 8;
@@ -14,11 +14,7 @@ export default class BitCrusher extends AbstractAudioFilter {
         this.normFreq = normFreq;
     }
 
-    render(): JSX.Element {
-        throw new Error("Method not implemented.");
-    }
-
-    getNode(context: AudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext): AudioFilterNodes {
         const bitCrusher = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
         let phaser = 0;
         let last = 0;
@@ -48,5 +44,13 @@ export default class BitCrusher extends AbstractAudioFilter {
             input: bitCrusher,
             output: bitCrusher
         };
+    }
+    
+    getOrder(): number {
+        return 6;
+    }
+
+    isEnabled(): boolean {
+        return false;
     }
 }
