@@ -1,7 +1,7 @@
-import AbstractAudioElement from "./AbstractAudioElement";
-import AbstractAudioFilter from "./AbstractAudioFilter";
-import AbstractAudioFilterEntrypoint from "./AbstractAudioFilterEntrypoint";
-import AbstractAudioRenderer from "./AbstractAudioRenderer";
+import AbstractAudioElement from "./model/AbstractAudioElement";
+import AbstractAudioFilter from "./model/AbstractAudioFilter";
+import AbstractAudioFilterEntrypoint from "./model/AbstractAudioFilterEntrypoint";
+import AbstractAudioRenderer from "./model/AbstractAudioRenderer";
 import BassBoosterFilter from "./filters/BassBoosterFilter";
 import BitCrusherFilter from "./filters/BitCrusherFilter";
 import EchoFilter from "./filters/EchoFilter";
@@ -114,7 +114,7 @@ export default class AudioEditor extends AbstractAudioElement {
         const source = this.currentContext.createBufferSource();
         source.buffer = this.renderedBuffer;
         source.connect(this.currentContext.destination);
-        source.start(0);
+        //source.start(0);
     }
 
     getOrder(): number {
@@ -123,5 +123,13 @@ export default class AudioEditor extends AbstractAudioElement {
 
     isEnabled(): boolean {
         return true;
+    }
+
+    getId(): string {
+        return "audioEditor";
+    }
+
+    getFiltersState() {
+        const state = [];
     }
 }

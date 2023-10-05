@@ -1,4 +1,4 @@
-import AbstractAudioRenderer from "../AbstractAudioRenderer";
+import AbstractAudioRenderer from "../model/AbstractAudioRenderer";
 
 export default class ReturnAudioRenderer extends AbstractAudioRenderer {
     renderAudio(context: BaseAudioContext, buffer: AudioBuffer): Promise<AudioBuffer> {
@@ -21,5 +21,9 @@ export default class ReturnAudioRenderer extends AbstractAudioRenderer {
     
     getOrder(): number {
         return 0;
+    }
+
+    getId(): string {
+        return "returnaudio";
     }
 }

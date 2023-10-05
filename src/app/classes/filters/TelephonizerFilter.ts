@@ -1,4 +1,4 @@
-import AbstractFilter from "../AbstractAudioFilter";
+import AbstractFilter from "../model/AbstractAudioFilter";
 
 export default class BitCrusherFilter extends AbstractFilter {
 
@@ -27,5 +27,9 @@ export default class BitCrusherFilter extends AbstractFilter {
     
     getOrder(): number {
         return 7;
+    }
+
+    getId(): string {
+        return "telephonizer";
     }
 }

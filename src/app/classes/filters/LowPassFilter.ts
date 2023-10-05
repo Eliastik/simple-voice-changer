@@ -1,4 +1,4 @@
-import AbstractAudioFilter from "../AbstractAudioFilter";
+import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
 export default class LowPassFilter extends AbstractAudioFilter {
     lowFrequency = 3500;
@@ -21,5 +21,9 @@ export default class LowPassFilter extends AbstractAudioFilter {
     
     getOrder(): number {
         return 5;
+    }
+
+    getId(): string {
+        return "lowpass";
     }
 }

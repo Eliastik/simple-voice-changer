@@ -1,4 +1,4 @@
-import AbstractAudioFilter from "../AbstractAudioFilter";
+import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
 export default class ReverbFilter extends AbstractAudioFilter {
     buffer: AudioBuffer | null = null;
@@ -20,5 +20,9 @@ export default class ReverbFilter extends AbstractAudioFilter {
     
     getOrder(): number {
         return 9;
+    }
+
+    getId(): string {
+        return "reverb";
     }
 }

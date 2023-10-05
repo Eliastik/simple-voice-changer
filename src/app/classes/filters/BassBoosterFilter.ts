@@ -1,4 +1,4 @@
-import AbstractAudioFilter from "../AbstractAudioFilter";
+import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
 export default class BassBoosterFilter extends AbstractAudioFilter {
     frequencyBooster = 200;
@@ -38,5 +38,9 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
 
     isEnabled(): boolean {
         return true;
+    }
+
+    getId(): string {
+        return "bassBooster";
     }
 }

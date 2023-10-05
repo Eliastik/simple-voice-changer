@@ -19,7 +19,7 @@
 // Source: https://webaudiotech.com/2016/01/21/should-your-web-audio-app-have-a-limiter/
 // Original code: https://webaudiotech.com/sites/limiter_comparison/limiter.js
 // Additions by Eliastik (eliastiksofts.com): Stereo and multi-channel support, code simplified in one object class (Limiter)
-import AbstractAudioFilter from "../AbstractAudioFilter";
+import AbstractAudioFilter from "../model/AbstractAudioFilter";
 import DelayBuffer from "../utils/DelayBuffer";
 
 export default class LimiterFilter extends AbstractAudioFilter {
@@ -170,5 +170,9 @@ export default class LimiterFilter extends AbstractAudioFilter {
 
     isEnabled(): boolean {
         return true;
+    }
+
+    getId(): string {
+        return "limiter";
     }
 }

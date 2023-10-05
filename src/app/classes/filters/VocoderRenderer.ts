@@ -1,4 +1,4 @@
-import AbstractAudioRenderer from "../AbstractAudioRenderer";
+import AbstractAudioRenderer from "../model/AbstractAudioRenderer";
 import utils from "../utils/Functions";
 import vocoder from "../utils/Vocoder";
 
@@ -26,5 +26,9 @@ export default class VocoderRenderer extends AbstractAudioRenderer {
     
     getOrder(): number {
         return 1;
+    }
+
+    getId(): string {
+        return "vocoder";
     }
 }

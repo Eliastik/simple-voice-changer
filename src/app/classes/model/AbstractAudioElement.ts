@@ -15,4 +15,6 @@ export default abstract class AbstractAudioElement {
     disable() {
         this.enabled = false;
     }
+
+    abstract getId(): string;
 }

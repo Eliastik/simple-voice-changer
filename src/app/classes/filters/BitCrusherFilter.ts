@@ -1,4 +1,4 @@
-import AbstractAudioFilter from "../AbstractAudioFilter";
+import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
 export default class BitCrusherFilter extends AbstractAudioFilter {
     bufferSize = 4096;
@@ -52,5 +52,9 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
 
     isEnabled(): boolean {
         return false;
+    }
+
+    getId(): string {
+        return "bitcrusher";
     }
 }
