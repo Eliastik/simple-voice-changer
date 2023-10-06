@@ -10,6 +10,8 @@ interface AudioEditorContextProps {
   audioEditorReady: boolean,
   loadingPrincipalBuffer: boolean,
   audioProcessing: boolean
+  toggleFilter: (filterId: string) => void,
+  filterState: any
 }
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
@@ -31,6 +33,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [loadingPrincipalBuffer, setLoadingPrincipalBuffer] = useState(false);
   const [audioEditorReady, setAudioEditorReady] = useState(false);
   const [audioProcessing, setAudioProcessing] = useState(false);
+  const [filterState, setFilterState] = useState(audioEditorInstance.getFiltersState());
 
   const loadAudioPrincipalBuffer = async (file: File) => {
     setLoadingPrincipalBuffer(true);
@@ -46,8 +49,13 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setAudioProcessing(false);
   };
 
+  const toggleFilter = (filterId: string) => {
+    audioEditorInstance.toggleFilter(filterId);
+    setFilterState(audioEditorInstance.getFiltersState());
+  };
+
   return (
-    <AudioEditorContext.Provider value={{ audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing }}>
+    <AudioEditorContext.Provider value={{ audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState }}>
       {children}
     </AudioEditorContext.Provider>
   );

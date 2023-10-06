@@ -130,6 +130,32 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     getFiltersState() {
-        const state = [];
+        const state: any = {};
+
+        this.filters.forEach(filter => {
+            state[filter.getId()] = filter.isEnabled();
+        });
+
+        this.renderers.forEach(filter => {
+            state[filter.getId()] = filter.isEnabled();
+        });
+
+        console.log(state);
+
+        return state;
+    }
+
+    toggleFilter(filterId: string) {
+        const filter = this.filters.find(f => f.getId() === filterId);
+        const renderer = this.renderers.find(f => f.getId() === filterId);
+        console.log(filterId, filter, renderer);
+
+        if(filter) {
+            filter.toggle();
+        }
+
+        if(renderer) {
+            renderer.toggle();
+        }
     }
 }

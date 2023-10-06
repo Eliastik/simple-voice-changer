@@ -46,6 +46,7 @@ export default class LimiterFilter extends AbstractAudioFilter {
         this.lookAheadTime = lookAheadTime || this.lookAheadTime;
         this.bufferSize = bufferSize || this.bufferSize;
         this.channels = channels || this.channels;
+        this.enable();
     }
 
     getEnvelope(data: Float32Array, attackTime: number, releaseTime: number, sampleRate: number) {
@@ -166,10 +167,6 @@ export default class LimiterFilter extends AbstractAudioFilter {
     
     getOrder(): number {
         return 10;
-    }
-
-    isEnabled(): boolean {
-        return true;
     }
 
     getId(): string {

@@ -9,12 +9,12 @@ const FilterButton = ({
     enabled = true,
     hasSettings = true
 }: { filterId: string, filterName: string, filterIcon: JSX.Element, enabled: boolean, hasSettings: boolean }) => {
-    //const { enableFilter } = useAudioEditor();
+    const { toggleFilter } = useAudioEditor();
 
     return (
         <>
             <div className="join join-vertical w-36">
-                <button className={`btn flex-col w-full h-36 gap-8 rounded-b-none border-0 ${enabled ? "bg-blue-200 hover:bg-blue-300" : ""}`} /*onClick={() => enableFilter(filterId)}*/>
+                <button className={`btn flex-col w-full h-36 gap-8 rounded-b-none border-0 ${enabled ? "bg-blue-200 hover:bg-blue-300" : ""}`} onClick={() => toggleFilter(filterId)}>
                     <div>
                         {filterIcon}
                     </div>

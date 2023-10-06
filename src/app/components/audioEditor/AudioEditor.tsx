@@ -5,7 +5,7 @@ import FilterButton from "./FilterButton";
 import filters from "@/app/utils/filters";
 
 const AudioEditorMain = ({ }) => {
-  const { audioProcessing } = useAudioEditor();
+  const { audioProcessing, filterState } = useAudioEditor();
 
   return (
     <>
@@ -14,7 +14,7 @@ const AudioEditorMain = ({ }) => {
           {filters.map(filter => {
             return (
               <>
-                <FilterButton filterId={filter.filterId} filterName={filter.filterName} filterIcon={filter.filterIcon} enabled={false} hasSettings={filter.hasSettings}></FilterButton>
+                <FilterButton filterId={filter.filterId} filterName={filter.filterName} filterIcon={filter.filterIcon} enabled={filterState[filter.filterId]} hasSettings={filter.hasSettings}></FilterButton>
               </>
             )
           })}

@@ -36,11 +36,7 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
         return 3;
     }
 
-    isEnabled(): boolean {
-        return true;
-    }
-
     getId(): string {
-        return "bassBooster";
+        return "bassboost";
     }
 }

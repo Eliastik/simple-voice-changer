@@ -24,6 +24,6 @@ export default class ReturnAudioRenderer extends AbstractAudioRenderer {
     }
 
     getId(): string {
-        return "returnaudio";
+        return "returnAudio";
     }
 }

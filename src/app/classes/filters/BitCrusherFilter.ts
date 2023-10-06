@@ -50,10 +50,6 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
         return 6;
     }
 
-    isEnabled(): boolean {
-        return false;
-    }
-
     getId(): string {
         return "bitcrusher";
     }
