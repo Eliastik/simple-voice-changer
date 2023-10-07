@@ -11,7 +11,11 @@ interface AudioEditorContextProps {
   loadingPrincipalBuffer: boolean,
   audioProcessing: boolean
   toggleFilter: (filterId: string) => void,
-  filterState: any
+  filterState: any,
+  bufferPlaying: boolean,
+  playAudioBuffer: () => void,
+  pauseAudioBuffer: () => void,
+  playerState: any
 }
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
@@ -34,6 +38,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [audioEditorReady, setAudioEditorReady] = useState(false);
   const [audioProcessing, setAudioProcessing] = useState(false);
   const [filterState, setFilterState] = useState(audioEditorInstance.getFiltersState());
+  const [bufferPlaying, setBufferPlaying] = useState(false);
+  const [playerState, setPlayerState] = useState(audioEditorInstance.getPlayerState());
 
   const loadAudioPrincipalBuffer = async (file: File) => {
     setLoadingPrincipalBuffer(true);
@@ -54,8 +60,24 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setFilterState(audioEditorInstance.getFiltersState());
   };
 
+  const playAudioBuffer = () => {
+    audioEditorInstance.playBuffer();
+    setBufferPlaying(true);
+  };
+
+  const pauseAudioBuffer = () => {
+    audioEditorInstance.pauseBuffer();
+    setBufferPlaying(false);
+  };
+
+  audioEditorInstance.setOnPlayingFinished(() => setBufferPlaying(false));
+  audioEditorInstance.setOnPlayerUpdate(() => setPlayerState(audioEditorInstance.getPlayerState()));
+
   return (
-    <AudioEditorContext.Provider value={{ audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState }}>
+    <AudioEditorContext.Provider value={{
+      audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
+      playAudioBuffer, pauseAudioBuffer, playerState
+    }}>
       {children}
     </AudioEditorContext.Provider>
   );

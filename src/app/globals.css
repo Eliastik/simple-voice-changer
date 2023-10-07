@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.range.range-player::-webkit-slider-runnable-track {
+    height: 100%;
+    @apply bg-gray-300/70 rounded-none
+}

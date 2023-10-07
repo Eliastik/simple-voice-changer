@@ -3,9 +3,10 @@
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import FilterButton from "./FilterButton";
 import filters from "@/app/utils/filters";
+import AudioPlayer from "./AudioPlayer";
 
 const AudioEditorMain = ({ }) => {
-  const { audioProcessing, filterState } = useAudioEditor();
+  const { audioProcessing, filterState, bufferPlaying, playerState } = useAudioEditor();
 
   return (
     <>
@@ -20,6 +21,7 @@ const AudioEditorMain = ({ }) => {
           })}
         </div>
       </div>
+      <AudioPlayer percent={playerState.percent} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying}></AudioPlayer>
       {audioProcessing && <>
         <input type="checkbox" id="loadingAudioProcessing" className="modal-toggle" checked={true} />
         <div className="modal">

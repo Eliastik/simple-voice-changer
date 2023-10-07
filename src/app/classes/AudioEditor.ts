@@ -14,6 +14,7 @@ import SoundtouchWrapperFilter from "./filters/SountouchWrapperFilter";
 import TelephonizerFilter from "./filters/TelephonizerFilter";
 import VocoderRenderer from "./filters/VocoderRenderer";
 import utils from "./utils/Functions";
+import BufferPlayer from "./BufferPlayer";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -23,6 +24,7 @@ export default class AudioEditor extends AbstractAudioElement {
     private filters: AbstractAudioFilter[] = [];
     private renderers: AbstractAudioRenderer[] = [];
     private currentNode: AudioNode | undefined;
+    private bufferPlayer: BufferPlayer | undefined;
 
     principalBuffer: AudioBuffer | null = null;
     renderedBuffer: AudioBuffer | null = null;
@@ -31,6 +33,7 @@ export default class AudioEditor extends AbstractAudioElement {
         super();
         this.setupFilters();
         this.setupRenderers();
+        this.bufferPlayer = new BufferPlayer(this.currentContext);
     }
 
     setupFilters() {
@@ -98,9 +101,9 @@ export default class AudioEditor extends AbstractAudioElement {
         this.currentNode!.connect(offlineContext.destination);
 
         this.renderedBuffer = await offlineContext.startRendering();
-        /*audioBufferPlay.setOnPlayingFinished(null);
-        audioBufferPlay.speedAudio = speedAudio;
-        audioBufferPlay.loadBuffer(window[audioName]);*/
+        //this.bufferPlayer!.setOnPlayingFinished(null);
+        this.bufferPlayer!.speedAudio = 1; // TODO
+        this.bufferPlayer!.loadBuffer(currentBuffer);
 
         /*if(!compatModeChecked) {
             const sum = e.renderedBuffer.getChannelData(0).reduce(add, 0);
@@ -111,10 +114,6 @@ export default class AudioEditor extends AbstractAudioElement {
 
             compatModeChecked = true;
         }*/
-        const source = this.currentContext.createBufferSource();
-        source.buffer = this.renderedBuffer;
-        source.connect(this.currentContext.destination);
-        //source.start(0);
     }
 
     getOrder(): number {
@@ -140,15 +139,12 @@ export default class AudioEditor extends AbstractAudioElement {
             state[filter.getId()] = filter.isEnabled();
         });
 
-        console.log(state);
-
         return state;
     }
 
     toggleFilter(filterId: string) {
         const filter = this.filters.find(f => f.getId() === filterId);
         const renderer = this.renderers.find(f => f.getId() === filterId);
-        console.log(filterId, filter, renderer);
 
         if(filter) {
             filter.toggle();
@@ -156,6 +152,36 @@ export default class AudioEditor extends AbstractAudioElement {
 
         if(renderer) {
             renderer.toggle();
+        }
+    }
+
+    playBuffer() {
+        this.bufferPlayer?.start();
+    }
+
+    pauseBuffer() {
+        this.bufferPlayer?.pause();
+    }
+
+    setOnPlayingFinished(func: Function) {
+        if(this.bufferPlayer) {
+            this.bufferPlayer.setOnPlayingFinished(func);
+        }
+    }
+
+    setOnPlayerUpdate(func: Function) {
+        if(this.bufferPlayer) {
+            this.bufferPlayer.setOnUpdate(func);
+        }
+    }
+
+    getPlayerState() {
+        if(this.bufferPlayer) {
+            return {
+                currentTimeDisplay: this.bufferPlayer.currentTimeDisplay,
+                maxTimeDisplay: this.bufferPlayer.maxTimeDisplay,
+                percent: this.bufferPlayer?.percent
+            };
         }
     }
 }
