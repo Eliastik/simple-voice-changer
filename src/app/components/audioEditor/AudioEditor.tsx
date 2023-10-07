@@ -6,7 +6,7 @@ import filters from "@/app/utils/filters";
 import AudioPlayer from "./AudioPlayer";
 
 const AudioEditorMain = ({ }) => {
-  const { audioProcessing, filterState, bufferPlaying, playerState } = useAudioEditor();
+  const { audioProcessing, filterState, bufferPlaying, playerState, validateSettings } = useAudioEditor();
 
   return (
     <>
@@ -20,6 +20,7 @@ const AudioEditorMain = ({ }) => {
             )
           })}
         </div>
+      <button className="btn btn-accent" onClick={() => validateSettings()}>Valider les paramètres</button>
       </div>
       <AudioPlayer percent={playerState.percent} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying}></AudioPlayer>
       {audioProcessing && <>

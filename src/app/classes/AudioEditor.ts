@@ -34,6 +34,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.setupFilters();
         this.setupRenderers();
         this.bufferPlayer = new BufferPlayer(this.currentContext);
+        console.log("ok");
     }
 
     setupFilters() {
@@ -103,7 +104,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.renderedBuffer = await offlineContext.startRendering();
         //this.bufferPlayer!.setOnPlayingFinished(null);
         this.bufferPlayer!.speedAudio = 1; // TODO
-        this.bufferPlayer!.loadBuffer(currentBuffer);
+        this.bufferPlayer!.loadBuffer(this.renderedBuffer);
 
         /*if(!compatModeChecked) {
             const sum = e.renderedBuffer.getChannelData(0).reduce(add, 0);

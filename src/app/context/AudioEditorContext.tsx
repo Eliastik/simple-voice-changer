@@ -15,7 +15,8 @@ interface AudioEditorContextProps {
   bufferPlaying: boolean,
   playAudioBuffer: () => void,
   pauseAudioBuffer: () => void,
-  playerState: any
+  playerState: any,
+  validateSettings: () => void
 }
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
@@ -32,8 +33,9 @@ interface AudioEditorProviderProps {
   children: ReactNode;
 }
 
+const audioEditorInstance = new AudioEditor();
+
 export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) => {
-  const [audioEditorInstance, setAudioEditorInstance] = useState(new AudioEditor());
   const [loadingPrincipalBuffer, setLoadingPrincipalBuffer] = useState(false);
   const [audioEditorReady, setAudioEditorReady] = useState(false);
   const [audioProcessing, setAudioProcessing] = useState(false);
@@ -73,10 +75,16 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   audioEditorInstance.setOnPlayingFinished(() => setBufferPlaying(false));
   audioEditorInstance.setOnPlayerUpdate(() => setPlayerState(audioEditorInstance.getPlayerState()));
 
+  const validateSettings = async () => {
+    setAudioProcessing(true);
+    await audioEditorInstance.renderAudio();
+    setAudioProcessing(false);
+  };
+
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
-      playAudioBuffer, pauseAudioBuffer, playerState
+      playAudioBuffer, pauseAudioBuffer, playerState, validateSettings
     }}>
       {children}
     </AudioEditorContext.Provider>
