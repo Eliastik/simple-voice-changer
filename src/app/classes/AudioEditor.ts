@@ -156,12 +156,23 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /** Audio Player */
     playBuffer() {
-        this.bufferPlayer?.start();
+        if(this.bufferPlayer) {
+            this.bufferPlayer?.start();
+        }
     }
 
     pauseBuffer() {
-        this.bufferPlayer?.pause();
+        if(this.bufferPlayer) {
+            this.bufferPlayer?.pause();
+        }
+    }
+
+    toggleLoopPlayer() {
+        if(this.bufferPlayer) {
+            this.bufferPlayer.loop = !this.bufferPlayer.loop;
+        }
     }
 
     setOnPlayingFinished(func: Function) {
@@ -176,13 +187,34 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    setOnPlayerStarted(func: Function) {
+        if(this.bufferPlayer) {
+            this.bufferPlayer.setOnPlayingStarted(func);
+        }
+    }
+
+    setPlayerTime(percent: number) {
+        if(this.bufferPlayer) {
+            this.bufferPlayer.setTime(percent);
+        }
+    }
+
     getPlayerState() {
         if(this.bufferPlayer) {
             return {
                 currentTimeDisplay: this.bufferPlayer.currentTimeDisplay,
                 maxTimeDisplay: this.bufferPlayer.maxTimeDisplay,
-                percent: this.bufferPlayer?.percent
+                percent: this.bufferPlayer.percent,
+                loop: this.bufferPlayer.loop
             };
+        }
+    }
+
+    exit() {
+        if(this.bufferPlayer) {
+            this.bufferPlayer.stop();
+            this.bufferPlayer.reset();
+            this.principalBuffer = null;
         }
     }
 }

@@ -16,7 +16,10 @@ interface AudioEditorContextProps {
   playAudioBuffer: () => void,
   pauseAudioBuffer: () => void,
   playerState: any,
-  validateSettings: () => void
+  validateSettings: () => void,
+  exitAudioEditor: () => void,
+  loopAudioBuffer: () => void,
+  setTimePlayer: (percent: number) => void
 }
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
@@ -33,6 +36,7 @@ interface AudioEditorProviderProps {
   children: ReactNode;
 }
 
+// Construct an audio editor instance - singleton
 const audioEditorInstance = new AudioEditor();
 
 export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) => {
@@ -72,19 +76,36 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setBufferPlaying(false);
   };
 
+  const loopAudioBuffer = () => {
+    audioEditorInstance.toggleLoopPlayer();
+    setPlayerState(audioEditorInstance.getPlayerState());
+  };
+
+  const setTimePlayer = (percent: number) => {
+    audioEditorInstance.setPlayerTime(percent);
+  };
+
   audioEditorInstance.setOnPlayingFinished(() => setBufferPlaying(false));
   audioEditorInstance.setOnPlayerUpdate(() => setPlayerState(audioEditorInstance.getPlayerState()));
+  audioEditorInstance.setOnPlayerStarted(() => setPlayerState(audioEditorInstance.getPlayerState()));
 
   const validateSettings = async () => {
+    setBufferPlaying(false);
     setAudioProcessing(true);
     await audioEditorInstance.renderAudio();
     setAudioProcessing(false);
   };
 
+  const exitAudioEditor = () => {
+    audioEditorInstance.exit();
+    setAudioEditorReady(false);
+    setBufferPlaying(false);
+  };
+
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
-      playAudioBuffer, pauseAudioBuffer, playerState, validateSettings
+      playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer
     }}>
       {children}
     </AudioEditorContext.Provider>

@@ -22,6 +22,7 @@
 export default class BufferPlayer {
     onUpdate: Function | null = null;
     onPlayingFinished: Function | null = null;
+    onPlayingStarted: Function | null = null;
 
     context: AudioContext | OfflineAudioContext | null = null;
     buffer: AudioBuffer | null = null;
@@ -35,7 +36,7 @@ export default class BufferPlayer {
     loop = false;
     compatibilityMode = false;
     speedAudio = 1;
-    
+
     constructor(context: AudioContext | OfflineAudioContext) {
         this.context = context;
 
@@ -71,11 +72,11 @@ export default class BufferPlayer {
     init() {
         this.playing = false;
 
-        if(this.context) {
+        if (this.context) {
             this.context.resume();
 
-            if(!this.compatibilityMode && this.buffer) {
-                if(this.source != null) this.source.disconnect();
+            if (!this.compatibilityMode && this.buffer) {
+                if (this.source != null) this.source.disconnect();
                 this.source = this.context.createBufferSource();
                 this.source.buffer = this.buffer;
                 this.duration = this.buffer.duration * this.speedAudio;
@@ -109,8 +110,8 @@ export default class BufferPlayer {
 
     stop() {
         clearInterval(this.interval!);
-        
-        if(this.source != undefined && this.source != null && this.playing && !this.compatibilityMode) {
+
+        if (this.source != undefined && this.source != null && this.playing && !this.compatibilityMode) {
             this.source.stop(0);
             this.playing = false;
         }
@@ -119,11 +120,13 @@ export default class BufferPlayer {
     }
 
     start() {
-        if((this.source != undefined && this.source != null) || this.compatibilityMode) {
+        if ((this.source != undefined && this.source != null) || this.compatibilityMode) {
             this.stop();
             this.init();
 
-            if(!this.compatibilityMode && this.source) {
+            if (this.onPlayingStarted) this.onPlayingStarted();
+
+            if (!this.compatibilityMode && this.source) {
                 this.source.start(0, this.currentTime / this.speedAudio);
                 this.playing = true;
             }
@@ -131,20 +134,20 @@ export default class BufferPlayer {
             this.interval = window.setInterval(() => {
                 this.currentTime += 0.2 * this.speedAudio;
 
-                if(!this.sliding) {
+                if (!this.sliding) {
                     this.displayTime = this.currentTime;
                 }
 
-                if(this.currentTime > this.duration) {
-                    if(this.loop && !this.compatibilityMode) {
+                if (this.currentTime > this.duration) {
+                    if (this.loop && !this.compatibilityMode) {
                         this.reset();
                         this.start();
                     } else {
-                        this.reset();
-                    }
+                        if (this.onPlayingFinished != null) {
+                            this.onPlayingFinished();
+                        }
 
-                    if(this.onPlayingFinished != null) {
-                        this.onPlayingFinished();
+                        this.reset();
                     }
                 } else {
                     this.updateInfos();
@@ -166,8 +169,24 @@ export default class BufferPlayer {
         this.onUpdate = func;
     }
 
+    setOnPlayingStarted(func: Function) {
+        this.onPlayingStarted = func;
+    }
+
     updateInfos() {
-        if(this.onUpdate) this.onUpdate();
+        if (this.onUpdate) this.onUpdate();
+    }
+
+    setTime(value: number) {
+        this.currentTime = Math.round(this.duration * (value / 100));
+        this.displayTime = this.currentTime;
+
+        if (this.playing) {
+            this.pause();
+            this.start();
+        } else {
+            this.updateInfos();
+        }
     }
 
     get currentTimeDisplay() {

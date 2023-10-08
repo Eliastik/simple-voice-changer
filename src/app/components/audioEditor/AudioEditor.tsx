@@ -10,7 +10,7 @@ const AudioEditorMain = ({ }) => {
 
   return (
     <>
-      <div className="flex justify-center items-center flex-grow gap-6 flex-col lg:flex-row mt-16">
+      <div className="flex justify-center items-center flex-grow gap-6 flex-col pt-20 pb-20">
         <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-4 place-content-center">
           {filters.map(filter => {
             return (
@@ -20,9 +20,9 @@ const AudioEditorMain = ({ }) => {
             )
           })}
         </div>
-      <button className="btn btn-accent" onClick={() => validateSettings()}>Valider les paramètres</button>
+        <button className="btn btn-accent" onClick={() => validateSettings()}>Valider les paramètres</button>
       </div>
-      <AudioPlayer percent={playerState.percent} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying}></AudioPlayer>
+      <AudioPlayer percent={playerState.percent} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying} looping={playerState.loop}></AudioPlayer>
       {audioProcessing && <>
         <input type="checkbox" id="loadingAudioProcessing" className="modal-toggle" checked={true} />
         <div className="modal">

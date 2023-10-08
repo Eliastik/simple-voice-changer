@@ -15,7 +15,7 @@ const FilterButton = ({
         <>
             <div className="join join-vertical w-36">
                 <button className={`btn flex-col w-full h-36 gap-8 rounded-b-none border-0 ${enabled ? "bg-blue-200 hover:bg-blue-300" : ""}`} onClick={() => toggleFilter(filterId)}>
-                    <div>
+                    <div className="fill-gray-600">
                         {filterIcon}
                     </div>
                     <div>{filterName}</div>
