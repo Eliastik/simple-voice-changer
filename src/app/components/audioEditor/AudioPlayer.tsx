@@ -3,17 +3,18 @@
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
 
 const AudioPlayer = ({
-    percent = 0,
     currentTimeDisplay,
     maxTimeDisplay,
+    currentTime,
+    maxTime,
     playing,
     looping
-}: { percent: number, maxTimeDisplay: string, currentTimeDisplay: string, playing: boolean, looping: boolean }) => {
+}: { currentTime: number, maxTime: number, maxTimeDisplay: string, currentTimeDisplay: string, playing: boolean, looping: boolean }) => {
     const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer } = useAudioEditor();
 
     return (
         <div className="fixed bottom-0 w-full">
-            <div className="block w-full"><input type="range" min={0} max={100} value={percent} className="range range-player range-accent range-sm w-full rounded-none block bg-gray-250 after:bg-gray-800" onChange={(event) => setTimePlayer(parseFloat(event.target.value))} /></div>
+            <div className="block w-full"><input type="range" min={0} max={maxTime} value={currentTime} className="range range-player range-accent range-sm w-full rounded-none block bg-gray-250 after:bg-gray-800" onChange={(event) => setTimePlayer(parseFloat(event.target.value))} /></div>
             <div className="flex items-center justify-between w-full bg-gray-200">
                 <div className="flex items-center">
                     {!playing &&

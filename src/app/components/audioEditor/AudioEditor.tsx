@@ -22,7 +22,7 @@ const AudioEditorMain = ({ }) => {
         </div>
         <button className="btn btn-accent" onClick={() => validateSettings()}>Valider les paramètres</button>
       </div>
-      <AudioPlayer percent={playerState.percent} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying} looping={playerState.loop}></AudioPlayer>
+      <AudioPlayer maxTime={playerState.maxTime} currentTime={playerState.currentTime} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying} looping={playerState.loop}></AudioPlayer>
       {audioProcessing && <>
         <input type="checkbox" id="loadingAudioProcessing" className="modal-toggle" checked={true} />
         <div className="modal">

@@ -177,8 +177,20 @@ export default class BufferPlayer {
         if (this.onUpdate) this.onUpdate();
     }
 
-    setTime(value: number) {
-        this.currentTime = Math.round(this.duration * (value / 100));
+    setTimePercent(percent: number) {
+        this.currentTime = Math.round(this.duration * (percent / 100));
+        this.displayTime = this.currentTime;
+
+        if (this.playing) {
+            this.pause();
+            this.start();
+        } else {
+            this.updateInfos();
+        }
+    }
+
+    setTime(time: number) {
+        this.currentTime = time;
         this.displayTime = this.currentTime;
 
         if (this.playing) {

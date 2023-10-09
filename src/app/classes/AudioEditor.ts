@@ -205,7 +205,9 @@ export default class AudioEditor extends AbstractAudioElement {
                 currentTimeDisplay: this.bufferPlayer.currentTimeDisplay,
                 maxTimeDisplay: this.bufferPlayer.maxTimeDisplay,
                 percent: this.bufferPlayer.percent,
-                loop: this.bufferPlayer.loop
+                loop: this.bufferPlayer.loop,
+                currentTime: this.bufferPlayer.currentTime,
+                maxTime: this.bufferPlayer.duration
             };
         }
     }
