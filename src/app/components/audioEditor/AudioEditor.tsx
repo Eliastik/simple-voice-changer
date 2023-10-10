@@ -15,7 +15,15 @@ const AudioEditorMain = ({ }) => {
           {filters.map(filter => {
             return (
               <>
-                <FilterButton filterId={filter.filterId} filterName={filter.filterName} filterIcon={filter.filterIcon} enabled={filterState[filter.filterId]} hasSettings={filter.hasSettings}></FilterButton>
+                <FilterButton
+                filterId={filter.filterId}
+                filterName={filter.filterName}
+                filterIcon={filter.filterIcon}
+                enabled={filterState[filter.filterId]}
+                hasSettings={filter.hasSettings}
+                info={filter.info}
+                settingsForm={filter.settingsForm}
+                settingsModalTitle={filter.settingsModalTitle}></FilterButton>
               </>
             )
           })}

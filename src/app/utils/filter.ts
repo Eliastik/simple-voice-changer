@@ -1,6 +1,11 @@
+import SettingForm from "./settingForm";
+
 export default interface Filter {
     filterId: string,
     filterName: string,
     filterIcon: JSX.Element,
-    hasSettings: boolean
+    hasSettings: boolean,
+    info: string,
+    settingsForm?: SettingForm[],
+    settingsModalTitle?: string
 }

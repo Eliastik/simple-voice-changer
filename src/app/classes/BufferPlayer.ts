@@ -32,41 +32,12 @@ export default class BufferPlayer {
     duration = 0;
     interval: number | null = null;
     playing = false;
-    sliding = false;
     loop = false;
-    compatibilityMode = false;
-    speedAudio = 1;
+    compatibilityMode = false; // TODO
+    speedAudio = 1; // TODO
 
     constructor(context: AudioContext | OfflineAudioContext) {
         this.context = context;
-
-        /*if(this.sliderPlayAudio != undefined) {
-            this.sliderPlayAudio.on("slideStart", () => {
-                if(!this.compatibilityMode) this.sliding = true;
-            });
-    
-            this.sliderPlayAudio.on("slide", value => {
-                if(!this.compatibilityMode) {
-                    this.displayTime = Math.round(this.duration * (value / 100));
-                    this.updateInfos();
-                }
-            });
-    
-            this.sliderPlayAudio.on("slideStop", value => {
-                if(!this.compatibilityMode) {
-                    this.sliding = false;
-                    this.currentTime = Math.round(this.duration * (value / 100));
-                    this.displayTime = this.currentTime;
-    
-                    if(this.playing) {
-                        this.pause();
-                        this.start();
-                    } else {
-                        this.updateInfos();
-                    }
-                }
-            });
-        }*/
     }
 
     init() {
@@ -131,12 +102,15 @@ export default class BufferPlayer {
                 this.playing = true;
             }
 
-            this.interval = window.setInterval(() => {
-                this.currentTime += 0.2 * this.speedAudio;
+            let startTime = performance.now();
 
-                if (!this.sliding) {
-                    this.displayTime = this.currentTime;
-                }
+            this.interval = window.setInterval(() => {
+                const timeNow = performance.now();
+                const nextTime = timeNow - startTime;
+                startTime = timeNow;
+
+                this.currentTime += (nextTime / 1000) * this.speedAudio;
+                this.displayTime = this.currentTime;
 
                 if (this.currentTime > this.duration) {
                     if (this.loop && !this.compatibilityMode) {
@@ -152,7 +126,7 @@ export default class BufferPlayer {
                 } else {
                     this.updateInfos();
                 }
-            }, 200);
+            }, 100);
         }
     }
 
