@@ -42,6 +42,17 @@ export default class EchoFilter extends AbstractAudioFilter {
     }
 
     setSetting(settingId: string, value: string): void {
-        throw new Error("Method not implemented.");
+        if(!value || value == "" || isNaN(Number(value))) {
+            return;
+        }
+        
+        switch(settingId) {
+            case "delay":
+                this.delay = parseFloat(value);
+                break;
+            case "gain":
+                this.gain = parseFloat(value);
+                break;
+        }
     }
 }

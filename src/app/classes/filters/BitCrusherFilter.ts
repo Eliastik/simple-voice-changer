@@ -64,6 +64,17 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
     }
 
     setSetting(settingId: string, value: string): void {
-        throw new Error("Method not implemented.");
+        if(!value || value == "" || isNaN(Number(value))) {
+            return;
+        }
+
+        switch(settingId) {
+            case "bits":
+                this.bits = parseInt(value);
+                break;
+            case "normFreq":
+                this.normFreq = parseFloat(value);
+                break;
+        }
     }
 }

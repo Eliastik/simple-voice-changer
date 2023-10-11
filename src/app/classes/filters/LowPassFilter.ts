@@ -34,6 +34,14 @@ export default class LowPassFilter extends AbstractAudioFilter {
     }
 
     setSetting(settingId: string, value: string): void {
-        throw new Error("Method not implemented.");
+        if(!value || value == "" || isNaN(Number(value))) {
+            return;
+        }
+        
+        switch (settingId) {
+            case "lowFrequency":
+                this.lowFrequency = parseInt(value);
+                break;
+        }
     }
 }

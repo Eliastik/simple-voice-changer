@@ -50,6 +50,10 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
     }
 
     setSetting(settingId: string, value: string): void {
+        if(!value || value == "" || isNaN(Number(value))) {
+            return;
+        }
+
         switch(settingId) {
             case "frequencyBooster":
                 this.frequencyBooster = parseInt(value);

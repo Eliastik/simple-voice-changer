@@ -55,10 +55,10 @@ export default class LimiterFilter extends AbstractAudioFilter {
 
         const envelope = new Float32Array(data.length);
 
-        for(let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             const envIn = Math.abs(data[i]);
 
-            if(this.envelopeSample < envIn) {
+            if (this.envelopeSample < envIn) {
                 this.envelopeSample = envIn + attackGain * (this.envelopeSample - envIn);
             } else {
                 this.envelopeSample = envIn + releaseGain * (this.envelopeSample - envIn);
@@ -73,8 +73,8 @@ export default class LimiterFilter extends AbstractAudioFilter {
     getMaxEnvelope(envelope: Float32Array[], channels: number, index: number) {
         let max = envelope[0][index];
 
-        for(let channel = 0; channel < channels; channel++) {
-            if(envelope[channel][index] > max) {
+        for (let channel = 0; channel < channels; channel++) {
+            if (envelope[channel][index] > max) {
                 max = envelope[channel][index];
             }
         }
@@ -101,17 +101,17 @@ export default class LimiterFilter extends AbstractAudioFilter {
 
         // apply pre gain to signal
         // compute the envelope for each channel
-        for(let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+        for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
             const inp = inputBuffer.getChannelData(channel);
             const out = outputBuffer.getChannelData(channel);
 
             // create a delay buffer
-            if(this.delayBuffer[channel] == null) {
+            if (this.delayBuffer[channel] == null) {
                 this.delayBuffer[channel] = new DelayBuffer(this.lookAheadTime * this.sampleRate);
             }
 
             // apply pre gain to signal
-            for(let k = 0; k < inp.length; ++k) {
+            for (let k = 0; k < inp.length; ++k) {
                 out[k] = preGainAmp * inp[k];
             }
 
@@ -119,13 +119,13 @@ export default class LimiterFilter extends AbstractAudioFilter {
             envelopeData[channel] = this.getEnvelope(out, this.attackTime, this.releaseTime, this.sampleRate);
         }
 
-        for(let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+        for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
             const inp = inputBuffer.getChannelData(channel);
             const out = outputBuffer.getChannelData(channel);
 
-            if(this.lookAheadTime > 0) {
+            if (this.lookAheadTime > 0) {
                 // write signal into buffer and read delayed signal
-                for(let i = 0; i < out.length; i++) {
+                for (let i = 0; i < out.length; i++) {
                     this.delayBuffer[channel].push(out[i]);
                     out[i] = this.delayBuffer[channel].read();
                 }
@@ -134,7 +134,7 @@ export default class LimiterFilter extends AbstractAudioFilter {
             // limiter mode: slope is 1
             const slope = 1;
 
-            for(let i = 0; i < inp.length; i++) {
+            for (let i = 0; i < inp.length; i++) {
                 let gainDB = slope * (this.threshold - this.ampToDB(this.getMaxEnvelope(envelopeData, outputBuffer.numberOfChannels, i))); // max gain
 
                 // is gain below zero?
@@ -148,7 +148,7 @@ export default class LimiterFilter extends AbstractAudioFilter {
     getNode(context: BaseAudioContext): AudioFilterNodes {
         const limiterProcessor = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
         limiterProcessor.onaudioprocess = e => this.limit(e);
-        
+
         return {
             input: limiterProcessor,
             output: limiterProcessor
@@ -156,15 +156,15 @@ export default class LimiterFilter extends AbstractAudioFilter {
     }
 
     reset() {
-        for(let i = 0; i < this.delayBuffer.length; i++) {
-            if(this.delayBuffer[i] != null) {
+        for (let i = 0; i < this.delayBuffer.length; i++) {
+            if (this.delayBuffer[i] != null) {
                 this.delayBuffer[i].reset();
             }
         }
 
         this.envelopeSample = 0;
     }
-    
+
     getOrder(): number {
         return 10;
     }
@@ -185,6 +185,29 @@ export default class LimiterFilter extends AbstractAudioFilter {
     }
 
     setSetting(settingId: string, value: string): void {
-        throw new Error("Method not implemented.");
+        if(!value || value == "" || isNaN(Number(value))) {
+            return;
+        }
+        
+        switch (settingId) {
+            case "preGain":
+                this.preGain = parseFloat(value);
+                break;
+            case "postGain":
+                this.postGain = parseFloat(value);
+                break;
+            case "attackTime":
+                this.attackTime = parseFloat(value);
+                break;
+            case "releaseTime":
+                this.releaseTime = parseFloat(value);
+                break;
+            case "threshold":
+                this.threshold = parseFloat(value);
+                break;
+            case "lookAheadTime":
+                this.lookAheadTime = parseFloat(value);
+                break;
+        }
     }
 }

@@ -34,11 +34,10 @@ export default class AudioEditor extends AbstractAudioElement {
         this.setupFilters();
         this.setupRenderers();
         this.bufferPlayer = new BufferPlayer(this.currentContext);
-        console.log("ok");
     }
 
     setupFilters() {
-        const bassBooster = new BassBoosterFilter(200, 20, 200, 0);
+        const bassBooster = new BassBoosterFilter(200, 15, 200, -2);
         const bitCrusher = new BitCrusherFilter(4096, 2, 8, 0.15);
         const echo = new EchoFilter(0.2, 0.75);
         const highPass = new HighPassFilter(3500);

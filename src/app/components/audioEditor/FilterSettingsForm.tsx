@@ -12,9 +12,11 @@ const FilterSettingsForm = ({
 }: { filterId: string, settingsModalTitle?: string, settingsForm?: SettingForm[] }) => {
     const { filtersSettings, changeFilterSettings } = useAudioEditor();
     const [currentSettings, setCurrentSettings] = useState(null);
+    const [initialSettings, setInitialSettings] = useState(null);
 
     useEffect(() => {
         setCurrentSettings(JSON.parse(JSON.stringify(filtersSettings.get(filterId))));
+        setInitialSettings(currentSettings);
     }, [!currentSettings]);
 
     return (
@@ -38,7 +40,7 @@ const FilterSettingsForm = ({
                                             value={currentSettings ? currentSettings[setting.settingId] : ""}
                                             onChange={(e) => {
                                                 const newSettings: any = JSON.parse(JSON.stringify(currentSettings));
-                                                newSettings[setting.settingId] = parseInt(e.target.value);
+                                                newSettings[setting.settingId] = e.target.value;
                                                 setCurrentSettings(newSettings);
                                             }}></input>
                                     </div>
@@ -49,8 +51,15 @@ const FilterSettingsForm = ({
                 </div>
                 <div className="modal-action">
                     <form method="dialog">
-                        <button className="btn btn-neutral mr-2" onClick={() => changeFilterSettings(filterId, currentSettings)}>Valider</button>
-                        <button className="btn btn-error">Réinitialiser</button>
+                        <button className="btn btn-neutral mr-2" onClick={() => {
+                            changeFilterSettings(filterId, currentSettings);
+                            setCurrentSettings(null);
+                            setInitialSettings(null);
+                        }}>Valider</button>
+                        <button className="btn btn-error" onClick={(e) => {
+                            setCurrentSettings(initialSettings);
+                            e.preventDefault();
+                        }}>Réinitialiser</button>
                     </form>
                 </div>
             </div>
