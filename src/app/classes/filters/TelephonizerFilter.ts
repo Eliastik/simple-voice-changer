@@ -32,4 +32,12 @@ export default class BitCrusherFilter extends AbstractFilter {
     getId(): string {
         return "telephonizer";
     }
+
+    getSettings() {
+        return {};
+    }
+
+    setSetting(settingId: string, value: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

@@ -25,4 +25,12 @@ export default class ReverbFilter extends AbstractAudioFilter {
     getId(): string {
         return "reverb";
     }
+
+    getSettings() {
+        return {};
+    }
+
+    setSetting(settingId: string, value: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

@@ -53,4 +53,17 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
     getId(): string {
         return "bitcrusher";
     }
+
+    getSettings() {
+        return {
+            bufferSize: this.bufferSize,
+            channels: this.channels,
+            bits: this.bits,
+            normFreq: this.normFreq,
+        };
+    }
+
+    setSetting(settingId: string, value: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

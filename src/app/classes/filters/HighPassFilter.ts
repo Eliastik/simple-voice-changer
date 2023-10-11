@@ -26,4 +26,14 @@ export default class HighPassFilter extends AbstractAudioFilter {
     getId(): string {
         return "highpass";
     }
+
+    getSettings() {
+        return {
+            highFrequency: this.highFrequency
+        };
+    }
+
+    setSetting(settingId: string, value: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

@@ -26,4 +26,14 @@ export default class LowPassFilter extends AbstractAudioFilter {
     getId(): string {
         return "lowpass";
     }
+
+    getSettings() {
+        return {
+            lowFrequency: this.lowFrequency
+        };
+    }
+
+    setSetting(settingId: string, value: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

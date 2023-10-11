@@ -39,4 +39,30 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
     getId(): string {
         return "bassboost";
     }
+
+    getSettings(): any {
+        return {
+            frequencyBooster: this.frequencyBooster,
+            frequencyReduce: this.frequencyReduce,
+            dbBooster: this.dbBooster,
+            dbReduce: this.dbReduce,
+        };
+    }
+
+    setSetting(settingId: string, value: string): void {
+        switch(settingId) {
+            case "frequencyBooster":
+                this.frequencyBooster = parseInt(value);
+                break;
+            case "frequencyReduce":
+                this.frequencyReduce = parseInt(value);
+                break;
+            case "dbBooster":
+                this.dbBooster = parseInt(value);
+                break;
+            case "dbReduce":
+                this.dbReduce = parseInt(value);
+                break;
+        }
+    }
 }

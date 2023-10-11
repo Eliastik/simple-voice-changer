@@ -19,7 +19,9 @@ interface AudioEditorContextProps {
   validateSettings: () => void,
   exitAudioEditor: () => void,
   loopAudioBuffer: () => void,
-  setTimePlayer: (percent: number) => void
+  setTimePlayer: (percent: number) => void,
+  filtersSettings: Map<string, any>,
+  changeFilterSettings: (filterId: string, settings: any) => void
 }
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
@@ -46,6 +48,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [filterState, setFilterState] = useState(audioEditorInstance.getFiltersState());
   const [bufferPlaying, setBufferPlaying] = useState(false);
   const [playerState, setPlayerState] = useState(audioEditorInstance.getPlayerState());
+  const [filtersSettings, setFiltersSettings] = useState(audioEditorInstance.getFiltersSettings());
 
   const loadAudioPrincipalBuffer = async (file: File) => {
     setLoadingPrincipalBuffer(true);
@@ -102,10 +105,15 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setBufferPlaying(false);
   };
 
+  const changeFilterSettings = (filterId: string, settings: any) => {
+    audioEditorInstance.changeFilterSettings(filterId, settings);
+    setFiltersSettings(audioEditorInstance.getFiltersSettings());
+  }
+
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
-      playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer
+      playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings
     }}>
       {children}
     </AudioEditorContext.Provider>

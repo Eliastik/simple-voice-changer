@@ -3,13 +3,19 @@
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import SettingForm from "@/app/utils/settingForm";
 import { SettingFormType } from "@/app/utils/settingFormType";
+import { useEffect, useState } from "react";
 
 const FilterSettingsForm = ({
     filterId,
     settingsModalTitle,
     settingsForm
 }: { filterId: string, settingsModalTitle?: string, settingsForm?: SettingForm[] }) => {
-    //const { toggleFilter } = useAudioEditor();
+    const { filtersSettings, changeFilterSettings } = useAudioEditor();
+    const [currentSettings, setCurrentSettings] = useState(null);
+
+    useEffect(() => {
+        setCurrentSettings(JSON.parse(JSON.stringify(filtersSettings.get(filterId))));
+    }, [!currentSettings]);
 
     return (
         <>
@@ -28,7 +34,13 @@ const FilterSettingsForm = ({
                                         <div className="md:w-3/6">
                                             <label htmlFor={`${filterId}_${setting.settingId}`}>{setting.settingTitle}</label>
                                         </div>
-                                        <input type="number" className="input input-bordered md:w-3/6" id={`${filterId}_${setting.settingId}`}></input>
+                                        <input type="number" className="input input-bordered md:w-3/6" id={`${filterId}_${setting.settingId}`}
+                                            value={currentSettings ? currentSettings[setting.settingId] : ""}
+                                            onChange={(e) => {
+                                                const newSettings: any = JSON.parse(JSON.stringify(currentSettings));
+                                                newSettings[setting.settingId] = parseInt(e.target.value);
+                                                setCurrentSettings(newSettings);
+                                            }}></input>
                                     </div>
                                 )}
                             </div>
@@ -37,7 +49,7 @@ const FilterSettingsForm = ({
                 </div>
                 <div className="modal-action">
                     <form method="dialog">
-                        <button className="btn btn-neutral mr-2">Valider</button>
+                        <button className="btn btn-neutral mr-2" onClick={() => changeFilterSettings(filterId, currentSettings)}>Valider</button>
                         <button className="btn btn-error">Réinitialiser</button>
                     </form>
                 </div>

@@ -129,6 +129,7 @@ export default class AudioEditor extends AbstractAudioElement {
         return "audioEditor";
     }
 
+    /** Filters */
     getFiltersState() {
         const state: any = {};
 
@@ -143,6 +144,16 @@ export default class AudioEditor extends AbstractAudioElement {
         return state;
     }
 
+    getFiltersSettings(): Map<string, any> {
+        const settings = new Map<string, string[]>();
+
+        for(const filter of this.filters) {
+            settings.set(filter.getId(), filter.getSettings());
+        }
+
+        return settings;
+    }
+
     toggleFilter(filterId: string) {
         const filter = this.filters.find(f => f.getId() === filterId);
         const renderer = this.renderers.find(f => f.getId() === filterId);
@@ -153,6 +164,16 @@ export default class AudioEditor extends AbstractAudioElement {
 
         if(renderer) {
             renderer.toggle();
+        }
+    }
+
+    changeFilterSettings(filterId: string, settings: any) {
+        const filter = this.filters.find(f => f.getId() === filterId);
+
+        if(filter) {
+            Object.keys(settings).forEach(key => {
+                filter.setSetting(key, settings[key]);
+            });
         }
     }
 

@@ -33,4 +33,15 @@ export default class EchoFilter extends AbstractAudioFilter {
     getId(): string {
         return "echo";
     }
+
+    getSettings() {
+        return {
+            delay: this.delay,
+            gain: this.gain
+        };
+    }
+
+    setSetting(settingId: string, value: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

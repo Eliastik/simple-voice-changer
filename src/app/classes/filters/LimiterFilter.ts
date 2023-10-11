@@ -172,4 +172,19 @@ export default class LimiterFilter extends AbstractAudioFilter {
     getId(): string {
         return "limiter";
     }
+
+    getSettings() {
+        return {
+            preGain: this.preGain,
+            postGain: this.postGain,
+            attackTime: this.attackTime,
+            releaseTime: this.releaseTime,
+            threshold: this.threshold,
+            lookAheadTime: this.lookAheadTime,
+        };
+    }
+
+    setSetting(settingId: string, value: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

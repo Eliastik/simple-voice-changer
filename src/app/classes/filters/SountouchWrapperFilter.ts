@@ -29,4 +29,12 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
     getId(): string {
         return "soundtouch";
     }
+
+    getSettings() {
+        return {};
+    }
+
+    setSetting(settingId: string, value: string): void {
+        throw new Error("Method not implemented.");
+    }
 }
