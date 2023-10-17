@@ -2,5 +2,8 @@ export enum SettingFormType {
     TextField,
     NumberField,
     SelectField,
-    SimpleLabel
+    SimpleLabel,
+    DynamicLabel,
+    SimpleLink,
+    DynamicLink
 }

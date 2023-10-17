@@ -7,5 +7,7 @@ export default interface Filter {
     hasSettings: boolean,
     info: string,
     settingsForm?: SettingForm[],
-    settingsModalTitle?: string
+    settingsModalTitle?: string,
+    firstColumnStyle?: string,
+    secondColumStyle?: string
 }

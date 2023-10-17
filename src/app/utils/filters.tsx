@@ -52,12 +52,12 @@ const filters: Filter[] = [
             },
             {
                 settingId: "bits",
-                settingTitle: "Nombre de bits :",
+                settingTitle: "Résolution :",
                 settingType: SettingFormType.NumberField
             },
             {
                 settingId: "normFreq",
-                settingTitle: "Fréquence de norme :",
+                settingTitle: "Fréquence d'écrêtage :",
                 settingType: SettingFormType.NumberField
             }
         ]
@@ -134,11 +134,196 @@ const filters: Filter[] = [
         hasSettings: true,
         info: "Ce filtre vous permet d'appliquer un effet de réverbération à votre audio. Plusieurs environnements virtuels sont proposés avec un effet de réverbération différent pour chacun de ces environnements.",
         settingsModalTitle: "Paramètres du filtre de réverbération",
+        firstColumnStyle: "md:w-3/6",
+        secondColumStyle: "md:w-5/6",
         settingsForm: [
             {
                 settingId: "labelInfo",
-                settingTitle: "Vous pouvez régler ici les paramètres du filtre de réverbération (TODO).",
+                settingTitle: "Vous pouvez régler ici les paramètres du filtre de réverbération.",
                 settingType: SettingFormType.SimpleLabel
+            },
+            {
+                settingId: "reverbEnvironment",
+                settingTitle: "Environnement :",
+                settingType: SettingFormType.SelectField,
+                selectValues: [
+                    {
+                        name: "Medium Damping Cave E002 M2S",
+                        value: "assets/sounds/impulse_response.wav",
+                        additionalData: {
+                            size: 1350278,
+                            link: "http://www.cksde.com/p_6_250.htm",
+                            addDuration: 4,
+                            forceDownloadHigherQuality: true
+                        }
+                    },
+                    {
+                        name: "The Dixon Studio Theatre – University of York",
+                        value: "assets/sounds/impulse_response_2.wav",
+                        additionalData: {
+                            size: 2304044,
+                            link: "https://openairlib.net/?page_id=452",
+                            addDuration: 3
+                        }
+                    },
+                    {
+                        name: "Creswell Crags",
+                        value: "assets/sounds/impulse_response_3.wav",
+                        additionalData: {
+                            size: 1048220,
+                            link: "https://openairlib.net/?page_id=441",
+                            addDuration: 1
+                        }
+                    },
+                    {
+                        name: "Jack Lyons Concert Hall – University of York",
+                        value: "assets/sounds/impulse_response_4.wav",
+                        additionalData: {
+                            size: 3072044,
+                            link: "https://openairlib.net/?page_id=571",
+                            addDuration: 4
+                        }
+                    },
+                    {
+                        name: "Stairway – University of York",
+                        value: "assets/sounds/impulse_response_5.wav",
+                        additionalData: {
+                            size: 1728198,
+                            link: "https://openairlib.net/?page_id=678",
+                            addDuration: 3
+                        }
+                    },
+                    {
+                        name: "1st Baptist Church Nashville",
+                        value: "assets/sounds/impulse_response_6.wav",
+                        additionalData: {
+                            size: 2050318,
+                            link: "https://openairlib.net/?page_id=406",
+                            addDuration: 4
+                        }
+                    },
+                    {
+                        name: "R1 Nuclear Reactor Hall",
+                        value: "assets/sounds/impulse_response_7.wav",
+                        additionalData: {
+                            size: 5840914,
+                            link: "https://openairlib.net/?page_id=626",
+                            addDuration: 20
+                        }
+                    },
+                    {
+                        name: "Maes Howe",
+                        value: "assets/sounds/impulse_response_8.wav",
+                        additionalData: {
+                            size: 288044,
+                            link: "https://openairlib.net/?page_id=602",
+                            addDuration: 1
+                        }
+                    },
+                    {
+                        name: "Tyndall Bruce Monument",
+                        value: "assets/sounds/impulse_response_9.wav",
+                        additionalData: {
+                            size: 1382674,
+                            link: "https://openairlib.net/?page_id=764",
+                            addDuration: 5
+                        }
+                    },
+                    {
+                        name: "Tvísöngur Sound Sculpture – Iceland",
+                        value: "assets/sounds/impulse_response_10.wav",
+                        additionalData: {
+                            size: 621026,
+                            link: "https://openairlib.net/?page_id=752",
+                            addDuration: 3
+                        }
+                    },
+                    {
+                        name: "Usina del Arte Symphony Hall",
+                        value: "assets/sounds/impulse_response_11.wav",
+                        additionalData: {
+                            size: 454714,
+                            link: "https://openairlib.net/?page_id=770",
+                            addDuration: 5
+                        }
+                    },
+                    {
+                        name: "Hoffmann Lime Kiln – Langcliffe, UK",
+                        value: "assets/sounds/impulse_response_12.wav",
+                        additionalData: {
+                            size: 1536044,
+                            link: "https://openairlib.net/?page_id=518",
+                            addDuration: 2
+                        }
+                    },
+                    {
+                        name: "Innocent Railway Tunnel (middle)",
+                        value: "assets/sounds/impulse_response_13.wav",
+                        additionalData: {
+                            size: 5760056,
+                            link: "https://openairlib.net/?page_id=525",
+                            addDuration: 5
+                        }
+                    },
+                    {
+                        name: "Hamilton Mausoleum",
+                        value: "assets/sounds/impulse_response_14.wav",
+                        additionalData: {
+                            size: 4320044,
+                            link: "https://www.openair.hosted.york.ac.uk/?page_id=502",
+                            addDuration: 15
+                        }
+                    },
+                    {
+                        name: "Lady Chapel – St Albans Cathedral",
+                        value: "assets/sounds/impulse_response_15.wav",
+                        additionalData: {
+                            size: 1587706,
+                            link: "https://www.openair.hosted.york.ac.uk/?page_id=595",
+                            addDuration: 6
+                        }
+                    },
+                    {
+                        name: "Sports Centre – University of York",
+                        value: "assets/sounds/impulse_response_16.wav",
+                        additionalData: {
+                            size: 5644996,
+                            link: "https://www.openair.hosted.york.ac.uk/?page_id=665",
+                            addDuration: 10
+                        }
+                    },
+                    {
+                        name: "Elveden Hall  – Suffolk England",
+                        value: "assets/sounds/impulse_response_17.wav",
+                        additionalData: {
+                            size: 1416536,
+                            link: "https://www.openair.hosted.york.ac.uk/?page_id=459",
+                            addDuration: 9
+                        }
+                    },
+                    {
+                        name: "York Guildhall Council Chamber",
+                        value: "assets/sounds/impulse_response_18.wav",
+                        additionalData: {
+                            size: 5760044,
+                            link: "https://www.openair.hosted.york.ac.uk/?page_id=790",
+                            addDuration: 5
+                        }
+                    }
+                ]       
+            },
+            {
+                settingId: "bufferSize",
+                settingType: SettingFormType.DynamicLabel,
+                settingTitle: "",
+                labelValue: "Taille de l'environnement : ${(reverbEnvironment.additionalData.size / 1000000).toFixed(2).replace('.', ',')} Mo"
+            },
+            {
+                settingId: "reverbLinkSource",
+                settingType: SettingFormType.DynamicLink,
+                settingTitle: "",
+                labelValue: "Source",
+                linkValue: "${reverbEnvironment.additionalData.link}"
             }
         ]
     },

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.6",
+    "lodash": "^4.17.21",
     "next": "latest",
     "next-redux-wrapper": "^8.1.0",
     "react": "latest",
@@ -19,6 +20,7 @@
     "soundtouchjs": "^0.1.30"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.199",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",

@@ -7,5 +7,8 @@ export default interface SettingForm {
     settingType: SettingFormType,
     minValue?: number,
     maxValue?: number,
-    selectValues?: SelectFormValue[]
+    selectValues?: SelectFormValue[],
+    defaultValue?: string,
+    labelValue?: string,
+    linkValue?: string
 };
