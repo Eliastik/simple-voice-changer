@@ -1,7 +1,7 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
 export default class HighPassFilter extends AbstractAudioFilter {
-    highFrequency = 3500;
+    private highFrequency = 3500;
 
     constructor(highFrequency: number) {
         super();

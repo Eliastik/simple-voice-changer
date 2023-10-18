@@ -42,12 +42,18 @@ export default class AudioEditor extends AbstractAudioElement {
         const echo = new EchoFilter(0.2, 0.75);
         const highPass = new HighPassFilter(3500);
         const lowPass = new LowPassFilter(3500);
-        const reverb = new ReverbFilter(null); // Todo
+        const reverb = new ReverbFilter();
         const soundtouchWrapper = new SoundtouchWrapperFilter();
         const limiterFilter = new LimiterFilter(44100, 0, 0, 0, 3, -0.05, 0.05, 4096, 2);
         const telephonizerFilter = new TelephonizerFilter();
 
         this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter);
+
+        for(const filter of this.filters) {
+            filter.initializeDefaultSettings();
+        }
+
+        console.log(this.filters);
 
         this.entrypointFilter = soundtouchWrapper;
     }

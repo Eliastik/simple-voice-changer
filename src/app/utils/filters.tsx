@@ -154,7 +154,6 @@ const filters: Filter[] = [
                             size: 1350278,
                             link: "http://www.cksde.com/p_6_250.htm",
                             addDuration: 4,
-                            forceDownloadHigherQuality: true
                         }
                     },
                     {

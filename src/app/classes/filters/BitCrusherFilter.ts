@@ -1,10 +1,10 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
 export default class BitCrusherFilter extends AbstractAudioFilter {
-    bufferSize = 4096;
-    channels = 2;
-    bits = 8;
-    normFreq = 0.15;
+    private bufferSize = 4096;
+    private channels = 2;
+    private bits = 8;
+    private normFreq = 0.15;
 
     constructor(bufferSize: number, channels: number, bits: number, normFreq: number) {
         super();

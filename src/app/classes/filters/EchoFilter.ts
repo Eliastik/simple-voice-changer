@@ -1,8 +1,8 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
 export default class EchoFilter extends AbstractAudioFilter {
-    delay = 0.2;
-    gain = 0.75;
+    private delay = 0.2;
+    private gain = 0.75;
 
     constructor(delay: number, gain: number) {
         super();

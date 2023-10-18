@@ -3,7 +3,7 @@ import { PitchShifter } from "soundtouchjs";
 import AbstractAudioFilterEntrypoint from "../model/AbstractAudioFilterEntrypoint";
 
 export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoint {
-    currentPitchShifter: any;
+    private currentPitchShifter: any;
 
     constructor() {
         super();

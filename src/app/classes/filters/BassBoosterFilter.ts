@@ -1,10 +1,10 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
 export default class BassBoosterFilter extends AbstractAudioFilter {
-    frequencyBooster = 200;
-    frequencyReduce = 200;
-    dbBooster = 15;
-    dbReduce = -2;
+    private frequencyBooster = 200;
+    private frequencyReduce = 200;
+    private dbBooster = 15;
+    private dbReduce = -2;
 
     constructor(frequencyBooster: number, dbBooster: number, frequencyReduce: number, dbReduce: number) {
         super();

@@ -35,6 +35,8 @@ const FilterSettingsForm = ({
     useEffect(() => {
         setCurrentSettings(JSON.parse(JSON.stringify(filtersSettings.get(filterId))));
         setInitialSettings(currentSettings);
+
+        console.log(currentSettings);
     }, [!currentSettings]);
 
     return (

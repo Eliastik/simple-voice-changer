@@ -3,7 +3,7 @@ import utils from "../utils/Functions";
 import vocoder from "../utils/Vocoder";
 
 export default class VocoderRenderer extends AbstractAudioRenderer {
-    modulatorBuffer: AudioBuffer | null = null;
+    private modulatorBuffer: AudioBuffer | null = null; // TODO
 
     constructor(buffer: AudioBuffer | null) {
         super();

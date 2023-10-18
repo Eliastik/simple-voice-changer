@@ -23,17 +23,17 @@ import AbstractAudioFilter from "../model/AbstractAudioFilter";
 import DelayBuffer from "../utils/DelayBuffer";
 
 export default class LimiterFilter extends AbstractAudioFilter {
-    sampleRate = 44100; // Hz
-    preGain = 0; // dB
-    postGain = 0; // dB
-    attackTime = 0; // s
-    releaseTime = 3; // s
-    threshold = -0.05; // dB
-    lookAheadTime = 0.05; // s
-    delayBuffer: DelayBuffer[] = [];
-    envelopeSample = 0;
-    bufferSize = 4096;
-    channels = 2;
+    private sampleRate = 44100; // Hz
+    private preGain = 0; // dB
+    private postGain = 0; // dB
+    private attackTime = 0; // s
+    private releaseTime = 3; // s
+    private threshold = -0.05; // dB
+    private lookAheadTime = 0.05; // s
+    private delayBuffer: DelayBuffer[] = [];
+    private envelopeSample = 0;
+    private bufferSize = 4096;
+    private channels = 2;
 
     constructor(sampleRate: number, preGain: number, postGain: number, attackTime: number, releaseTime: number, threshold: number, lookAheadTime: number, bufferSize: number, channels: number) {
         super();
