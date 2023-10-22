@@ -16,6 +16,7 @@ import VocoderRenderer from "./filters/VocoderRenderer";
 import utils from "./utils/Functions";
 import BufferPlayer from "./BufferPlayer";
 import BufferFetcherService from "./BufferFetcherService";
+import EventEmitter from "./EventEmitter";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -26,13 +27,16 @@ export default class AudioEditor extends AbstractAudioElement {
     private renderers: AbstractAudioRenderer[] = [];
     private currentNode: AudioNode | undefined;
     private bufferPlayer: BufferPlayer | undefined;
+    private eventEmitter: EventEmitter | undefined;
 
     principalBuffer: AudioBuffer | null = null;
     renderedBuffer: AudioBuffer | null = null;
+    loadingData = false;
 
     constructor() {
         super();
-        this.bufferPlayer = new BufferPlayer(this.currentContext);
+        this.eventEmitter = new EventEmitter();
+        this.bufferPlayer = new BufferPlayer(this.currentContext, this.eventEmitter);
         this.bufferFetcherService = new BufferFetcherService(this.currentContext);
 
         this.setupFilters();
@@ -67,14 +71,22 @@ export default class AudioEditor extends AbstractAudioElement {
 
     setupRenderers() {
         const returnAudio = new ReturnAudioRenderer();
-        const vocoder = new VocoderRenderer(); // Todo
+        const vocoder = new VocoderRenderer();
 
         this.renderers.push(returnAudio, vocoder);
     }
 
     fetchBuffers() {
-        this.bufferFetcherService?.fetchAllBuffers(["static/sounds/impulse_response.wav", "static/sounds/modulator.mp3"]).then(() => {
+        if(this.loadingData) {
+            return;
+        }
 
+        this.loadingData = true;
+        this.eventEmitter?.emit("loadingBuffers");
+        
+        this.bufferFetcherService?.fetchAllBuffers(["static/sounds/impulse_response.wav","static/sounds/modulator.mp3"]).then(() => {
+            this.loadingData = false;
+            this.eventEmitter?.emit("loadedBuffers");
         });
     }
 
@@ -84,7 +96,6 @@ export default class AudioEditor extends AbstractAudioElement {
         for(const filter of this.filters.sort((a, b) => a.getOrder() - b.getOrder())) {
             if(filter.isEnabled()) {
                 const node = filter.getNode(context);
-                console.log(node, previousNode);
     
                 if(previousNode) {
                     previousNode.connect(node.input);
@@ -222,24 +233,6 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
-    setOnPlayingFinished(func: Function) {
-        if(this.bufferPlayer) {
-            this.bufferPlayer.setOnPlayingFinished(func);
-        }
-    }
-
-    setOnPlayerUpdate(func: Function) {
-        if(this.bufferPlayer) {
-            this.bufferPlayer.setOnUpdate(func);
-        }
-    }
-
-    setOnPlayerStarted(func: Function) {
-        if(this.bufferPlayer) {
-            this.bufferPlayer.setOnPlayingStarted(func);
-        }
-    }
-
     setPlayerTime(percent: number) {
         if(this.bufferPlayer) {
             this.bufferPlayer.setTime(percent);
@@ -265,5 +258,9 @@ export default class AudioEditor extends AbstractAudioElement {
             this.bufferPlayer.reset();
             this.principalBuffer = null;
         }
+    }
+
+    on(event: string, callback: Function) {
+        this.eventEmitter?.on(event, callback);
     }
 }

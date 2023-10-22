@@ -22,7 +22,8 @@ interface AudioEditorContextProps {
   setTimePlayer: (percent: number) => void,
   filtersSettings: Map<string, any>,
   changeFilterSettings: (filterId: string, settings: any) => void,
-  resetFilterSettings: (filterId: string) => void
+  resetFilterSettings: (filterId: string) => void,
+  loadingData: boolean
 }
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
@@ -50,6 +51,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [bufferPlaying, setBufferPlaying] = useState(false);
   const [playerState, setPlayerState] = useState(audioEditorInstance.getPlayerState());
   const [filtersSettings, setFiltersSettings] = useState(audioEditorInstance.getFiltersSettings());
+  const [loadingData, setLoadingData] = useState(audioEditorInstance.loadingData);
 
   const loadAudioPrincipalBuffer = async (file: File) => {
     setLoadingPrincipalBuffer(true);
@@ -89,10 +91,6 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     audioEditorInstance.setPlayerTime(percent);
   };
 
-  audioEditorInstance.setOnPlayingFinished(() => setBufferPlaying(false));
-  audioEditorInstance.setOnPlayerUpdate(() => setPlayerState(audioEditorInstance.getPlayerState()));
-  audioEditorInstance.setOnPlayerStarted(() => setPlayerState(audioEditorInstance.getPlayerState()));
-
   const validateSettings = async () => {
     setBufferPlaying(false);
     setAudioProcessing(true);
@@ -116,11 +114,16 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setFiltersSettings(audioEditorInstance.getFiltersSettings());
   };
 
+  audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
+  audioEditorInstance.on("playingUpdate", () => setPlayerState(audioEditorInstance.getPlayerState()));
+  audioEditorInstance.on("playingStarted", () => setPlayerState(audioEditorInstance.getPlayerState()));
+  audioEditorInstance.on("loadedBuffers", () => setLoadingData(false));
+
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
-      resetFilterSettings
+      resetFilterSettings, loadingData
     }}>
       {children}
     </AudioEditorContext.Provider>

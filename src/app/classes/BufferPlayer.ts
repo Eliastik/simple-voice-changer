@@ -18,26 +18,27 @@
  */
 // The audio buffer player
 // Used to play the audio buffer, with time controls, pause/play, stop and loop
+
+import EventEmitter from "./EventEmitter";
+
 // Also used in compatibility mode (which doesn't use audio buffer) with less functions (no time control)
 export default class BufferPlayer {
-    onUpdate: Function | null = null;
-    onPlayingFinished: Function | null = null;
-    onPlayingStarted: Function | null = null;
-
-    context: AudioContext | OfflineAudioContext | null = null;
-    buffer: AudioBuffer | null = null;
-    source: AudioBufferSourceNode | null = null;
+    private context: AudioContext | OfflineAudioContext | null = null;
+    private buffer: AudioBuffer | null = null;
+    private source: AudioBufferSourceNode | null = null;
     currentTime = 0;
     displayTime = 0;
     duration = 0;
-    interval: number | null = null;
+    private interval: number | null = null;
     playing = false;
     loop = false;
     compatibilityMode = false; // TODO
     speedAudio = 1; // TODO
+    private eventEmitter: EventEmitter | null;
 
-    constructor(context: AudioContext | OfflineAudioContext) {
+    constructor(context: AudioContext | OfflineAudioContext, eventEmitter?: EventEmitter) {
         this.context = context;
+        this.eventEmitter = eventEmitter || new EventEmitter();
     }
 
     init() {
@@ -95,7 +96,7 @@ export default class BufferPlayer {
             this.stop();
             this.init();
 
-            if (this.onPlayingStarted) this.onPlayingStarted();
+            this.eventEmitter?.emit("playingStarted");
 
             if (!this.compatibilityMode && this.source) {
                 this.source.start(0, this.currentTime / this.speedAudio);
@@ -117,10 +118,7 @@ export default class BufferPlayer {
                         this.reset();
                         this.start();
                     } else {
-                        if (this.onPlayingFinished != null) {
-                            this.onPlayingFinished();
-                        }
-
+                        this.eventEmitter?.emit("playingFinished");
                         this.reset();
                     }
                 } else {
@@ -135,20 +133,8 @@ export default class BufferPlayer {
         this.stop();
     }
 
-    setOnPlayingFinished(func: Function) {
-        this.onPlayingFinished = func;
-    }
-
-    setOnUpdate(func: Function) {
-        this.onUpdate = func;
-    }
-
-    setOnPlayingStarted(func: Function) {
-        this.onPlayingStarted = func;
-    }
-
     updateInfos() {
-        if (this.onUpdate) this.onUpdate();
+        this.eventEmitter?.emit("playingUpdate");
     }
 
     setTimePercent(percent: number) {
@@ -173,6 +159,10 @@ export default class BufferPlayer {
         } else {
             this.updateInfos();
         }
+    }
+
+    on(event: string, callback: Function) {
+        this.eventEmitter?.on(event, callback);
     }
 
     get currentTimeDisplay() {

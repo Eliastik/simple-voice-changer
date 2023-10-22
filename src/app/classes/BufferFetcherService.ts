@@ -3,7 +3,6 @@ import utilFunctions from "./utils/Functions";
 export default class BufferFetcherService {
 
     private context: AudioContext;
-    private arrayBuffers: Map<string, ArrayBuffer> = new Map<string, ArrayBuffer>();
     private buffers: Map<string, AudioBuffer> = new Map<string, AudioBuffer>()
     private bufferErrors: string[] = [];
 
@@ -12,12 +11,18 @@ export default class BufferFetcherService {
     }
 
     public async fetchBuffer(bufferURI: string) {
+        if(this.buffers.get(this.getKeyFromLocation(bufferURI)) != null) {
+            return;
+        }
+
         const response = await fetch(bufferURI);
 
         if(!response.ok) {
             this.bufferErrors.push(bufferURI);
         } else {
-            this.arrayBuffers.set(this.getKeyFromLocation(bufferURI), await response.arrayBuffer());
+            const arrayBuffer = await response.arrayBuffer();
+            const buffer = await this.context.decodeAudioData(arrayBuffer);
+            this.buffers.set(this.getKeyFromLocation(bufferURI), await utilFunctions.decodeBuffer(this.context, buffer));
         }
     }
 
@@ -28,13 +33,8 @@ export default class BufferFetcherService {
     }
 
     public async getAudioBuffer(filename: string): Promise<AudioBuffer | undefined> {
-        const arrayBuffer = this.arrayBuffers.get(filename);
-
-        if(this.buffers.get(filename) == null && arrayBuffer != null) {
-            const buffer = await this.context.decodeAudioData(arrayBuffer.slice(0));
-
-            this.buffers.set(filename, await utilFunctions.decodeBuffer(this.context, buffer));
-            this.arrayBuffers.delete(filename);
+        if(this.buffers.get(filename) == null) {
+            await this.fetchBuffer(filename);
         }
 
         return this.buffers.get(filename);
