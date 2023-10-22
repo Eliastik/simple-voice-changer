@@ -15,7 +15,7 @@ const AudioEditorMain = ({ }) => {
           {filters.map(filter => {
             return (
               <>
-                <FilterButton filter={filter} enabled={filterState[filter.filterId]}></FilterButton>
+                <FilterButton filter={filter} enabled={filterState[filter.filterId]} key={filter.filterId}></FilterButton>
               </>
             )
           })}
@@ -24,7 +24,7 @@ const AudioEditorMain = ({ }) => {
       </div>
       <AudioPlayer maxTime={playerState.maxTime} currentTime={playerState.currentTime} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying} looping={playerState.loop}></AudioPlayer>
       {audioProcessing && <>
-        <input type="checkbox" id="loadingAudioProcessing" className="modal-toggle" checked={true} />
+        <input type="checkbox" id="loadingAudioProcessing" className="modal-toggle" checked={true} readOnly />
         <div className="modal">
           <div className="modal-box">
             <h3 className="font-bold text-lg">Traitement en cours</h3>

@@ -26,6 +26,9 @@ interface AudioEditorContextProps {
   loadingData: boolean
 }
 
+// Construct an audio editor instance - singleton
+const audioEditorInstance = new AudioEditor();
+
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
 
 export const useAudioEditor = (): AudioEditorContextProps => {
@@ -39,9 +42,6 @@ export const useAudioEditor = (): AudioEditorContextProps => {
 interface AudioEditorProviderProps {
   children: ReactNode;
 }
-
-// Construct an audio editor instance - singleton
-const audioEditorInstance = new AudioEditor();
 
 export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) => {
   const [loadingPrincipalBuffer, setLoadingPrincipalBuffer] = useState(false);
@@ -117,7 +117,10 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
   audioEditorInstance.on("playingUpdate", () => setPlayerState(audioEditorInstance.getPlayerState()));
   audioEditorInstance.on("playingStarted", () => setPlayerState(audioEditorInstance.getPlayerState()));
-  audioEditorInstance.on("loadedBuffers", () => setLoadingData(false));
+  audioEditorInstance.on("loadedBuffers", () => {
+    setLoadingData(false);
+    setFiltersSettings(audioEditorInstance.getFiltersSettings());
+  });
 
   return (
     <AudioEditorContext.Provider value={{

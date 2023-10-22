@@ -1,6 +1,6 @@
 "use client";
 
-import AudioEditorMain from "./audioEditor/AudioEditor";
+import AudioEditorMain from "./audioEditor/AudioEditorMain";
 import HomeMenu from "./homeMenu/HomeMenu";
 import { useAudioEditor } from "../context/AudioEditorContext";
 
@@ -12,7 +12,7 @@ const MainComponent = ({ }) => {
       {!audioEditorReady && <HomeMenu></HomeMenu>}
       {audioEditorReady && <AudioEditorMain></AudioEditorMain>}
       {loadingData && <>
-        <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={true} />
+        <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={true} readOnly />
           <div className="modal">
             <div className="modal-box">
               <h3 className="font-bold text-lg">Chargement de l&apos;application</h3>
@@ -21,7 +21,7 @@ const MainComponent = ({ }) => {
           </div>
         </>}
       {loadingPrincipalBuffer && <>
-        <input type="checkbox" id="loadingBufferModal" className="modal-toggle" checked={true} />
+        <input type="checkbox" id="loadingBufferModal" className="modal-toggle" checked={true} readOnly />
           <div className="modal">
             <div className="modal-box">
               <h3 className="font-bold text-lg">Chargement du fichier audio</h3>

@@ -16,10 +16,8 @@ export default class VocoderRenderer extends AbstractAudioRenderer {
                 resolve(e.renderedBuffer);
             };
 
-            this.bufferFetcherService?.getAudioBuffer("modulator.mp3").then(modulatorBuffer => {
-                vocoder(offlineContext, modulatorBuffer, buffer);
-                offlineContext.startRendering();
-            });
+            vocoder(offlineContext, this.bufferFetcherService?.getAudioBuffer("modulator.mp3"), buffer);
+            offlineContext.startRendering();
         });
     }
     

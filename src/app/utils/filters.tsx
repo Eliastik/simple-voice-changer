@@ -90,7 +90,7 @@ const filters: Filter[] = [
     {
         filterId: "highpass",
         filterName: "Filtre passe-haut",
-        filterIcon: <svg height="1.75em" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="m231.007 68.729c0-2.206-1.787-4.995-4.007-4.995h-85.499c-6.466 0-19.531 7.705-22.66 15.97l-55.92 85.647c-3.624 5.55-11.93 10.05-18.559 10.05h-16.195c-2.206 0-3.994 2.787-3.994 5.007v8.985a4.005 4.005 0 0 0 3.998 4.007h22.713c8.832 0 20.495-8.703 23.588-16.987l56.167-84.189c3.68-5.517 12.04-9.99 18.668-9.99h77.695c2.212 0 4.005-2.797 4.005-4.994v-8.51z" fill-rule="evenodd" /></svg>,
+        filterIcon: <svg height="1.75em" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="m231.007 68.729c0-2.206-1.787-4.995-4.007-4.995h-85.499c-6.466 0-19.531 7.705-22.66 15.97l-55.92 85.647c-3.624 5.55-11.93 10.05-18.559 10.05h-16.195c-2.206 0-3.994 2.787-3.994 5.007v8.985a4.005 4.005 0 0 0 3.998 4.007h22.713c8.832 0 20.495-8.703 23.588-16.987l56.167-84.189c3.68-5.517 12.04-9.99 18.668-9.99h77.695c2.212 0 4.005-2.797 4.005-4.994v-8.51z" fillRule="evenodd" /></svg>,
         hasSettings: true,
         info: "Ce filtre permet d'atténuer les fréquences audio se trouvant en dessous d'un seuil.",
         settingsModalTitle: "Paramètres du filtre passe-haut",
@@ -110,7 +110,7 @@ const filters: Filter[] = [
     {
         filterId: "lowpass",
         filterName: "Filtre passe-bas",
-        filterIcon: <svg height="1.75em" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M24.22 67.796a3.995 3.995 0 0 1 4.008-3.991h85.498c8.834 0 19.732 6.112 24.345 13.657l53.76 87.936c3.46 5.66 11.628 10.247 18.256 10.247h16.718a3.996 3.996 0 0 1 3.994 4.007v8.985a4.007 4.007 0 0 1-4.007 4.008h-24.7c-8.835 0-19.709-6.13-24.283-13.683l-52.324-86.4c-3.43-5.665-11.577-10.257-18.202-10.257H28.214a3.995 3.995 0 0 1-3.993-3.992V67.796z" fill-rule="evenodd" /></svg>,
+        filterIcon: <svg height="1.75em" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M24.22 67.796a3.995 3.995 0 0 1 4.008-3.991h85.498c8.834 0 19.732 6.112 24.345 13.657l53.76 87.936c3.46 5.66 11.628 10.247 18.256 10.247h16.718a3.996 3.996 0 0 1 3.994 4.007v8.985a4.007 4.007 0 0 1-4.007 4.008h-24.7c-8.835 0-19.709-6.13-24.283-13.683l-52.324-86.4c-3.43-5.665-11.577-10.257-18.202-10.257H28.214a3.995 3.995 0 0 1-3.993-3.992V67.796z" fillRule="evenodd" /></svg>,
         hasSettings: true,
         info: "Ce filtre permet d'atténuer les fréquences audio se trouvant au dessus d'un seuil.",
         settingsModalTitle: "Paramètres du filtre passe-bas",
@@ -149,7 +149,7 @@ const filters: Filter[] = [
                 selectValues: [
                     {
                         name: "Medium Damping Cave E002 M2S",
-                        value: "assets/sounds/impulse_response.wav",
+                        value: "static/sounds/impulse_response.wav",
                         additionalData: {
                             size: 1350278,
                             link: "http://www.cksde.com/p_6_250.htm",
@@ -158,7 +158,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "The Dixon Studio Theatre – University of York",
-                        value: "assets/sounds/impulse_response_2.wav",
+                        value: "static/sounds/impulse_response_2.wav",
                         additionalData: {
                             size: 2304044,
                             link: "https://openairlib.net/?page_id=452",
@@ -167,7 +167,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Creswell Crags",
-                        value: "assets/sounds/impulse_response_3.wav",
+                        value: "static/sounds/impulse_response_3.wav",
                         additionalData: {
                             size: 1048220,
                             link: "https://openairlib.net/?page_id=441",
@@ -176,7 +176,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Jack Lyons Concert Hall – University of York",
-                        value: "assets/sounds/impulse_response_4.wav",
+                        value: "static/sounds/impulse_response_4.wav",
                         additionalData: {
                             size: 3072044,
                             link: "https://openairlib.net/?page_id=571",
@@ -185,7 +185,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Stairway – University of York",
-                        value: "assets/sounds/impulse_response_5.wav",
+                        value: "static/sounds/impulse_response_5.wav",
                         additionalData: {
                             size: 1728198,
                             link: "https://openairlib.net/?page_id=678",
@@ -194,7 +194,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "1st Baptist Church Nashville",
-                        value: "assets/sounds/impulse_response_6.wav",
+                        value: "static/sounds/impulse_response_6.wav",
                         additionalData: {
                             size: 2050318,
                             link: "https://openairlib.net/?page_id=406",
@@ -203,7 +203,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "R1 Nuclear Reactor Hall",
-                        value: "assets/sounds/impulse_response_7.wav",
+                        value: "static/sounds/impulse_response_7.wav",
                         additionalData: {
                             size: 5840914,
                             link: "https://openairlib.net/?page_id=626",
@@ -212,7 +212,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Maes Howe",
-                        value: "assets/sounds/impulse_response_8.wav",
+                        value: "static/sounds/impulse_response_8.wav",
                         additionalData: {
                             size: 288044,
                             link: "https://openairlib.net/?page_id=602",
@@ -221,7 +221,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Tyndall Bruce Monument",
-                        value: "assets/sounds/impulse_response_9.wav",
+                        value: "static/sounds/impulse_response_9.wav",
                         additionalData: {
                             size: 1382674,
                             link: "https://openairlib.net/?page_id=764",
@@ -230,7 +230,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Tvísöngur Sound Sculpture – Iceland",
-                        value: "assets/sounds/impulse_response_10.wav",
+                        value: "static/sounds/impulse_response_10.wav",
                         additionalData: {
                             size: 621026,
                             link: "https://openairlib.net/?page_id=752",
@@ -239,7 +239,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Usina del Arte Symphony Hall",
-                        value: "assets/sounds/impulse_response_11.wav",
+                        value: "static/sounds/impulse_response_11.wav",
                         additionalData: {
                             size: 454714,
                             link: "https://openairlib.net/?page_id=770",
@@ -248,7 +248,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Hoffmann Lime Kiln – Langcliffe, UK",
-                        value: "assets/sounds/impulse_response_12.wav",
+                        value: "static/sounds/impulse_response_12.wav",
                         additionalData: {
                             size: 1536044,
                             link: "https://openairlib.net/?page_id=518",
@@ -257,7 +257,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Innocent Railway Tunnel (middle)",
-                        value: "assets/sounds/impulse_response_13.wav",
+                        value: "static/sounds/impulse_response_13.wav",
                         additionalData: {
                             size: 5760056,
                             link: "https://openairlib.net/?page_id=525",
@@ -266,7 +266,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Hamilton Mausoleum",
-                        value: "assets/sounds/impulse_response_14.wav",
+                        value: "static/sounds/impulse_response_14.wav",
                         additionalData: {
                             size: 4320044,
                             link: "https://www.openair.hosted.york.ac.uk/?page_id=502",
@@ -275,7 +275,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Lady Chapel – St Albans Cathedral",
-                        value: "assets/sounds/impulse_response_15.wav",
+                        value: "static/sounds/impulse_response_15.wav",
                         additionalData: {
                             size: 1587706,
                             link: "https://www.openair.hosted.york.ac.uk/?page_id=595",
@@ -284,7 +284,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Sports Centre – University of York",
-                        value: "assets/sounds/impulse_response_16.wav",
+                        value: "static/sounds/impulse_response_16.wav",
                         additionalData: {
                             size: 5644996,
                             link: "https://www.openair.hosted.york.ac.uk/?page_id=665",
@@ -293,7 +293,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "Elveden Hall  – Suffolk England",
-                        value: "assets/sounds/impulse_response_17.wav",
+                        value: "static/sounds/impulse_response_17.wav",
                         additionalData: {
                             size: 1416536,
                             link: "https://www.openair.hosted.york.ac.uk/?page_id=459",
@@ -302,7 +302,7 @@ const filters: Filter[] = [
                     },
                     {
                         name: "York Guildhall Council Chamber",
-                        value: "assets/sounds/impulse_response_18.wav",
+                        value: "static/sounds/impulse_response_18.wav",
                         additionalData: {
                             size: 5760044,
                             link: "https://www.openair.hosted.york.ac.uk/?page_id=790",
@@ -334,7 +334,7 @@ const filters: Filter[] = [
                 settingId: "isDownloadEnvironment",
                 settingType: SettingFormType.DynamicLabel,
                 settingTitle: "",
-                labelValue: "Cet environnement a déjà été téléchargé temporairement sur votre appareil.",
+                labelValue: "Cet environnement a déjà été téléchargé temporairement sur votre appareil",
                 cssClass: "text-green-400",
                 startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -347,7 +347,7 @@ const filters: Filter[] = [
                 settingId: "isNotDownloadEnvironment",
                 settingType: SettingFormType.DynamicLabel,
                 settingTitle: "",
-                labelValue: "Cet environnement n'a pas encore été téléchargé. En cliquant sur valider, l'environnement sera téléchargé temporairement sur votre appareil.",
+                labelValue: "Cet environnement n'a pas encore été téléchargé. En cliquant sur valider, l'environnement sera téléchargé temporairement sur votre appareil",
                 cssClass: "text-red-400",
                 startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

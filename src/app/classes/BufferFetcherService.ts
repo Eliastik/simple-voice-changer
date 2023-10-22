@@ -32,12 +32,16 @@ export default class BufferFetcherService {
         }
     }
 
-    public async getAudioBuffer(filename: string): Promise<AudioBuffer | undefined> {
-        if(this.buffers.get(filename) == null) {
+    public getAudioBuffer(filename: string): AudioBuffer | undefined {
+        return this.buffers.get(this.getKeyFromLocation(filename));
+    }
+
+    public async getOrFetchAudioBuffer(filename: string): Promise<AudioBuffer | undefined> {
+        if(this.getAudioBuffer(filename) == null) {
             await this.fetchBuffer(filename);
         }
 
-        return this.buffers.get(filename);
+        return this.getAudioBuffer(filename);
     }
 
     private getKeyFromLocation(location: string) {

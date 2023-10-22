@@ -2,11 +2,9 @@ import AbstractAudioFilter from "../model/AbstractAudioFilter";
 import { ReverbEnvironment } from "../model/ReverbEnvironment";
 
 export default class ReverbFilter extends AbstractAudioFilter {
-    private currentBuffer: AudioBuffer | null = null;
-    private buffers: Map<string, AudioBuffer> = new Map<string, AudioBuffer>();
     private reverbEnvironment: ReverbEnvironment = {
         name: "Medium Damping Cave E002 M2S",
-        url: "assets/sounds/impulse_response.wav",
+        url: "static/sounds/impulse_response.wav",
         size: 1350278,
         addDuration: 4,
         link: "http://www.cksde.com/p_6_250.htm",
@@ -15,7 +13,7 @@ export default class ReverbFilter extends AbstractAudioFilter {
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
         const convolver = context.createConvolver();
-        convolver.buffer = this.currentBuffer;
+        convolver.buffer = this.bufferFetcherService?.getAudioBuffer(this.reverbEnvironment.url)!;
 
         return {
             input: convolver,
@@ -44,7 +42,7 @@ export default class ReverbFilter extends AbstractAudioFilter {
                     size: this.reverbEnvironment.size,
                     link: this.reverbEnvironment.link,
                     addDuration: this.reverbEnvironment.addDuration,
-                    downloaded: this.buffers.get(this.reverbEnvironment.url) != null
+                    downloaded: this.isBufferDownloaded(this.reverbEnvironment.url)
                 }
             }
         };
@@ -58,10 +56,15 @@ export default class ReverbFilter extends AbstractAudioFilter {
                 size: value.additionalData.size,
                 addDuration: value.additionalData.addDuration,
                 link: value.additionalData.link,
-                downloaded: this.buffers.get(value.value) != null
+                downloaded: this.isBufferDownloaded(value.value)
             };
         }
 
         // TODO download buffer
+    }
+
+    private isBufferDownloaded(filename: string) {
+        console.log(filename);
+        return this.bufferFetcherService?.getAudioBuffer(filename) != null;
     }
 }

@@ -9,7 +9,6 @@ import _ from "lodash";
 const getStringFromTemplate = (data: any, str?: string) =>{
     if(str) {
         const template = _.template(str);
-        console.log(JSON.parse(JSON.stringify(data)));
 
         try {
             return template(data);
