@@ -1,7 +1,7 @@
 import AbstractAudioElement from "./AbstractAudioElement";
 
 export default abstract class AbstractAudioFilter extends AbstractAudioElement {
-    private defaultSettings = {};
+    private defaultSettings: any;
 
     abstract getNode(context: BaseAudioContext): AudioFilterNodes;
     abstract getSettings(): any;
@@ -13,5 +13,11 @@ export default abstract class AbstractAudioFilter extends AbstractAudioElement {
 
     public getDefaultSettings() {
         return this.defaultSettings;
+    }
+
+    public resetSettings() {
+        Object.keys(this.defaultSettings).forEach(key => {
+            this.setSetting(key, this.defaultSettings[key]);
+        });
     }
 }

@@ -21,7 +21,8 @@ interface AudioEditorContextProps {
   loopAudioBuffer: () => void,
   setTimePlayer: (percent: number) => void,
   filtersSettings: Map<string, any>,
-  changeFilterSettings: (filterId: string, settings: any) => void
+  changeFilterSettings: (filterId: string, settings: any) => void,
+  resetFilterSettings: (filterId: string) => void
 }
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
@@ -108,12 +109,18 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const changeFilterSettings = (filterId: string, settings: any) => {
     audioEditorInstance.changeFilterSettings(filterId, settings);
     setFiltersSettings(audioEditorInstance.getFiltersSettings());
-  }
+  };
+
+  const resetFilterSettings = (filterId: string) => {
+    audioEditorInstance.resetFilterSettings(filterId);
+    setFiltersSettings(audioEditorInstance.getFiltersSettings());
+  };
 
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
-      playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings
+      playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
+      resetFilterSettings
     }}>
       {children}
     </AudioEditorContext.Provider>

@@ -15,6 +15,7 @@ import TelephonizerFilter from "./filters/TelephonizerFilter";
 import VocoderRenderer from "./filters/VocoderRenderer";
 import utils from "./utils/Functions";
 import BufferPlayer from "./BufferPlayer";
+import BufferFetcherService from "./BufferFetcherService";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -31,9 +32,21 @@ export default class AudioEditor extends AbstractAudioElement {
 
     constructor() {
         super();
+        this.bufferPlayer = new BufferPlayer(this.currentContext);
+        this.bufferFetcherService = new BufferFetcherService(this.currentContext);
+
         this.setupFilters();
         this.setupRenderers();
-        this.bufferPlayer = new BufferPlayer(this.currentContext);
+        this.fetchBuffers();
+
+        for(const filter of this.filters) {
+            filter.initializeDefaultSettings();
+            filter.bufferFetcherService = this.bufferFetcherService;
+        }
+
+        for(const renderer of this.renderers) {
+            renderer.bufferFetcherService = this.bufferFetcherService;
+        }
     }
 
     setupFilters() {
@@ -49,20 +62,20 @@ export default class AudioEditor extends AbstractAudioElement {
 
         this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter);
 
-        for(const filter of this.filters) {
-            filter.initializeDefaultSettings();
-        }
-
-        console.log(this.filters);
-
         this.entrypointFilter = soundtouchWrapper;
     }
 
     setupRenderers() {
         const returnAudio = new ReturnAudioRenderer();
-        const vocoder = new VocoderRenderer(null); // Todo
+        const vocoder = new VocoderRenderer(); // Todo
 
         this.renderers.push(returnAudio, vocoder);
+    }
+
+    fetchBuffers() {
+        this.bufferFetcherService?.fetchAllBuffers(["static/sounds/impulse_response.wav", "static/sounds/modulator.mp3"]).then(() => {
+
+        });
     }
 
     private connectNodes(context: BaseAudioContext, buffer: AudioBuffer) {
@@ -179,6 +192,14 @@ export default class AudioEditor extends AbstractAudioElement {
             Object.keys(settings).forEach(key => {
                 filter.setSetting(key, settings[key]);
             });
+        }
+    }
+
+    resetFilterSettings(filterId: string) {
+        const filter = this.filters.find(f => f.getId() === filterId);
+
+        if(filter) {
+            filter.resetSettings();
         }
     }
 

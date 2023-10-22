@@ -7,8 +7,11 @@ export default interface SettingForm {
     settingType: SettingFormType,
     minValue?: number,
     maxValue?: number,
-    selectValues?: SelectFormValue[],
     defaultValue?: string,
+    selectValues?: SelectFormValue[],
     labelValue?: string,
-    linkValue?: string
+    linkValue?: string,
+    displayCondition?: (filterSettings: any) => boolean,
+    cssClass?: string
+    startIcon?: JSX.Element
 };

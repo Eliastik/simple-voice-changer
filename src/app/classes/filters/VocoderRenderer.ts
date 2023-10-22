@@ -3,11 +3,8 @@ import utils from "../utils/Functions";
 import vocoder from "../utils/Vocoder";
 
 export default class VocoderRenderer extends AbstractAudioRenderer {
-    private modulatorBuffer: AudioBuffer | null = null; // TODO
-
-    constructor(buffer: AudioBuffer | null) {
+    constructor() {
         super();
-        this.modulatorBuffer = buffer;
     }
 
     renderAudio(context: BaseAudioContext, buffer: AudioBuffer): Promise<AudioBuffer> {
@@ -18,9 +15,11 @@ export default class VocoderRenderer extends AbstractAudioRenderer {
             offlineContext.oncomplete = e => {
                 resolve(e.renderedBuffer);
             };
-    
-            vocoder(offlineContext, this.modulatorBuffer, buffer);
-            offlineContext.startRendering();
+
+            this.bufferFetcherService?.getAudioBuffer("modulator.mp3").then(modulatorBuffer => {
+                vocoder(offlineContext, modulatorBuffer, buffer);
+                offlineContext.startRendering();
+            });
         });
     }
     
