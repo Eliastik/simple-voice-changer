@@ -1,8 +1,8 @@
 "use client";
 
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
-import SettingForm from "@/app/utils/settingForm";
-import { SettingFormType } from "@/app/utils/settingFormType";
+import SettingForm from "@/app/utils/SettingForm";
+import { SettingFormType } from "@/app/utils/SettingFormType";
 import { useEffect, useState } from "react";
 import _ from "lodash";
 

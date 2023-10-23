@@ -3,6 +3,5 @@ export interface ReverbEnvironment {
     url: string,
     size: number,
     addDuration: number,
-    link: string,
-    downloaded: boolean
+    link: string
 }

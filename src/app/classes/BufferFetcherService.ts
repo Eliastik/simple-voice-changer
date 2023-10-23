@@ -44,6 +44,10 @@ export default class BufferFetcherService {
         return this.getAudioBuffer(filename);
     }
 
+    public getDownloadedBuffersList(): string[] {
+        return Array.from(this.buffers.keys());
+    }
+
     private getKeyFromLocation(location: string) {
         return location.substring(location.lastIndexOf("/") + 1);
     }

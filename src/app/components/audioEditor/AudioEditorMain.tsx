@@ -2,7 +2,7 @@
 
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import FilterButton from "./FilterButton";
-import filters from "@/app/utils/filters";
+import filters from "@/app/utils/Filters";
 import AudioPlayer from "./AudioPlayer";
 
 const AudioEditorMain = ({ }) => {

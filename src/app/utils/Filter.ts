@@ -1,4 +1,4 @@
-import SettingForm from "./settingForm";
+import SettingForm from "./SettingForm";
 
 export default interface Filter {
     filterId: string,

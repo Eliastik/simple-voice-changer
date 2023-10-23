@@ -1,5 +1,5 @@
-import SelectFormValue from "./selectFormValue";
-import { SettingFormType } from "./settingFormType";
+import SelectFormValue from "./SelectFormValue";
+import { SettingFormType } from "./SettingFormType";
 
 export default interface SettingForm {
     settingId: string;

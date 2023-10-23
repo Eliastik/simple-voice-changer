@@ -7,8 +7,7 @@ export default class ReverbFilter extends AbstractAudioFilter {
         url: "static/sounds/impulse_response.wav",
         size: 1350278,
         addDuration: 4,
-        link: "http://www.cksde.com/p_6_250.htm",
-        downloaded: false
+        link: "http://www.cksde.com/p_6_250.htm"
     };
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
@@ -41,10 +40,10 @@ export default class ReverbFilter extends AbstractAudioFilter {
                 additionalData: {
                     size: this.reverbEnvironment.size,
                     link: this.reverbEnvironment.link,
-                    addDuration: this.reverbEnvironment.addDuration,
-                    downloaded: this.isBufferDownloaded(this.reverbEnvironment.url)
+                    addDuration: this.reverbEnvironment.addDuration
                 }
-            }
+            },
+            downloadedBuffers: this.bufferFetcherService?.getDownloadedBuffersList()
         };
     }
 
@@ -55,16 +54,10 @@ export default class ReverbFilter extends AbstractAudioFilter {
                 url: value.value,
                 size: value.additionalData.size,
                 addDuration: value.additionalData.addDuration,
-                link: value.additionalData.link,
-                downloaded: this.isBufferDownloaded(value.value)
+                link: value.additionalData.link
             };
         }
 
         // TODO download buffer
-    }
-
-    private isBufferDownloaded(filename: string) {
-        console.log(filename);
-        return this.bufferFetcherService?.getAudioBuffer(filename) != null;
     }
 }

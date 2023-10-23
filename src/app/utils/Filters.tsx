@@ -1,5 +1,5 @@
-import Filter from "./filter";
-import { SettingFormType } from "./settingFormType";
+import Filter from "./Filter";
+import { SettingFormType } from "./SettingFormType";
 
 const filters: Filter[] = [
     {
@@ -340,7 +340,12 @@ const filters: Filter[] = [
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>,
                 displayCondition: (filterSettings) => {
-                    return filterSettings.reverbEnvironment.additionalData.downloaded
+                    const url = filterSettings.reverbEnvironment.value;
+
+                    if(url) {
+                        return filterSettings.downloadedBuffers &&
+                            filterSettings.downloadedBuffers.includes(url.substring(url.lastIndexOf("/") + 1));
+                    }
                 }
             },
             {
@@ -353,7 +358,12 @@ const filters: Filter[] = [
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>,
                 displayCondition: (filterSettings) => {
-                    return !filterSettings.reverbEnvironment.additionalData.downloaded
+                    const url = filterSettings.reverbEnvironment.value;
+
+                    if(url) {
+                        return filterSettings.downloadedBuffers &&
+                            !filterSettings.downloadedBuffers.includes(url.substring(url.lastIndexOf("/") + 1));
+                    }
                 }
             }
         ]
