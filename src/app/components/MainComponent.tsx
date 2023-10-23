@@ -5,13 +5,13 @@ import HomeMenu from "./homeMenu/HomeMenu";
 import { useAudioEditor } from "../context/AudioEditorContext";
 
 const MainComponent = ({ }) => {
-  const { audioEditorReady, loadingPrincipalBuffer, loadingData } = useAudioEditor();
+  const { audioEditorReady, loadingPrincipalBuffer, downloadingInitialData } = useAudioEditor();
 
   return (
     <>
       {!audioEditorReady && <HomeMenu></HomeMenu>}
       {audioEditorReady && <AudioEditorMain></AudioEditorMain>}
-      {loadingData && <>
+      {downloadingInitialData && <>
         <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={true} readOnly />
           <div className="modal">
             <div className="modal-box">

@@ -56,8 +56,8 @@ export default class ReverbFilter extends AbstractAudioFilter {
                 addDuration: value.additionalData.addDuration,
                 link: value.additionalData.link
             };
-        }
 
-        // TODO download buffer
+            this.bufferFetcherService?.fetchBuffer(this.reverbEnvironment.url);
+        }
     }
 }

@@ -31,13 +31,13 @@ export default class AudioEditor extends AbstractAudioElement {
 
     principalBuffer: AudioBuffer | null = null;
     renderedBuffer: AudioBuffer | null = null;
-    loadingData = false;
+    downloadingInitialData = false;
 
     constructor() {
         super();
         this.eventEmitter = new EventEmitter();
         this.bufferPlayer = new BufferPlayer(this.currentContext, this.eventEmitter);
-        this.bufferFetcherService = new BufferFetcherService(this.currentContext);
+        this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
         this.setupFilters();
         this.setupRenderers();
@@ -77,15 +77,15 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     fetchBuffers() {
-        if(this.loadingData) {
+        if(this.downloadingInitialData) {
             return;
         }
 
-        this.loadingData = true;
+        this.downloadingInitialData = true;
         this.eventEmitter?.emit("loadingBuffers");
         
         this.bufferFetcherService?.fetchAllBuffers(["static/sounds/impulse_response.wav","static/sounds/modulator.mp3"]).then(() => {
-            this.loadingData = false;
+            this.downloadingInitialData = false;
             this.eventEmitter?.emit("loadedBuffers");
         });
     }

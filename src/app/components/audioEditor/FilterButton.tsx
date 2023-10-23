@@ -2,7 +2,7 @@
 
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import FilterSettingsForm from "./FilterSettingsForm";
-import Filter from "@/app/utils/filter";
+import Filter from "@/app/utils/Filter";
 
 const FilterButton = ({
     enabled,

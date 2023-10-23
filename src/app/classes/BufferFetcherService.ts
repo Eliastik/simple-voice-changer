@@ -1,3 +1,4 @@
+import EventEmitter from "./EventEmitter";
 import utilFunctions from "./utils/Functions";
 
 export default class BufferFetcherService {
@@ -5,9 +6,11 @@ export default class BufferFetcherService {
     private context: AudioContext;
     private buffers: Map<string, AudioBuffer> = new Map<string, AudioBuffer>()
     private bufferErrors: string[] = [];
+    private eventEmitter: EventEmitter | null;
 
-    constructor(context: AudioContext) {
+    constructor(context: AudioContext, eventEmitter?: EventEmitter) {
         this.context = context;
+        this.eventEmitter = eventEmitter || new EventEmitter();
     }
 
     public async fetchBuffer(bufferURI: string) {
@@ -15,15 +18,19 @@ export default class BufferFetcherService {
             return;
         }
 
+        this.eventEmitter?.emit("fetchingBuffer", bufferURI);
         const response = await fetch(bufferURI);
 
         if(!response.ok) {
             this.bufferErrors.push(bufferURI);
+            this.eventEmitter?.emit("fetchingBufferError", bufferURI);
         } else {
             const arrayBuffer = await response.arrayBuffer();
             const buffer = await this.context.decodeAudioData(arrayBuffer);
             this.buffers.set(this.getKeyFromLocation(bufferURI), await utilFunctions.decodeBuffer(this.context, buffer));
         }
+
+        this.eventEmitter?.emit("finishedFetchingBuffer", bufferURI);
     }
 
     public async fetchAllBuffers(bufferURIs: string[]) {

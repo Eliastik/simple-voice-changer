@@ -6,7 +6,7 @@ import filters from "@/app/utils/Filters";
 import AudioPlayer from "./AudioPlayer";
 
 const AudioEditorMain = ({ }) => {
-  const { audioProcessing, filterState, bufferPlaying, playerState, validateSettings } = useAudioEditor();
+  const { audioProcessing, filterState, bufferPlaying, playerState, validateSettings, downloadingBufferData } = useAudioEditor();
 
   return (
     <>
@@ -32,6 +32,15 @@ const AudioEditorMain = ({ }) => {
           </div>
         </div>
       </>}
+      {downloadingBufferData && <>
+        <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={true} readOnly />
+          <div className="modal">
+            <div className="modal-box">
+              <h3 className="font-bold text-lg">Téléchargement des données</h3>
+              <p className="py-4 flex items-center"><span className="loading loading-spinner loading-lg mr-4 text-info"></span> Merci de patienter quelques instants</p>
+            </div>
+          </div>
+        </>}
     </>
   )
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, FC } from 'react';
+import React, { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
 import AudioEditor from '../classes/AudioEditor';
 import utils from "../classes/utils/Functions";
 
@@ -23,7 +23,8 @@ interface AudioEditorContextProps {
   filtersSettings: Map<string, any>,
   changeFilterSettings: (filterId: string, settings: any) => void,
   resetFilterSettings: (filterId: string) => void,
-  loadingData: boolean
+  downloadingInitialData: boolean,
+  downloadingBufferData: boolean
 }
 
 // Construct an audio editor instance - singleton
@@ -51,7 +52,26 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [bufferPlaying, setBufferPlaying] = useState(false);
   const [playerState, setPlayerState] = useState(audioEditorInstance.getPlayerState());
   const [filtersSettings, setFiltersSettings] = useState(audioEditorInstance.getFiltersSettings());
-  const [loadingData, setLoadingData] = useState(audioEditorInstance.loadingData);
+  const [downloadingInitialData, setDownloadingInitialData] = useState(audioEditorInstance.downloadingInitialData);
+  const [downloadingBufferData, setDownloadingBufferData] = useState(false);
+
+  useEffect(() => {
+    audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
+    audioEditorInstance.on("playingUpdate", () => setPlayerState(audioEditorInstance.getPlayerState()));
+    audioEditorInstance.on("playingStarted", () => setPlayerState(audioEditorInstance.getPlayerState()));
+    audioEditorInstance.on("loadingBuffers", () => setDownloadingInitialData(true));
+    audioEditorInstance.on("fetchingBuffer", () => setDownloadingBufferData(true));
+  
+    audioEditorInstance.on("loadedBuffers", () => {
+      setDownloadingInitialData(false);
+      setFiltersSettings(audioEditorInstance.getFiltersSettings());
+    });
+  
+    audioEditorInstance.on("finishedFetchingBuffer", () => {
+      setDownloadingBufferData(false);
+      setFiltersSettings(audioEditorInstance.getFiltersSettings());
+    });
+  }, []);
 
   const loadAudioPrincipalBuffer = async (file: File) => {
     setLoadingPrincipalBuffer(true);
@@ -114,19 +134,11 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setFiltersSettings(audioEditorInstance.getFiltersSettings());
   };
 
-  audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
-  audioEditorInstance.on("playingUpdate", () => setPlayerState(audioEditorInstance.getPlayerState()));
-  audioEditorInstance.on("playingStarted", () => setPlayerState(audioEditorInstance.getPlayerState()));
-  audioEditorInstance.on("loadedBuffers", () => {
-    setLoadingData(false);
-    setFiltersSettings(audioEditorInstance.getFiltersSettings());
-  });
-
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
-      resetFilterSettings, loadingData
+      resetFilterSettings, downloadingInitialData, downloadingBufferData
     }}>
       {children}
     </AudioEditorContext.Provider>
