@@ -64,9 +64,8 @@ export default class AudioEditor extends AbstractAudioElement {
         const limiterFilter = new LimiterFilter(44100, 0, 0, 0, 3, -0.05, 0.05, 4096, 2);
         const telephonizerFilter = new TelephonizerFilter();
 
-        this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter);
-
         this.entrypointFilter = soundtouchWrapper;
+        this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper);
     }
 
     setupRenderers() {
@@ -91,9 +90,13 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     private connectNodes(context: BaseAudioContext, buffer: AudioBuffer) {
-        let previousNode: AudioNode | undefined = this.entrypointFilter?.getNode(context, buffer).input;
+        let previousNode: AudioNode | undefined = this.entrypointFilter?.getEntrypointNode(context, buffer).input;
 
         for(const filter of this.filters.sort((a, b) => a.getOrder() - b.getOrder())) {
+            if(filter == this.entrypointFilter) {
+                continue;
+            }
+
             if(filter.isEnabled()) {
                 const node = filter.getNode(context);
     

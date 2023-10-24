@@ -1,5 +1,9 @@
-import AbstractAudioElement from "./AbstractAudioElement";
+import AbstractAudioFilter from "./AbstractAudioFilter";
 
-export default abstract class AbstractAudioFilterEntrypoint extends AbstractAudioElement {
-    abstract getNode(context: BaseAudioContext, buffer: AudioBuffer): AudioFilterNodes;
+export default abstract class AbstractAudioFilterEntrypoint extends AbstractAudioFilter {
+    abstract getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer): AudioFilterNodes;
+
+    getNode(context: BaseAudioContext): AudioFilterNodes {
+        throw("Methode not implemented");
+    }
 }

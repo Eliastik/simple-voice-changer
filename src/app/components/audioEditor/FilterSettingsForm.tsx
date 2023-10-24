@@ -31,7 +31,8 @@ const FilterSettingsForm = ({
     const [currentSettings, setCurrentSettings] = useState(null);
 
     useEffect(() => {
-        setCurrentSettings(JSON.parse(JSON.stringify(filtersSettings.get(filterId))));
+        console.log(filtersSettings);
+        setCurrentSettings(_.cloneDeep(filtersSettings.get(filterId)));
     }, [filterId, filtersSettings]);
 
     return (
@@ -81,8 +82,22 @@ const FilterSettingsForm = ({
                                         <input type="number" className={`input input-bordered ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`} id={`${filterId}_${setting.settingId}`}
                                             value={currentSettings ? currentSettings[setting.settingId] : ""}
                                             step="0.1"
+                                            min={setting.minValue}
+                                            max={setting.maxValue}
                                             onChange={(e) => {
-                                                const newSettings: any = JSON.parse(JSON.stringify(currentSettings));
+                                                const newSettings: any = _.cloneDeep(currentSettings);
+                                                newSettings[setting.settingId] = e.target.value;
+                                                setCurrentSettings(newSettings);
+                                            }}></input>
+                                    )}
+                                    {setting.settingType === SettingFormType.Range && (
+                                        <input type="range" className={`range range-accent ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`} id={`${filterId}_${setting.settingId}`}
+                                            value={currentSettings ? currentSettings[setting.settingId] : ""}
+                                            step="0.1"
+                                            min={setting.minValue}
+                                            max={setting.maxValue}
+                                            onChange={(e) => {
+                                                const newSettings: any = _.cloneDeep(currentSettings);
                                                 newSettings[setting.settingId] = e.target.value;
                                                 setCurrentSettings(newSettings);
                                             }}></input>
@@ -91,7 +106,7 @@ const FilterSettingsForm = ({
                                         <select className={`select select-bordered ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`} id={`${filterId}_${setting.settingId}`}
                                             value={currentSettings ? currentSettings[setting.settingId] && (currentSettings[setting.settingId] as any).value : ""}
                                             onChange={(e) => {
-                                                const newSettings: any = JSON.parse(JSON.stringify(currentSettings));
+                                                const newSettings: any = _.cloneDeep(currentSettings);
                                                 let additionalData = null;
 
                                                 if(setting.selectValues) {
@@ -144,3 +159,7 @@ const FilterSettingsForm = ({
 };
 
 export default FilterSettingsForm;
+
+function _cloneDeep(arg0: any): import("react").SetStateAction<null> {
+    throw new Error("Function not implemented.");
+}

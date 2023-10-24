@@ -14,9 +14,7 @@ const AudioEditorMain = ({ }) => {
         <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-4 place-content-center">
           {filters.map(filter => {
             return (
-              <>
-                <FilterButton filter={filter} enabled={filterState[filter.filterId]} key={filter.filterId}></FilterButton>
-              </>
+              <FilterButton filter={filter} enabled={filterState[filter.filterId]} key={filter.filterId}></FilterButton>
             )
           })}
         </div>

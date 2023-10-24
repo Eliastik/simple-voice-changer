@@ -5,5 +5,6 @@ export enum SettingFormType {
     SimpleLabel,
     DynamicLabel,
     SimpleLink,
-    DynamicLink
+    DynamicLink,
+    Range
 }
