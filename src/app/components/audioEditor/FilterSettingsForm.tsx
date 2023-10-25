@@ -31,7 +31,6 @@ const FilterSettingsForm = ({
     const [currentSettings, setCurrentSettings] = useState(null);
 
     useEffect(() => {
-        console.log(filtersSettings);
         setCurrentSettings(_.cloneDeep(filtersSettings.get(filterId)));
     }, [filterId, filtersSettings]);
 

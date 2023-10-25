@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <AudioEditorProvider>
-      <html data-theme="light" className="h-full">
+      <html data-theme="dark" className="h-full">
         <body className={`${inter.className} h-full flex flex-col`}>
           <Navbar></Navbar>{children}
         </body>
