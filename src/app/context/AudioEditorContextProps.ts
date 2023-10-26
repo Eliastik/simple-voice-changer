@@ -20,5 +20,7 @@ export default interface AudioEditorContextProps {
     changeFilterSettings: (filterId: string, settings: any) => void,
     resetFilterSettings: (filterId: string) => void,
     downloadingInitialData: boolean,
-    downloadingBufferData: boolean
+    downloadingBufferData: boolean,
+    errorLoadingPrincipalBuffer: boolean,
+    closeErrorLoadingPrincipalBuffer: () => void
 };

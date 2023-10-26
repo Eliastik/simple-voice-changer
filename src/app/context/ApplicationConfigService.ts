@@ -1,5 +1,4 @@
 export default class ApplicationConfigService {
-
     public setCurrentTheme(theme: string) {
         localStorage.setItem("simplevoicechanger-current-theme", theme);
     }

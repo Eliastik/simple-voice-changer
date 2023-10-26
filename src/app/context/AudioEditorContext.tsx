@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
 import AudioEditor from '../classes/AudioEditor';
 import utils from "../classes/utils/Functions";
 import AudioEditorContextProps from './AudioEditorContextProps';
@@ -24,6 +24,7 @@ interface AudioEditorProviderProps {
 
 export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) => {
   const [loadingPrincipalBuffer, setLoadingPrincipalBuffer] = useState(false);
+  const [errorLoadingPrincipalBuffer, setErrorLoadingPrincipalBuffer] = useState(false);
   const [audioEditorReady, setAudioEditorReady] = useState(false);
   const [audioProcessing, setAudioProcessing] = useState(false);
   const [filterState, setFilterState] = useState(audioEditorInstance.getFiltersState());
@@ -56,15 +57,20 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const loadAudioPrincipalBuffer = async (file: File) => {
     setLoadingPrincipalBuffer(true);
 
-    const buffer = await utils.loadAudioBuffer(file);
-    audioEditorInstance.principalBuffer = buffer;
-
-    setLoadingPrincipalBuffer(false);
-    setAudioEditorReady(true);
-
-    setAudioProcessing(true);
-    await audioEditorInstance.renderAudio();
-    setAudioProcessing(false);
+    try {
+      const buffer = await utils.loadAudioBuffer(file);
+      audioEditorInstance.principalBuffer = buffer;
+  
+      setLoadingPrincipalBuffer(false);
+      setAudioEditorReady(true);
+  
+      setAudioProcessing(true);
+      await audioEditorInstance.renderAudio();
+      setAudioProcessing(false);
+    } catch(e) {
+      setLoadingPrincipalBuffer(false);
+      setErrorLoadingPrincipalBuffer(true);
+    }
   };
 
   const toggleFilter = (filterId: string) => {
@@ -114,11 +120,13 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setFiltersSettings(audioEditorInstance.getFiltersSettings());
   };
 
+  const closeErrorLoadingPrincipalBuffer = () => setErrorLoadingPrincipalBuffer(false);
+
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
-      resetFilterSettings, downloadingInitialData, downloadingBufferData
+      resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer
     }}>
       {children}
     </AudioEditorContext.Provider>
