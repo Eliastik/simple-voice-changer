@@ -1,5 +1,3 @@
-"use client";
-
 import MainComponent from "./components/MainComponent";
 
 const Home = () => {

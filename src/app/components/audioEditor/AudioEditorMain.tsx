@@ -2,8 +2,10 @@
 
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import FilterButton from "./FilterButton";
-import filters from "@/app/utils/Filters";
+import filters from "@/app/model/Filters";
 import AudioPlayer from "./AudioPlayer";
+import LoadingAudioProcessingDialog from "../dialogs/LoadingAudioProcessingDialog";
+import DownloadingBufferDialog from "../dialogs/DownloadingBufferDialog";
 
 const AudioEditorMain = ({ }) => {
   const { audioProcessing, filterState, bufferPlaying, playerState, validateSettings, downloadingBufferData } = useAudioEditor();
@@ -12,33 +14,13 @@ const AudioEditorMain = ({ }) => {
     <>
       <div className="flex justify-center items-center flex-grow gap-6 flex-col pt-20 pb-20">
         <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-4 place-content-center">
-          {filters.map(filter => {
-            return (
-              <FilterButton filter={filter} enabled={filterState[filter.filterId]} key={filter.filterId}></FilterButton>
-            )
-          })}
+          {filters.map(filter => <FilterButton filter={filter} enabled={filterState[filter.filterId]} key={filter.filterId}></FilterButton>)}
         </div>
         <button className="btn btn-accent" onClick={() => validateSettings()}>Valider les paramètres</button>
       </div>
       <AudioPlayer maxTime={playerState.maxTime} currentTime={playerState.currentTime} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying} looping={playerState.loop}></AudioPlayer>
-      {audioProcessing && <>
-        <input type="checkbox" id="loadingAudioProcessing" className="modal-toggle" checked={true} readOnly />
-        <div className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Traitement en cours</h3>
-            <p className="py-4 flex items-center"><span className="loading loading-spinner loading-lg mr-4 text-info"></span> Merci de patienter quelques instants</p>
-          </div>
-        </div>
-      </>}
-      {downloadingBufferData && <>
-        <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={true} readOnly />
-          <div className="modal">
-            <div className="modal-box">
-              <h3 className="font-bold text-lg">Téléchargement des données</h3>
-              <p className="py-4 flex items-center"><span className="loading loading-spinner loading-lg mr-4 text-info"></span> Merci de patienter quelques instants</p>
-            </div>
-          </div>
-        </>}
+      {audioProcessing && <LoadingAudioProcessingDialog></LoadingAudioProcessingDialog>}
+      {downloadingBufferData && <DownloadingBufferDialog></DownloadingBufferDialog>}
     </>
   )
 };

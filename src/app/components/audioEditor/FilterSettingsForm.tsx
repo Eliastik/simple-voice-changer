@@ -1,8 +1,8 @@
 "use client";
 
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
-import SettingForm from "@/app/utils/SettingForm";
-import { SettingFormType } from "@/app/utils/SettingFormType";
+import SettingForm from "@/app/model/SettingForm";
+import { SettingFormType } from "@/app/model/SettingFormType";
 import { useEffect, useState } from "react";
 import _ from "lodash";
 
@@ -30,9 +30,11 @@ const FilterSettingsForm = ({
     const { filtersSettings, changeFilterSettings, resetFilterSettings } = useAudioEditor();
     const [currentSettings, setCurrentSettings] = useState(null);
 
+    const filterSettings = filtersSettings && filtersSettings.get(filterId);
+
     useEffect(() => {
-        setCurrentSettings(_.cloneDeep(filtersSettings.get(filterId)));
-    }, [filterId, filtersSettings]);
+        setCurrentSettings(_.cloneDeep(filterSettings));
+    }, [filterId, filterSettings]);
 
     return (
         <>
@@ -143,11 +145,9 @@ const FilterSettingsForm = ({
                     <form method="dialog">
                         <button className="btn btn-neutral mr-2" onClick={() => {
                             changeFilterSettings(filterId, currentSettings);
-                            setCurrentSettings(null);
                         }}>Valider</button>
                         <button className="btn btn-error" onClick={(e) => {
                             resetFilterSettings(filterId);
-                            setCurrentSettings(null);
                             e.preventDefault();
                         }}>Réinitialiser</button>
                     </form>

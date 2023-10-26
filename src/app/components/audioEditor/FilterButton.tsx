@@ -1,8 +1,7 @@
-"use client";
-
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
-import FilterSettingsForm from "./FilterSettingsForm";
-import Filter from "@/app/utils/Filter";
+import Filter from "@/app/model/Filter";
+import FilterInfoDialog from "../dialogs/FilterInfoDialog";
+import FilterSettingsDialog from "../dialogs/FilterSettingsDialog";
 
 const FilterButton = ({
     enabled,
@@ -33,25 +32,8 @@ const FilterButton = ({
                     </button>
                 </div>
             </div>
-            <dialog id={`modalInfos_${filter.filterId}`} className="modal">
-                <div className="modal-box">
-                    <h3 className="font-bold text-lg">Informations sur le filtre</h3>
-                    <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                    </form>
-                    <p className="py-4">{filter.info}</p>
-                    <div className="modal-action">
-                        <form method="dialog">
-                            <button className="btn">OK</button>
-                        </form>
-                    </div>
-                </div>
-            </dialog>
-            {filter.settingsForm &&
-                <dialog id={`modalSettings_${filter.filterId}`} className="modal">
-                    <FilterSettingsForm filterId={filter.filterId} settingsModalTitle={filter.settingsModalTitle} settingsForm={filter.settingsForm} firstColumnStyle={filter.firstColumnStyle} secondColumnStyle={filter.secondColumStyle}></FilterSettingsForm>
-                </dialog>
-            }
+            <FilterInfoDialog filter={filter}></FilterInfoDialog>
+            {filter.settingsForm && <FilterSettingsDialog filter={filter}></FilterSettingsDialog>}
         </>
     )
 };

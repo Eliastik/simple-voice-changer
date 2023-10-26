@@ -49,6 +49,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
       setDownloadingBufferData(false);
       setFiltersSettings(audioEditorInstance.getFiltersSettings());
     });
+
+    setDownloadingInitialData(audioEditorInstance.downloadingInitialData);
   }, []);
 
   const loadAudioPrincipalBuffer = async (file: File) => {

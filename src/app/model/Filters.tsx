@@ -12,7 +12,7 @@ const filters: Filter[] = [
         settingsForm: [
             {
                 settingId: "labelInfo",
-                settingTitle: "Vous pouvez régler ici la vitesse du son ainsi que la modification de sa fréquence.",
+                settingTitle: "Vous pouvez régler ici la vitesse de l'audio ainsi que sa fréquence (aigu/grave).",
                 settingType: SettingFormType.SimpleLabel
             },
             {
@@ -126,7 +126,7 @@ const filters: Filter[] = [
         settingsForm: [
             {
                 settingId: "labelInfo",
-                settingTitle: "Vous pouvez régler ici les paramètres du filtre passe-bas.",
+                settingTitle: "Vous pouvez régler ici les paramètres du filtre passe-haut.",
                 settingType: SettingFormType.SimpleLabel
             },
             {
@@ -344,7 +344,7 @@ const filters: Filter[] = [
                 settingId: "bufferSize",
                 settingType: SettingFormType.DynamicLabel,
                 settingTitle: "",
-                startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
                 </svg>,
                 labelValue: "Taille : ${(reverbEnvironment.additionalData.size / 1000000).toFixed(2).replace('.', ',')} Mo"
@@ -355,7 +355,7 @@ const filters: Filter[] = [
                 settingTitle: "",
                 labelValue: "Source",
                 linkValue: "${reverbEnvironment.additionalData.link}",
-                startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
                 </svg>
             },
@@ -365,7 +365,7 @@ const filters: Filter[] = [
                 settingTitle: "",
                 labelValue: "Cet environnement a déjà été téléchargé temporairement sur votre appareil",
                 cssClass: "text-green-400",
-                startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>,
                 displayCondition: (filterSettings) => {
@@ -383,7 +383,7 @@ const filters: Filter[] = [
                 settingTitle: "",
                 labelValue: "Cet environnement n'a pas encore été téléchargé. En cliquant sur valider, l'environnement sera téléchargé temporairement sur votre appareil",
                 cssClass: "text-red-400",
-                startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>,
                 displayCondition: (filterSettings) => {
