@@ -36,6 +36,10 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [errorDownloadingBufferData, setErrorDownloadingBufferData] = useState(false);
 
   useEffect(() => {
+    if(audioEditorInstance != null) {
+      return;
+    }
+
     audioEditorInstance = new AudioEditor(new AudioContext());
 
     audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
