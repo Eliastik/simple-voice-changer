@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, FC } from 'react';
+import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
 import ApplicationConfigContextProps from './ApplicationConfigContextProps';
 import ApplicationConfigService from './ApplicationConfigService';
 
@@ -19,8 +19,13 @@ interface ApplicationConfigProviderProps {
 }
 
 export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ children }) => {
-  const [currentTheme, setCurrentTheme] = useState(applicationConfigService.getCurrentTheme());
-  const [currentThemeValue, setCurrentThemeValue] = useState(applicationConfigService.getCurrentThemePreference());
+  const [currentTheme, setCurrentTheme] = useState("dark");
+  const [currentThemeValue, setCurrentThemeValue] = useState("auto");
+
+  useEffect(() => {
+    setCurrentTheme(applicationConfigService.getCurrentTheme());
+    setCurrentThemeValue(applicationConfigService.getCurrentThemePreference());
+  }, []);
 
   const setTheme = (theme: string) => {
     applicationConfigService.setCurrentTheme(theme);

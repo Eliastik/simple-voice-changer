@@ -20,21 +20,22 @@ import EventEmitter from "./EventEmitter";
 
 export default class AudioEditor extends AbstractAudioElement {
 
-    private currentContext = new AudioContext();
-
+    private currentContext: AudioContext | null;
     private entrypointFilter: AbstractAudioFilterEntrypoint | null = null;
     private filters: AbstractAudioFilter[] = [];
     private renderers: AbstractAudioRenderer[] = [];
     private currentNode: AudioNode | undefined;
     private bufferPlayer: BufferPlayer | undefined;
     private eventEmitter: EventEmitter | undefined;
+    private renderedBuffer: AudioBuffer | null = null;
 
     principalBuffer: AudioBuffer | null = null;
-    renderedBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
 
-    constructor() {
+    constructor(context: AudioContext) {
         super();
+
+        this.currentContext = context;
         this.eventEmitter = new EventEmitter();
         this.bufferPlayer = new BufferPlayer(this.currentContext, this.eventEmitter);
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
@@ -112,6 +113,11 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     async renderAudio(): Promise<void> {
+        if(!this.currentContext) {
+            console.error("AudioContext is not yet available");
+            return;
+        }
+
         this.currentContext.resume();
 
         const durationAudio = utils.calcAudioDuration(this.principalBuffer!, 1, false, 1, false);

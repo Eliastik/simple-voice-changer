@@ -1,10 +1,12 @@
 export default class ApplicationConfigService {
     public setCurrentTheme(theme: string) {
-        localStorage.setItem("simplevoicechanger-current-theme", theme);
+        if(typeof window !== "undefined") {
+            window.localStorage.setItem("simplevoicechanger-current-theme", theme);
+        }
     }
 
     public getCurrentThemePreference(): string {
-        const setting = localStorage.getItem("simplevoicechanger-current-theme");
+        const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-current-theme") : "auto";
 
         if(!setting || setting == "auto") {
             return "auto";
@@ -24,7 +26,7 @@ export default class ApplicationConfigService {
     }
 
     private getUserThemePreference(): string {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        if (typeof window !== "undefined" && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             return "dark";
         }
 
