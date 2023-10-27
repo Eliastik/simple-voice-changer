@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
 import ApplicationConfigContextProps from './ApplicationConfigContextProps';
 import ApplicationConfigService from './ApplicationConfigService';

@@ -1,3 +1,5 @@
+"use client";
+
 import { Inter } from "next/font/google";
 import Navbar from "./components/navbar/navbar";
 import { useApplicationConfig } from "./context/ApplicationConfigContext";
