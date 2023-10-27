@@ -19,18 +19,24 @@ export default class BufferFetcherService {
         }
 
         this.eventEmitter?.emit("fetchingBuffer", bufferURI);
-        const response = await fetch(bufferURI);
 
-        if(!response.ok) {
+        try {
+            const response = await fetch(bufferURI);
+
+            if(!response.ok) {
+                this.bufferErrors.push(bufferURI);
+                this.eventEmitter?.emit("fetchingBufferError", bufferURI);
+            } else {
+                const arrayBuffer = await response.arrayBuffer();
+                const buffer = await this.context.decodeAudioData(arrayBuffer);
+                this.buffers.set(this.getKeyFromLocation(bufferURI), await utilFunctions.decodeBuffer(this.context, buffer));
+            }
+    
+            this.eventEmitter?.emit("finishedFetchingBuffer", bufferURI);
+        } catch(e) {
             this.bufferErrors.push(bufferURI);
             this.eventEmitter?.emit("fetchingBufferError", bufferURI);
-        } else {
-            const arrayBuffer = await response.arrayBuffer();
-            const buffer = await this.context.decodeAudioData(arrayBuffer);
-            this.buffers.set(this.getKeyFromLocation(bufferURI), await utilFunctions.decodeBuffer(this.context, buffer));
         }
-
-        this.eventEmitter?.emit("finishedFetchingBuffer", bufferURI);
     }
 
     public async fetchAllBuffers(bufferURIs: string[]) {

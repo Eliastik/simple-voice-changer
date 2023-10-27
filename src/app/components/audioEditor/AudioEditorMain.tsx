@@ -6,6 +6,7 @@ import filters from "@/app/model/Filters";
 import AudioPlayer from "./AudioPlayer";
 import LoadingAudioProcessingDialog from "../dialogs/LoadingAudioProcessingDialog";
 import DownloadingBufferDialog from "../dialogs/DownloadingBufferDialog";
+import ErrorDownloadingBufferDialog from "../dialogs/ErrorDownloadingBufferDialog";
 
 const AudioEditorMain = ({ }) => {
   const { audioProcessing, filterState, bufferPlaying, playerState, validateSettings, downloadingBufferData } = useAudioEditor();
@@ -21,6 +22,8 @@ const AudioEditorMain = ({ }) => {
       <AudioPlayer maxTime={playerState.maxTime} currentTime={playerState.currentTime} currentTimeDisplay={playerState.currentTimeDisplay} maxTimeDisplay={playerState.maxTimeDisplay} playing={bufferPlaying} looping={playerState.loop}></AudioPlayer>
       {audioProcessing && <LoadingAudioProcessingDialog></LoadingAudioProcessingDialog>}
       {downloadingBufferData && <DownloadingBufferDialog></DownloadingBufferDialog>}
+      {downloadingBufferData && <DownloadingBufferDialog></DownloadingBufferDialog>}
+      <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>
     </>
   )
 };

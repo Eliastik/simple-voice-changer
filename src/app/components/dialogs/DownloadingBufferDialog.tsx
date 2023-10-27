@@ -2,7 +2,6 @@ const DownloadingBufferDialog = () => {
     return (
         <>
             <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={true} readOnly />
-            <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={true} readOnly />
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Téléchargement des données</h3>

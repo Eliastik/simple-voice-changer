@@ -33,6 +33,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [filtersSettings, setFiltersSettings] = useState(audioEditorInstance.getFiltersSettings());
   const [downloadingInitialData, setDownloadingInitialData] = useState(audioEditorInstance.downloadingInitialData);
   const [downloadingBufferData, setDownloadingBufferData] = useState(false);
+  const [errorDownloadingBufferData, setErrorDownloadingBufferData] = useState(false);
 
   useEffect(() => {
     audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
@@ -49,6 +50,11 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     audioEditorInstance.on("finishedFetchingBuffer", () => {
       setDownloadingBufferData(false);
       setFiltersSettings(audioEditorInstance.getFiltersSettings());
+    });
+  
+    audioEditorInstance.on("fetchingBufferError", () => {
+      setDownloadingBufferData(false);
+      setErrorDownloadingBufferData(true);
     });
 
     setDownloadingInitialData(audioEditorInstance.downloadingInitialData);
@@ -121,12 +127,14 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   };
 
   const closeErrorLoadingPrincipalBuffer = () => setErrorLoadingPrincipalBuffer(false);
+  const closeErrorDownloadingBufferData = () => setErrorDownloadingBufferData(false);
 
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
-      resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer
+      resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData,
+      closeErrorDownloadingBufferData
     }}>
       {children}
     </AudioEditorContext.Provider>
