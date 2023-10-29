@@ -1,15 +1,21 @@
 "use client";
 
+import { useEffect } from "react";
 import { Inter } from "next/font/google";
 import Navbar from "./components/navbar/navbar";
 import { useApplicationConfig } from "./context/ApplicationConfigContext";
+import "./i18n";
 
 const inter = Inter({ subsets: ['latin'] })
 
 const LayoutChild = ({
     children,
 }: { children: React.ReactNode }) => {
-    const { currentTheme } = useApplicationConfig();
+    const { currentTheme, setupLanguage } = useApplicationConfig();
+
+    useEffect(() => {
+        setupLanguage();
+    });
     
     return (
         <html data-theme={currentTheme ? currentTheme : "dark"} className="h-full">

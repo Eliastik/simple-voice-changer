@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
 import ApplicationConfigContextProps from './ApplicationConfigContextProps';
 import ApplicationConfigService from './ApplicationConfigService';
+import i18next from 'i18next';
 
 const applicationConfigService = new ApplicationConfigService();
 
@@ -23,6 +24,7 @@ interface ApplicationConfigProviderProps {
 export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ children }) => {
   const [currentTheme, setCurrentTheme] = useState("dark");
   const [currentThemeValue, setCurrentThemeValue] = useState("auto");
+  const [currentLanguageValue, setCurrentLanguageValue] = useState("en");
 
   useEffect(() => {
     setCurrentTheme(applicationConfigService.getCurrentTheme());
@@ -35,9 +37,20 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     setCurrentThemeValue(applicationConfigService.getCurrentThemePreference());
   };
 
+  const setupLanguage = () => {
+    const lng = applicationConfigService.getCurrentLanguagePreference();
+    i18next.changeLanguage(lng);
+    setCurrentLanguageValue(lng)
+  };
+
+  const setLanguage = (lng: string) => {
+    applicationConfigService.setCurrentLanguage(lng);
+    setupLanguage();
+  };
+
   return (
     <ApplicationConfigContext.Provider value={{
-      currentTheme, currentThemeValue, setTheme
+      currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage
     }}>
       {children}
     </ApplicationConfigContext.Provider>

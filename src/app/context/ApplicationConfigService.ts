@@ -1,6 +1,6 @@
 export default class ApplicationConfigService {
     public setCurrentTheme(theme: string) {
-        if(typeof window !== "undefined") {
+        if (typeof window !== "undefined") {
             window.localStorage.setItem("simplevoicechanger-current-theme", theme);
         }
     }
@@ -8,7 +8,7 @@ export default class ApplicationConfigService {
     public getCurrentThemePreference(): string {
         const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-current-theme") : "auto";
 
-        if(!setting || setting == "auto") {
+        if (!setting || setting == "auto") {
             return "auto";
         }
 
@@ -18,7 +18,7 @@ export default class ApplicationConfigService {
     public getCurrentTheme(): string {
         const setting = this.getCurrentThemePreference();
 
-        if(setting == "auto") {
+        if (setting == "auto") {
             return this.getUserThemePreference();
         }
 
@@ -31,5 +31,39 @@ export default class ApplicationConfigService {
         }
 
         return "light";
+    }
+
+    public setCurrentLanguage(lng: string) {
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem("simplevoicechanger-current-language", lng);
+        }
+    }
+
+    public getCurrentLanguagePreference() {
+        const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-current-language") : null;
+
+        if (!setting) {
+            return this.getUserLanguage().split("-")[0];
+        }
+
+        return setting.split("-")[0];
+    }
+
+    private getUserLanguage() {
+        const found = [];
+
+        if (typeof navigator !== 'undefined') {
+            if (navigator.languages) {
+                for (let i = 0; i < navigator.languages.length; i++) {
+                    found.push(navigator.languages[i]);
+                }
+            }
+
+            if (navigator.language) {
+                found.push(navigator.language);
+            }
+        }
+
+        return found.length > 0 ? found[0] : "en";
     }
 }
