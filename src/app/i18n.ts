@@ -59,9 +59,23 @@ const resources = {
                     "title": "Audio processing in progress"
                 }
             },
+            filters: {
+                soundtouch: {
+                    "name": "Change speed / frequency",
+                    "info": "This filter lets you not only change the speed of the audio, but also its frequency. You can make the audio sound higher or lower.",
+                    settings: {
+                        "title": "Settings of the filter Change speed / frequency",
+                        "label": "Here you can set audio speed and frequency (high/low).",
+                        "speedAudio": "Audio speed:",
+                        "audioFrequency": "Audio frequency:"
+                    }
+                }
+            },
             close: "Close",
             ok: "OK",
-            cancel: "Cancel"
+            cancel: "Cancel",
+            validate: "Validate",
+            reset: "Reset"
         }
     },
     fr: {
@@ -117,9 +131,23 @@ const resources = {
                     "title": "Traitement audio en cours"
                 }
             },
+            filters: {
+                soundtouch: {
+                    "name": "Modifier la vitesse / fréquence",
+                    "info": "Ce filtre vous permet de modifier la vitesse de l'audio, mais également de modifier sa fréquence. Vous pouvez ainsi rendre l'audio plus aigu ou plus grave.",
+                    settings: {
+                        "title": "Paramètres du filtre Modifier la vitesse / fréquence",
+                        "label": "Vous pouvez régler ici la vitesse de l'audio ainsi que sa fréquence (aigu/grave).",
+                        "speedAudio": "Vitesse de l'audio :",
+                        "audioFrequency": "Fréquence de l'audio :"
+                    }
+                }
+            },
             close: "Fermer",
             ok: "OK",
-            cancel: "Annuler"
+            cancel: "Annuler",
+            validate: "Valider",
+            reset: "Réinitialiser"
         }
     }
 };

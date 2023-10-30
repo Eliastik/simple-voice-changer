@@ -5,6 +5,7 @@ import SettingForm from "@/app/model/SettingForm";
 import { SettingFormType } from "@/app/model/SettingFormType";
 import { useEffect, useState } from "react";
 import _ from "lodash";
+import { useTranslation } from "react-i18next";
 
 const getStringFromTemplate = (data: any, str?: string) =>{
     if(str) {
@@ -29,6 +30,7 @@ const FilterSettingsForm = ({
 }: { filterId: string, settingsModalTitle?: string, settingsForm?: SettingForm[], firstColumnStyle?: string, secondColumnStyle?: string }) => {
     const { filtersSettings, changeFilterSettings, resetFilterSettings } = useAudioEditor();
     const [currentSettings, setCurrentSettings] = useState(null);
+    const { t } = useTranslation();
 
     const filterSettings = filtersSettings && filtersSettings.get(filterId);
 
@@ -39,7 +41,7 @@ const FilterSettingsForm = ({
     return (
         <>
             <div className="modal-box">
-                <h3 className="font-bold text-lg">{settingsModalTitle}</h3>
+                {settingsModalTitle && <h3 className="font-bold text-lg">{t(settingsModalTitle)}</h3>}
                 <form method="dialog">
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                 </form>
@@ -53,12 +55,12 @@ const FilterSettingsForm = ({
                             <div className={`mt-3 ${setting.cssClass || ""}`} key={setting.settingId}>
                                 <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
                                     {setting.settingType && setting.settingType !== SettingFormType.SimpleLabel && <div className={firstColumnStyle ? firstColumnStyle : "md:w-3/6"}>
-                                        <label htmlFor={`${filterId}_${setting.settingId}`}>{setting.settingTitle}</label>
+                                        <label htmlFor={`${filterId}_${setting.settingId}`}>{t(setting.settingTitle)}</label>
                                     </div>}
                                     {setting.settingType === SettingFormType.SimpleLabel &&
                                         <p className="font-light text-base flex flex-row gap-x-3 items-center">
                                             {setting.startIcon && <span>{setting.startIcon}</span>}
-                                            <span>{setting.settingTitle ? setting.settingTitle : setting.labelValue}</span>
+                                            <span>{t(setting.settingTitle ? setting.settingTitle : setting.labelValue!)}</span>
                                         </p>
                                     }
                                     {setting.settingType === SettingFormType.DynamicLabel &&
@@ -70,7 +72,7 @@ const FilterSettingsForm = ({
                                     {setting.settingType === SettingFormType.SimpleLink &&
                                         <p className={`font-light text-md flex flex-row gap-x-3 items-center ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`}>
                                             {setting.startIcon && <span>{setting.startIcon}</span>}
-                                            <span><a href={setting.linkValue} target="_blank" className="link link-info link-hover">{setting.labelValue}</a></span>
+                                            <span><a href={setting.linkValue} target="_blank" className="link link-info link-hover">{t(setting.labelValue!)}</a></span>
                                         </p>
                                     }
                                     {setting.settingType === SettingFormType.DynamicLink &&
@@ -129,7 +131,7 @@ const FilterSettingsForm = ({
                                                     setting.selectValues && setting.selectValues.map((option => {
                                                         return (
                                                             <option value={option.value} key={option.name}>
-                                                                {option.name}
+                                                                {t(option.name)}
                                                             </option>
                                                         );
                                                     }))
@@ -145,11 +147,11 @@ const FilterSettingsForm = ({
                     <form method="dialog">
                         <button className="btn btn-neutral mr-2" onClick={() => {
                             changeFilterSettings(filterId, currentSettings);
-                        }}>Valider</button>
+                        }}>{t("validate")}</button>
                         <button className="btn btn-error" onClick={(e) => {
                             resetFilterSettings(filterId);
                             e.preventDefault();
-                        }}>Réinitialiser</button>
+                        }}>{t("reset")}</button>
                     </form>
                 </div>
             </div>

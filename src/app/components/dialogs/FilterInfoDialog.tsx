@@ -14,7 +14,7 @@ const FilterInfoDialog = ({
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <p className="py-4">{filter.info}</p>
+                    <p className="py-4">{t(filter.info)}</p>
                     <div className="modal-action">
                         <form method="dialog">
                             <button className="btn">{t("ok")}</button>

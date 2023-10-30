@@ -2,12 +2,14 @@ import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import Filter from "@/app/model/Filter";
 import FilterInfoDialog from "../dialogs/FilterInfoDialog";
 import FilterSettingsDialog from "../dialogs/FilterSettingsDialog";
+import { useTranslation } from "react-i18next";
 
 const FilterButton = ({
     enabled,
     filter
 }: { enabled: boolean, filter: Filter }) => {
     const { toggleFilter } = useAudioEditor();
+    const { t } = useTranslation();
 
     return (
         <>
@@ -16,7 +18,7 @@ const FilterButton = ({
                     <div>
                         {filter.filterIcon}
                     </div>
-                    <div>{filter.filterName}</div>
+                    <div>{t(filter.filterName)}</div>
                 </button>
                 <div className="flex join">
                     {filter.hasSettings && <button className={`btn flex-grow p-0 flex-col border-l-0 border-b-0 h-1 border-t-1 rounded-t-none rounded-br-none ${enabled ? "btn-secondary border-t-primary border-r-primary hover:border-t-primary hover:border-r-primary" : "border-t-base-300 border-r-base-300 hover:border-t-base-300 hover:border-r-base-300"}`} onClick={() => filter.settingsForm && (document.getElementById(`modalSettings_${filter.filterId}`) as any).showModal()}>
