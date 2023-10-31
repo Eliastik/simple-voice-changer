@@ -66,7 +66,7 @@ const FilterSettingsForm = ({
                                     {setting.settingType === SettingFormType.DynamicLabel &&
                                         <p className={`font-light text-md flex flex-row gap-x-3 items-center ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`}>
                                             {setting.startIcon && <span>{setting.startIcon}</span>}
-                                            <span>{getStringFromTemplate(currentSettings, setting.labelValue)}</span>
+                                            <span>{getStringFromTemplate(currentSettings, t(setting.labelValue!))}</span>
                                         </p>
                                     }
                                     {setting.settingType === SettingFormType.SimpleLink &&
@@ -78,7 +78,7 @@ const FilterSettingsForm = ({
                                     {setting.settingType === SettingFormType.DynamicLink &&
                                         <p className={`font-light text-md flex flex-row gap-x-3 items-center ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`}>
                                             {setting.startIcon && <span>{setting.startIcon}</span>}
-                                            <span><a href={getStringFromTemplate(currentSettings, setting.linkValue)} target="_blank" className="link link-info link-hover">{getStringFromTemplate(currentSettings, setting.labelValue)}</a></span>
+                                            <span><a href={getStringFromTemplate(currentSettings, setting.linkValue)} target="_blank" className="link link-info link-hover">{getStringFromTemplate(currentSettings, t(setting.labelValue!))}</a></span>
                                         </p>
                                     }
                                     {setting.settingType === SettingFormType.NumberField && (

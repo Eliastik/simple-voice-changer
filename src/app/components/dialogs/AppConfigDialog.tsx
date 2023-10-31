@@ -29,9 +29,9 @@ const AppConfigDialog = () => {
           <div className="mt-3">
             <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
               <div className="md:w-4/6">
-                <label htmlFor="colorTheme">{t("appSettings.language")}</label>
+                <label htmlFor="selectLanguage">{t("appSettings.language")}</label>
               </div>
-              <select className="select select-bordered md:w-4/6"id="colorTheme" value={currentLanguageValue} onChange={e => setLanguage(e.target.value)}>
+              <select className="select select-bordered md:w-4/6" id="selectLanguage" value={currentLanguageValue} onChange={e => setLanguage(e.target.value)}>
                 {i18next.languages.map(language => {
                   return <option value={language} key={language}>{t("languages." + language)}</option>;
                 })}
