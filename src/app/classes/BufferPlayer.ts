@@ -33,7 +33,7 @@ export default class BufferPlayer {
     playing = false;
     loop = false;
     compatibilityMode = false; // TODO
-    speedAudio = 1; // TODO
+    speedAudio = 1;
     private eventEmitter: EventEmitter | null;
 
     constructor(context: AudioContext | OfflineAudioContext, eventEmitter?: EventEmitter) {

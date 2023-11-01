@@ -61,4 +61,8 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
                 break;
         }
     }
+
+    getSpeed(): number {
+        return this.speedAudio;
+    }
 }

@@ -120,7 +120,8 @@ export default class AudioEditor extends AbstractAudioElement {
 
         this.currentContext.resume();
 
-        const durationAudio = utils.calcAudioDuration(this.principalBuffer!, 1, false, 1, false);
+        const speedAudio = this.entrypointFilter?.getSpeed()!;
+        const durationAudio = this.calculateAudioDuration(speedAudio);
         const offlineContext = new OfflineAudioContext(2, this.currentContext.sampleRate * durationAudio, this.currentContext.sampleRate);
 
         let currentBuffer = this.principalBuffer!;
@@ -140,8 +141,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.currentNode!.connect(offlineContext.destination);
 
         this.renderedBuffer = await offlineContext.startRendering();
-        //this.bufferPlayer!.setOnPlayingFinished(null);
-        this.bufferPlayer!.speedAudio = 1; // TODO
+        this.bufferPlayer!.speedAudio = speedAudio;
         this.bufferPlayer!.loadBuffer(this.renderedBuffer);
 
         /*if(!compatModeChecked) {
@@ -153,6 +153,27 @@ export default class AudioEditor extends AbstractAudioElement {
 
             compatModeChecked = true;
         }*/
+    }
+
+    private calculateAudioDuration(speedAudio: number): number {
+        let reverb = false;
+        let reverbAddDuration = 1;
+        let echo = false;
+
+        for(const filter of this.filters) {
+            if(filter.isEnabled()) {
+                if(filter.getId() == "reverb") {
+                    reverb = true;
+                    reverbAddDuration = filter.getSettings().reverbEnvironment.additionalData.addDuration;
+                }
+
+                if(filter.getId() == "echo") {
+                    echo = true;
+                }
+            }
+        }
+
+        return utils.calcAudioDuration(this.principalBuffer!, speedAudio, reverb, reverbAddDuration, echo);
     }
 
     getOrder(): number {

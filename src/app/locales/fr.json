@@ -1,0 +1,161 @@
+{
+    "translation": {
+        "appSettings": {
+            "title": "Paramètres de l'application",
+            "colorTheme": "Thème de couleurs :",
+            "colorThemeAuto": "Thème de l'appareil",
+            "colorThemeLight": "Thème clair",
+            "colorThemeDark": "Thème sombre",
+            "language": "Langue :"
+        },
+        "homeMenu": {
+            "selectAudioFile": "Sélectionner un fichier audio",
+            "recMicrophone": "Enregistrer via le micro"
+        },
+        "audioEditorMain": {
+            "validateSettings": "Valider les paramètres"
+        },
+        "audioPlayer": {
+            "play": "Lire",
+            "pause": "Pause",
+            "loop": "Lire en boucle",
+            "save": "Sauvegarder l'audio"
+        },
+        "dialogs": {
+            "pleaseWait": "Merci de patienter quelques instants",
+            "bufferDownloading": {
+                "title": "Téléchargement des données"
+            },
+            "bufferDownloadingError": {
+                "title": "Erreur lors du téléchargement des données",
+                "info": "Vérifiez votre connexion Internet, puis réessayez."
+            },
+            "fileOpenError": {
+                "title": "Erreur lors de l'ouverture du fichier",
+                "info": "Assurez-vous que le fichier que vous avez sélectionné soit bien un fichier audio correct, puis réessayez."
+            },
+            "filterInformations": {
+                "title": "Informations sur le filtre"
+            },
+            "goToHome": {
+                "title": "Retourner à l'accueil",
+                "info": "Êtes-vous sûr de vouloir quitter et retourner à l'accueil de l'application ? Vous perdrez toutes vos modifications non enregistrées."
+            },
+            "loadingApp": {
+                "title": "Chargement de l'application"
+            },
+            "loadingAudioFile": {
+                "title": "Chargement du fichier audio"
+            },
+            "processing": {
+                "title": "Traitement audio en cours"
+            }
+        },
+        "filters": {
+            "soundtouch": {
+                "name": "Modifier la vitesse / fréquence",
+                "info": "Ce filtre vous permet de modifier la vitesse de l'audio, mais également de modifier sa fréquence. Vous pouvez ainsi rendre l'audio plus aigu ou plus grave.",
+                "settings": {
+                    "title": "Paramètres du filtre Modifier la vitesse / fréquence",
+                    "label": "Vous pouvez régler ici la vitesse de l'audio ainsi que sa fréquence (aigu/grave).",
+                    "speedAudio": "Vitesse de l'audio :",
+                    "audioFrequency": "Fréquence de l'audio :"
+                }
+            },
+            "bassboost": {
+                "name": "Boost des basses",
+                "info": "Ce filtre vous permet d'augmenter les basses de l'audio. Vous pouvez paramétrer la fréquence qui sera boostée ainsi que la puissance de boost (en dB). Il est conseillé d'utiliser cet outil conjointement avec le limiteur, pour éviter d'obtenir une saturation désagréable.",
+                "settings": {
+                    "title": "Paramètres du booster de basses",
+                    "label": "Vous pouvez régler ici les paramètres du booster des basses.",
+                    "frequencyBoost": "Fréquence de boost (booste les fréquences égales ou en dessous - en Hz) :",
+                    "gainBoost": "Gain de boost (en dB) :",
+                    "attenuateFrequency": "Fréquence d'atténuation (atténue les fréquences au dessus - en Hz) :",
+                    "gainAttenuate": "Gain d'atténuation (en dB) :"
+                }
+            },
+            "bitcrusher": {
+                "name": "Effet 8-bit",
+                "info": "Ce filtre vous permet d'obtenir un effet similaire au son produit par les consoles de jeux vidéo rétro.",
+                "settings": {
+                    "title": "Paramètres du filtre d'effet 8-bits",
+                    "label": "Vous pouvez régler ici les paramètres du filtre d'effet 8-bits.",
+                    "resolution": "Résolution :",
+                    "cutoffFrequency": "Fréquence d'écrêtage :"
+                }
+            },
+            "echo": {
+                "name": "Écho",
+                "info": "Ce filtre vous permet d'obtenir un effet d'écho paramétrable.",
+                "settings": {
+                    "title": "Paramètres du filtre d'écho",
+                    "label": "Vous pouvez régler ici les paramètres du filtre d'écho.",
+                    "delay": "Délai (en secondes) :",
+                    "gain": "Gain (en dB) :"
+                }
+            },
+            "highpass": {
+                "name": "Filtre passe-haut",
+                "info": "Ce filtre permet d'atténuer les fréquences audio se trouvant en dessous d'un seuil.",
+                "settings": {
+                    "title": "Paramètres du filtre passe-haut",
+                    "label": "Vous pouvez régler ici les paramètres du filtre passe-haut.",
+                    "highFrequency": "Fréquence de coupure (en Hz) :"
+                }
+            },
+            "lowpass": {
+                "name": "Filtre passe-bas",
+                "info": "Ce filtre permet d'atténuer les fréquences audio se trouvant au dessus d'un seuil.",
+                "settings": {
+                    "title": "Paramètres du filtre passe-bas",
+                    "label": "Vous pouvez régler ici les paramètres du filtre passe-bas.",
+                    "lowFrequency": "Fréquence de coupure (en Hz) :"
+                }
+            },
+            "returnAudio": {
+                "name": "Retourner l'audio",
+                "info": "Ce filtre vous permet de retourner l'audio."
+            },
+            "telephonizer": {
+                "name": "Effet d'appel téléphonique",
+                "info": "Ce filtre vous permet d'imiter le son produit par un téléphone qui diffuserait votre audio."
+            },
+            "vocoder": {
+                "name": "Vocoder (voix robotique)",
+                "info": "Ce filtre vous permet d'appliquer un effet de voix robotique à votre audio."
+            },
+            "limiter": {
+                "name": "Limiteur (recommandé)",
+                "info": "Ce filtre permet d'atténuer la saturation et la distorsion qui pourrait être produite selon les filtres que vous activez. Il est fortement conseillé de le laisser activer.",
+                "settings": {
+                    "title": "Paramètres du limiteur",
+                    "label": "Vous pouvez régler ici les paramètres du limiteur. Les paramètres par défaut ont été testés sur de nombreux fichiers audios et fonctionnent dans la plupart des cas.",
+                    "preGain": "Pré-gain (en dB) :",
+                    "postGain": "Post-gain (en dB) :",
+                    "attackTime": "Temps d'attaque (en secondes) :",
+                    "releaseTime": "Temps de relâchement (en secondes) :",
+                    "threshold": "Seuil (en dB) :",
+                    "lookAheadTime": "Temps de look-ahead (en secondes) :"
+                }
+            },
+            "reverb": {
+                "name": "Réverbération",
+                "info": "Ce filtre vous permet d'appliquer un effet de réverbération à votre audio. Plusieurs environnements virtuels sont proposés avec un effet de réverbération différent pour chacun de ces environnements.",
+                "settings": {
+                    "title": "Paramètres du filtre de réverbération",
+                    "label": "Vous pouvez régler ici les paramètres du filtre de réverbération.",
+                    "environment": "Environnement :",
+                    "size": "Taille : ${(reverbEnvironment.additionalData.size / 1000000).toFixed(2).replace('.', ',')} Mo",
+                    "source": "Source",
+                    "downloaded": "Cet environnement a déjà été téléchargé temporairement sur votre appareil",
+                    "notDownloaded": "Cet environnement n'a pas encore été téléchargé. En cliquant sur Valider, l'environnement sera téléchargé temporairement sur votre appareil"
+                }
+            }
+        },
+        "close": "Fermer",
+        "ok": "OK",
+        "cancel": "Annuler",
+        "validate": "Valider",
+        "reset": "Réinitialiser"
+    }
+}
