@@ -137,13 +137,14 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
 
   const closeErrorLoadingPrincipalBuffer = () => setErrorLoadingPrincipalBuffer(false);
   const closeErrorDownloadingBufferData = () => setErrorDownloadingBufferData(false);
+  const downloadAudio = () =>  audioEditorInstance.saveBuffer();
 
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
       resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData,
-      closeErrorDownloadingBufferData
+      closeErrorDownloadingBufferData, downloadAudio
     }}>
       {children}
     </AudioEditorContext.Provider>

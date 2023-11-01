@@ -17,6 +17,8 @@ import utils from "./utils/Functions";
 import BufferPlayer from "./BufferPlayer";
 import BufferFetcherService from "./BufferFetcherService";
 import EventEmitter from "./EventEmitter";
+//@ts-ignore
+import { Recorder, getRecorderWorker } from "recorderjs";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -292,5 +294,50 @@ export default class AudioEditor extends AbstractAudioElement {
 
     on(event: string, callback: Function) {
         this.eventEmitter?.on(event, callback);
+    }
+
+    /** Save buffer */
+    saveBuffer(): void {
+        if(!this.renderedBuffer || !this.currentContext) {
+            return;
+        }
+        
+        const worker = getRecorderWorker.default();
+    
+        if(worker) {
+            worker.onmessage = (e: any) => {
+                if(e.data.command == 'exportWAV') {
+                    this.downloadAudioBlob(e.data.data);
+                }
+    
+                worker.terminate();
+            };
+    
+            worker.postMessage({
+                command: "init",
+                config: {
+                    sampleRate: this.currentContext.sampleRate,
+                    numChannels: 2
+                }
+            });
+    
+            worker.postMessage({
+                command: "record",
+    
+                buffer: [
+                    this.renderedBuffer.getChannelData(0),
+                    this.renderedBuffer.getChannelData(1)
+                ]
+            });
+    
+            worker.postMessage({
+                command: "exportWAV",
+                type: "audio/wav"
+            });
+        }
+    }
+
+    downloadAudioBlob(blob: Blob) {
+        Recorder.forceDownload(blob, "audio-" + new Date().toISOString() + ".wav");
     }
 }
