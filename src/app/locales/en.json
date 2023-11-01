@@ -19,7 +19,8 @@
             "play": "Play",
             "pause": "Pause",
             "loop": "Loop playback",
-            "save": "Save audio"
+            "save": "Save audio",
+            "preparingAudioDownload": "Preparing to download your audio..."
         },
         "languages": {
             "fr": "Français",

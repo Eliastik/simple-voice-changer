@@ -25,5 +25,6 @@ export default interface AudioEditorContextProps {
     closeErrorLoadingPrincipalBuffer: () => void,
     errorDownloadingBufferData: boolean,
     closeErrorDownloadingBufferData: () => void,
-    downloadAudio: () => void
+    downloadAudio: () => void,
+    downloadingAudio: boolean
 };

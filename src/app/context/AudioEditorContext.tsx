@@ -23,17 +23,30 @@ interface AudioEditorProviderProps {
 }
 
 export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) => {
+  // State: true when we are loading audio provided by the user
   const [loadingPrincipalBuffer, setLoadingPrincipalBuffer] = useState(false);
+  // State: true when there is an error loading audio provided by the user
   const [errorLoadingPrincipalBuffer, setErrorLoadingPrincipalBuffer] = useState(false);
+  // State: true if the audio edtior is ready to be used
   const [audioEditorReady, setAudioEditorReady] = useState(false);
+  // State: true when an audio processing is in progress
   const [audioProcessing, setAudioProcessing] = useState(false);
+  // State: object with enabled state for the filters
   const [filterState, setFilterState] = useState({});
+  // State: true if the audio player is playing the audio
   const [bufferPlaying, setBufferPlaying] = useState(false);
+  // State: state of the audio player (time etc.)
   const [playerState, setPlayerState] = useState(audioEditorInstance && audioEditorInstance.getPlayerState());
+  // State: object with all the settings of the filters
   const [filtersSettings, setFiltersSettings] = useState(new Map());
+  // State: true if we are loading initial audio buffer from the network (when starting the application)
   const [downloadingInitialData, setDownloadingInitialData] = useState(false);
+  // State: true if we are loading audio buffer from network (used for the reverb filter)
   const [downloadingBufferData, setDownloadingBufferData] = useState(false);
+  // State: true if there are error loading buffer data
   const [errorDownloadingBufferData, setErrorDownloadingBufferData] = useState(false);
+  // State: true if edited audio buffer of the is being downloaded
+  const [downloadingAudio, setDownloadingAudio] = useState(false);
 
   useEffect(() => {
     if(audioEditorInstance != null) {
@@ -137,14 +150,18 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
 
   const closeErrorLoadingPrincipalBuffer = () => setErrorLoadingPrincipalBuffer(false);
   const closeErrorDownloadingBufferData = () => setErrorDownloadingBufferData(false);
-  const downloadAudio = () =>  audioEditorInstance.saveBuffer();
+  const downloadAudio = async () => {
+    setDownloadingAudio(true);
+    await audioEditorInstance.saveBuffer();
+    setDownloadingAudio(false);
+  };
 
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
       resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData,
-      closeErrorDownloadingBufferData, downloadAudio
+      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio
     }}>
       {children}
     </AudioEditorContext.Provider>

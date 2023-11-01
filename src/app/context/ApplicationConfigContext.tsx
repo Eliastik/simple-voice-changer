@@ -22,8 +22,11 @@ interface ApplicationConfigProviderProps {
 }
 
 export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ children }) => {
+  // State: current theme (light/dark)
   const [currentTheme, setCurrentTheme] = useState("dark");
+  // State: theme setting (auto/dark/light)
   const [currentThemeValue, setCurrentThemeValue] = useState("auto");
+  // State: current language
   const [currentLanguageValue, setCurrentLanguageValue] = useState("en");
 
   useEffect(() => {

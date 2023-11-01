@@ -19,7 +19,8 @@
             "play": "Lire",
             "pause": "Pause",
             "loop": "Lire en boucle",
-            "save": "Sauvegarder l'audio"
+            "save": "Sauvegarder l'audio",
+            "preparingAudioDownload": "Préparation du téléchargement de votre audio…"
         },
         "dialogs": {
             "pleaseWait": "Merci de patienter quelques instants",

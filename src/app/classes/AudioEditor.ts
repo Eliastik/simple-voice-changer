@@ -297,44 +297,47 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /** Save buffer */
-    saveBuffer(): void {
-        if(!this.renderedBuffer || !this.currentContext) {
-            return;
-        }
+    saveBuffer(): Promise<boolean> {
+        return new Promise(resolve => {
+            if(!this.renderedBuffer || !this.currentContext) {
+                return resolve(false);
+            }
+            
+            const worker = getRecorderWorker.default();
         
-        const worker = getRecorderWorker.default();
-    
-        if(worker) {
-            worker.onmessage = (e: any) => {
-                if(e.data.command == 'exportWAV') {
-                    this.downloadAudioBlob(e.data.data);
-                }
-    
-                worker.terminate();
-            };
-    
-            worker.postMessage({
-                command: "init",
-                config: {
-                    sampleRate: this.currentContext.sampleRate,
-                    numChannels: 2
-                }
-            });
-    
-            worker.postMessage({
-                command: "record",
-    
-                buffer: [
-                    this.renderedBuffer.getChannelData(0),
-                    this.renderedBuffer.getChannelData(1)
-                ]
-            });
-    
-            worker.postMessage({
-                command: "exportWAV",
-                type: "audio/wav"
-            });
-        }
+            if(worker) {
+                worker.onmessage = (e: any) => {
+                    if(e.data.command == 'exportWAV') {
+                        this.downloadAudioBlob(e.data.data);
+                    }
+        
+                    worker.terminate();
+                    resolve(true);
+                };
+        
+                worker.postMessage({
+                    command: "init",
+                    config: {
+                        sampleRate: this.currentContext.sampleRate,
+                        numChannels: 2
+                    }
+                });
+        
+                worker.postMessage({
+                    command: "record",
+        
+                    buffer: [
+                        this.renderedBuffer.getChannelData(0),
+                        this.renderedBuffer.getChannelData(1)
+                    ]
+                });
+        
+                worker.postMessage({
+                    command: "exportWAV",
+                    type: "audio/wav"
+                });
+            }
+        });
     }
 
     downloadAudioBlob(blob: Blob) {
