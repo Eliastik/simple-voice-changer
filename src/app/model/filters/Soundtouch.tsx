@@ -1,5 +1,5 @@
 import Filter from "../Filter";
-import { SettingFormType } from "../SettingFormType";
+import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
 
 export const Soundtouch: Filter = {
     filterId: "soundtouch",
@@ -12,21 +12,29 @@ export const Soundtouch: Filter = {
         {
             settingId: "labelInfo",
             settingTitle: "filters.soundtouch.settings.label",
-            settingType: SettingFormType.SimpleLabel
+            settingType: SettingFormTypeEnum.SimpleLabel
         },
         {
             settingId: "speedAudio",
             settingTitle: "filters.soundtouch.settings.speedAudio",
-            settingType: SettingFormType.Range,
+            settingType: SettingFormTypeEnum.Range,
             minValue: 0.1,
-            maxValue: 5
+            maxValue: 5,
+            minValueLabel: "filters.soundtouch.settings.speedAudioMinLabel",
+            maxValueLabel: "filters.soundtouch.settings.speedAudioMaxLabel",
+            displayCurrentValue: true,
+            step: 0.01
         },
         {
             settingId: "frequencyAudio",
             settingTitle: "filters.soundtouch.settings.audioFrequency",
-            settingType: SettingFormType.Range,
+            settingType: SettingFormTypeEnum.Range,
             minValue: 0.1,
-            maxValue: 5
+            maxValue: 5,
+            minValueLabel: "filters.soundtouch.settings.audioFrequencyMinLabel",
+            maxValueLabel: "filters.soundtouch.settings.audioFrequencyMaxLabel",
+            displayCurrentValue: true,
+            step: 0.01
         }
     ]
 };

@@ -1,5 +1,5 @@
 import Filter from "../Filter";
-import { SettingFormType } from "../SettingFormType";
+import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
 
 export const Bitcrusher: Filter = {
     filterId: "bitcrusher",
@@ -12,17 +12,17 @@ export const Bitcrusher: Filter = {
         {
             settingId: "labelInfo",
             settingTitle: "filters.bitcrusher.settings.label",
-            settingType: SettingFormType.SimpleLabel
+            settingType: SettingFormTypeEnum.SimpleLabel
         },
         {
             settingId: "bits",
             settingTitle: "filters.bitcrusher.settings.resolution",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "normFreq",
             settingTitle: "filters.bitcrusher.settings.cutoffFrequency",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         }
     ]
 };

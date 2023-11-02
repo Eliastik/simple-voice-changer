@@ -1,4 +1,4 @@
-export enum SettingFormType {
+export enum SettingFormTypeEnum {
     TextField,
     NumberField,
     SelectField,

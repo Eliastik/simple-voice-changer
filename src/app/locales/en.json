@@ -64,7 +64,11 @@
                     "title": "Settings of the filter Change speed / frequency",
                     "label": "Here you can set audio speed and frequency (high/low).",
                     "speedAudio": "Audio speed:",
-                    "audioFrequency": "Audio frequency:"
+                    "audioFrequency": "Audio frequency:",
+                    "speedAudioMinLabel": "Slow",
+                    "speedAudioMaxLabel": "Fast",
+                    "audioFrequencyMinLabel": "Low",
+                    "audioFrequencyMaxLabel": "High"
                 }
             },
             "bassboost": {

@@ -1,5 +1,5 @@
 import Filter from "../Filter";
-import { SettingFormType } from "../SettingFormType";
+import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
 
 export const Limiter: Filter = {
     filterId: "limiter",
@@ -12,37 +12,37 @@ export const Limiter: Filter = {
         {
             settingId: "labelInfo",
             settingTitle: "filters.limiter.settings.label",
-            settingType: SettingFormType.SimpleLabel
+            settingType: SettingFormTypeEnum.SimpleLabel
         },
         {
             settingId: "preGain",
             settingTitle: "filters.limiter.settings.preGain",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "postGain",
             settingTitle: "filters.limiter.settings.postGain",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "attackTime",
             settingTitle: "filters.limiter.settings.attackTime",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "releaseTime",
             settingTitle: "filters.limiter.settings.releaseTime",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "threshold",
             settingTitle: "filters.limiter.settings.threshold",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "lookAheadTime",
             settingTitle: "filters.limiter.settings.lookAheadTime",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         }
     ]
 };

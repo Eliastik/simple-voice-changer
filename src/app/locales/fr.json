@@ -60,7 +60,11 @@
                     "title": "Paramètres du filtre Modifier la vitesse / fréquence",
                     "label": "Vous pouvez régler ici la vitesse de l'audio ainsi que sa fréquence (aigu/grave).",
                     "speedAudio": "Vitesse de l'audio :",
-                    "audioFrequency": "Fréquence de l'audio :"
+                    "audioFrequency": "Fréquence de l'audio :",
+                    "speedAudioMinLabel": "Lent",
+                    "speedAudioMaxLabel": "Rapide",
+                    "audioFrequencyMinLabel": "Grave",
+                    "audioFrequencyMaxLabel": "Aigu"
                 }
             },
             "bassboost": {

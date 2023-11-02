@@ -1,5 +1,5 @@
 import Filter from "../Filter";
-import { SettingFormType } from "../SettingFormType";
+import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
 
 export const Highpass: Filter = {
     filterId: "highpass",
@@ -12,12 +12,12 @@ export const Highpass: Filter = {
         {
             settingId: "labelInfo",
             settingTitle: "filters.highpass.settings.label",
-            settingType: SettingFormType.SimpleLabel
+            settingType: SettingFormTypeEnum.SimpleLabel
         },
         {
             settingId: "highFrequency",
             settingTitle: "filters.highpass.settings.highFrequency",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         }
     ]
 };

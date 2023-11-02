@@ -1,5 +1,5 @@
 import Filter from "../Filter";
-import { SettingFormType } from "../SettingFormType";
+import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
 
 export const Echo: Filter = {
     filterId: "echo",
@@ -12,17 +12,17 @@ export const Echo: Filter = {
         {
             settingId: "labelInfo",
             settingTitle: "filters.echo.settings.label",
-            settingType: SettingFormType.SimpleLabel
+            settingType: SettingFormTypeEnum.SimpleLabel
         },
         {
             settingId: "delay",
             settingTitle: "filters.echo.settings.delay",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "gain",
             settingTitle: "filters.echo.settings.gain",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         }
     ]
 };

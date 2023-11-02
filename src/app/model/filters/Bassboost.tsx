@@ -1,5 +1,5 @@
 import Filter from "../Filter";
-import { SettingFormType } from "../SettingFormType";
+import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
 
 export const Bassboost: Filter = {
     filterId: "bassboost",
@@ -12,27 +12,27 @@ export const Bassboost: Filter = {
         {
             settingId: "labelInfo",
             settingTitle: "filters.bassboost.settings.label",
-            settingType: SettingFormType.SimpleLabel
+            settingType: SettingFormTypeEnum.SimpleLabel
         },
         {
             settingId: "frequencyBooster",
             settingTitle: "filters.bassboost.settings.frequencyBoost",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "dbBooster",
             settingTitle: "filters.bassboost.settings.gainBoost",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "frequencyReduce",
             settingTitle: "filters.bassboost.settings.attenuateFrequency",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         },
         {
             settingId: "dbReduce",
             settingTitle: "filters.bassboost.settings.gainAttenuate",
-            settingType: SettingFormType.NumberField
+            settingType: SettingFormTypeEnum.NumberField
         }
     ]
 };
