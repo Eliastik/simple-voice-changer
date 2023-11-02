@@ -10,6 +10,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
     constructor() {
         super();
         this.enable();
+        this.setDefaultEnabled(true);
     }
 
     getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer): AudioFilterNodes {

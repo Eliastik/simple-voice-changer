@@ -190,15 +190,11 @@ export default class AudioEditor extends AbstractAudioElement {
         return "audioEditor";
     }
 
-    /** Filters */
+    /** Filters settings */
     getFiltersState() {
         const state: any = {};
 
-        this.filters.forEach(filter => {
-            state[filter.getId()] = filter.isEnabled();
-        });
-
-        this.renderers.forEach(filter => {
+        [...this.filters, ...this.renderers].forEach(filter => {
             state[filter.getId()] = filter.isEnabled();
         });
 
@@ -244,6 +240,16 @@ export default class AudioEditor extends AbstractAudioElement {
         if(filter) {
             filter.resetSettings();
         }
+    }
+
+    resetAllFiltersState() {
+        [...this.filters, ...this.renderers].forEach(element => {
+            if(element.isDefaultEnabled()) {
+                element.enable();
+            } else {
+                element.disable();
+            }
+        });
     }
 
     /** Audio Player */

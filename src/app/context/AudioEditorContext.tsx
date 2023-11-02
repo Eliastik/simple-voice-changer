@@ -148,6 +148,11 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setFiltersSettings(audioEditorInstance.getFiltersSettings());
   };
 
+  const resetAllFiltersState = () => {
+    audioEditorInstance.resetAllFiltersState();
+    setFilterState(audioEditorInstance.getFiltersState());
+  };
+
   const closeErrorLoadingPrincipalBuffer = () => setErrorLoadingPrincipalBuffer(false);
   const closeErrorDownloadingBufferData = () => setErrorDownloadingBufferData(false);
   const downloadAudio = async () => {
@@ -161,7 +166,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
       resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData,
-      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio
+      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState
     }}>
       {children}
     </AudioEditorContext.Provider>

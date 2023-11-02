@@ -47,6 +47,7 @@ export default class LimiterFilter extends AbstractAudioFilter {
         this.bufferSize = bufferSize || this.bufferSize;
         this.channels = channels || this.channels;
         this.enable();
+        this.setDefaultEnabled(true);
     }
 
     getEnvelope(data: Float32Array, attackTime: number, releaseTime: number, sampleRate: number) {

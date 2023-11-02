@@ -13,7 +13,8 @@
             "recMicrophone": "Enregistrer via le micro"
         },
         "audioEditorMain": {
-            "validateSettings": "Valider les paramètres"
+            "validateSettings": "Valider les paramètres",
+            "resetSettings": "Réinitialiser"
         },
         "audioPlayer": {
             "play": "Lire",

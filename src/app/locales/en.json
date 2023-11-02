@@ -13,7 +13,8 @@
             "recMicrophone": "Record with the microphone"
         },
         "audioEditorMain": {
-            "validateSettings": "Validate settings"
+            "validateSettings": "Validate settings",
+            "resetSettings": "Reset"
         },
         "audioPlayer": {
             "play": "Play",

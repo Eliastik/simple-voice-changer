@@ -14,7 +14,7 @@ const FilterButton = ({
     return (
         <>
             <div className="join join-vertical w-36">
-                <button className={`btn flex-col w-full h-36 gap-8 rounded-b-none border-0 pl-3 pr-3 ${enabled ? "btn-secondary" : ""}`} onClick={() => toggleFilter(filter.filterId)}>
+                <button className={`btn flex-col justify-evenly w-full h-36 rounded-b-none border-0 pl-3 pr-3 ${enabled ? "btn-secondary" : ""}`} onClick={() => toggleFilter(filter.filterId)}>
                     <div>
                         {filter.filterIcon}
                     </div>
