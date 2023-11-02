@@ -96,6 +96,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
       await audioEditorInstance.renderAudio();
       setAudioProcessing(false);
     } catch(e) {
+      console.error(e);
       setLoadingPrincipalBuffer(false);
       setErrorLoadingPrincipalBuffer(true);
     }

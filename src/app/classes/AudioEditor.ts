@@ -30,6 +30,8 @@ export default class AudioEditor extends AbstractAudioElement {
     private bufferPlayer: BufferPlayer | undefined;
     private eventEmitter: EventEmitter | undefined;
     private renderedBuffer: AudioBuffer | null = null;
+    private compatibilityModeEnabled = false;
+    private compatibilityModeChecked = false;
 
     principalBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
@@ -125,36 +127,42 @@ export default class AudioEditor extends AbstractAudioElement {
         const speedAudio = this.entrypointFilter?.getSpeed()!;
         const durationAudio = this.calculateAudioDuration(speedAudio);
         const offlineContext = new OfflineAudioContext(2, this.currentContext.sampleRate * durationAudio, this.currentContext.sampleRate);
+        const outputContext = this.compatibilityModeEnabled ? this.currentContext : offlineContext;
 
         let currentBuffer = this.principalBuffer!;
 
         for(const renderer of this.renderers.sort((a,b ) => a.getOrder() - b.getOrder())) {
             if(renderer.isEnabled()) {
-                currentBuffer = await renderer.renderAudio(offlineContext, currentBuffer);
+                currentBuffer = await renderer.renderAudio(outputContext, currentBuffer);
             }
         }
 
-        this.connectNodes(offlineContext, currentBuffer);
-            
-        const gainNode = offlineContext.createGain();
-        gainNode.gain.setValueAtTime(0.001, offlineContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(1.0, offlineContext.currentTime + 0.2);
+        this.connectNodes(outputContext, currentBuffer);
         
-        this.currentNode!.connect(offlineContext.destination);
+        const gainNode = outputContext.createGain();
+        gainNode.gain.setValueAtTime(0.001, outputContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(1.0, outputContext.currentTime + 0.2);
 
-        this.renderedBuffer = await offlineContext.startRendering();
-        this.bufferPlayer!.speedAudio = speedAudio;
-        this.bufferPlayer!.loadBuffer(this.renderedBuffer);
-
-        /*if(!compatModeChecked) {
-            const sum = e.renderedBuffer.getChannelData(0).reduce(add, 0);
-
-            if(sum == 0) {
-                enableCompaMode();
+        if(!this.compatibilityModeEnabled) {
+            this.currentNode!.connect(outputContext.destination);
+            this.renderedBuffer = await offlineContext.startRendering();
+            this.bufferPlayer!.speedAudio = speedAudio;
+            this.bufferPlayer!.loadBuffer(this.renderedBuffer);
+            
+            if(!this.compatibilityModeChecked) {
+                const sum = this.renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
+    
+                if(sum == 0) {
+                    this.compatibilityModeEnabled = true;
+                }
+    
+                this.compatibilityModeChecked = true;
             }
+        }
 
-            compatModeChecked = true;
-        }*/
+        if(this.compatibilityModeEnabled) {
+            this.bufferPlayer?.setCompatibilityMode(durationAudio, outputContext, this.currentNode!);
+        }
     }
 
     private calculateAudioDuration(speedAudio: number): number {
@@ -176,6 +184,14 @@ export default class AudioEditor extends AbstractAudioElement {
         }
 
         return utils.calcAudioDuration(this.principalBuffer!, speedAudio, reverb, reverbAddDuration, echo);
+    }
+
+    enableCompatibilityMode() {
+        this.compatibilityModeEnabled = true;
+    }
+
+    disableCompatibilityMode() {
+        this.compatibilityModeEnabled = false;
     }
 
     getOrder(): number {

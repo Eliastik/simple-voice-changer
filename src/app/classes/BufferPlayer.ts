@@ -32,9 +32,12 @@ export default class BufferPlayer {
     private interval: number | null = null;
     playing = false;
     loop = false;
-    compatibilityMode = false; // TODO
     speedAudio = 1;
     private eventEmitter: EventEmitter | null;
+
+    compatibilityMode = false;
+    currentContext: BaseAudioContext | null = null;
+    currentNode: AudioNode | null = null;
 
     constructor(context: AudioContext | OfflineAudioContext, eventEmitter?: EventEmitter) {
         this.context = context;
@@ -66,11 +69,13 @@ export default class BufferPlayer {
         this.init();
     }
 
-    setCompatibilityMode(duration: number) {
+    setCompatibilityMode(duration: number, outputContext: BaseAudioContext, currentNode: AudioNode) {
         this.compatibilityMode = true;
         this.reset();
         this.init();
         this.duration = duration * this.speedAudio;
+        this.currentContext = outputContext;
+        this.currentNode = currentNode;
     }
 
     reset() {
@@ -83,9 +88,15 @@ export default class BufferPlayer {
     stop() {
         clearInterval(this.interval!);
 
-        if (this.source != undefined && this.source != null && this.playing && !this.compatibilityMode) {
-            this.source.stop(0);
-            this.playing = false;
+        if(!this.compatibilityMode) {
+            if (this.source != undefined && this.source != null && this.playing) {
+                this.source.stop(0);
+                this.playing = false;
+            }
+        } else {
+            if(this.currentNode) {
+                this.currentNode.disconnect();
+            }
         }
 
         this.updateInfos();
@@ -98,9 +109,19 @@ export default class BufferPlayer {
 
             this.eventEmitter?.emit("playingStarted");
 
-            if (!this.compatibilityMode && this.source) {
-                this.source.start(0, this.currentTime / this.speedAudio);
-                this.playing = true;
+            if (!this.compatibilityMode) {
+                if(this.source) {
+                    this.source.start(0, this.currentTime / this.speedAudio);
+                    this.playing = true;
+                } else {
+                    return;
+                }
+            } else {
+                if(this.currentNode && this.currentContext) {
+                    this.currentNode.connect(this.currentContext.destination);
+                } else {
+                    return;
+                }
             }
 
             let startTime = performance.now();
