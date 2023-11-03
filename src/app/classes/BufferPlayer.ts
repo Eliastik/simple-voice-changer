@@ -139,9 +139,13 @@ export default class BufferPlayer {
                 this.displayTime = this.currentTime;
 
                 if (this.currentTime > this.duration) {
-                    if (this.loop && !this.compatibilityMode) {
-                        this.reset();
-                        this.start();
+                    if (this.loop) {
+                        if(!this.compatibilityMode) {
+                            this.reset();
+                            this.start();
+                        } else {
+                            this.eventEmitter?.emit("playingFinished");
+                        }
                     } else {
                         this.eventEmitter?.emit("playingFinished");
                         this.reset();
@@ -174,14 +178,16 @@ export default class BufferPlayer {
     }
 
     setTime(time: number) {
-        this.currentTime = time;
-        this.displayTime = this.currentTime;
-
-        if (this.playing) {
-            this.pause();
-            this.start();
-        } else {
-            this.updateInfos();
+        if(!this.compatibilityMode) {
+            this.currentTime = time;
+            this.displayTime = this.currentTime;
+    
+            if (this.playing) {
+                this.pause();
+                this.start();
+            } else {
+                this.updateInfos();
+            }
         }
     }
 

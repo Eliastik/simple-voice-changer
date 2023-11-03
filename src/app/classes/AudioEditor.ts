@@ -45,6 +45,12 @@ export default class AudioEditor extends AbstractAudioElement {
         this.bufferPlayer = new BufferPlayer(this.currentContext, this.eventEmitter);
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
+        this.bufferPlayer.on("playingFinished", () => {
+            if(this.bufferPlayer?.loop) {
+                this.playBuffer();
+            }
+        });
+
         this.setupFilters();
         this.setupRenderers();
         this.fetchBuffers();

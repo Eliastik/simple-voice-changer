@@ -59,7 +59,10 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
 
     audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
     audioEditorInstance.on("playingUpdate", () => setPlayerState(audioEditorInstance.getPlayerState()));
-    audioEditorInstance.on("playingStarted", () => setPlayerState(audioEditorInstance.getPlayerState()));
+    audioEditorInstance.on("playingStarted", () => {
+      setBufferPlaying(true);
+      setPlayerState(audioEditorInstance.getPlayerState());
+    });
     audioEditorInstance.on("loadingBuffers", () => setDownloadingInitialData(true));
     audioEditorInstance.on("fetchingBuffer", () => setDownloadingBufferData(true));
   
