@@ -34,6 +34,7 @@ export default class LimiterFilter extends AbstractAudioFilter {
     private envelopeSample = 0;
     private bufferSize = 4096;
     private channels = 2;
+    private limiterProcessor: ScriptProcessorNode | null = null;
 
     constructor(sampleRate: number, preGain: number, postGain: number, attackTime: number, releaseTime: number, threshold: number, lookAheadTime: number, bufferSize: number, channels: number) {
         super();
@@ -147,12 +148,17 @@ export default class LimiterFilter extends AbstractAudioFilter {
     }
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
-        const limiterProcessor = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
-        limiterProcessor.onaudioprocess = e => this.limit(e);
+        if(this.limiterProcessor) {
+            this.limiterProcessor.onaudioprocess = null;
+            this.limiterProcessor.disconnect();
+        }
+
+        this.limiterProcessor = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
+        this.limiterProcessor.onaudioprocess = e => this.limit(e);
 
         return {
-            input: limiterProcessor,
-            output: limiterProcessor
+            input: this.limiterProcessor,
+            output: this.limiterProcessor
         };
     }
 

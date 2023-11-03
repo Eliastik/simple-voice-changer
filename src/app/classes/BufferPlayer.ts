@@ -36,7 +36,6 @@ export default class BufferPlayer {
     private eventEmitter: EventEmitter | null;
 
     compatibilityMode = false;
-    currentContext: BaseAudioContext | null = null;
     currentNode: AudioNode | null = null;
 
     constructor(context: AudioContext | OfflineAudioContext, eventEmitter?: EventEmitter) {
@@ -69,12 +68,15 @@ export default class BufferPlayer {
         this.init();
     }
 
-    setCompatibilityMode(duration: number, outputContext: BaseAudioContext, currentNode: AudioNode) {
+    setCompatibilityMode(currentNode: AudioNode, duration?: number) {
         this.compatibilityMode = true;
         this.reset();
         this.init();
-        this.duration = duration * this.speedAudio;
-        this.currentContext = outputContext;
+
+        if(duration != null) {
+            this.duration = duration * this.speedAudio;
+        }
+
         this.currentNode = currentNode;
     }
 
@@ -88,14 +90,16 @@ export default class BufferPlayer {
     stop() {
         clearInterval(this.interval!);
 
-        if(!this.compatibilityMode) {
+        if (!this.compatibilityMode) {
             if (this.source != undefined && this.source != null && this.playing) {
                 this.source.stop(0);
                 this.playing = false;
             }
         } else {
-            if(this.currentNode) {
+            if (this.currentNode) {
                 this.currentNode.disconnect();
+                this.currentTime = 0;
+                this.displayTime = 0;
             }
         }
 
@@ -103,22 +107,22 @@ export default class BufferPlayer {
     }
 
     start() {
-        if ((this.source != undefined && this.source != null) || this.compatibilityMode) {
+        if (this.source || this.compatibilityMode) {
             this.stop();
             this.init();
 
             this.eventEmitter?.emit("playingStarted");
 
             if (!this.compatibilityMode) {
-                if(this.source) {
+                if (this.source) {
                     this.source.start(0, this.currentTime / this.speedAudio);
                     this.playing = true;
                 } else {
                     return;
                 }
             } else {
-                if(this.currentNode && this.currentContext) {
-                    this.currentNode.connect(this.currentContext.destination);
+                if (this.currentNode && this.context) {
+                    this.currentNode.connect(this.context.destination);
                 } else {
                     return;
                 }
@@ -150,7 +154,6 @@ export default class BufferPlayer {
     }
 
     pause() {
-        clearInterval(this.interval!);
         this.stop();
     }
 

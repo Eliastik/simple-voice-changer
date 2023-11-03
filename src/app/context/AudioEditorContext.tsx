@@ -47,6 +47,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [errorDownloadingBufferData, setErrorDownloadingBufferData] = useState(false);
   // State: true if edited audio buffer of the is being downloaded
   const [downloadingAudio, setDownloadingAudio] = useState(false);
+  // State: true if compatibility/direct mode is enabled
+  const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
 
   useEffect(() => {
     if(audioEditorInstance != null) {
@@ -95,6 +97,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
       setAudioProcessing(true);
       await audioEditorInstance.renderAudio();
       setAudioProcessing(false);
+      setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
     } catch(e) {
       console.error(e);
       setLoadingPrincipalBuffer(false);
@@ -117,14 +120,17 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setBufferPlaying(false);
   };
 
+  const stopAudioBuffer = () => {
+    audioEditorInstance.stopBuffer();
+    setBufferPlaying(false);
+  };
+
   const loopAudioBuffer = () => {
     audioEditorInstance.toggleLoopPlayer();
     setPlayerState(audioEditorInstance.getPlayerState());
   };
 
-  const setTimePlayer = (percent: number) => {
-    audioEditorInstance.setPlayerTime(percent);
-  };
+  const setTimePlayer = (percent: number) => audioEditorInstance.setPlayerTime(percent);
 
   const validateSettings = async () => {
     setBufferPlaying(false);
@@ -167,7 +173,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
       resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData,
-      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState
+      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, stopAudioBuffer
     }}>
       {children}
     </AudioEditorContext.Provider>

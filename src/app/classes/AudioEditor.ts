@@ -34,6 +34,7 @@ export default class AudioEditor extends AbstractAudioElement {
     private compatibilityModeChecked = false;
 
     principalBuffer: AudioBuffer | null = null;
+    private intermediateBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
 
     constructor(context: AudioContext) {
@@ -97,6 +98,10 @@ export default class AudioEditor extends AbstractAudioElement {
     private connectNodes(context: BaseAudioContext, buffer: AudioBuffer) {
         let previousNode: AudioNode | undefined = this.entrypointFilter?.getEntrypointNode(context, buffer).input;
 
+        if(this.currentNode) {
+            this.currentNode.disconnect();
+        }
+
         for(const filter of this.filters.sort((a, b) => a.getOrder() - b.getOrder())) {
             if(filter == this.entrypointFilter) {
                 continue;
@@ -137,31 +142,36 @@ export default class AudioEditor extends AbstractAudioElement {
             }
         }
 
-        this.connectNodes(outputContext, currentBuffer);
+        this.intermediateBuffer = currentBuffer;
         
-        const gainNode = outputContext.createGain();
-        gainNode.gain.setValueAtTime(0.001, outputContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(1.0, outputContext.currentTime + 0.2);
+        return await this.setupOutput(outputContext, durationAudio, offlineContext);
+    }
 
-        if(!this.compatibilityModeEnabled) {
-            this.currentNode!.connect(outputContext.destination);
-            this.renderedBuffer = await offlineContext.startRendering();
-            this.bufferPlayer!.speedAudio = speedAudio;
-            this.bufferPlayer!.loadBuffer(this.renderedBuffer);
-            
-            if(!this.compatibilityModeChecked) {
-                const sum = this.renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
+    private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
+        if(this.intermediateBuffer) {
+            this.connectNodes(outputContext, this.intermediateBuffer);
     
-                if(sum == 0) {
-                    this.compatibilityModeEnabled = true;
+            if(!this.compatibilityModeEnabled && offlineContext) {
+                const speedAudio = this.entrypointFilter?.getSpeed()!;
+
+                this.currentNode!.connect(outputContext.destination);
+                this.renderedBuffer = await offlineContext.startRendering();
+                this.bufferPlayer!.speedAudio = speedAudio;
+                this.bufferPlayer!.loadBuffer(this.renderedBuffer);
+                
+                if(!this.compatibilityModeChecked) {
+                    const sum = this.renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
+    
+                    this.compatibilityModeChecked = true;
+        
+                    if(sum == 0) {
+                        this.compatibilityModeEnabled = true;
+                        await this.setupOutput(outputContext);
+                    }
                 }
-    
-                this.compatibilityModeChecked = true;
+            } else {
+                this.bufferPlayer?.setCompatibilityMode(this.currentNode!, durationAudio);
             }
-        }
-
-        if(this.compatibilityModeEnabled) {
-            this.bufferPlayer?.setCompatibilityMode(durationAudio, outputContext, this.currentNode!);
         }
     }
 
@@ -192,6 +202,10 @@ export default class AudioEditor extends AbstractAudioElement {
 
     disableCompatibilityMode() {
         this.compatibilityModeEnabled = false;
+    }
+
+    isCompatibilityModeEnabled() {
+        return this.compatibilityModeEnabled;
     }
 
     getOrder(): number {
@@ -271,13 +285,25 @@ export default class AudioEditor extends AbstractAudioElement {
     /** Audio Player */
     playBuffer() {
         if(this.bufferPlayer) {
-            this.bufferPlayer?.start();
+            if(this.compatibilityModeEnabled && this.currentContext) {
+                this.setupOutput(this.currentContext).then(() => {
+                    this.bufferPlayer?.start();
+                });
+            } else {
+                this.bufferPlayer?.start();
+            }
         }
     }
 
     pauseBuffer() {
         if(this.bufferPlayer) {
             this.bufferPlayer?.pause();
+        }
+    }
+
+    stopBuffer() {
+        if(this.bufferPlayer) {
+            this.bufferPlayer?.stop();
         }
     }
 

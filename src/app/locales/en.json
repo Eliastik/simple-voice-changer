@@ -19,6 +19,7 @@
         "audioPlayer": {
             "play": "Play",
             "pause": "Pause",
+            "stop": "Stop",
             "loop": "Loop playback",
             "save": "Save audio",
             "preparingAudioDownload": "Preparing to download your audio..."
