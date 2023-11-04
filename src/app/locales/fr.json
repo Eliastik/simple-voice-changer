@@ -6,7 +6,9 @@
             "colorThemeAuto": "Thème de l'appareil",
             "colorThemeLight": "Thème clair",
             "colorThemeDark": "Thème sombre",
-            "language": "Langue :"
+            "language": "Langue :",
+            "compatibilityMode": "Mode de compatibilité/rendu direct :",
+            "compatibilityModeInfos": "Ce mode est activé automatiquement en cas de problème de compatibilité détecté. Activez-le si l'application ne produit aucun son. Ce mode permet également de modifier en temps réel les sons par rendu direct, mais la sauvegarde des sons modifiés prendra plus de temps à cause de contraintes techniques."
         },
         "homeMenu": {
             "selectAudioFile": "Sélectionner un fichier audio",

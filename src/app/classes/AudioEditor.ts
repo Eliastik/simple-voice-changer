@@ -165,13 +165,13 @@ export default class AudioEditor extends AbstractAudioElement {
                 this.bufferPlayer!.speedAudio = speedAudio;
                 this.bufferPlayer!.loadBuffer(this.renderedBuffer);
                 
-                if(!this.compatibilityModeChecked) {
+                if(!this.isCompatibilityModeChecked()) {
                     const sum = this.renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
     
-                    this.compatibilityModeChecked = true;
+                    this.setCompatibilityModeChecked(true);
         
                     if(sum == 0) {
-                        this.compatibilityModeEnabled = true;
+                        this.enableCompatibilityMode();
                         await this.setupOutput(outputContext);
                     }
                 }
@@ -202,18 +202,6 @@ export default class AudioEditor extends AbstractAudioElement {
         return utils.calcAudioDuration(this.principalBuffer!, speedAudio, reverb, reverbAddDuration, echo);
     }
 
-    enableCompatibilityMode() {
-        this.compatibilityModeEnabled = true;
-    }
-
-    disableCompatibilityMode() {
-        this.compatibilityModeEnabled = false;
-    }
-
-    isCompatibilityModeEnabled() {
-        return this.compatibilityModeEnabled;
-    }
-
     getOrder(): number {
         return -1;
     }
@@ -224,6 +212,51 @@ export default class AudioEditor extends AbstractAudioElement {
 
     getId(): string {
         return "audioEditor";
+    }
+
+    /** Compatibility mode */
+    enableCompatibilityMode() {
+        this.setCompatibilityModeEnabled(true);
+    }
+
+    disableCompatibilityMode() {
+        this.setCompatibilityModeEnabled(false);
+    }
+
+    isCompatibilityModeEnabled() {
+        const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-compatibility-mode-enabled") : null;
+
+        if (!setting) {
+            return this.compatibilityModeEnabled;
+        }
+
+        return setting == "true";
+    }
+
+    setCompatibilityModeEnabled(enabled: boolean) {
+        this.compatibilityModeEnabled = enabled;
+
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem("simplevoicechanger-compatibility-mode-enabled", "" + enabled);
+        }
+    }
+
+    isCompatibilityModeChecked() {
+        const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-compatibility-mode-checked") : null;
+
+        if (!setting) {
+            return this.compatibilityModeChecked;
+        }
+
+        return setting == "true";
+    }
+
+    setCompatibilityModeChecked(checked: boolean) {
+        this.compatibilityModeChecked = checked;
+
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem("simplevoicechanger-compatibility-mode-checked", "" + checked);
+        }
     }
 
     /** Filters settings */

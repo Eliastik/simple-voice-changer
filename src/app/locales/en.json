@@ -6,7 +6,9 @@
             "colorThemeAuto": "Device theme",
             "colorThemeLight": "Light theme",
             "colorThemeDark": "Dark theme",
-            "language": "Language:"
+            "language": "Language:",
+            "compatibilityMode": "Compatibility mode/direct rendering:",
+            "compatibilityModeInfos": "This mode is automatically enabled when a compatibility issue is detected. Enable it if the application is not producing any sound. This mode also allows real-time modification of sounds, but saving the modified sounds will take longer due to technical constraints."
         },
         "homeMenu": {
             "selectAudioFile": "Select an audio file",

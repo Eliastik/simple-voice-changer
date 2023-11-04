@@ -85,6 +85,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setFilterState(audioEditorInstance.getFiltersState());
     setPlayerState(audioEditorInstance.getPlayerState());
     setFiltersSettings(audioEditorInstance.getFiltersSettings());
+    setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
   }, []);
 
   const loadAudioPrincipalBuffer = async (file: File) => {
@@ -171,12 +172,24 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setDownloadingAudio(false);
   };
 
+  const toggleCompatibilityMode = (enabled: boolean) => {
+    if(audioEditorInstance) {
+      if(enabled) {
+        audioEditorInstance.enableCompatibilityMode();
+      } else {
+        audioEditorInstance.disableCompatibilityMode();
+      }
+  
+      setCompatibilityModeEnabled(enabled);
+    }
+  };
+
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
       resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData,
-      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, stopAudioBuffer
+      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, stopAudioBuffer, toggleCompatibilityMode
     }}>
       {children}
     </AudioEditorContext.Provider>
