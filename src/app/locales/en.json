@@ -16,7 +16,8 @@
         },
         "audioEditorMain": {
             "validateSettings": "Validate settings",
-            "resetSettings": "Reset"
+            "resetSettings": "Reset",
+            "compatibilityModeAutoEnabled": "Compatibility mode has been automatically enabled, as a problem with your web browser has been detected"
         },
         "audioPlayer": {
             "play": "Play",

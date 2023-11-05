@@ -16,7 +16,8 @@
         },
         "audioEditorMain": {
             "validateSettings": "Valider les paramètres",
-            "resetSettings": "Réinitialiser"
+            "resetSettings": "Réinitialiser",
+            "compatibilityModeAutoEnabled": "Le mode de compatibilité a été automatiquement activé, car un problème avec votre navigateur web a été détecté"
         },
         "audioPlayer": {
             "play": "Lire",

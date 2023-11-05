@@ -10,11 +10,16 @@ import ErrorDownloadingBufferDialog from "../dialogs/ErrorDownloadingBufferDialo
 import { useTranslation } from "react-i18next";
 
 const AudioEditorMain = ({ }) => {
-  const { audioProcessing, filterState, bufferPlaying, playerState, validateSettings, downloadingBufferData, resetAllFiltersState } = useAudioEditor();
+  const { audioProcessing, filterState, bufferPlaying, playerState, validateSettings, downloadingBufferData, resetAllFiltersState, isCompatibilityModeAutoEnabled } = useAudioEditor();
   const { t } = useTranslation();
 
   return (
     <>
+      <div className="toast toast-top toast-center">
+        {isCompatibilityModeAutoEnabled && <div className="alert alert-info">
+            <span>{t("audioEditorMain.compatibilityModeAutoEnabled")}</span>
+        </div>}
+      </div>
       <div className="flex justify-center items-center flex-grow gap-6 flex-col pt-20 pb-20">
         <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-4 place-content-center">
           {filters.map(filter => <FilterButton filter={filter} enabled={filterState[filter.filterId]} key={filter.filterId}></FilterButton>)}

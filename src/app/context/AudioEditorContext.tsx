@@ -49,6 +49,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [downloadingAudio, setDownloadingAudio] = useState(false);
   // State: true if compatibility/direct mode is enabled
   const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
+  // State: true if compatibility/direct was auto enabled
+  const [isCompatibilityModeAutoEnabled, setCompatibilityModeAutoEnabled] = useState(false);
 
   useEffect(() => {
     if(audioEditorInstance != null) {
@@ -79,6 +81,14 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     audioEditorInstance.on("fetchingBufferError", () => {
       setDownloadingBufferData(false);
       setErrorDownloadingBufferData(true);
+    });
+  
+    audioEditorInstance.on("compatibilityModeAutoEnabled", () => {
+      setCompatibilityModeAutoEnabled(true);
+
+      setTimeout(() => {
+        setCompatibilityModeAutoEnabled(false);
+      }, 10000);
     });
 
     setDownloadingInitialData(audioEditorInstance.downloadingInitialData);
@@ -189,7 +199,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
       playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
       resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData,
-      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, stopAudioBuffer, toggleCompatibilityMode
+      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, stopAudioBuffer, toggleCompatibilityMode,
+      isCompatibilityModeAutoEnabled
     }}>
       {children}
     </AudioEditorContext.Provider>

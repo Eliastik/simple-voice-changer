@@ -172,7 +172,8 @@ export default class AudioEditor extends AbstractAudioElement {
         
                     if(sum == 0) {
                         this.enableCompatibilityMode();
-                        await this.setupOutput(outputContext);
+                        this.eventEmitter?.emit("compatibilityModeAutoEnabled");
+                        return await this.setupOutput(outputContext);
                     }
                 }
             } else {
