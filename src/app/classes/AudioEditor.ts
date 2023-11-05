@@ -26,13 +26,13 @@ export default class AudioEditor extends AbstractAudioElement {
     private entrypointFilter: AbstractAudioFilterEntrypoint | null = null;
     private filters: AbstractAudioFilter[] = [];
     private renderers: AbstractAudioRenderer[] = [];
-    private currentNode: AudioNode | undefined;
     private bufferPlayer: BufferPlayer | undefined;
     private eventEmitter: EventEmitter | undefined;
     private renderedBuffer: AudioBuffer | null = null;
     private compatibilityModeEnabled = false;
     private compatibilityModeChecked = false;
     private savingBuffer = false;
+    private currentNodes: AudioFilterNodes | null = null;
 
     principalBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
@@ -105,30 +105,57 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /** Connect the Audio API nodes of the enabled filters */
-    private connectNodes(context: BaseAudioContext, buffer: AudioBuffer) {
-        let previousNode: AudioNode | undefined = this.entrypointFilter?.getEntrypointNode(context, buffer).input;
+    private connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepInputOutput: boolean) {
+        const entrypointFilter = keepInputOutput && this.currentNodes ? this.currentNodes.input :
+            this.entrypointFilter?.getEntrypointNode(context, buffer).input;
+        const intermediateNodes: AudioFilterNodes[] = [];
 
-        if(this.currentNode) {
-            this.currentNode.disconnect();
+        let previousNode: AudioNode | undefined = entrypointFilter;
+        let lastNode: AudioFilterNodes | undefined = undefined;
+
+        // Disconnect old intermediate nodes
+        if(this.currentNodes && this.currentNodes.intermediateNodes) {
+            if(!keepInputOutput) {
+                this.currentNodes.input.disconnect();
+                this.currentNodes.output.disconnect();
+            }
+
+            for(const intermediate of this.currentNodes.intermediateNodes) {
+                intermediate.input.disconnect();
+                intermediate.output.disconnect();
+            }
         }
 
-        for(const filter of this.filters.sort((a, b) => a.getOrder() - b.getOrder())) {
+        const filters = this.filters.sort((a, b) => a.getOrder() - b.getOrder())
+
+        for(let index = 0; index < filters.length; index++) {
+            const filter = filters[index];
+
             if(filter == this.entrypointFilter) {
                 continue;
             }
 
             if(filter.isEnabled()) {
-                const node = filter.getNode(context);
+                const node = index == filters.length - 1 && keepInputOutput && this.currentNodes ? this.currentNodes.lastNode! : 
+                    filter.getNode(context);
     
                 if(previousNode) {
                     previousNode.connect(node.input);
                 }
     
                 previousNode = node.output;
+                lastNode = node;
+                intermediateNodes.push(node);
             }
         }
 
-        this.currentNode = previousNode;
+        this.currentNodes = {
+            input: entrypointFilter!,
+            output: previousNode!,
+            lastNode: lastNode,
+            intermediateNodes: intermediateNodes.filter(n => n.input != previousNode && n.output != previousNode &&
+                n.input != entrypointFilter && n.output != entrypointFilter)
+        };
     }
 
     /** Render the audio to a buffer */
@@ -161,12 +188,12 @@ export default class AudioEditor extends AbstractAudioElement {
     /** Setup output buffers/nodes */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
         if(this.renderedBuffer) {
-            this.connectNodes(outputContext, this.renderedBuffer);
+            this.connectNodes(outputContext, this.renderedBuffer, false);
     
             if(!this.isCompatibilityModeEnabled() && offlineContext) {
                 const speedAudio = this.entrypointFilter?.getSpeed()!;
 
-                this.currentNode!.connect(outputContext.destination);
+                this.currentNodes!.output.connect(outputContext.destination);
                 this.renderedBuffer = await offlineContext.startRendering();
                 this.bufferPlayer!.speedAudio = speedAudio;
                 this.bufferPlayer!.loadBuffer(this.renderedBuffer);
@@ -183,7 +210,7 @@ export default class AudioEditor extends AbstractAudioElement {
                     }
                 }
             } else {
-                this.bufferPlayer?.setCompatibilityMode(this.currentNode!, durationAudio);
+                this.bufferPlayer?.setCompatibilityMode(this.currentNodes!.output, durationAudio);
             }
         }
     }
@@ -298,6 +325,10 @@ export default class AudioEditor extends AbstractAudioElement {
 
         if(renderer) {
             renderer.toggle();
+        }
+
+        if(this.isCompatibilityModeEnabled() && this.currentContext && this.principalBuffer) {
+            this.connectNodes(this.currentContext, this.principalBuffer, true);
         }
     }
 
@@ -441,7 +472,7 @@ export default class AudioEditor extends AbstractAudioElement {
                 }
             } else {
                 this.playBuffer().then(() => {
-                    const rec = new Recorder(this.currentNode);
+                    const rec = new Recorder(this.currentNodes!.output);
                     rec.record();
 
                     const finishedCallback = () => {
