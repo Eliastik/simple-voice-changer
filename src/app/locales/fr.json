@@ -25,7 +25,8 @@
             "stop": "Stop",
             "loop": "Lire en boucle",
             "save": "Sauvegarder l'audio",
-            "preparingAudioDownload": "Préparation du téléchargement de votre audio…"
+            "preparingAudioDownload": "Préparation du téléchargement de votre audio…",
+            "preparingAudioDownloadWithCompatibility": "En raison de l'activation du mode de compatibilité et de contraintes techniques, nous devons jouer l'audio en temps réel pour l’enregistrer"
         },
         "dialogs": {
             "pleaseWait": "Merci de patienter quelques instants",

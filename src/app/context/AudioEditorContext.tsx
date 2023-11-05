@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'r
 import AudioEditor from '../classes/AudioEditor';
 import utils from "../classes/utils/Functions";
 import AudioEditorContextProps from './AudioEditorContextProps';
+import Constants from '../model/Constants';
 
 // Construct an audio editor instance - singleton
 let audioEditorInstance: AudioEditor;
@@ -57,7 +58,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
       return;
     }
 
-    audioEditorInstance = new AudioEditor(new AudioContext());
+    audioEditorInstance = new AudioEditor(new AudioContext(), Constants.audioBuffersToFetch);
 
     audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
     audioEditorInstance.on("playingUpdate", () => setPlayerState(audioEditorInstance.getPlayerState()));

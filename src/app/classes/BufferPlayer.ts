@@ -103,6 +103,7 @@ export default class BufferPlayer {
             }
         }
 
+        this.eventEmitter?.emit("playingStopped");
         this.updateInfos();
     }
 

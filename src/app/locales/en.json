@@ -25,7 +25,8 @@
             "stop": "Stop",
             "loop": "Loop playback",
             "save": "Save audio",
-            "preparingAudioDownload": "Preparing to download your audio..."
+            "preparingAudioDownload": "Preparing to download your audio...",
+            "preparingAudioDownloadWithCompatibility": "Due to compatibility mode and technical constraints, we have to play the audio in real time in order to record it"
         },
         "languages": {
             "fr": "Français",

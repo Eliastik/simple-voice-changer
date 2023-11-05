@@ -32,12 +32,12 @@ export default class AudioEditor extends AbstractAudioElement {
     private renderedBuffer: AudioBuffer | null = null;
     private compatibilityModeEnabled = false;
     private compatibilityModeChecked = false;
+    private savingBuffer = false;
 
     principalBuffer: AudioBuffer | null = null;
-    private intermediateBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
 
-    constructor(context: AudioContext) {
+    constructor(context: AudioContext, audioBuffersToFetch: string[]) {
         super();
 
         this.currentContext = context;
@@ -53,7 +53,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
         this.setupFilters();
         this.setupRenderers();
-        this.fetchBuffers();
+        this.fetchBuffers(audioBuffersToFetch);
 
         for(const filter of this.filters) {
             filter.initializeDefaultSettings();
@@ -65,6 +65,7 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /** Setup all audio filters */
     setupFilters() {
         const bassBooster = new BassBoosterFilter(200, 15, 200, -2);
         const bitCrusher = new BitCrusherFilter(4096, 2, 8, 0.15);
@@ -80,6 +81,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper);
     }
 
+    /** Setup the renderers */
     setupRenderers() {
         const returnAudio = new ReturnAudioRenderer();
         const vocoder = new VocoderRenderer();
@@ -87,7 +89,8 @@ export default class AudioEditor extends AbstractAudioElement {
         this.renderers.push(returnAudio, vocoder);
     }
 
-    fetchBuffers() {
+    /** Fetch default buffers from network */
+    fetchBuffers(audioBuffersToFetch: string[]) {
         if(this.downloadingInitialData) {
             return;
         }
@@ -95,12 +98,13 @@ export default class AudioEditor extends AbstractAudioElement {
         this.downloadingInitialData = true;
         this.eventEmitter?.emit("loadingBuffers");
         
-        this.bufferFetcherService?.fetchAllBuffers(["static/sounds/impulse_response.wav","static/sounds/modulator.mp3"]).then(() => {
+        this.bufferFetcherService?.fetchAllBuffers(audioBuffersToFetch).then(() => {
             this.downloadingInitialData = false;
             this.eventEmitter?.emit("loadedBuffers");
         });
     }
 
+    /** Connect the Audio API nodes of the enabled filters */
     private connectNodes(context: BaseAudioContext, buffer: AudioBuffer) {
         let previousNode: AudioNode | undefined = this.entrypointFilter?.getEntrypointNode(context, buffer).input;
 
@@ -127,6 +131,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.currentNode = previousNode;
     }
 
+    /** Render the audio to a buffer */
     async renderAudio(): Promise<void> {
         if(!this.currentContext) {
             console.error("AudioContext is not yet available");
@@ -138,7 +143,7 @@ export default class AudioEditor extends AbstractAudioElement {
         const speedAudio = this.entrypointFilter?.getSpeed()!;
         const durationAudio = this.calculateAudioDuration(speedAudio);
         const offlineContext = new OfflineAudioContext(2, this.currentContext.sampleRate * durationAudio, this.currentContext.sampleRate);
-        const outputContext = this.compatibilityModeEnabled ? this.currentContext : offlineContext;
+        const outputContext = this.isCompatibilityModeEnabled() ? this.currentContext : offlineContext;
 
         let currentBuffer = this.principalBuffer!;
 
@@ -148,16 +153,17 @@ export default class AudioEditor extends AbstractAudioElement {
             }
         }
 
-        this.intermediateBuffer = currentBuffer;
+        this.renderedBuffer = currentBuffer;
         
         return await this.setupOutput(outputContext, durationAudio, offlineContext);
     }
 
+    /** Setup output buffers/nodes */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
-        if(this.intermediateBuffer) {
-            this.connectNodes(outputContext, this.intermediateBuffer);
+        if(this.renderedBuffer) {
+            this.connectNodes(outputContext, this.renderedBuffer);
     
-            if(!this.compatibilityModeEnabled && offlineContext) {
+            if(!this.isCompatibilityModeEnabled() && offlineContext) {
                 const speedAudio = this.entrypointFilter?.getSpeed()!;
 
                 this.currentNode!.connect(outputContext.destination);
@@ -182,6 +188,7 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /** Calculate approximative audio duration according to enabled filters and their settings */
     private calculateAudioDuration(speedAudio: number): number {
         let reverb = false;
         let reverbAddDuration = 1;
@@ -323,12 +330,11 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /** Audio Player */
-    playBuffer() {
+    async playBuffer() {
         if(this.bufferPlayer) {
-            if(this.compatibilityModeEnabled && this.currentContext) {
-                this.setupOutput(this.currentContext).then(() => {
-                    this.bufferPlayer?.start();
-                });
+            if(this.isCompatibilityModeEnabled() && this.currentContext) {
+                await this.setupOutput(this.currentContext);
+                this.bufferPlayer?.start();
             } else {
                 this.bufferPlayer?.start();
             }
@@ -386,43 +392,83 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Save buffer */
     saveBuffer(): Promise<boolean> {
+        if(this.savingBuffer) {
+            return Promise.reject();
+        }
+
+        this.savingBuffer = true;
+
         return new Promise(resolve => {
-            if(!this.renderedBuffer || !this.currentContext) {
-                return resolve(false);
-            }
+            if(!this.isCompatibilityModeEnabled()) {
+                if(!this.renderedBuffer || !this.currentContext) {
+                    return resolve(false);
+                }
+                
+                const worker = getRecorderWorker.default();
             
-            const worker = getRecorderWorker.default();
-        
-            if(worker) {
-                worker.onmessage = (e: any) => {
-                    if(e.data.command == 'exportWAV') {
-                        this.downloadAudioBlob(e.data.data);
-                    }
-        
-                    worker.terminate();
-                    resolve(true);
-                };
-        
-                worker.postMessage({
-                    command: "init",
-                    config: {
-                        sampleRate: this.currentContext.sampleRate,
-                        numChannels: 2
-                    }
-                });
-        
-                worker.postMessage({
-                    command: "record",
-        
-                    buffer: [
-                        this.renderedBuffer.getChannelData(0),
-                        this.renderedBuffer.getChannelData(1)
-                    ]
-                });
-        
-                worker.postMessage({
-                    command: "exportWAV",
-                    type: "audio/wav"
+                if(worker) {
+                    worker.onmessage = (e: any) => {
+                        if(e.data.command == 'exportWAV') {
+                            this.downloadAudioBlob(e.data.data);
+                        }
+            
+                        worker.terminate();
+                        this.savingBuffer = false;
+                        resolve(true);
+                    };
+            
+                    worker.postMessage({
+                        command: "init",
+                        config: {
+                            sampleRate: this.currentContext.sampleRate,
+                            numChannels: 2
+                        }
+                    });
+            
+                    worker.postMessage({
+                        command: "record",
+            
+                        buffer: [
+                            this.renderedBuffer.getChannelData(0),
+                            this.renderedBuffer.getChannelData(1)
+                        ]
+                    });
+            
+                    worker.postMessage({
+                        command: "exportWAV",
+                        type: "audio/wav"
+                    });
+                }
+            } else {
+                this.playBuffer().then(() => {
+                    const rec = new Recorder(this.currentNode);
+                    rec.record();
+
+                    const finishedCallback = () => {
+                        rec.stop();
+    
+                        rec.exportWAV((blob: Blob) => {
+                            this.downloadAudioBlob(blob);
+
+                            this.savingBuffer = false;
+                            this.eventEmitter?.off("playingFinished", finishedCallback);
+                            
+                            resolve(true);
+                        });
+                    };
+    
+                    this.eventEmitter?.on("playingFinished", finishedCallback);
+
+                    const playingStoppedCallback = () => {
+                        rec.stop();
+
+                        this.savingBuffer = false;
+                        this.eventEmitter?.off("playingStopped", playingStoppedCallback);
+
+                        resolve(true);
+                    };
+    
+                    this.eventEmitter?.on("playingStopped", playingStoppedCallback);
                 });
             }
         });
