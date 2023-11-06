@@ -8,7 +8,7 @@ export default abstract class AbstractAudioFilter extends AbstractAudioElement {
     /** Return an object with current settings of this filter */
     abstract getSettings(): any;
     /** Set a filter setting */
-    abstract setSetting(settingId: string, value: string): void;
+    abstract setSetting(settingId: string, value: string): Promise<void>;
 
     /** Store the default settings */
     public initializeDefaultSettings() {

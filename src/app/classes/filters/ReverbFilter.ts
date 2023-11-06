@@ -12,9 +12,7 @@ export default class ReverbFilter extends AbstractAudioFilter {
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
         const convolver = context.createConvolver();
-        console.log(this.reverbEnvironment);
         convolver.buffer = this.bufferFetcherService?.getAudioBuffer(this.reverbEnvironment.url)!;
-        console.log(convolver.buffer);
 
         return {
             input: convolver,
@@ -49,7 +47,7 @@ export default class ReverbFilter extends AbstractAudioFilter {
         };
     }
 
-    setSetting(settingId: string, value: any): void {
+    async setSetting(settingId: string, value: any) {
         if(settingId == "reverbEnvironment") {
             this.reverbEnvironment = {
                 name: value.name,
@@ -59,7 +57,7 @@ export default class ReverbFilter extends AbstractAudioFilter {
                 link: value.additionalData.link
             };
 
-            this.bufferFetcherService?.fetchBuffer(this.reverbEnvironment.url);
+            await this.bufferFetcherService?.fetchBuffer(this.reverbEnvironment.url);
         }
     }
 }

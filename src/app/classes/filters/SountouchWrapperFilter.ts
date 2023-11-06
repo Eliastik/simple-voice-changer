@@ -46,7 +46,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
         };
     }
 
-    setSetting(settingId: string, value: string): void {
+    async setSetting(settingId: string, value: string) {
         if(!value || value == "" || isNaN(Number(value))) {
             return;
         }

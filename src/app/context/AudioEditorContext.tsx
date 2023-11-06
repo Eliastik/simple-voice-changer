@@ -41,7 +41,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   // State: object with all the settings of the filters
   const [filtersSettings, setFiltersSettings] = useState(new Map());
   // State: true if we are loading initial audio buffer from the network (when starting the application)
-  const [downloadingInitialData, setDownloadingInitialData] = useState(false);
+  const [downloadingInitialData, setDownloadingInitialData] = useState(true);
   // State: true if we are loading audio buffer from network (used for the reverb filter)
   const [downloadingBufferData, setDownloadingBufferData] = useState(false);
   // State: true if there are error loading buffer data
@@ -148,9 +148,9 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const setTimePlayer = (percent: number) => audioEditorInstance.setPlayerTime(percent);
 
   const validateSettings = async () => {
-    setBufferPlaying(false);
     setAudioProcessing(true);
     await audioEditorInstance.renderAudio();
+    setBufferPlaying(false);
     setAudioProcessing(false);
   };
 

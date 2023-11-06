@@ -149,11 +149,22 @@ export default class AudioEditor extends AbstractAudioElement {
             }
 
             if (this.currentNodes.intermediateNodes) {
-                this.currentNodes.intermediateNodes.forEach(intermediate => {
+                for (const intermediate of this.currentNodes.intermediateNodes) {
                     intermediate.input.disconnect();
                     intermediate.output.disconnect();
-                });
+                }
             }
+        }
+    }
+
+    /** Reconnect the nodes if the compatibility/direct mode is enabled */
+    private reconnectNodesIfNeeded() {
+        if (this.isCompatibilityModeEnabled() && this.currentContext && this.principalBuffer && this.bufferPlayer) {
+            this.connectNodes(this.currentContext, this.principalBuffer, true);
+
+            const speedAudio = this.entrypointFilter?.getSpeed()!;
+            this.bufferPlayer.speedAudio = speedAudio;
+            this.bufferPlayer.duration = this.calculateAudioDuration(speedAudio) * speedAudio;
         }
     }
 
@@ -314,17 +325,6 @@ export default class AudioEditor extends AbstractAudioElement {
         return settings;
     }
 
-    /** Reconnect the nodes if the compatibility/direct mode is enabled */
-    private reconnectNodesIfNeeded() {
-        if (this.isCompatibilityModeEnabled() && this.currentContext && this.principalBuffer && this.bufferPlayer) {
-            this.connectNodes(this.currentContext, this.principalBuffer, true);
-
-            const speedAudio = this.entrypointFilter?.getSpeed()!;
-            this.bufferPlayer.speedAudio = speedAudio;
-            this.bufferPlayer.duration = this.calculateAudioDuration(speedAudio) * speedAudio;
-        }
-    }
-
     toggleFilter(filterId: string) {
         const filter = this.filters.find(f => f.getId() === filterId);
         const renderer = this.renderers.find(f => f.getId() === filterId);
@@ -340,13 +340,13 @@ export default class AudioEditor extends AbstractAudioElement {
         this.reconnectNodesIfNeeded();
     }
 
-    changeFilterSettings(filterId: string, settings: any) {
+    async changeFilterSettings(filterId: string, settings: any) {
         const filter = this.filters.find(f => f.getId() === filterId);
 
         if (filter) {
-            Object.keys(settings).forEach(key => {
-                filter.setSetting(key, settings[key]);
-            });
+            for (const key of Object.keys(settings)) {
+                await filter.setSetting(key, settings[key]);
+            }
 
             this.reconnectNodesIfNeeded();
         }
@@ -469,13 +469,15 @@ export default class AudioEditor extends AbstractAudioElement {
                         }
                     });
 
+                    const buffer: Float32Array[] = [];
+
+                    for (let i = 0; i < this.renderedBuffer.numberOfChannels; i++) {
+                        buffer.push(this.renderedBuffer.getChannelData(i));
+                    }
+
                     worker.postMessage({
                         command: "record",
-
-                        buffer: [
-                            this.renderedBuffer.getChannelData(0),
-                            this.renderedBuffer.getChannelData(1)
-                        ]
+                        buffer
                     });
 
                     worker.postMessage({

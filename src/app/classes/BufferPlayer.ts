@@ -73,7 +73,7 @@ export default class BufferPlayer {
         this.reset();
         this.init();
 
-        if(duration != null) {
+        if (duration != null) {
             this.duration = duration * this.speedAudio;
         }
 
@@ -90,14 +90,15 @@ export default class BufferPlayer {
     stop() {
         clearInterval(this.interval!);
 
-        if (!this.compatibilityMode) {
-            if (this.source != undefined && this.source != null && this.playing) {
-                this.source.stop(0);
-                this.playing = false;
-            }
-        } else {
-            if (this.currentNode) {
-                this.currentNode.disconnect();
+        if (this.source != undefined && this.source != null && this.playing) {
+            this.source.stop(0);
+            this.playing = false;
+        }
+
+        if (this.currentNode) {
+            this.currentNode.disconnect();
+
+            if(this.compatibilityMode) {
                 this.currentTime = 0;
                 this.displayTime = 0;
             }
@@ -141,7 +142,7 @@ export default class BufferPlayer {
 
                 if (this.currentTime > this.duration) {
                     if (this.loop) {
-                        if(!this.compatibilityMode) {
+                        if (!this.compatibilityMode) {
                             this.reset();
                             this.start();
                         } else {
@@ -179,10 +180,10 @@ export default class BufferPlayer {
     }
 
     setTime(time: number) {
-        if(!this.compatibilityMode) {
+        if (!this.compatibilityMode) {
             this.currentTime = time;
             this.displayTime = this.currentTime;
-    
+
             if (this.playing) {
                 this.pause();
                 this.start();

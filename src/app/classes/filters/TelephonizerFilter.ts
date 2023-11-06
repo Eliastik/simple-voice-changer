@@ -1,6 +1,6 @@
-import AbstractFilter from "../model/AbstractAudioFilter";
+import AbstractAudioFilter from "../model/AbstractAudioFilter";
 
-export default class BitCrusherFilter extends AbstractFilter {
+export default class BitCrusherFilter extends AbstractAudioFilter {
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
         const lpf1 = context.createBiquadFilter();
@@ -37,7 +37,7 @@ export default class BitCrusherFilter extends AbstractFilter {
         return {};
     }
 
-    setSetting(settingId: string, value: string): void {
+    async setSetting(settingId: string, value: string) {
         throw new Error("Method not implemented.");
     }
 }

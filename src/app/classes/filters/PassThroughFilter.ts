@@ -9,7 +9,7 @@ export default class PassThroughFilter extends AbstractAudioFilter {
     }
 
     getNode(context: BaseAudioContext) {
-        if(!this.gainNode || context != this.gainNode.context) {
+        if (!this.gainNode || context != this.gainNode.context) {
             this.gainNode = new GainNode(context);
         }
 
@@ -35,6 +35,5 @@ export default class PassThroughFilter extends AbstractAudioFilter {
         return true;
     }
 
-    setSetting(settingId: string, value: string) {
-    }
+    async setSetting(settingId: string, value: string) { }
 }
