@@ -120,7 +120,7 @@ export default class AudioEditor extends AbstractAudioElement {
             .sort((a, b) => a.getOrder() - b.getOrder())
             .filter(filter => filter !== this.entrypointFilter && filter.isEnabled());
 
-        for(const filter of filters) {
+        for (const filter of filters) {
             const node = filter.getNode(context);
 
             if (previousNode) {
@@ -186,16 +186,16 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Setup output buffers/nodes */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
-        if (this.renderedBuffer) {
+        if (this.renderedBuffer && this.bufferPlayer) {
             this.connectNodes(outputContext, this.renderedBuffer, false);
 
-            if (!this.isCompatibilityModeEnabled() && offlineContext) {
-                const speedAudio = this.entrypointFilter?.getSpeed()!;
+            const speedAudio = this.entrypointFilter?.getSpeed()!;
+            this.bufferPlayer.speedAudio = speedAudio;
 
+            if (!this.isCompatibilityModeEnabled() && offlineContext) {
                 this.currentNodes!.output.connect(outputContext.destination);
                 this.renderedBuffer = await offlineContext.startRendering();
-                this.bufferPlayer!.speedAudio = speedAudio;
-                this.bufferPlayer!.loadBuffer(this.renderedBuffer);
+                this.bufferPlayer.loadBuffer(this.renderedBuffer);
 
                 if (!this.isCompatibilityModeChecked()) {
                     const sum = this.renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
@@ -209,7 +209,7 @@ export default class AudioEditor extends AbstractAudioElement {
                     }
                 }
             } else {
-                this.bufferPlayer?.setCompatibilityMode(this.currentNodes!.output, durationAudio);
+                this.bufferPlayer.setCompatibilityMode(this.currentNodes!.output, durationAudio);
             }
         }
     }
@@ -316,8 +316,12 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Reconnect the nodes if the compatibility/direct mode is enabled */
     private reconnectNodesIfNeeded() {
-        if (this.isCompatibilityModeEnabled() && this.currentContext && this.principalBuffer) {
+        if (this.isCompatibilityModeEnabled() && this.currentContext && this.principalBuffer && this.bufferPlayer) {
             this.connectNodes(this.currentContext, this.principalBuffer, true);
+
+            const speedAudio = this.entrypointFilter?.getSpeed()!;
+            this.bufferPlayer.speedAudio = speedAudio;
+            this.bufferPlayer.duration = this.calculateAudioDuration(speedAudio) * speedAudio;
         }
     }
 

@@ -152,6 +152,7 @@ export default class LimiterFilter extends AbstractAudioFilter {
             this.limiterProcessor.onaudioprocess = null;
         } else {
             this.limiterProcessor = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
+            this.reset();
         }
 
         this.limiterProcessor.onaudioprocess = e => this.limit(e);

@@ -22,7 +22,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
 
         if(this.isEnabled()) {
             this.currentPitchShifter.tempo = this.speedAudio;
-            this.currentPitchShifter.rate = this.frequencyAudio;
+            this.currentPitchShifter.pitch = this.frequencyAudio;
         }
 
         return {
@@ -51,12 +51,22 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
             return;
         }
 
+        const valueFloat = parseFloat(value);
+
         switch(settingId) {
             case "speedAudio":
-                this.speedAudio = parseFloat(value);
+                if(this.currentPitchShifter) {
+                    this.currentPitchShifter.tempo = valueFloat;
+                }
+
+                this.speedAudio = valueFloat;
                 break;
             case "frequencyAudio":
-                this.frequencyAudio = parseFloat(value);
+                if(this.currentPitchShifter) {
+                    this.currentPitchShifter.pitch = valueFloat;
+                }
+
+                this.frequencyAudio = valueFloat;
                 break;
             default:
                 break;

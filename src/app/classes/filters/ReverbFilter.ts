@@ -12,7 +12,9 @@ export default class ReverbFilter extends AbstractAudioFilter {
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
         const convolver = context.createConvolver();
+        console.log(this.reverbEnvironment);
         convolver.buffer = this.bufferFetcherService?.getAudioBuffer(this.reverbEnvironment.url)!;
+        console.log(convolver.buffer);
 
         return {
             input: convolver,
