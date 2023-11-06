@@ -19,6 +19,7 @@ import BufferFetcherService from "./BufferFetcherService";
 import EventEmitter from "./EventEmitter";
 //@ts-ignore
 import { Recorder, getRecorderWorker } from "recorderjs";
+import PassThroughFilter from "./filters/PassThroughFilter";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -46,7 +47,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
         this.bufferPlayer.on("playingFinished", () => {
-            if(this.bufferPlayer?.loop) {
+            if (this.bufferPlayer?.loop) {
                 this.playBuffer();
             }
         });
@@ -55,12 +56,12 @@ export default class AudioEditor extends AbstractAudioElement {
         this.setupRenderers();
         this.fetchBuffers(audioBuffersToFetch);
 
-        for(const filter of this.filters) {
+        for (const filter of this.filters) {
             filter.initializeDefaultSettings();
             filter.bufferFetcherService = this.bufferFetcherService;
         }
 
-        for(const renderer of this.renderers) {
+        for (const renderer of this.renderers) {
             renderer.bufferFetcherService = this.bufferFetcherService;
         }
     }
@@ -76,9 +77,10 @@ export default class AudioEditor extends AbstractAudioElement {
         const soundtouchWrapper = new SoundtouchWrapperFilter();
         const limiterFilter = new LimiterFilter(44100, 0, 0, 0, 3, -0.05, 0.05, 4096, 2);
         const telephonizerFilter = new TelephonizerFilter();
+        const passthroughfilter = new PassThroughFilter();
 
         this.entrypointFilter = soundtouchWrapper;
-        this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper);
+        this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper, passthroughfilter);
     }
 
     /** Setup the renderers */
@@ -91,13 +93,13 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Fetch default buffers from network */
     fetchBuffers(audioBuffersToFetch: string[]) {
-        if(this.downloadingInitialData) {
+        if (this.downloadingInitialData) {
             return;
         }
 
         this.downloadingInitialData = true;
         this.eventEmitter?.emit("loadingBuffers");
-        
+
         this.bufferFetcherService?.fetchAllBuffers(audioBuffersToFetch).then(() => {
             this.downloadingInitialData = false;
             this.eventEmitter?.emit("loadedBuffers");
@@ -105,62 +107,59 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /** Connect the Audio API nodes of the enabled filters */
-    private connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepInputOutput: boolean) {
-        const entrypointFilter = keepInputOutput && this.currentNodes ? this.currentNodes.input :
+    private connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepCurrentInputOutput: boolean) {
+        const entrypointNode = keepCurrentInputOutput && this.currentNodes ? this.currentNodes.input :
             this.entrypointFilter?.getEntrypointNode(context, buffer).input;
+
         const intermediateNodes: AudioFilterNodes[] = [];
+        let previousNode: AudioNode | undefined = entrypointNode;
 
-        let previousNode: AudioNode | undefined = entrypointFilter;
-        let lastNode: AudioFilterNodes | undefined = undefined;
+        this.disconnectOldNodes(keepCurrentInputOutput);
 
-        // Disconnect old intermediate nodes
-        if(this.currentNodes && this.currentNodes.intermediateNodes) {
-            if(!keepInputOutput) {
-                this.currentNodes.input.disconnect();
-                this.currentNodes.output.disconnect();
+        const filters = this.filters
+            .sort((a, b) => a.getOrder() - b.getOrder())
+            .filter(filter => filter !== this.entrypointFilter && filter.isEnabled());
+
+        for(const filter of filters) {
+            const node = filter.getNode(context);
+
+            if (previousNode) {
+                previousNode.connect(node.input);
             }
 
-            for(const intermediate of this.currentNodes.intermediateNodes) {
-                intermediate.input.disconnect();
-                intermediate.output.disconnect();
-            }
-        }
-
-        const filters = this.filters.sort((a, b) => a.getOrder() - b.getOrder())
-
-        for(let index = 0; index < filters.length; index++) {
-            const filter = filters[index];
-
-            if(filter == this.entrypointFilter) {
-                continue;
-            }
-
-            if(filter.isEnabled()) {
-                const node = index == filters.length - 1 && keepInputOutput && this.currentNodes ? this.currentNodes.lastNode! : 
-                    filter.getNode(context);
-    
-                if(previousNode) {
-                    previousNode.connect(node.input);
-                }
-    
-                previousNode = node.output;
-                lastNode = node;
-                intermediateNodes.push(node);
-            }
+            previousNode = node.output;
+            intermediateNodes.push(node);
         }
 
         this.currentNodes = {
-            input: entrypointFilter!,
+            input: entrypointNode!,
             output: previousNode!,
-            lastNode: lastNode,
-            intermediateNodes: intermediateNodes.filter(n => n.input != previousNode && n.output != previousNode &&
-                n.input != entrypointFilter && n.output != entrypointFilter)
+            intermediateNodes: intermediateNodes
+                .filter(n => n.input != previousNode && n.output != previousNode &&
+                    n.input != entrypointNode && n.output != entrypointNode)
         };
+    }
+
+    private disconnectOldNodes(keepCurrentOutput: boolean) {
+        if (this.currentNodes) {
+            this.currentNodes.input.disconnect();
+
+            if (!keepCurrentOutput) {
+                this.currentNodes.output.disconnect();
+            }
+
+            if (this.currentNodes.intermediateNodes) {
+                this.currentNodes.intermediateNodes.forEach(intermediate => {
+                    intermediate.input.disconnect();
+                    intermediate.output.disconnect();
+                });
+            }
+        }
     }
 
     /** Render the audio to a buffer */
     async renderAudio(): Promise<void> {
-        if(!this.currentContext) {
+        if (!this.currentContext) {
             console.error("AudioContext is not yet available");
             return;
         }
@@ -174,36 +173,36 @@ export default class AudioEditor extends AbstractAudioElement {
 
         let currentBuffer = this.principalBuffer!;
 
-        for(const renderer of this.renderers.sort((a,b ) => a.getOrder() - b.getOrder())) {
-            if(renderer.isEnabled()) {
+        for (const renderer of this.renderers.sort((a, b) => a.getOrder() - b.getOrder())) {
+            if (renderer.isEnabled()) {
                 currentBuffer = await renderer.renderAudio(outputContext, currentBuffer);
             }
         }
 
         this.renderedBuffer = currentBuffer;
-        
+
         return await this.setupOutput(outputContext, durationAudio, offlineContext);
     }
 
     /** Setup output buffers/nodes */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
-        if(this.renderedBuffer) {
+        if (this.renderedBuffer) {
             this.connectNodes(outputContext, this.renderedBuffer, false);
-    
-            if(!this.isCompatibilityModeEnabled() && offlineContext) {
+
+            if (!this.isCompatibilityModeEnabled() && offlineContext) {
                 const speedAudio = this.entrypointFilter?.getSpeed()!;
 
                 this.currentNodes!.output.connect(outputContext.destination);
                 this.renderedBuffer = await offlineContext.startRendering();
                 this.bufferPlayer!.speedAudio = speedAudio;
                 this.bufferPlayer!.loadBuffer(this.renderedBuffer);
-                
-                if(!this.isCompatibilityModeChecked()) {
+
+                if (!this.isCompatibilityModeChecked()) {
                     const sum = this.renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
-    
+
                     this.setCompatibilityModeChecked(true);
-        
-                    if(sum == 0) {
+
+                    if (sum == 0) {
                         this.enableCompatibilityMode();
                         this.eventEmitter?.emit("compatibilityModeAutoEnabled");
                         return await this.setupOutput(outputContext);
@@ -221,14 +220,14 @@ export default class AudioEditor extends AbstractAudioElement {
         let reverbAddDuration = 1;
         let echo = false;
 
-        for(const filter of this.filters) {
-            if(filter.isEnabled()) {
-                if(filter.getId() == "reverb") {
+        for (const filter of this.filters) {
+            if (filter.isEnabled()) {
+                if (filter.getId() == "reverb") {
                     reverb = true;
                     reverbAddDuration = filter.getSettings().reverbEnvironment.additionalData.addDuration;
                 }
 
-                if(filter.getId() == "echo") {
+                if (filter.getId() == "echo") {
                     echo = true;
                 }
             }
@@ -308,62 +307,72 @@ export default class AudioEditor extends AbstractAudioElement {
     getFiltersSettings(): Map<string, any> {
         const settings = new Map<string, string[]>();
 
-        for(const filter of this.filters) {
+        for (const filter of this.filters) {
             settings.set(filter.getId(), filter.getSettings());
         }
 
         return settings;
     }
 
+    /** Reconnect the nodes if the compatibility/direct mode is enabled */
+    private reconnectNodesIfNeeded() {
+        if (this.isCompatibilityModeEnabled() && this.currentContext && this.principalBuffer) {
+            this.connectNodes(this.currentContext, this.principalBuffer, true);
+        }
+    }
+
     toggleFilter(filterId: string) {
         const filter = this.filters.find(f => f.getId() === filterId);
         const renderer = this.renderers.find(f => f.getId() === filterId);
 
-        if(filter) {
+        if (filter) {
             filter.toggle();
         }
 
-        if(renderer) {
+        if (renderer) {
             renderer.toggle();
         }
 
-        if(this.isCompatibilityModeEnabled() && this.currentContext && this.principalBuffer) {
-            this.connectNodes(this.currentContext, this.principalBuffer, true);
-        }
+        this.reconnectNodesIfNeeded();
     }
 
     changeFilterSettings(filterId: string, settings: any) {
         const filter = this.filters.find(f => f.getId() === filterId);
 
-        if(filter) {
+        if (filter) {
             Object.keys(settings).forEach(key => {
                 filter.setSetting(key, settings[key]);
             });
+
+            this.reconnectNodesIfNeeded();
         }
     }
 
     resetFilterSettings(filterId: string) {
         const filter = this.filters.find(f => f.getId() === filterId);
 
-        if(filter) {
+        if (filter) {
             filter.resetSettings();
+            this.reconnectNodesIfNeeded();
         }
     }
 
     resetAllFiltersState() {
         [...this.filters, ...this.renderers].forEach(element => {
-            if(element.isDefaultEnabled()) {
+            if (element.isDefaultEnabled()) {
                 element.enable();
             } else {
                 element.disable();
             }
         });
+
+        this.reconnectNodesIfNeeded();
     }
 
     /** Audio Player */
     async playBuffer() {
-        if(this.bufferPlayer) {
-            if(this.isCompatibilityModeEnabled() && this.currentContext) {
+        if (this.bufferPlayer) {
+            if (this.isCompatibilityModeEnabled() && this.currentContext) {
                 await this.setupOutput(this.currentContext);
                 this.bufferPlayer?.start();
             } else {
@@ -373,31 +382,31 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     pauseBuffer() {
-        if(this.bufferPlayer) {
+        if (this.bufferPlayer) {
             this.bufferPlayer?.pause();
         }
     }
 
     stopBuffer() {
-        if(this.bufferPlayer) {
+        if (this.bufferPlayer) {
             this.bufferPlayer?.stop();
         }
     }
 
     toggleLoopPlayer() {
-        if(this.bufferPlayer) {
+        if (this.bufferPlayer) {
             this.bufferPlayer.loop = !this.bufferPlayer.loop;
         }
     }
 
     setPlayerTime(percent: number) {
-        if(this.bufferPlayer) {
+        if (this.bufferPlayer) {
             this.bufferPlayer.setTime(percent);
         }
     }
 
     getPlayerState() {
-        if(this.bufferPlayer) {
+        if (this.bufferPlayer) {
             return {
                 currentTimeDisplay: this.bufferPlayer.currentTimeDisplay,
                 maxTimeDisplay: this.bufferPlayer.maxTimeDisplay,
@@ -410,7 +419,7 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     exit() {
-        if(this.bufferPlayer) {
+        if (this.bufferPlayer) {
             this.bufferPlayer.stop();
             this.bufferPlayer.reset();
             this.principalBuffer = null;
@@ -423,31 +432,31 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Save buffer */
     saveBuffer(): Promise<boolean> {
-        if(this.savingBuffer) {
+        if (this.savingBuffer) {
             return Promise.reject();
         }
 
         this.savingBuffer = true;
 
         return new Promise(resolve => {
-            if(!this.isCompatibilityModeEnabled()) {
-                if(!this.renderedBuffer || !this.currentContext) {
+            if (!this.isCompatibilityModeEnabled()) {
+                if (!this.renderedBuffer || !this.currentContext) {
                     return resolve(false);
                 }
-                
+
                 const worker = getRecorderWorker.default();
-            
-                if(worker) {
+
+                if (worker) {
                     worker.onmessage = (e: any) => {
-                        if(e.data.command == 'exportWAV') {
+                        if (e.data.command == 'exportWAV') {
                             this.downloadAudioBlob(e.data.data);
                         }
-            
+
                         worker.terminate();
                         this.savingBuffer = false;
                         resolve(true);
                     };
-            
+
                     worker.postMessage({
                         command: "init",
                         config: {
@@ -455,16 +464,16 @@ export default class AudioEditor extends AbstractAudioElement {
                             numChannels: 2
                         }
                     });
-            
+
                     worker.postMessage({
                         command: "record",
-            
+
                         buffer: [
                             this.renderedBuffer.getChannelData(0),
                             this.renderedBuffer.getChannelData(1)
                         ]
                     });
-            
+
                     worker.postMessage({
                         command: "exportWAV",
                         type: "audio/wav"
@@ -477,17 +486,17 @@ export default class AudioEditor extends AbstractAudioElement {
 
                     const finishedCallback = () => {
                         rec.stop();
-    
+
                         rec.exportWAV((blob: Blob) => {
                             this.downloadAudioBlob(blob);
 
                             this.savingBuffer = false;
                             this.eventEmitter?.off("playingFinished", finishedCallback);
-                            
+
                             resolve(true);
                         });
                     };
-    
+
                     this.eventEmitter?.on("playingFinished", finishedCallback);
 
                     const playingStoppedCallback = () => {
@@ -498,7 +507,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
                         resolve(true);
                     };
-    
+
                     this.eventEmitter?.on("playingStopped", playingStoppedCallback);
                 });
             }

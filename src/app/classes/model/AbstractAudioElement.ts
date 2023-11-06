@@ -24,19 +24,23 @@ export default abstract class AbstractAudioElement {
         this.defaultEnabled = state;
     }
 
+    setEnabled(state: boolean) {
+        this.enabled = state;
+    }
+
     /** Enable this filter/renderer */
     enable() {
-        this.enabled = true;
+        this.setEnabled(true);
     }
 
     /** Disable this filter/renderer */
     disable() {
-        this.enabled = false;
+        this.setEnabled(false);
     }
 
     /** Toggle to enabled/disabled this filter */
     toggle() {
-        this.enabled = !this.enabled;
+        this.setEnabled(!this.isEnabled());
     }
 
     /** Returns the id of this filter/renderer */
