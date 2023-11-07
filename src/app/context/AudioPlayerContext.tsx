@@ -1,0 +1,108 @@
+"use client";
+
+import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
+import AudioEditor from '../classes/AudioEditor';
+import AudioEditorPlayerSingleton from './AudioEditorPlayerSingleton';
+import BufferPlayer from '../classes/BufferPlayer';
+import AudioPlayerContextProps from './AudioPlayerContextProps';
+
+let audioPlayerInstance: BufferPlayer;
+let audioEditorInstance: AudioEditor;
+
+const AudioPlayerContext = createContext<AudioPlayerContextProps | undefined>(undefined);
+
+export const useAudioPlayer = (): AudioPlayerContextProps => {
+  const context = useContext(AudioPlayerContext);
+  if (!context) {
+    throw new Error('useAudioPlayer doit être utilisé à l\'intérieur d\'un AudioPlayerProvider');
+  }
+  return context;
+};
+
+interface AudioPlayerProviderProps {
+  children: ReactNode;
+}
+
+export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) => {
+  // State: true if the audio player is playing the audio
+  const [playing, setPlaying] = useState(false);
+  // State: the current time
+  const [currentTime, setCurrentTime] = useState(0);
+  // State: the current time displayed
+  const [currentTimeDisplay, setCurrentTimeDisplay] = useState("00:00");
+  // State: the current time
+  const [maxTime, setMaxTime] = useState(0);
+  // State: the current max time displayed
+  const [maxTimeDisplay, setMaxTimeDisplay] = useState("00:00");
+  // State: percent playing time
+  const [percent, setPercent] = useState(0.0);
+  // State: if the audio is looping
+  const [looping, setLooping] = useState(false);
+  // State: true if compatibility/direct mode is enabled for the audio player (different state from AudioPlayer possible)
+  const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
+
+  useEffect(() => {
+    if(audioPlayerInstance != null) {
+      return;
+    }
+
+    audioPlayerInstance = AudioEditorPlayerSingleton.getAudioPlayerInstance()!;
+    audioEditorInstance = AudioEditorPlayerSingleton.getAudioEditorInstance()!;
+
+    audioPlayerInstance.on("playingFinished", () => setPlaying(false));
+    audioPlayerInstance.on("playingUpdate", () => updatePlayerState());
+
+    audioPlayerInstance.on("playingStarted", () => {
+      setPlaying(true);
+      updatePlayerState();
+    });
+
+    audioPlayerInstance.on("playingStopped", () => {
+      setPlaying(false);
+      updatePlayerState();
+    });
+
+    updatePlayerState();
+  }, []);
+
+  const playAudioBuffer = () => {
+    audioEditorInstance.playBuffer();
+    setPlaying(true);
+  };
+
+  const pauseAudioBuffer = () => {
+    audioPlayerInstance.pause();
+    setPlaying(false);
+  };
+
+  const stopAudioBuffer = () => {
+    audioPlayerInstance.stop();
+    setPlaying(false);
+  };
+
+  const loopAudioBuffer = () => {
+    audioPlayerInstance.toggleLoop();
+    updatePlayerState();
+  };
+
+  const updatePlayerState = () => {
+    setCurrentTimeDisplay(audioPlayerInstance.currentTimeDisplay);
+    setMaxTimeDisplay(audioPlayerInstance.maxTimeDisplay);
+    setPercent(audioPlayerInstance.percent);
+    setLooping(audioPlayerInstance.loop);
+    setCurrentTime(audioPlayerInstance.currentTime);
+    setMaxTime(audioPlayerInstance.duration);
+    setCompatibilityModeEnabled(audioPlayerInstance.compatibilityMode);
+  }
+
+  const setTimePlayer = (percent: number) => audioPlayerInstance.setTimePercent(percent);
+
+  return (
+    <AudioPlayerContext.Provider value={{
+      playing, playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, stopAudioBuffer,
+      currentTimeDisplay, maxTimeDisplay, percent, looping, currentTime, maxTime, isCompatibilityModeEnabled
+    }}>
+      {children}
+    </AudioPlayerContext.Provider>
+  );
+};

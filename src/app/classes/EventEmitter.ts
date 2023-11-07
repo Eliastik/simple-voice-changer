@@ -15,6 +15,7 @@ class EventEmitter {
     }
 
     emit(event: string, data?: any) {
+        console.log(event);
         if (this.listeners[event]) {
             this.listeners[event].forEach(callback => {
                 callback(data);

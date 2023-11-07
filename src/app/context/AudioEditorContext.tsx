@@ -5,6 +5,7 @@ import AudioEditor from '../classes/AudioEditor';
 import utils from "../classes/utils/Functions";
 import AudioEditorContextProps from './AudioEditorContextProps';
 import Constants from '../model/Constants';
+import AudioEditorPlayerSingleton from './AudioEditorPlayerSingleton';
 
 // Construct an audio editor instance - singleton
 let audioEditorInstance: AudioEditor;
@@ -34,10 +35,6 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
   const [audioProcessing, setAudioProcessing] = useState(false);
   // State: object with enabled state for the filters
   const [filterState, setFilterState] = useState({});
-  // State: true if the audio player is playing the audio
-  const [bufferPlaying, setBufferPlaying] = useState(false);
-  // State: state of the audio player (time etc.)
-  const [playerState, setPlayerState] = useState(audioEditorInstance && audioEditorInstance.getPlayerState());
   // State: object with all the settings of the filters
   const [filtersSettings, setFiltersSettings] = useState(new Map());
   // State: true if we are loading initial audio buffer from the network (when starting the application)
@@ -58,14 +55,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
       return;
     }
 
-    audioEditorInstance = new AudioEditor(new AudioContext(), Constants.audioBuffersToFetch);
+    audioEditorInstance = AudioEditorPlayerSingleton.getAudioEditorInstance()!;
 
-    audioEditorInstance.on("playingFinished", () => setBufferPlaying(false));
-    audioEditorInstance.on("playingUpdate", () => setPlayerState(audioEditorInstance.getPlayerState()));
-    audioEditorInstance.on("playingStarted", () => {
-      setBufferPlaying(true);
-      setPlayerState(audioEditorInstance.getPlayerState());
-    });
     audioEditorInstance.on("loadingBuffers", () => setDownloadingInitialData(true));
     audioEditorInstance.on("fetchingBuffer", () => setDownloadingBufferData(true));
   
@@ -94,7 +85,6 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
 
     setDownloadingInitialData(audioEditorInstance.downloadingInitialData);
     setFilterState(audioEditorInstance.getFiltersState());
-    setPlayerState(audioEditorInstance.getPlayerState());
     setFiltersSettings(audioEditorInstance.getFiltersSettings());
     setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
   }, []);
@@ -125,39 +115,15 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setFilterState(audioEditorInstance.getFiltersState());
   };
 
-  const playAudioBuffer = () => {
-    audioEditorInstance.playBuffer();
-    setBufferPlaying(true);
-  };
-
-  const pauseAudioBuffer = () => {
-    audioEditorInstance.pauseBuffer();
-    setBufferPlaying(false);
-  };
-
-  const stopAudioBuffer = () => {
-    audioEditorInstance.stopBuffer();
-    setBufferPlaying(false);
-  };
-
-  const loopAudioBuffer = () => {
-    audioEditorInstance.toggleLoopPlayer();
-    setPlayerState(audioEditorInstance.getPlayerState());
-  };
-
-  const setTimePlayer = (percent: number) => audioEditorInstance.setPlayerTime(percent);
-
   const validateSettings = async () => {
     setAudioProcessing(true);
     await audioEditorInstance.renderAudio();
-    setBufferPlaying(false);
     setAudioProcessing(false);
   };
 
   const exitAudioEditor = () => {
     audioEditorInstance.exit();
     setAudioEditorReady(false);
-    setBufferPlaying(false);
   };
 
   const changeFilterSettings = (filterId: string, settings: any) => {
@@ -197,10 +163,9 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
 
   return (
     <AudioEditorContext.Provider value={{
-      audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, bufferPlaying,
-      playAudioBuffer, pauseAudioBuffer, playerState, validateSettings, exitAudioEditor, loopAudioBuffer, setTimePlayer, filtersSettings, changeFilterSettings,
-      resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData,
-      closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, stopAudioBuffer, toggleCompatibilityMode,
+      audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, validateSettings,
+      exitAudioEditor, filtersSettings, changeFilterSettings, resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer,
+      errorDownloadingBufferData, closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, toggleCompatibilityMode,
       isCompatibilityModeAutoEnabled
     }}>
       {children}

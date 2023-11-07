@@ -1,17 +1,12 @@
 "use client";
 
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
+import { useAudioPlayer } from "@/app/context/AudioPlayerContext";
 import { useTranslation } from "react-i18next";
 
-const AudioPlayer = ({
-    currentTimeDisplay,
-    maxTimeDisplay,
-    currentTime,
-    maxTime,
-    playing,
-    looping,
-}: { currentTime: number, maxTime: number, maxTimeDisplay: string, currentTimeDisplay: string, playing: boolean, looping: boolean }) => {
-    const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, downloadAudio, downloadingAudio, isCompatibilityModeEnabled, stopAudioBuffer } = useAudioEditor();
+const AudioPlayer = () => {
+    const { downloadAudio, downloadingAudio } = useAudioEditor();
+    const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping } = useAudioPlayer();
     const { t } = useTranslation();
 
     return (

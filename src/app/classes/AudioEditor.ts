@@ -38,12 +38,12 @@ export default class AudioEditor extends AbstractAudioElement {
     principalBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
 
-    constructor(context: AudioContext, audioBuffersToFetch: string[]) {
+    constructor(context: AudioContext, player: BufferPlayer, eventEmitter: EventEmitter, audioBuffersToFetch: string[]) {
         super();
 
         this.currentContext = context;
-        this.eventEmitter = new EventEmitter();
-        this.bufferPlayer = new BufferPlayer(this.currentContext, this.eventEmitter);
+        this.eventEmitter = eventEmitter;
+        this.bufferPlayer = player;
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
         this.bufferPlayer.on("playingFinished", () => {
@@ -382,43 +382,6 @@ export default class AudioEditor extends AbstractAudioElement {
             } else {
                 this.bufferPlayer?.start();
             }
-        }
-    }
-
-    pauseBuffer() {
-        if (this.bufferPlayer) {
-            this.bufferPlayer?.pause();
-        }
-    }
-
-    stopBuffer() {
-        if (this.bufferPlayer) {
-            this.bufferPlayer?.stop();
-        }
-    }
-
-    toggleLoopPlayer() {
-        if (this.bufferPlayer) {
-            this.bufferPlayer.loop = !this.bufferPlayer.loop;
-        }
-    }
-
-    setPlayerTime(percent: number) {
-        if (this.bufferPlayer) {
-            this.bufferPlayer.setTime(percent);
-        }
-    }
-
-    getPlayerState() {
-        if (this.bufferPlayer) {
-            return {
-                currentTimeDisplay: this.bufferPlayer.currentTimeDisplay,
-                maxTimeDisplay: this.bufferPlayer.maxTimeDisplay,
-                percent: this.bufferPlayer.percent,
-                loop: this.bufferPlayer.loop,
-                currentTime: this.bufferPlayer.currentTime,
-                maxTime: this.bufferPlayer.duration
-            };
         }
     }
 

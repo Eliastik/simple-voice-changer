@@ -193,6 +193,21 @@ export default class BufferPlayer {
         }
     }
 
+    toggleLoop() {
+        this.loop = !this.loop;
+    }
+
+    getState() {
+        return {
+            currentTimeDisplay: this.currentTimeDisplay,
+            maxTimeDisplay: this.maxTimeDisplay,
+            percent: this.percent,
+            loop: this.loop,
+            currentTime: this.currentTime,
+            maxTime: this.duration
+        };
+    }
+
     on(event: string, callback: Function) {
         this.eventEmitter?.on(event, callback);
     }
