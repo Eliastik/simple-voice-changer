@@ -27,6 +27,7 @@ export default class BufferFetcherService {
             if(!response.ok) {
                 this.bufferErrors.push(bufferURI);
                 this.eventEmitter?.emit(EventType.FETCHING_BUFFERS_ERROR, bufferURI);
+                throw EventType.FETCHING_BUFFERS_ERROR;
             } else {
                 const arrayBuffer = await response.arrayBuffer();
                 const buffer = await this.context.decodeAudioData(arrayBuffer);
@@ -37,6 +38,7 @@ export default class BufferFetcherService {
         } catch(e) {
             this.bufferErrors.push(bufferURI);
             this.eventEmitter?.emit(EventType.FETCHING_BUFFERS_ERROR, bufferURI);
+            throw EventType.FETCHING_BUFFERS_ERROR;
         }
     }
 

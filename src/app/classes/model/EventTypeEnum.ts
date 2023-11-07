@@ -1,5 +1,6 @@
 export enum EventType {
     LOADING_BUFFERS = "loadingBuffers",
+    LOADING_BUFFERS_ERROR = "loadingBuffersError",
     FETCHING_BUFFERS = "fetchingBuffers",
     FETCHING_BUFFERS_ERROR = "fetchingBuffersError",
     FINISHED_FETCHING_BUFFERS = "finishedFetchingBuffers",

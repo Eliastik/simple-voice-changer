@@ -49,15 +49,19 @@ export default class ReverbFilter extends AbstractAudioFilter {
 
     async setSetting(settingId: string, value: any) {
         if(settingId == "reverbEnvironment") {
-            this.reverbEnvironment = {
-                name: value.name,
-                url: value.value,
-                size: value.additionalData.size,
-                addDuration: value.additionalData.addDuration,
-                link: value.additionalData.link
-            };
+            const url = value.value;
 
-            await this.bufferFetcherService?.fetchBuffer(this.reverbEnvironment.url);
+            try {
+                await this.bufferFetcherService?.fetchBuffer(url);
+
+                this.reverbEnvironment = {
+                    name: value.name,
+                    url,
+                    size: value.additionalData.size,
+                    addDuration: value.additionalData.addDuration,
+                    link: value.additionalData.link
+                };
+            } catch(e) { }
         }
     }
 }

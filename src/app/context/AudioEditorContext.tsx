@@ -59,6 +59,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     audioEditorInstance = AudioEditorPlayerSingleton.getAudioEditorInstance()!;
 
     audioEditorInstance.on(EventType.LOADING_BUFFERS, () => setDownloadingInitialData(true));
+    audioEditorInstance.on(EventType.LOADING_BUFFERS_ERROR, () => setDownloadingInitialData(false));
     audioEditorInstance.on(EventType.FETCHING_BUFFERS, () => setDownloadingBufferData(true));
   
     audioEditorInstance.on(EventType.LOADED_BUFFERS, () => {
@@ -127,8 +128,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setAudioEditorReady(false);
   };
 
-  const changeFilterSettings = (filterId: string, settings: any) => {
-    audioEditorInstance.changeFilterSettings(filterId, settings);
+  const changeFilterSettings = async (filterId: string, settings: any) => {
+    await audioEditorInstance.changeFilterSettings(filterId, settings);
     setFiltersSettings(audioEditorInstance.getFiltersSettings());
   };
 
