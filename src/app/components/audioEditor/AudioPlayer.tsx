@@ -18,7 +18,15 @@ const AudioPlayer = () => {
                 </div>}
             </div>
             <div className="fixed bottom-0 w-full">
-                <div className="block w-full"><input type="range" min={0} max={maxTime} value={currentTime} className="range range-player range-accent range-sm w-full rounded-none block bg-gray-250 after:bg-gray-800" onChange={(event) => setTimePlayer(parseFloat(event.target.value))} /></div>
+                <div className="block w-full">
+                    <input
+                        type="range"
+                        min={0}
+                        max={maxTime}
+                        value={currentTime}
+                        className="range range-player range-accent range-sm w-full rounded-none block bg-gray-250 after:bg-gray-800"
+                        onChange={(event) => setTimePlayer(parseFloat(event.target.value))} />
+                </div>
                 <div className="flex items-center justify-between w-full bg-base-300">
                     <div className="flex items-center">
                         {!playing &&

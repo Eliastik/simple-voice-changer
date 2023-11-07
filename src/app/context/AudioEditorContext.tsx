@@ -6,6 +6,7 @@ import utils from "../classes/utils/Functions";
 import AudioEditorContextProps from './AudioEditorContextProps';
 import Constants from '../model/Constants';
 import AudioEditorPlayerSingleton from './AudioEditorPlayerSingleton';
+import { EventType } from '../classes/model/EventTypeEnum';
 
 // Construct an audio editor instance - singleton
 let audioEditorInstance: AudioEditor;
@@ -57,25 +58,25 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
 
     audioEditorInstance = AudioEditorPlayerSingleton.getAudioEditorInstance()!;
 
-    audioEditorInstance.on("loadingBuffers", () => setDownloadingInitialData(true));
-    audioEditorInstance.on("fetchingBuffer", () => setDownloadingBufferData(true));
+    audioEditorInstance.on(EventType.LOADING_BUFFERS, () => setDownloadingInitialData(true));
+    audioEditorInstance.on(EventType.FETCHING_BUFFERS, () => setDownloadingBufferData(true));
   
-    audioEditorInstance.on("loadedBuffers", () => {
+    audioEditorInstance.on(EventType.LOADED_BUFFERS, () => {
       setDownloadingInitialData(false);
       setFiltersSettings(audioEditorInstance.getFiltersSettings());
     });
   
-    audioEditorInstance.on("finishedFetchingBuffer", () => {
+    audioEditorInstance.on(EventType.FINISHED_FETCHING_BUFFERS, () => {
       setDownloadingBufferData(false);
       setFiltersSettings(audioEditorInstance.getFiltersSettings());
     });
   
-    audioEditorInstance.on("fetchingBufferError", () => {
+    audioEditorInstance.on(EventType.FETCHING_BUFFERS_ERROR, () => {
       setDownloadingBufferData(false);
       setErrorDownloadingBufferData(true);
     });
   
-    audioEditorInstance.on("compatibilityModeAutoEnabled", () => {
+    audioEditorInstance.on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => {
       setCompatibilityModeAutoEnabled(true);
 
       setTimeout(() => {

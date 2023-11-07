@@ -1,4 +1,5 @@
 import EventEmitter from "./EventEmitter";
+import { EventType } from "./model/EventTypeEnum";
 import utilFunctions from "./utils/Functions";
 
 export default class BufferFetcherService {
@@ -18,24 +19,24 @@ export default class BufferFetcherService {
             return;
         }
 
-        this.eventEmitter?.emit("fetchingBuffer", bufferURI);
+        this.eventEmitter?.emit(EventType.FETCHING_BUFFERS, bufferURI);
 
         try {
             const response = await fetch(bufferURI);
 
             if(!response.ok) {
                 this.bufferErrors.push(bufferURI);
-                this.eventEmitter?.emit("fetchingBufferError", bufferURI);
+                this.eventEmitter?.emit(EventType.FETCHING_BUFFERS_ERROR, bufferURI);
             } else {
                 const arrayBuffer = await response.arrayBuffer();
                 const buffer = await this.context.decodeAudioData(arrayBuffer);
                 this.buffers.set(this.getKeyFromLocation(bufferURI), await utilFunctions.decodeBuffer(this.context, buffer));
             }
     
-            this.eventEmitter?.emit("finishedFetchingBuffer", bufferURI);
+            this.eventEmitter?.emit(EventType.FINISHED_FETCHING_BUFFERS, bufferURI);
         } catch(e) {
             this.bufferErrors.push(bufferURI);
-            this.eventEmitter?.emit("fetchingBufferError", bufferURI);
+            this.eventEmitter?.emit(EventType.FETCHING_BUFFERS_ERROR, bufferURI);
         }
     }
 

@@ -5,6 +5,7 @@ import AudioEditor from '../classes/AudioEditor';
 import AudioEditorPlayerSingleton from './AudioEditorPlayerSingleton';
 import BufferPlayer from '../classes/BufferPlayer';
 import AudioPlayerContextProps from './AudioPlayerContextProps';
+import { EventType } from '../classes/model/EventTypeEnum';
 
 let audioPlayerInstance: BufferPlayer;
 let audioEditorInstance: AudioEditor;
@@ -49,15 +50,15 @@ export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) 
     audioPlayerInstance = AudioEditorPlayerSingleton.getAudioPlayerInstance()!;
     audioEditorInstance = AudioEditorPlayerSingleton.getAudioEditorInstance()!;
 
-    audioPlayerInstance.on("playingFinished", () => setPlaying(false));
-    audioPlayerInstance.on("playingUpdate", () => updatePlayerState());
+    audioPlayerInstance.on(EventType.PLAYING_FINISHED, () => setPlaying(false));
+    audioPlayerInstance.on(EventType.PLAYING_UPDATE, () => updatePlayerState());
 
-    audioPlayerInstance.on("playingStarted", () => {
+    audioPlayerInstance.on(EventType.PLAYING_STARTED, () => {
       setPlaying(true);
       updatePlayerState();
     });
 
-    audioPlayerInstance.on("playingStopped", () => {
+    audioPlayerInstance.on(EventType.PLAYING_STOPPED, () => {
       setPlaying(false);
       updatePlayerState();
     });
@@ -95,7 +96,7 @@ export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) 
     setCompatibilityModeEnabled(audioPlayerInstance.compatibilityMode);
   }
 
-  const setTimePlayer = (percent: number) => audioPlayerInstance.setTimePercent(percent);
+  const setTimePlayer = (value: number) => audioPlayerInstance.setTime(value);
 
   return (
     <AudioPlayerContext.Provider value={{

@@ -20,6 +20,7 @@
 // Used to play the audio buffer, with time controls, pause/play, stop and loop
 
 import EventEmitter from "./EventEmitter";
+import { EventType } from "./model/EventTypeEnum";
 
 // Also used in compatibility mode (which doesn't use audio buffer) with less functions (no time control)
 export default class BufferPlayer {
@@ -104,7 +105,7 @@ export default class BufferPlayer {
             }
         }
 
-        this.eventEmitter?.emit("playingStopped");
+        this.eventEmitter?.emit(EventType.PLAYING_STOPPED);
         this.updateInfos();
     }
 
@@ -113,7 +114,7 @@ export default class BufferPlayer {
             this.stop();
             this.init();
 
-            this.eventEmitter?.emit("playingStarted");
+            this.eventEmitter?.emit(EventType.PLAYING_STARTED);
 
             if (!this.compatibilityMode) {
                 if (this.source) {
@@ -146,10 +147,10 @@ export default class BufferPlayer {
                             this.reset();
                             this.start();
                         } else {
-                            this.eventEmitter?.emit("playingFinished");
+                            this.eventEmitter?.emit(EventType.PLAYING_FINISHED);
                         }
                     } else {
-                        this.eventEmitter?.emit("playingFinished");
+                        this.eventEmitter?.emit(EventType.PLAYING_FINISHED);
                         this.reset();
                     }
                 } else {
@@ -164,18 +165,20 @@ export default class BufferPlayer {
     }
 
     updateInfos() {
-        this.eventEmitter?.emit("playingUpdate");
+        this.eventEmitter?.emit(EventType.PLAYING_UPDATE);
     }
 
     setTimePercent(percent: number) {
-        this.currentTime = Math.round(this.duration * (percent / 100));
-        this.displayTime = this.currentTime;
-
-        if (this.playing) {
-            this.pause();
-            this.start();
-        } else {
-            this.updateInfos();
+        if(!this.compatibilityMode) {
+            this.currentTime = Math.round(this.duration * (percent / 100));
+            this.displayTime = this.currentTime;
+    
+            if (this.playing) {
+                this.pause();
+                this.start();
+            } else {
+                this.updateInfos();
+            }
         }
     }
 
@@ -195,17 +198,6 @@ export default class BufferPlayer {
 
     toggleLoop() {
         this.loop = !this.loop;
-    }
-
-    getState() {
-        return {
-            currentTimeDisplay: this.currentTimeDisplay,
-            maxTimeDisplay: this.maxTimeDisplay,
-            percent: this.percent,
-            loop: this.loop,
-            currentTime: this.currentTime,
-            maxTime: this.duration
-        };
     }
 
     on(event: string, callback: Function) {

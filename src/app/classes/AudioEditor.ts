@@ -20,6 +20,7 @@ import EventEmitter from "./EventEmitter";
 //@ts-ignore
 import { Recorder, getRecorderWorker } from "recorderjs";
 import PassThroughFilter from "./filters/PassThroughFilter";
+import { EventType } from "./model/EventTypeEnum";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -46,7 +47,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.bufferPlayer = player;
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
-        this.bufferPlayer.on("playingFinished", () => {
+        this.bufferPlayer.on(EventType.PLAYING_FINISHED, () => {
             if (this.bufferPlayer?.loop) {
                 this.playBuffer();
             }
@@ -98,11 +99,11 @@ export default class AudioEditor extends AbstractAudioElement {
         }
 
         this.downloadingInitialData = true;
-        this.eventEmitter?.emit("loadingBuffers");
+        this.eventEmitter?.emit(EventType.LOADING_BUFFERS);
 
         this.bufferFetcherService?.fetchAllBuffers(audioBuffersToFetch).then(() => {
             this.downloadingInitialData = false;
-            this.eventEmitter?.emit("loadedBuffers");
+            this.eventEmitter?.emit(EventType.LOADED_BUFFERS);
         });
     }
 
@@ -215,7 +216,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
                     if (sum == 0) {
                         this.enableCompatibilityMode();
-                        this.eventEmitter?.emit("compatibilityModeAutoEnabled");
+                        this.eventEmitter?.emit(EventType.COMPATIBILITY_MODE_AUTO_ENABLED);
                         return await this.setupOutput(outputContext);
                     }
                 }
@@ -460,24 +461,24 @@ export default class AudioEditor extends AbstractAudioElement {
                             this.downloadAudioBlob(blob);
 
                             this.savingBuffer = false;
-                            this.eventEmitter?.off("playingFinished", finishedCallback);
+                            this.eventEmitter?.off(EventType.PLAYING_FINISHED, finishedCallback);
 
                             resolve(true);
                         });
                     };
 
-                    this.eventEmitter?.on("playingFinished", finishedCallback);
+                    this.eventEmitter?.on(EventType.PLAYING_FINISHED, finishedCallback);
 
                     const playingStoppedCallback = () => {
                         rec.stop();
 
                         this.savingBuffer = false;
-                        this.eventEmitter?.off("playingStopped", playingStoppedCallback);
+                        this.eventEmitter?.off(EventType.PLAYING_STOPPED, playingStoppedCallback);
 
                         resolve(true);
                     };
 
-                    this.eventEmitter?.on("playingStopped", playingStoppedCallback);
+                    this.eventEmitter?.on(EventType.PLAYING_STOPPED, playingStoppedCallback);
                 });
             }
         });
