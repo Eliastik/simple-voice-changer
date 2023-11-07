@@ -47,9 +47,17 @@ export default class AudioEditor extends AbstractAudioElement {
         this.bufferPlayer = player;
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
+        // Callback called just before starting audio player
+        this.bufferPlayer.onBeforePlaying(async () => {
+            if (this.isCompatibilityModeEnabled() && this.currentContext) {
+                await this.setupOutput(this.currentContext);
+            }
+        });
+
+        // Callback called when playing is finished
         this.bufferPlayer.on(EventType.PLAYING_FINISHED, () => {
             if (this.bufferPlayer?.loop) {
-                this.playBuffer();
+                this.bufferPlayer.start();
             }
         });
 
@@ -376,18 +384,6 @@ export default class AudioEditor extends AbstractAudioElement {
         this.reconnectNodesIfNeeded();
     }
 
-    /** Audio Player */
-    async playBuffer() {
-        if (this.bufferPlayer) {
-            if (this.isCompatibilityModeEnabled() && this.currentContext) {
-                await this.setupOutput(this.currentContext);
-                this.bufferPlayer?.start();
-            } else {
-                this.bufferPlayer?.start();
-            }
-        }
-    }
-
     exit() {
         if (this.bufferPlayer) {
             this.bufferPlayer.stop();
@@ -452,7 +448,7 @@ export default class AudioEditor extends AbstractAudioElement {
                     });
                 }
             } else {
-                this.playBuffer().then(() => {
+                this.bufferPlayer?.start().then(() => {
                     const rec = new Recorder(this.currentNodes!.output);
                     rec.record();
 

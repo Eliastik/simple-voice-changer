@@ -35,6 +35,7 @@ export default class BufferPlayer {
     loop = false;
     speedAudio = 1;
     private eventEmitter: EventEmitter | null;
+    private onBeforePlayingCallback: () => void = async () => {};
 
     compatibilityMode = false;
     currentNode: AudioNode | null = null;
@@ -109,10 +110,12 @@ export default class BufferPlayer {
         this.updateInfos();
     }
 
-    start() {
+    async start() {
         if (this.source || this.compatibilityMode) {
             this.stop();
             this.init();
+
+            await this.onBeforePlayingCallback();
 
             this.eventEmitter?.emit(EventType.PLAYING_STARTED);
 
@@ -194,6 +197,10 @@ export default class BufferPlayer {
                 this.updateInfos();
             }
         }
+    }
+
+    onBeforePlaying(callback: () => void) {
+        this.onBeforePlayingCallback = callback;
     }
 
     toggleLoop() {

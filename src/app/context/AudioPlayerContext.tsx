@@ -8,7 +8,6 @@ import AudioPlayerContextProps from './AudioPlayerContextProps';
 import { EventType } from '../classes/model/EventTypeEnum';
 
 let audioPlayerInstance: BufferPlayer;
-let audioEditorInstance: AudioEditor;
 
 const AudioPlayerContext = createContext<AudioPlayerContextProps | undefined>(undefined);
 
@@ -48,7 +47,6 @@ export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) 
     }
 
     audioPlayerInstance = AudioEditorPlayerSingleton.getAudioPlayerInstance()!;
-    audioEditorInstance = AudioEditorPlayerSingleton.getAudioEditorInstance()!;
 
     audioPlayerInstance.on(EventType.PLAYING_FINISHED, () => setPlaying(false));
     audioPlayerInstance.on(EventType.PLAYING_UPDATE, () => updatePlayerState());
@@ -66,8 +64,8 @@ export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) 
     updatePlayerState();
   }, []);
 
-  const playAudioBuffer = () => {
-    audioEditorInstance.playBuffer();
+  const playAudioBuffer = async () => {
+    await audioPlayerInstance.start();
     setPlaying(true);
   };
 
