@@ -67,16 +67,19 @@ export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) 
   const playAudioBuffer = async () => {
     await audioPlayerInstance.start();
     setPlaying(true);
+    updatePlayerState();
   };
 
   const pauseAudioBuffer = () => {
     audioPlayerInstance.pause();
     setPlaying(false);
+    updatePlayerState();
   };
 
   const stopAudioBuffer = () => {
     audioPlayerInstance.stop();
     setPlaying(false);
+    updatePlayerState();
   };
 
   const loopAudioBuffer = () => {
@@ -92,7 +95,7 @@ export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) 
     setCurrentTime(audioPlayerInstance.currentTime);
     setMaxTime(audioPlayerInstance.duration);
     setCompatibilityModeEnabled(audioPlayerInstance.compatibilityMode);
-  }
+  };
 
   const setTimePlayer = (value: number) => audioPlayerInstance.setTime(value);
 

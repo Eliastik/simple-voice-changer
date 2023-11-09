@@ -8,7 +8,6 @@ import LoadingAudioProcessingDialog from "../dialogs/LoadingAudioProcessingDialo
 import DownloadingBufferDialog from "../dialogs/DownloadingBufferDialog";
 import ErrorDownloadingBufferDialog from "../dialogs/ErrorDownloadingBufferDialog";
 import { useTranslation } from "react-i18next";
-import { AudioPlayerProvider } from "@/app/context/AudioPlayerContext";
 
 const AudioEditorMain = ({ }) => {
   const { audioProcessing, filterState, validateSettings, downloadingBufferData, resetAllFiltersState, isCompatibilityModeAutoEnabled } = useAudioEditor();
@@ -30,9 +29,7 @@ const AudioEditorMain = ({ }) => {
           <button className="btn btn-error" onClick={() => resetAllFiltersState()}>{t("audioEditorMain.resetSettings")}</button>
         </div>
       </div>
-      <AudioPlayerProvider>
-        <AudioPlayer></AudioPlayer>
-      </AudioPlayerProvider>
+      <AudioPlayer></AudioPlayer>
       {audioProcessing && <LoadingAudioProcessingDialog></LoadingAudioProcessingDialog>}
       {downloadingBufferData && <DownloadingBufferDialog></DownloadingBufferDialog>}
       <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>
