@@ -9,5 +9,13 @@ export enum EventType {
     PLAYING_STOPPED = "playingStopped",
     PLAYING_STARTED = "playingStarted",
     PLAYING_FINISHED = "playingFinished",
-    PLAYING_UPDATE = "playingUpdate"
+    PLAYING_UPDATE = "playingUpdate",
+    RECORDER_INIT = "recorderInit",
+    RECORDER_SUCCESS = "recorderSuccess",
+    RECORDER_ERROR = "recorderError",
+    RECORDER_UPDATE_CONSTRAINTS = "recorderUpdateConstraints",
+    RECORDER_RECORDING = "recorderRecording",
+    RECORDER_STOPPED = "recorderStopped",
+    RECORDER_PAUSED = "recorderPaused",
+    RECORDER_RESETED = "recorderReseted"
 }
