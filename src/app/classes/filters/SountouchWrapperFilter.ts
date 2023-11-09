@@ -3,9 +3,11 @@ import { PitchShifter } from "soundtouchjs";
 import AbstractAudioFilterEntrypoint from "../model/AbstractAudioFilterEntrypoint";
 
 export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoint {
+
     private currentPitchShifter: any;
     private speedAudio = 1;
     private frequencyAudio = 1;
+    private currentSpeedAudio = 1;
 
     constructor() {
         super();
@@ -19,11 +21,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
         }
 
         this.currentPitchShifter = new PitchShifter(context, buffer, 16384);
-
-        if(this.isEnabled()) {
-            this.currentPitchShifter.tempo = this.speedAudio;
-            this.currentPitchShifter.pitch = this.frequencyAudio;
-        }
+        this.updateState();
 
         return {
             input: this.currentPitchShifter,
@@ -46,6 +44,22 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
         };
     }
 
+    updateState(): void {
+        if(this.currentPitchShifter && this.isEnabled()) {
+            this.currentPitchShifter.tempo = this.speedAudio;
+            this.currentSpeedAudio = this.speedAudio;
+        } else {
+            this.currentPitchShifter.tempo = 1;
+            this.currentSpeedAudio = 1;
+        }
+
+        if(this.currentPitchShifter && this.isEnabled()) {
+            this.currentPitchShifter.pitch = this.frequencyAudio;
+        } else {
+            this.currentPitchShifter.pitch = 1;
+        }
+    }
+
     async setSetting(settingId: string, value: string) {
         if(!value || value == "" || isNaN(Number(value))) {
             return;
@@ -55,25 +69,19 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
 
         switch(settingId) {
             case "speedAudio":
-                if(this.currentPitchShifter) {
-                    this.currentPitchShifter.tempo = valueFloat;
-                }
-
                 this.speedAudio = valueFloat;
                 break;
             case "frequencyAudio":
-                if(this.currentPitchShifter) {
-                    this.currentPitchShifter.pitch = valueFloat;
-                }
-
                 this.frequencyAudio = valueFloat;
                 break;
             default:
                 break;
         }
+
+        this.updateState();
     }
 
     getSpeed(): number {
-        return this.speedAudio;
+        return this.currentSpeedAudio;
     }
 }

@@ -24,5 +24,6 @@ export default interface AudioEditorContextProps {
     resetAllFiltersState: () => void,
     isCompatibilityModeEnabled: boolean,
     toggleCompatibilityMode: (enabled: boolean) => void,
-    isCompatibilityModeAutoEnabled: boolean
+    isCompatibilityModeAutoEnabled: boolean,
+    pauseAudioEditor: () => void
 };

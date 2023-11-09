@@ -5,11 +5,11 @@ import MainComponent from "./components/MainComponent";
 import { useAudioEditor } from "./context/AudioEditorContext";
 
 const Home = () => {
-  const { pauseAudioBuffer } = useAudioEditor();
-  
+  const { pauseAudioEditor } = useAudioEditor();
+
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      pauseAudioBuffer();
+      pauseAudioEditor();
       event.preventDefault();
       event.returnValue = '';
     };

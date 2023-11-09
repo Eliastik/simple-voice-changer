@@ -5,6 +5,8 @@ export default abstract class AbstractAudioFilterEntrypoint extends AbstractAudi
     abstract getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer): AudioFilterNodes;
     /** Get the speed of the audio */
     abstract getSpeed(): number;
+    /** Update the state of the filter */
+    abstract updateState(): void;
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
         throw("Methode not implemented");

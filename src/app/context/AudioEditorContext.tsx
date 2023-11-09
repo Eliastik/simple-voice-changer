@@ -4,12 +4,13 @@ import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'r
 import AudioEditor from '../classes/AudioEditor';
 import utils from "../classes/utils/Functions";
 import AudioEditorContextProps from './AudioEditorContextProps';
-import Constants from '../model/Constants';
 import AudioEditorPlayerSingleton from './AudioEditorPlayerSingleton';
 import { EventType } from '../classes/model/EventTypeEnum';
+import BufferPlayer from '../classes/BufferPlayer';
 
 // Construct an audio editor instance - singleton
 let audioEditorInstance: AudioEditor;
+let audioPlayerInstance: BufferPlayer;
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);
 
@@ -57,6 +58,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     }
 
     audioEditorInstance = AudioEditorPlayerSingleton.getAudioEditorInstance()!;
+    audioPlayerInstance = AudioEditorPlayerSingleton.getAudioPlayerInstance()!;
 
     audioEditorInstance.on(EventType.LOADING_BUFFERS, () => setDownloadingInitialData(true));
     audioEditorInstance.on(EventType.LOADING_BUFFERS_ERROR, () => setDownloadingInitialData(false));
@@ -163,12 +165,14 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     }
   };
 
+  const pauseAudioEditor = () => audioPlayerInstance.pause();
+
   return (
     <AudioEditorContext.Provider value={{
       audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, validateSettings,
       exitAudioEditor, filtersSettings, changeFilterSettings, resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer,
       errorDownloadingBufferData, closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, toggleCompatibilityMode,
-      isCompatibilityModeAutoEnabled
+      isCompatibilityModeAutoEnabled, pauseAudioEditor
     }}>
       {children}
     </AudioEditorContext.Provider>

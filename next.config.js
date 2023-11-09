@@ -1,4 +1,22 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {output: 'export'}
+const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = nextConfig
+const nextConfig = {
+  output: "export",
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    config.plugins.push(
+      new CopyPlugin({
+        patterns: [
+          {
+            from: "node_modules/@soundtouchjs/audio-worklet/dist/soundtouch-worklet.js",
+            to: "public/worklets",
+          },
+        ],
+      })
+    );
+
+    return config;
+  },
+};
+
+module.exports = nextConfig;

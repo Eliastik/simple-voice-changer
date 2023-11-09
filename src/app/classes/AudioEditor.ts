@@ -142,6 +142,10 @@ export default class AudioEditor extends AbstractAudioElement {
             intermediateNodes.push(node);
         }
 
+        if(this.entrypointFilter) {
+            this.entrypointFilter.updateState();
+        }
+
         this.currentNodes = {
             input: entrypointNode!,
             output: previousNode!,
