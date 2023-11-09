@@ -174,7 +174,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Reconnect the nodes if the compatibility/direct mode is enabled */
     private reconnectNodesIfNeeded() {
-        if (this.isCompatibilityModeEnabled() && this.currentContext && this.principalBuffer && this.bufferPlayer) {
+        if (this.bufferPlayer?.compatibilityMode && this.currentContext && this.principalBuffer && this.bufferPlayer) {
             this.connectNodes(this.currentContext, this.principalBuffer, true);
 
             const speedAudio = this.entrypointFilter?.getSpeed()!;
@@ -409,7 +409,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.savingBuffer = true;
 
         return new Promise(resolve => {
-            if (!this.isCompatibilityModeEnabled()) {
+            if (!this.bufferPlayer?.compatibilityMode) {
                 if (!this.renderedBuffer || !this.currentContext) {
                     return resolve(false);
                 }
