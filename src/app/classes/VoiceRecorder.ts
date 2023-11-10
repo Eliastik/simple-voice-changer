@@ -292,4 +292,8 @@ export default class VoiceRecorder {
 
         this.eventEmitter?.emit(EventType.RECORDER_RESETED);
     }
+
+    on(event: string, callback: Function) {
+        this.eventEmitter?.on(event, callback);
+    }
 }

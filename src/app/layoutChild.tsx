@@ -19,7 +19,7 @@ const LayoutChild = ({
     
     return (
         <html data-theme={currentTheme ? currentTheme : "dark"} className="h-full">
-            <body className={`${inter.className} h-full flex flex-col`}>
+            <body className={`${inter.className} h-full flex flex-col overflow-x-hidden`}>
                 <Navbar></Navbar>
                 {children}
             </body>

@@ -39,18 +39,18 @@
             },
             "bufferDownloadingError": {
                 "title": "Error when downloading data",
-                "info": "Check your Internet connection, then try again."
+                "info": "Check your Internet connection, then try again"
             },
             "fileOpenError": {
                 "title": "Error when opening file",
-                "info": "Make sure the file you've selected is a correct audio file, then try again."
+                "info": "Make sure the file you've selected is a correct audio file, then try again"
             },
             "filterInformations": {
                 "title": "Filter informations"
             },
             "goToHome": {
                 "title": "Go back to homepage",
-                "info": "Are you sure that you want to exit and go back to the application homepage? You will lose all your unsaved changes."
+                "info": "Are you sure that you want to exit and go back to the application homepage? You will lose all your unsaved changes"
             },
             "loadingApp": {
                 "title": "Loading app"
@@ -60,6 +60,14 @@
             },
             "processing": {
                 "title": "Audio processing in progress"
+            },
+            "audioRecorderAuthorization": {
+                "title": "Authorization",
+                "info": "Please authorize access to your device's microphone in order to use this feature"
+            },
+            "errorAuthorizationAudioRecorderDialog": {
+                "title": "Authorization error",
+                "info": "You have denied access to the device's microphone, so this feature cannot be used. Reset your browser's permissions for this application, then try again"
             }
         },
         "filters": {

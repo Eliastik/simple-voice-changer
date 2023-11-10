@@ -35,18 +35,18 @@
             },
             "bufferDownloadingError": {
                 "title": "Erreur lors du téléchargement des données",
-                "info": "Vérifiez votre connexion Internet, puis réessayez."
+                "info": "Vérifiez votre connexion Internet, puis réessayez"
             },
             "fileOpenError": {
                 "title": "Erreur lors de l'ouverture du fichier",
-                "info": "Assurez-vous que le fichier que vous avez sélectionné soit bien un fichier audio correct, puis réessayez."
+                "info": "Assurez-vous que le fichier que vous avez sélectionné soit bien un fichier audio correct, puis réessayez"
             },
             "filterInformations": {
                 "title": "Informations sur le filtre"
             },
             "goToHome": {
                 "title": "Retourner à l'accueil",
-                "info": "Êtes-vous sûr de vouloir quitter et retourner à l'accueil de l'application ? Vous perdrez toutes vos modifications non enregistrées."
+                "info": "Êtes-vous sûr de vouloir quitter et retourner à l'accueil de l'application ? Vous perdrez toutes vos modifications non enregistrées"
             },
             "loadingApp": {
                 "title": "Chargement de l'application"
@@ -56,6 +56,14 @@
             },
             "processing": {
                 "title": "Traitement audio en cours"
+            },
+            "audioRecorderAuthorization": {
+                "title": "Autorisation",
+                "info": "Merci d'autoriser l'accès au microphone de votre appareil pour pouvoir utiliser cette fonctionnalité"
+            },
+            "errorAuthorizationAudioRecorderDialog": {
+                "title": "Erreur d'autorisation",
+                "info": "Vous avez refusé l'accès au microphone de votre appareil, cette fonctionnalité ne peut donc pas être utilisée. Réinitialisez les autorisations de votre navigateur pour cette application, puis réessayez"
             }
         },
         "filters": {
