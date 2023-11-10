@@ -4,14 +4,14 @@ import { useTranslation } from "react-i18next";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const AudioRecorderMain = ({ }) => {
-    const { pauseRecorderAudio, audioRecording, recordAudio, stopRecordAudio } = useAudioRecorder();
+    const { pauseRecorderAudio, audioRecording, recordAudio, stopRecordAudio, recorderTime } = useAudioRecorder();
     const { t } = useTranslation();
 
     return (
         <>
             <div className="toast toast-top toast-center"></div>
             <div className="flex justify-center items-center flex-grow flex-col pt-20 pb-20 gap-8">
-                <span className="font-light text-6xl">00:00</span>
+                <span className="font-light text-6xl">{recorderTime}</span>
                 <div className="flex gap-4 flex-row">
                     {!audioRecording && <button className="btn flex-col justify-evenly pl-2 pr-2 w-44 h-52" onClick={() => recordAudio()}>
                         <div className="fill-base-content">

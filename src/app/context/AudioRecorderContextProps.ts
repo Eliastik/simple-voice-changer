@@ -7,5 +7,7 @@ export default interface AudiRecorderContextProps {
     audioRecording: boolean,
     recordAudio: () => void,
     pauseRecorderAudio: () => void,
-    stopRecordAudio: () => void
+    stopRecordAudio: () => void,
+    recorderTime: string,
+    exitAudioRecorder: () => void
 };

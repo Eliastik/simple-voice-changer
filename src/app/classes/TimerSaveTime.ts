@@ -22,6 +22,8 @@ export default class TimerSaveTime {
     interval: number | null = null;
     incr = 1;
 
+    private countCallback: () => void = () => {};
+
     constructor(seconds: number, incr: number) {
         this.seconds = seconds;
         this.initialSeconds = seconds;
@@ -43,5 +45,13 @@ export default class TimerSaveTime {
         if(this.seconds <= 0) {
             this.stop();
         }
+
+        if(this.countCallback) {
+            this.countCallback();
+        }
+    }
+
+    onCount(callback: () => void) {
+        this.countCallback = callback;
     }
 }

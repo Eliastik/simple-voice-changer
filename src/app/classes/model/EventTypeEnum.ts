@@ -17,5 +17,6 @@ export enum EventType {
     RECORDER_RECORDING = "recorderRecording",
     RECORDER_STOPPED = "recorderStopped",
     RECORDER_PAUSED = "recorderPaused",
-    RECORDER_RESETED = "recorderReseted"
+    RECORDER_RESETED = "recorderReseted",
+    RECORDER_COUNT_UPDATE = "recorderCountUpdate"
 }

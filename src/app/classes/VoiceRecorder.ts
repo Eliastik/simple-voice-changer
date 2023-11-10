@@ -73,8 +73,14 @@ export default class VoiceRecorder {
             }
 
             await this.setup(stream, false, false);
+
             this.alreadyInit = true;
             this.timer = new TimerSaveTime(0, 1);
+
+            this.timer.onCount(() => {
+                this.eventEmitter?.emit(EventType.RECORDER_COUNT_UPDATE);
+            });
+
             this.successCallback();
         } catch (e) {
             this.errorCallback();
@@ -291,6 +297,10 @@ export default class VoiceRecorder {
         this.timer = null;
 
         this.eventEmitter?.emit(EventType.RECORDER_RESETED);
+    }
+
+    get currentTimeDisplay() {
+        return this.timer?.seconds ? ("0" + Math.trunc(this.timer?.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.timer?.seconds % 60)).slice(-2) : "00:00";
     }
 
     on(event: string, callback: Function) {

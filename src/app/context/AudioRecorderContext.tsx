@@ -31,6 +31,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
   const [audioRecorderAuthorizationPending, setAudioRecorderAuthorizationPending] = useState(false);
   // State: true if recording
   const [audioRecording, setAudioRecording] = useState(false);
+  // State: current time
+  const [recorderTime, setRecorderTime] = useState("00:00");
 
   useEffect(() => {
     if (audioRecorderInstance != null) {
@@ -42,6 +44,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     audioRecorderInstance.on(EventType.RECORDER_ERROR, () => setAudioRecorderHasError(true));
     audioRecorderInstance.on(EventType.RECORDER_RECORDING, () => setAudioRecording(true));
     audioRecorderInstance.on(EventType.RECORDER_PAUSED, () => setAudioRecording(false));
+    audioRecorderInstance.on(EventType.RECORDER_COUNT_UPDATE, () => setRecorderTime(audioRecorderInstance.currentTimeDisplay));
+
     audioRecorderInstance.on(EventType.RECORDER_STOPPED, () => {
       setAudioRecording(false);
       setAudioRecorderReady(false);
@@ -50,6 +54,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     audioRecorderInstance.on(EventType.RECORDER_SUCCESS, () => {
       setAudioRecorderReady(true);
       setAudioRecorderHasError(false);
+      setAudioRecording(false);
+      setRecorderTime(audioRecorderInstance.currentTimeDisplay);
     });
   }, []);
 
@@ -57,6 +63,11 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     setAudioRecorderAuthorizationPending(true);
     await audioRecorderInstance.init();
     setAudioRecorderAuthorizationPending(false);
+  };
+
+  const exitAudioRecorder = () => {
+    audioRecorderInstance.reset();
+    setAudioRecorderReady(false);
   };
 
   const recordAudio = () => audioRecorderInstance.record();
@@ -68,7 +79,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
   return (
     <AudioRecorderContext.Provider value={{
       audioRecorderReady, audioRecorderHasError, initRecorder, audioRecorderAuthorizationPending,
-      closeAudioRecorderError, audioRecording, recordAudio, pauseRecorderAudio, stopRecordAudio
+      closeAudioRecorderError, audioRecording, recordAudio, pauseRecorderAudio, stopRecordAudio,
+      recorderTime, exitAudioRecorder
     }}>
       {children}
     </AudioRecorderContext.Provider>

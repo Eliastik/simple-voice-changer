@@ -1,8 +1,10 @@
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
+import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import { useTranslation } from "react-i18next";
 
 const GoToHomeDialog = () => {
-    const { exitAudioEditor } = useAudioEditor();
+    const { audioEditorReady, exitAudioEditor } = useAudioEditor();
+    const { audioRecorderReady, exitAudioRecorder } = useAudioRecorder();
     const { t } = useTranslation();
 
     return (
@@ -15,7 +17,15 @@ const GoToHomeDialog = () => {
                 <p className="py-4">{t("dialogs.goToHome.info")}</p>
                 <div className="modal-action">
                     <form method="dialog">
-                        <button className="btn btn-neutral mr-2" onClick={() => exitAudioEditor()}>{t("ok")}</button>
+                        <button className="btn btn-neutral mr-2" onClick={() => {
+                            if(audioEditorReady) {
+                                exitAudioEditor();
+                            }
+
+                            if(audioRecorderReady) {
+                                exitAudioRecorder();
+                            }
+                        }}>{t("ok")}</button>
                         <button className="btn">{t("cancel")}</button>
                     </form>
                 </div>
