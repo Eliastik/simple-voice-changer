@@ -171,6 +171,12 @@
                 }
             }
         },
+        "audioRecorder": {
+            "record": "Enregistrer",
+            "pause": "Pause",
+            "stop": "Arrêter et démarrer l'édition",
+            "settings": "Paramètres…"
+        },
         "close": "Fermer",
         "ok": "OK",
         "cancel": "Annuler",

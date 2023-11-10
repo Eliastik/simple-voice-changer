@@ -3,5 +3,9 @@ export default interface AudiRecorderContextProps {
     audioRecorderHasError: boolean,
     initRecorder: () => void,
     audioRecorderAuthorizationPending: boolean,
-    closeAudioRecorderError: () => void
+    closeAudioRecorderError: () => void,
+    audioRecording: boolean,
+    recordAudio: () => void,
+    pauseRecorderAudio: () => void,
+    stopRecordAudio: () => void
 };

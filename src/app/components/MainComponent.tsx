@@ -13,7 +13,7 @@ import ErrorAuthorizationAudioRecorderDialog from "./dialogs/ErrorAuthorizationA
 
 const MainComponent = ({ }) => {
   const { audioEditorReady, loadingPrincipalBuffer, downloadingInitialData } = useAudioEditor();
-  const { audioRecorderReady, audioRecorderHasError, audioRecorderAuthorizationPending } = useAudioRecorder();
+  const { audioRecorderReady, audioRecorderAuthorizationPending } = useAudioRecorder();
 
   return (
     <>

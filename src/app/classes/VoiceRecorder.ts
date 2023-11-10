@@ -226,7 +226,7 @@ export default class VoiceRecorder {
 
     record() {
         if (this.alreadyInit) {
-            if (!this.recorder) this.recorder = new Recorder(this.input, { workerPath: "src/recorderWorker.js" });
+            if (!this.recorder) this.recorder = new Recorder(this.input);
             this.recorder && this.recorder.record();
             this.timer && this.timer.start();
             this.recording = true;
@@ -235,23 +235,23 @@ export default class VoiceRecorder {
     }
 
     async stop() {
-        if (this.alreadyInit && this.context) {
+        if (this.alreadyInit) {
             this.recorder && this.recorder.stop();
             this.timer && this.timer.stop();
             this.recording = false;
 
-            const buffer = await this.recorder.getBuffer();
-
-            this.context.resume();
-
-            const newSource = this.context.createBufferSource();
-            const newBuffer = this.context.createBuffer(2, buffer[0].length, this.context.sampleRate);
-            newBuffer.getChannelData(0).set(buffer[0]);
-            newBuffer.getChannelData(1).set(buffer[1]);
-            newSource.buffer = newBuffer;
-
-            this.eventEmitter?.emit(EventType.RECORDER_STOPPED);
-            this.reset();
+            this.recorder.getBuffer((buffer: Float32Array[]) => {
+                if(this.context) {
+                    this.context.resume();
+    
+                    const newBuffer = this.context.createBuffer(2, buffer[0].length, this.context.sampleRate);
+                    newBuffer.getChannelData(0).set(buffer[0]);
+                    newBuffer.getChannelData(1).set(buffer[1]);
+    
+                    this.eventEmitter?.emit(EventType.RECORDER_STOPPED, newBuffer);
+                    this.reset();
+                }
+            });
         }
     }
 

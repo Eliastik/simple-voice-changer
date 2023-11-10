@@ -29,6 +29,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
   const [audioRecorderHasError, setAudioRecorderHasError] = useState(false);
   // State: true if the authorization request is pending
   const [audioRecorderAuthorizationPending, setAudioRecorderAuthorizationPending] = useState(false);
+  // State: true if recording
+  const [audioRecording, setAudioRecording] = useState(false);
 
   useEffect(() => {
     if (audioRecorderInstance != null) {
@@ -38,6 +40,13 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     audioRecorderInstance = AudioEditorPlayerSingleton.getAudioRecorderInstance()!;
 
     audioRecorderInstance.on(EventType.RECORDER_ERROR, () => setAudioRecorderHasError(true));
+    audioRecorderInstance.on(EventType.RECORDER_RECORDING, () => setAudioRecording(true));
+    audioRecorderInstance.on(EventType.RECORDER_PAUSED, () => setAudioRecording(false));
+    audioRecorderInstance.on(EventType.RECORDER_STOPPED, () => {
+      setAudioRecording(false);
+      setAudioRecorderReady(false);
+    });
+
     audioRecorderInstance.on(EventType.RECORDER_SUCCESS, () => {
       setAudioRecorderReady(true);
       setAudioRecorderHasError(false);
@@ -50,12 +59,16 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     setAudioRecorderAuthorizationPending(false);
   };
 
+  const recordAudio = () => audioRecorderInstance.record();
+  const pauseRecorderAudio = () => audioRecorderInstance.pause();
+  const stopRecordAudio = () => audioRecorderInstance.stop();
+
   const closeAudioRecorderError = () => setAudioRecorderHasError(false);
 
   return (
     <AudioRecorderContext.Provider value={{
       audioRecorderReady, audioRecorderHasError, initRecorder, audioRecorderAuthorizationPending,
-      closeAudioRecorderError
+      closeAudioRecorderError, audioRecording, recordAudio, pauseRecorderAudio, stopRecordAudio
     }}>
       {children}
     </AudioRecorderContext.Provider>

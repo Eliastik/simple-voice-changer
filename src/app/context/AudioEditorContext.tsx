@@ -7,6 +7,7 @@ import AudioEditorContextProps from './AudioEditorContextProps';
 import AudioEditorPlayerSingleton from './AudioObjectsSingleton';
 import { EventType } from '../classes/model/EventTypeEnum';
 import BufferPlayer from '../classes/BufferPlayer';
+import { buffer } from 'stream/consumers';
 
 // Construct an audio editor instance - singleton
 let audioEditorInstance: AudioEditor;
@@ -86,6 +87,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         setCompatibilityModeAutoEnabled(false);
       }, 10000);
     });
+  
+    audioEditorInstance.on(EventType.RECORDER_STOPPED, (buffer: AudioBuffer) => loadAudioPrincipalBuffer(null, buffer));
 
     setDownloadingInitialData(audioEditorInstance.downloadingInitialData);
     setFilterState(audioEditorInstance.getFiltersState());
@@ -93,11 +96,11 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
   }, []);
 
-  const loadAudioPrincipalBuffer = async (file: File) => {
+  const loadAudioPrincipalBuffer = async (file: File | null, audioBuffer?: AudioBuffer) => {
     setLoadingPrincipalBuffer(true);
 
     try {
-      const buffer = await utils.loadAudioBuffer(file);
+      const buffer = audioBuffer ? audioBuffer : await utils.loadAudioBuffer(file!);
       audioEditorInstance.principalBuffer = buffer;
   
       setLoadingPrincipalBuffer(false);
