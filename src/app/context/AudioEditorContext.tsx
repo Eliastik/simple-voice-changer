@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
 import AudioEditor from '../classes/AudioEditor';
 import utils from "../classes/utils/Functions";
-import AudioEditorContextProps from './AudioEditorContextProps';
+import AudioEditorContextProps from '../model/contextProps/AudioEditorContextProps';
 import AudioEditorPlayerSingleton from './AudioObjectsSingleton';
 import { EventType } from '../classes/model/EventTypeEnum';
 import BufferPlayer from '../classes/BufferPlayer';

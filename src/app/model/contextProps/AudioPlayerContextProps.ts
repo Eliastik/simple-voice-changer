@@ -1,4 +1,4 @@
-import AudioEditor from "../classes/AudioEditor";
+import AudioEditor from "../../classes/AudioEditor";
 
 export default interface AudioPlayerContextProps {
     playing: boolean,

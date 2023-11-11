@@ -1,4 +1,4 @@
-import AudioEditor from "../classes/AudioEditor";
+import AudioEditor from "../../classes/AudioEditor";
 
 export default interface AudioEditorContextProps {
     audioEditorInstance: AudioEditor;

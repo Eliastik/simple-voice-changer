@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
-import ApplicationConfigContextProps from './ApplicationConfigContextProps';
+import ApplicationConfigContextProps from '../model/contextProps/ApplicationConfigContextProps';
 import ApplicationConfigService from './ApplicationConfigService';
 import i18next from 'i18next';
 

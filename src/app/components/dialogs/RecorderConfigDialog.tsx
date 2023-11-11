@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const RecorderConfigDialog = () => {
-  const { recorderSettings } = useAudioRecorder();
+  const { recorderSettings, changeInput } = useAudioRecorder();
   const { t } = useTranslation();
 
   return (
@@ -18,8 +18,12 @@ const RecorderConfigDialog = () => {
               <div className="md:w-3/6">
                 <label htmlFor="recorderDevice">{t("recorderSettings.device")}</label>
               </div>
-              <select className="select select-bordered md:w-4/6" id="recorderDevice" value={recorderSettings.constraints.deviceId}>
-                {recorderSettings.deviceList.map(device => <option value={device.deviceId} key={device.deviceId}>{device.label}</option>)}
+              <select
+                className="select select-bordered md:w-4/6"
+                id="recorderDevice"
+                value={recorderSettings.constraints.deviceId}
+                onChange={event => changeInput(event.target.value, event.target.options[event.target.selectedIndex].dataset.groupid)}>
+                {recorderSettings.deviceList.map(device => <option value={device.deviceId} key={device.deviceId + "-" + device.groupId} data-groupid={device.groupId}>{device.label}</option>)}
               </select>
             </div>
           </div>

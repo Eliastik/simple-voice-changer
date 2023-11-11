@@ -1,4 +1,4 @@
-import { RecorderSettings } from "../classes/model/RecorderSettings";
+import { RecorderSettings } from "../../classes/model/RecorderSettings";
 
 export default interface AudiRecorderContextProps {
     audioRecorderReady: boolean,
@@ -13,5 +13,6 @@ export default interface AudiRecorderContextProps {
     recorderDisplayTime: string,
     exitAudioRecorder: () => void,
     recorderTime: number,
-    recorderSettings: RecorderSettings
+    recorderSettings: RecorderSettings,
+    changeInput: (deviceId: string, groupId: string | undefined) => void
 };

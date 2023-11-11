@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react';
 import AudioEditorPlayerSingleton from './AudioObjectsSingleton';
-import AudioRecorderContextProps from './AudioRecorderContextProps';
+import AudioRecorderContextProps from '../model/contextProps/AudioRecorderContextProps';
 import VoiceRecorder from '../classes/VoiceRecorder';
 import { EventType } from '../classes/model/EventTypeEnum';
 import { RecorderSettings } from '../classes/model/RecorderSettings';
@@ -49,6 +49,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     audioRecorderInstance.on(EventType.RECORDER_ERROR, () => setAudioRecorderHasError(true));
     audioRecorderInstance.on(EventType.RECORDER_RECORDING, () => setAudioRecording(true));
     audioRecorderInstance.on(EventType.RECORDER_PAUSED, () => setAudioRecording(false));
+    audioRecorderInstance.on(EventType.RECORDER_UPDATE_CONSTRAINTS, () => setRecorderSettings(audioRecorderInstance.getSettings()));
+    audioRecorderInstance.on(EventType.RECORDER_RESETED, () => resetRecorderState());
     
     audioRecorderInstance.on(EventType.RECORDER_COUNT_UPDATE, () => {
       setRecorderDisplayTime(audioRecorderInstance.currentTimeDisplay);
@@ -63,9 +65,7 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     audioRecorderInstance.on(EventType.RECORDER_SUCCESS, () => {
       setAudioRecorderReady(true);
       setAudioRecorderHasError(false);
-      setAudioRecording(false);
-      setRecorderDisplayTime(audioRecorderInstance.currentTimeDisplay);
-      setRecorderTime(audioRecorderInstance.currentTime);
+      resetRecorderState();
     });
   }, []);
 
@@ -73,6 +73,13 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     setAudioRecorderAuthorizationPending(true);
     await audioRecorderInstance.init();
     setAudioRecorderAuthorizationPending(false);
+    setRecorderSettings(audioRecorderInstance.getSettings());
+  };
+
+  const resetRecorderState = () => {
+    setAudioRecording(false);
+    setRecorderDisplayTime(audioRecorderInstance.currentTimeDisplay);
+    setRecorderTime(audioRecorderInstance.currentTime);
     setRecorderSettings(audioRecorderInstance.getSettings());
   };
 
@@ -84,6 +91,7 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
   const recordAudio = () => audioRecorderInstance.record();
   const pauseRecorderAudio = () => audioRecorderInstance.pause();
   const stopRecordAudio = () => audioRecorderInstance.stop();
+  const changeInput = (deviceId: string, groupId: string | undefined) => audioRecorderInstance.changeInput(deviceId, groupId);
 
   const closeAudioRecorderError = () => setAudioRecorderHasError(false);
 
@@ -91,7 +99,7 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     <AudioRecorderContext.Provider value={{
       audioRecorderReady, audioRecorderHasError, initRecorder, audioRecorderAuthorizationPending,
       closeAudioRecorderError, audioRecording, recordAudio, pauseRecorderAudio, stopRecordAudio,
-      recorderDisplayTime, exitAudioRecorder, recorderTime, recorderSettings
+      recorderDisplayTime, exitAudioRecorder, recorderTime, recorderSettings, changeInput
     }}>
       {children}
     </AudioRecorderContext.Provider>

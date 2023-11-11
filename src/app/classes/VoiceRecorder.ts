@@ -205,6 +205,7 @@ export default class VoiceRecorder {
     async updateInputList() {
         if (this.deviceList) {
             const devices = await navigator.mediaDevices.enumerateDevices();
+            this.deviceList = [];
 
             devices.forEach(device => {
                 if (device.kind == "audioinput") {
@@ -214,10 +215,12 @@ export default class VoiceRecorder {
         }
     }
 
-    changeInput(deviceId: string, groupId: string) {
-        this.constraints.audio.deviceId = deviceId;
-        this.constraints.audio.groupId = groupId;
-        this.resetConstraints();
+    changeInput(deviceId: string, groupId: string | undefined) {
+        if(groupId) {
+            this.constraints.audio.deviceId = deviceId;
+            this.constraints.audio.groupId = groupId;
+            this.resetConstraints();
+        }
     }
 
     record() {
