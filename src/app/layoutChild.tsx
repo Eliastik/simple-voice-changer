@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import Navbar from "./components/navbar/navbar";
 import { useApplicationConfig } from "./context/ApplicationConfigContext";
 import "./i18n";
+import PWA from "./pwa";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,6 +27,7 @@ const LayoutChild = ({
             <body className={`${inter.className} h-full flex flex-col overflow-x-hidden`}>
                 <Navbar></Navbar>
                 {children}
+                <PWA></PWA>
             </body>
         </html>
     )

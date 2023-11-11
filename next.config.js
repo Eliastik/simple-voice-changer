@@ -1,9 +1,27 @@
 /** @type {import('next').NextConfig} */
 const CopyPlugin = require("copy-webpack-plugin");
+const isDev = process.env.NODE_ENV === "development";
 const withPWA = require("next-pwa")({
   dest: "public",
   sw: "service-worker.js",
-  disable: process.env.NODE_ENV === "development"
+  disable: isDev,
+  exclude: [
+    // add buildExcludes here
+    ({ asset, compilation }) => {
+      if (
+        asset.name.startsWith("server/") ||
+        asset.name.match(
+          /^((app-|^)build-manifest\.json|react-loadable-manifest\.json)$/
+        )
+      ) {
+        return true;
+      }
+      if (isDev && !asset.name.startsWith("static/runtime/")) {
+        return true;
+      }
+      return false;
+    },
+  ],
 });
 
 const nextConfig = withPWA({
@@ -14,7 +32,7 @@ const nextConfig = withPWA({
         patterns: [
           {
             from: "node_modules/@soundtouchjs/audio-worklet/dist/soundtouch-worklet.js",
-            to: "public/worklets",
+            to: "../public/worklets",
           },
         ],
       })
