@@ -1,0 +1,21 @@
+{
+    "short_name": "Simple Voice Changer",
+    "name": "Simple Voice Changer",
+    "background_color": "#61A6FA",
+    "theme_color": "#61A6FA",
+    "display": "standalone",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "static/img/icon_192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "static/img/icon_512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "index.html?launcher=true"
+}

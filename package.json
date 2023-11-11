@@ -29,6 +29,7 @@
     "daisyui": "^3.9.4",
     "eslint": "^8.52.0",
     "eslint-config-next": "^13.5.6",
+    "next-pwa": "^5.6.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2"

@@ -10,7 +10,6 @@ const AudioRecorderMain = ({ }) => {
 
     return (
         <>
-            <div className="toast toast-top toast-center"></div>
             <div className="flex justify-center items-center flex-grow flex-col pt-16 gap-8">
                 <span className="font-light text-6xl">{recorderDisplayTime}</span>
                 <div className="flex gap-4 flex-row">
