@@ -92,6 +92,10 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
   const pauseRecorderAudio = () => audioRecorderInstance.pause();
   const stopRecordAudio = () => audioRecorderInstance.stop();
   const changeInput = (deviceId: string, groupId: string | undefined) => audioRecorderInstance.changeInput(deviceId, groupId);
+  const toggleAudioFeedback = (enable: boolean) => audioRecorderInstance.audioFeedback(enable);
+  const toggleEchoCancellation = (enable: boolean) => audioRecorderInstance.setEchoCancellation(enable);
+  const toggleNoiseReduction = (enable: boolean) => audioRecorderInstance.setNoiseSuppression(enable);
+  const toggleAutoGainControl = (enable: boolean) => audioRecorderInstance.setAutoGain(enable);
 
   const closeAudioRecorderError = () => setAudioRecorderHasError(false);
 
@@ -99,7 +103,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     <AudioRecorderContext.Provider value={{
       audioRecorderReady, audioRecorderHasError, initRecorder, audioRecorderAuthorizationPending,
       closeAudioRecorderError, audioRecording, recordAudio, pauseRecorderAudio, stopRecordAudio,
-      recorderDisplayTime, exitAudioRecorder, recorderTime, recorderSettings, changeInput
+      recorderDisplayTime, exitAudioRecorder, recorderTime, recorderSettings, changeInput,
+      toggleAudioFeedback, toggleEchoCancellation, toggleNoiseReduction, toggleAutoGainControl
     }}>
       {children}
     </AudioRecorderContext.Provider>

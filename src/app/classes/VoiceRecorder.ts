@@ -96,6 +96,8 @@ export default class VoiceRecorder {
                 this.input && this.input.connect(this.context.destination) && this.input.disconnect(this.context.destination);
                 this.enableAudioFeedback = false;
             }
+
+            this.eventEmitter?.emit(EventType.RECORDER_UPDATE_CONSTRAINTS);
         }
     }
 
@@ -128,7 +130,7 @@ export default class VoiceRecorder {
 
             if (newConstraint) {
                 this.updateConstraints();
-                this.constraints.audio = Object.assign(this.constraints.audio, newConstraint);
+                this.constraints.audio = Object.assign(this.constraints.audio, newConstraint.audio);
             }
 
             if (tracks && tracks.length > 0) {
@@ -216,7 +218,7 @@ export default class VoiceRecorder {
     }
 
     changeInput(deviceId: string, groupId: string | undefined) {
-        if(groupId) {
+        if (groupId) {
             this.constraints.audio.deviceId = deviceId;
             this.constraints.audio.groupId = groupId;
             this.resetConstraints();
@@ -240,13 +242,13 @@ export default class VoiceRecorder {
             this.recording = false;
 
             this.recorder.getBuffer((buffer: Float32Array[]) => {
-                if(this.context) {
+                if (this.context) {
                     this.context.resume();
-    
+
                     const newBuffer = this.context.createBuffer(2, buffer[0].length, this.context.sampleRate);
                     newBuffer.getChannelData(0).set(buffer[0]);
                     newBuffer.getChannelData(1).set(buffer[1]);
-    
+
                     this.eventEmitter?.emit(EventType.RECORDER_STOPPED, newBuffer);
                     this.reset();
                 }

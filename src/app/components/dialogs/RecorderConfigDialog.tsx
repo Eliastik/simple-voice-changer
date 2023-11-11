@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const RecorderConfigDialog = () => {
-  const { recorderSettings, changeInput } = useAudioRecorder();
+  const { recorderSettings, changeInput, toggleAudioFeedback, toggleEchoCancellation, toggleNoiseReduction, toggleAutoGainControl } = useAudioRecorder();
   const { t } = useTranslation();
 
   return (
@@ -33,7 +33,7 @@ const RecorderConfigDialog = () => {
                 <label htmlFor="recorderAudioFeedback">{t("recorderSettings.audioFeedback")}</label>
               </div>
               <div className="flex flex-row gap-x-2">
-                <input type="checkbox" className="toggle" id="recorderAudioFeedback" checked={recorderSettings.audioFeedback} />
+                <input type="checkbox" className="toggle" id="recorderAudioFeedback" checked={recorderSettings.audioFeedback} onChange={event => toggleAudioFeedback(event.target.checked)} />
               </div>
             </div>
           </div>
@@ -43,7 +43,7 @@ const RecorderConfigDialog = () => {
                 <label htmlFor="recorderEchoCancellation">{t("recorderSettings.echoCancellation")}</label>
               </div>
               <div className="flex flex-row gap-x-2">
-                <input type="checkbox" className="toggle" id="recorderEchoCancellation" checked={recorderSettings.constraints.echoCancellation} />
+                <input type="checkbox" className="toggle" id="recorderEchoCancellation" checked={recorderSettings.constraints.echoCancellation} onChange={event => toggleEchoCancellation(event.target.checked)} />
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@ const RecorderConfigDialog = () => {
                 <label htmlFor="recorderNoiseSuppression">{t("recorderSettings.noiseSuppression")}</label>
               </div>
               <div className="flex flex-row gap-x-2">
-                <input type="checkbox" className="toggle" id="recorderNoiseSuppression" checked={recorderSettings.constraints.noiseSuppression} />
+                <input type="checkbox" className="toggle" id="recorderNoiseSuppression" checked={recorderSettings.constraints.noiseSuppression} onChange={event => toggleNoiseReduction(event.target.checked)} />
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@ const RecorderConfigDialog = () => {
                 <label htmlFor="recorderAutoGainControl">{t("recorderSettings.autoGainControl")}</label>
               </div>
               <div className="flex flex-row gap-x-2">
-                <input type="checkbox" className="toggle" id="recorderAutoGainControl" checked={recorderSettings.constraints.autoGainControl} />
+                <input type="checkbox" className="toggle" id="recorderAutoGainControl" checked={recorderSettings.constraints.autoGainControl} onChange={event => toggleAutoGainControl(event.target.checked)} />
               </div>
             </div>
           </div>

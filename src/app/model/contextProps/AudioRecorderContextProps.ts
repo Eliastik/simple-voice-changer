@@ -14,5 +14,9 @@ export default interface AudiRecorderContextProps {
     exitAudioRecorder: () => void,
     recorderTime: number,
     recorderSettings: RecorderSettings,
-    changeInput: (deviceId: string, groupId: string | undefined) => void
+    changeInput: (deviceId: string, groupId: string | undefined) => void,
+    toggleAudioFeedback: (enable: boolean) => void,
+    toggleEchoCancellation: (enable: boolean) => void,
+    toggleNoiseReduction: (enable: boolean) => void,
+    toggleAutoGainControl: (enable: boolean) => void,
 };
