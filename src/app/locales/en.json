@@ -181,6 +181,14 @@
             "stop": "Stop and start editing",
             "settings": "Recorder settings..."
         },
+        "recorderSettings": {
+            "title": "Recorder settings",
+            "device": "Input source:",
+            "audioFeedback": "Audio feedback:",
+            "echoCancellation": "Echo cancellation:",
+            "noiseSuppression": "Noise suppression:",
+            "autoGainControl": "Auto gain control:"
+        },
         "close": "Close",
         "ok": "OK",
         "cancel": "Cancel",

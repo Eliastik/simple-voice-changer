@@ -25,18 +25,8 @@ import { Recorder } from "recorderjs";
 import TimerSaveTime from "./TimerSaveTime";
 import EventEmitter from "./EventEmitter";
 import { EventType } from "./model/EventTypeEnum";
-
-interface AudioConstraint {
-    noiseSuppression?: boolean,
-    echoCancellation?: boolean,
-    autoGainControl?: boolean,
-    deviceId?: string,
-    groupId?: string
-};
-
-interface AudioConstraintWrapper {
-    audio: AudioConstraint
-};
+import AudioConstraintWrapper from "./model/AudioConstraintWrapper";
+import { RecorderSettings } from "./model/RecorderSettings";
 
 export default class VoiceRecorder {
     private context: AudioContext | null = null;
@@ -241,8 +231,8 @@ export default class VoiceRecorder {
     }
 
     async stop() {
-        if (this.alreadyInit) {
-            this.recorder && this.recorder.stop();
+        if (this.alreadyInit && this.recorder) {
+            this.recorder.stop();
             this.timer && this.timer.stop();
             this.recording = false;
 
@@ -271,9 +261,7 @@ export default class VoiceRecorder {
     }
 
     stopStream() {
-        /*if(this.stream && this.stream.stop) {
-            this.stream.stop();
-        } else*/ if (this.stream) {
+        if (this.stream) {
             const tracks = this.stream.getTracks();
 
             for (let i = 0, l = tracks.length; i < l; i++) {
@@ -301,6 +289,18 @@ export default class VoiceRecorder {
 
     get currentTimeDisplay() {
         return this.timer?.seconds ? ("0" + Math.trunc(this.timer?.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.timer?.seconds % 60)).slice(-2) : "00:00";
+    }
+
+    get currentTime() {
+        return this.timer ? this.timer.seconds : 0;
+    }
+
+    getSettings(): RecorderSettings {
+        return {
+            deviceList: this.deviceList,
+            audioFeedback: this.enableAudioFeedback,
+            constraints: this.constraints.audio
+        };
     }
 
     on(event: string, callback: Function) {

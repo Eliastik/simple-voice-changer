@@ -177,6 +177,14 @@
             "stop": "Arrêter et démarrer l'édition",
             "settings": "Paramètres…"
         },
+        "recorderSettings": {
+            "title": "Paramètres de l'enregistreur audio",
+            "device": "Périphérique d'entrée :",
+            "audioFeedback": "Retour audio :",
+            "echoCancellation": "Annulation d'echo :",
+            "noiseSuppression": "Réduction de bruit :",
+            "autoGainControl": "Gain automatique :"
+        },
         "close": "Fermer",
         "ok": "OK",
         "cancel": "Annuler",

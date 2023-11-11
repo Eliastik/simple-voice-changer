@@ -80,6 +80,7 @@ export default class BufferPlayer {
         }
 
         this.currentNode = currentNode;
+        this.updateInfos();
     }
 
     reset() {
