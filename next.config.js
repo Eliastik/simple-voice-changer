@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
-const CopyPlugin = require("copy-webpack-plugin");
 const isDev = process.env.NODE_ENV === "development";
+require('dotenv').config({ path: `.env.${isDev ? "dev" : "prod"}` });
+const CopyPlugin = require("copy-webpack-plugin");
+
 const withPWA = require("next-pwa")({
   dest: "public",
   sw: "service-worker.js",
   disable: isDev,
+  scope: process.env.BASE_PATH,
   exclude: [
     // add buildExcludes here
     ({ asset, compilation }) => {
@@ -27,6 +30,7 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = withPWA({
   output: "export",
+  basePath: process.env.BASE_PATH,
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.plugins.push(
       new CopyPlugin({
