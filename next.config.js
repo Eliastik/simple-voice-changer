@@ -22,6 +22,7 @@ const withPWA = require("next-pwa")({
       return false;
     },
   ],
+  publicExcludes: ["!static/sounds/impulse_response_*"]
 });
 
 const nextConfig = withPWA({
