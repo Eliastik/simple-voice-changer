@@ -3,7 +3,6 @@
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import ErrorDownloadingBufferDialog from "../dialogs/ErrorDownloadingBufferDialog";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const HomeMenu = () => {
@@ -37,7 +36,6 @@ const HomeMenu = () => {
                 </div>
                 <span>{t("homeMenu.recMicrophone")}</span>
             </button>
-            <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>
         </div>
     );
 };

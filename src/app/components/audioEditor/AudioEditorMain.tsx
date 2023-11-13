@@ -32,7 +32,6 @@ const AudioEditorMain = ({ }) => {
       <AudioPlayer></AudioPlayer>
       {audioProcessing && <LoadingAudioProcessingDialog></LoadingAudioProcessingDialog>}
       {downloadingBufferData && <DownloadingBufferDialog></DownloadingBufferDialog>}
-      <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>
     </>
   )
 };

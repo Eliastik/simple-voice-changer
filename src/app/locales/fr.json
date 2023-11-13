@@ -185,6 +185,14 @@
             "noiseSuppression": "Réduction de bruit :",
             "autoGainControl": "Gain automatique :"
         },
+        "appInfos": {
+            "title": "Informations sur l'application",
+            "infos": "Simple Voice Changer vous permet de modifier un fichier audio et d'y appliquer des filtres en toute simplificité. Pour cela, sélectionnez un fichier audio ou enregistrez un son (votre voix, par exemple). Vous pouvez ensuite télécharger le résultat. Tout le traitement audio est fait sur votre appareil, et l'application est libre et open-source.",
+            "appVersion": "Version de l'application :",
+            "versionDate": "Date de version :",
+            "license": "Licence :",
+            "websites": "Site web officiel/code source :"
+        },
         "close": "Fermer",
         "ok": "OK",
         "cancel": "Annuler",
