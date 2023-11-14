@@ -9,10 +9,10 @@ const withPWA = require("next-pwa")({
   disable: isDev,
   scope: process.env.BASE_PATH,
   exclude: [
-    // add buildExcludes here
     ({ asset, compilation }) => {
       if (
         asset.name.startsWith("server/") ||
+        asset.name.startsWith("../public/worklets/") ||
         asset.name.match(
           /^((app-|^)build-manifest\.json|react-loadable-manifest\.json)$/
         )
