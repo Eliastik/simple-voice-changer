@@ -34,10 +34,13 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
   const [currentLanguageValue, setCurrentLanguageValue] = useState("en");
   // State: current language
   const [updateData, setUpdateData] = useState<UpdateData | null>(null);
+  // State: true if the user already used the time one time
+  const [alreadyUsed, setAlreadyUsed] = useState(false);
 
   useEffect(() => {
     setCurrentTheme(getService().getCurrentTheme());
     setCurrentThemeValue(getService().getCurrentThemePreference());
+    setAlreadyUsed(getService().hasAlreadyUsedApp());
     getService().checkAppUpdate().then(result => setUpdateData(result));
   }, []);
 
@@ -58,10 +61,15 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     setupLanguage();
   };
 
+  const closeFirstLaunchModal = () => {
+    getService().setAlreadyUsedApp();
+    setAlreadyUsed(true);
+  };
+
   return (
     <ApplicationConfigContext.Provider value={{
       currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
-      updateData
+      updateData, alreadyUsed, closeFirstLaunchModal
     }}>
       {children}
     </ApplicationConfigContext.Provider>

@@ -7,5 +7,7 @@ export default interface ApplicationConfigContextProps {
     setupLanguage: () => void,
     currentLanguageValue: string,
     setLanguage: (lng: string) => void,
-    updateData: UpdateData | null
+    updateData: UpdateData | null,
+    alreadyUsed: boolean,
+    closeFirstLaunchModal: () => void
 };

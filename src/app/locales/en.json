@@ -200,6 +200,9 @@
             "moreInfos": "More infos",
             "upToDate": "Up to date"
         },
+        "firstLaunch": {
+            "title": "Welcome!"
+        },
         "close": "Close",
         "ok": "OK",
         "cancel": "Cancel",

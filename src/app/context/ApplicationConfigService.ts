@@ -92,4 +92,20 @@ export default class ApplicationConfigService {
 
         return null;
     }
+
+    public hasAlreadyUsedApp() {
+        const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-already-used") : null;
+
+        if (!setting) {
+            return false;
+        }
+
+        return setting == "true";
+    }
+
+    public setAlreadyUsedApp() {
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem("simplevoicechanger-already-used", "true");
+        }
+    }
 }

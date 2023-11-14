@@ -196,6 +196,9 @@
             "moreInfos": "Plus d'infos",
             "upToDate": "À jour"
         },
+        "firstLaunch": {
+            "title": "Bienvenue !"
+        },
         "close": "Fermer",
         "ok": "OK",
         "cancel": "Annuler",
