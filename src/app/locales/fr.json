@@ -191,7 +191,10 @@
             "appVersion": "Version de l'application :",
             "versionDate": "Date de version :",
             "license": "Licence :",
-            "websites": "Site web officiel/code source :"
+            "websites": "Site web officiel/code source :",
+            "updateAvailable": "Une mise à jour est disponible vers la version {{version}} en date du {{versionDate}}.",
+            "moreInfos": "Plus d'infos",
+            "upToDate": "À jour"
         },
         "close": "Fermer",
         "ok": "OK",

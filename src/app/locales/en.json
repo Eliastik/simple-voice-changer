@@ -195,7 +195,10 @@
             "appVersion": "Application version:",
             "versionDate": "Version date:",
             "license": "License:",
-            "websites": "Official website/Source code:"
+            "websites": "Official website/Source code:",
+            "updateAvailable": "An update is available to the version {{version}} dated {{versionDate}}.",
+            "moreInfos": "More infos",
+            "upToDate": "Up to date"
         },
         "close": "Close",
         "ok": "OK",

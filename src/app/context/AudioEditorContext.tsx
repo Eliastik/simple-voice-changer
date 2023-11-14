@@ -4,7 +4,7 @@ import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'r
 import AudioEditor from '../classes/AudioEditor';
 import utils from "../classes/utils/Functions";
 import AudioEditorContextProps from '../model/contextProps/AudioEditorContextProps';
-import AudioEditorPlayerSingleton from './AudioObjectsSingleton';
+import AudioEditorPlayerSingleton from './ApplicationObjectsSingleton';
 import { EventType } from '../classes/model/EventTypeEnum';
 import BufferPlayer from '../classes/BufferPlayer';
 import { buffer } from 'stream/consumers';

@@ -1,3 +1,7 @@
+import Constants from "../model/Constants";
+import { UpdateData } from "../model/UpdateData";
+import semver from "semver";
+
 export default class ApplicationConfigService {
     public setCurrentTheme(theme: string) {
         if (typeof window !== "undefined") {
@@ -65,5 +69,27 @@ export default class ApplicationConfigService {
         }
 
         return found.length > 0 ? found[0] : "en";
+    }
+
+    public async checkAppUpdate(): Promise<UpdateData | null> {
+        const updateData = await fetch(Constants.updater_uri);
+
+        if(updateData) {
+            const updateJSON: UpdateData = await updateData.json();
+
+            if(semver.compare(Constants.app_version, updateJSON.version) === -1) {
+                return {
+                    ...updateJSON,
+                    hasUpdate: true
+                };
+            }
+
+            return {
+                ...updateJSON,
+                hasUpdate: false
+            };
+        }
+
+        return null;
     }
 }

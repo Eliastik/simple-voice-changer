@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^13.3.1",
     "recorderjs": "github:Eliastik/Recorderjs#37dfc2c",
+    "semver": "^7.5.4",
     "soundtouchjs": "^0.1.30"
   },
   "devDependencies": {
@@ -24,6 +25,7 @@
     "@types/node": "^20.8.9",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
+    "@types/semver": "^7.5.5",
     "autoprefixer": "latest",
     "copy-webpack-plugin": "^11.0.0",
     "daisyui": "^3.9.4",

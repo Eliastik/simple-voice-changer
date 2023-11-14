@@ -5,10 +5,11 @@ import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 const AppInfoDialog = () => {
   const { t } = useTranslation();
   const { currentLanguageValue } = useApplicationConfig();
+  const { updateData } = useApplicationConfig();
 
   return (
     <dialog id="modalInfos" className="modal">
-      <div className="modal-box overflow-visible">
+      <div className="modal-box">
         <h3 className="font-bold text-lg">{t("appInfos.title")}</h3>
         <form method="dialog">
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -29,6 +30,28 @@ const AppInfoDialog = () => {
                 <label>{t("appInfos.appVersion")}</label>
               </div>
               <a href={Constants.release_link} className="link link-info hover:no-underline" target="_blank">{Constants.app_version}</a>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="mt-3">
+            <div className="font-normal text-base">
+              {updateData && !updateData.hasUpdate && (
+                <div className="text-success flex flex-row items-center gap-x-2 justify-end">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 flex-shrink-0">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{t("appInfos.upToDate")}</span>
+                </div>
+              )}
+              {updateData && updateData.hasUpdate && (
+                <div className="text-error flex flex-row items-center gap-x-2 justify-end">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 flex-shrink-0">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{t("appInfos.updateAvailable", { version: updateData.version, versionDate: new Date(updateData.date).toLocaleDateString(currentLanguageValue) })} <a href={updateData.url} target="_blank" className="link hover:no-underline">{t("appInfos.moreInfos")}</a></span>
+                </div>
+              )}
             </div>
           </div>
         </div>

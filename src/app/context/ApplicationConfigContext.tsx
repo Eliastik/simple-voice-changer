@@ -4,8 +4,8 @@ import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'r
 import ApplicationConfigContextProps from '../model/contextProps/ApplicationConfigContextProps';
 import ApplicationConfigService from './ApplicationConfigService';
 import i18next from 'i18next';
-
-const applicationConfigService = new ApplicationConfigService();
+import { UpdateData } from '../model/UpdateData';
+import ApplicationObjectsSingleton from './ApplicationObjectsSingleton';
 
 const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
 
@@ -21,6 +21,10 @@ interface ApplicationConfigProviderProps {
   children: ReactNode;
 }
 
+const getService = (): ApplicationConfigService => {
+  return ApplicationObjectsSingleton.getConfigServiceInstance()!;
+}
+
 export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ children }) => {
   // State: current theme (light/dark)
   const [currentTheme, setCurrentTheme] = useState("dark");
@@ -28,32 +32,36 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
   const [currentThemeValue, setCurrentThemeValue] = useState("auto");
   // State: current language
   const [currentLanguageValue, setCurrentLanguageValue] = useState("en");
+  // State: current language
+  const [updateData, setUpdateData] = useState<UpdateData | null>(null);
 
   useEffect(() => {
-    setCurrentTheme(applicationConfigService.getCurrentTheme());
-    setCurrentThemeValue(applicationConfigService.getCurrentThemePreference());
+    setCurrentTheme(getService().getCurrentTheme());
+    setCurrentThemeValue(getService().getCurrentThemePreference());
+    getService().checkAppUpdate().then(result => setUpdateData(result));
   }, []);
 
   const setTheme = (theme: string) => {
-    applicationConfigService.setCurrentTheme(theme);
-    setCurrentTheme(applicationConfigService.getCurrentTheme());
-    setCurrentThemeValue(applicationConfigService.getCurrentThemePreference());
+    getService().setCurrentTheme(theme);
+    setCurrentTheme(getService().getCurrentTheme());
+    setCurrentThemeValue(getService().getCurrentThemePreference());
   };
 
   const setupLanguage = () => {
-    const lng = applicationConfigService.getCurrentLanguagePreference();
+    const lng = getService().getCurrentLanguagePreference();
     i18next.changeLanguage(lng);
     setCurrentLanguageValue(lng)
   };
 
   const setLanguage = (lng: string) => {
-    applicationConfigService.setCurrentLanguage(lng);
+    getService().setCurrentLanguage(lng);
     setupLanguage();
   };
 
   return (
     <ApplicationConfigContext.Provider value={{
-      currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage
+      currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
+      updateData
     }}>
       {children}
     </ApplicationConfigContext.Provider>

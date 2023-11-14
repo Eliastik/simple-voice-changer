@@ -11,7 +11,7 @@ const AppConfigDialog = () => {
 
   return (
     <dialog id="modalSettings" className="modal">
-      <div className="modal-box overflow-visible">
+      <div className="modal-box overflow-y-visible">
         <h3 className="font-bold text-lg">{t("appSettings.title")}</h3>
         <form method="dialog">
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -43,7 +43,7 @@ const AppConfigDialog = () => {
           </div>
           <div className="mt-3">
             <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
-              <div className="md:w-3/6 align-">
+              <div className="md:w-3/6">
                 <label htmlFor="compatibilityMode">{t("appSettings.compatibilityMode")}</label>
               </div>
               <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">

@@ -1,8 +1,8 @@
 const Constants = {
     filesDownloadName: "simple_voice_changer",
-    app_version: "2.0",
+    app_version: "2.0.0",
     app_version_date: "11/14/2023",
-    updater_uri: "https://www.eliastiksofts.com/simple-voice-changer/update.php",
+    updater_uri: "https://www.eliastiksofts.com/simple-voice-changer/update.json",
     official_website: "https://www.eliastiksofts.com/simple-voice-changer/",
     souce_code: "https://github.com/Eliastik/simple-voice-changer",
     app_license: "GNU GPL v3",
