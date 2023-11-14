@@ -24,7 +24,7 @@ const AudioPlayer = () => {
                         min={0}
                         max={maxTime}
                         value={currentTime}
-                        className="range range-player range-accent range-sm w-full rounded-none block bg-gray-250 after:bg-gray-800"
+                        className="range range-player range-accent range-sm w-full rounded-none block bg-gray-250 after:bg-gray-800 backdrop-blur-sm"
                         onChange={(event) => setTimePlayer(parseFloat(event.target.value))} />
                 </div>
                 <div className="flex items-center justify-between w-full bg-base-300">

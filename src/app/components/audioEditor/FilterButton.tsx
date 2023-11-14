@@ -13,8 +13,8 @@ const FilterButton = ({
 
     return (
         <>
-            <div className="join join-vertical w-36">
-                <button className={`btn flex-col justify-evenly w-full h-36 rounded-b-none border-0 pl-3 pr-3 ${enabled ? "btn-secondary" : ""}`} onClick={() => toggleFilter(filter.filterId)}>
+            <div className="join join-vertical md:w-36 md:max-w-36 max-w-32 overflow-hidden break-words">
+                <button className={`btn flex-col justify-evenly w-full md:h-36 h-28 rounded-b-none border-0 md:pl-3 md:pr-3 pl-0 pr-0 ${enabled ? "btn-secondary" : ""}`} onClick={() => toggleFilter(filter.filterId)}>
                     <div>
                         {filter.filterIcon}
                     </div>

@@ -13,6 +13,10 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      maxWidth: {
+        "32": "8rem",
+        "36": "9rem",
+      }
     },
   },
   daisyui: {
@@ -29,7 +33,7 @@ const config: Config = {
           "success": "#36d399",
           "warning": "#fbbd23",
           "error": "#f87272",
-        },
+        }
       },
       {
         dark: {
@@ -45,7 +49,7 @@ const config: Config = {
           "warning": "#fbbd23",
           "error": "#f87272"
         }
-      },
+      }
     ],
   },
   plugins: [require("daisyui")],

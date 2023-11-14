@@ -2,7 +2,6 @@ import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import { useTranslation } from "react-i18next";
 import i18next from 'i18next';
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
-import { useEffect } from "react";
 
 const AppConfigDialog = () => {
   const { currentThemeValue, setTheme, currentLanguageValue, setLanguage } = useApplicationConfig();
