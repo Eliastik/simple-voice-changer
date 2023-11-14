@@ -12,22 +12,20 @@ import AudioRecorderAuthorizationDialog from "./dialogs/AudioRecorderAuthorizati
 import ErrorAuthorizationAudioRecorderDialog from "./dialogs/ErrorAuthorizationAudioRecorderDialog";
 import ErrorDownloadingBufferDialog from "./dialogs/ErrorDownloadingBufferDialog";
 import FirstLaunchDialog from "./dialogs/FirstLaunchDialog";
-import { useApplicationConfig } from "../context/ApplicationConfigContext";
 
 const MainComponent = ({ }) => {
-  const { audioEditorReady, loadingPrincipalBuffer, downloadingInitialData } = useAudioEditor();
-  const { audioRecorderReady, audioRecorderAuthorizationPending } = useAudioRecorder();
-  const { alreadyUsed } = useApplicationConfig();
+  const { audioEditorReady, downloadingInitialData } = useAudioEditor();
+  const { audioRecorderReady } = useAudioRecorder();
 
   return (
     <>
       {!audioEditorReady && !audioRecorderReady && <HomeMenu></HomeMenu>}
       {audioEditorReady && <AudioEditorMain></AudioEditorMain>}
       {audioRecorderReady && <AudioRecorderMain></AudioRecorderMain>}
-      {downloadingInitialData && <LoadingAppDialog></LoadingAppDialog>}
-      {loadingPrincipalBuffer && <LoadingAudioFileDialog></LoadingAudioFileDialog>}
-      {audioRecorderAuthorizationPending && <AudioRecorderAuthorizationDialog></AudioRecorderAuthorizationDialog>}
-      {!alreadyUsed && !downloadingInitialData && <FirstLaunchDialog></FirstLaunchDialog>}
+      <LoadingAppDialog></LoadingAppDialog>
+      <LoadingAudioFileDialog></LoadingAudioFileDialog>
+      <AudioRecorderAuthorizationDialog></AudioRecorderAuthorizationDialog>
+      {!downloadingInitialData && <FirstLaunchDialog></FirstLaunchDialog>}
       <ErrorAuthorizationAudioRecorderDialog></ErrorAuthorizationAudioRecorderDialog>
       <ErrorLoadingAudioDialog></ErrorLoadingAudioDialog>
       <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>

@@ -1,11 +1,13 @@
+import { useAudioEditor } from "@/app/context/AudioEditorContext";
 import { useTranslation } from "react-i18next";
 
 const LoadingAppDialog = () => {
     const { t } = useTranslation();
+    const { downloadingInitialData } = useAudioEditor();
     
     return (
         <>
-            <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={true} readOnly />
+            <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={downloadingInitialData} readOnly />
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.loadingApp.title")}</h3>

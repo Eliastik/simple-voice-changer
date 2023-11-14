@@ -6,11 +6,10 @@ import filters from "@/app/model/Filters";
 import AudioPlayer from "./AudioPlayer";
 import LoadingAudioProcessingDialog from "../dialogs/LoadingAudioProcessingDialog";
 import DownloadingBufferDialog from "../dialogs/DownloadingBufferDialog";
-import ErrorDownloadingBufferDialog from "../dialogs/ErrorDownloadingBufferDialog";
 import { useTranslation } from "react-i18next";
 
 const AudioEditorMain = ({ }) => {
-  const { audioProcessing, filterState, validateSettings, downloadingBufferData, resetAllFiltersState, isCompatibilityModeAutoEnabled } = useAudioEditor();
+  const { audioProcessing, filterState, validateSettings, resetAllFiltersState, isCompatibilityModeAutoEnabled } = useAudioEditor();
   const { t } = useTranslation();
 
   return (
@@ -30,8 +29,8 @@ const AudioEditorMain = ({ }) => {
         </div>
       </div>
       <AudioPlayer></AudioPlayer>
-      {audioProcessing && <LoadingAudioProcessingDialog></LoadingAudioProcessingDialog>}
-      {downloadingBufferData && <DownloadingBufferDialog></DownloadingBufferDialog>}
+      <LoadingAudioProcessingDialog></LoadingAudioProcessingDialog>
+      <DownloadingBufferDialog></DownloadingBufferDialog>
     </>
   )
 };

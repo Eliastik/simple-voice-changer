@@ -1,11 +1,13 @@
+import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import { useTranslation } from "react-i18next";
 
 const AudioRecorderAuthorizationDialog = () => {
     const { t } = useTranslation();
+    const { audioRecorderAuthorizationPending } = useAudioRecorder();
 
     return (
         <>
-            <input type="checkbox" id="audioRecorderAuthorizationDialog" className="modal-toggle" checked={true} readOnly />
+            <input type="checkbox" id="audioRecorderAuthorizationDialog" className="modal-toggle" checked={audioRecorderAuthorizationPending} readOnly />
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.audioRecorderAuthorization.title")}</h3>

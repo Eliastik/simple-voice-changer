@@ -7,7 +7,7 @@ const ErrorLoadingAudioDialog = () => {
 
     return (
         <>
-            {errorLoadingPrincipalBuffer && <input type="checkbox" id="errorLoadingAudioDialog" className="modal-toggle" checked={true} readOnly />}
+            <input type="checkbox" id="errorLoadingAudioDialog" className="modal-toggle" checked={errorLoadingPrincipalBuffer} readOnly />
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.fileOpenError.title")}</h3>
