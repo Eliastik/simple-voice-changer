@@ -17,14 +17,17 @@ import utils from "./utils/Functions";
 import BufferPlayer from "./BufferPlayer";
 import BufferFetcherService from "./BufferFetcherService";
 import EventEmitter from "./EventEmitter";
-//@ts-ignore
-import { Recorder, getRecorderWorker } from "recorderjs";
 import PassThroughFilter from "./filters/PassThroughFilter";
 import { EventType } from "./model/EventTypeEnum";
+import { ConfigService } from "./model/ConfigService";
+import Constants from "./model/Constants";
+//@ts-ignore
+import { Recorder, getRecorderWorker } from "recorderjs";
 
 export default class AudioEditor extends AbstractAudioElement {
 
     private currentContext: AudioContext | null;
+    private configService: ConfigService | null;
     private entrypointFilter: AbstractAudioFilterEntrypoint | null = null;
     private filters: AbstractAudioFilter[] = [];
     private renderers: AbstractAudioRenderer[] = [];
@@ -39,12 +42,13 @@ export default class AudioEditor extends AbstractAudioElement {
     principalBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
 
-    constructor(context: AudioContext, player: BufferPlayer, eventEmitter: EventEmitter, audioBuffersToFetch: string[]) {
+    constructor(context: AudioContext, player: BufferPlayer, eventEmitter: EventEmitter, configService: ConfigService, audioBuffersToFetch: string[]) {
         super();
 
         this.currentContext = context;
         this.eventEmitter = eventEmitter;
         this.bufferPlayer = player;
+        this.configService = configService;
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
         // Callback called just before starting audio player
@@ -142,7 +146,7 @@ export default class AudioEditor extends AbstractAudioElement {
             intermediateNodes.push(node);
         }
 
-        if(this.entrypointFilter) {
+        if (this.entrypointFilter) {
             this.entrypointFilter.updateState();
         }
 
@@ -248,12 +252,12 @@ export default class AudioEditor extends AbstractAudioElement {
 
         for (const filter of this.filters) {
             if (filter.isEnabled()) {
-                if (filter.getId() == "reverb") {
+                if (filter.getId() == Constants.REVERB) {
                     reverb = true;
                     reverbAddDuration = filter.getSettings().reverbEnvironment.additionalData.addDuration;
                 }
 
-                if (filter.getId() == "echo") {
+                if (filter.getId() == Constants.ECHO) {
                     echo = true;
                 }
             }
@@ -271,7 +275,7 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     getId(): string {
-        return "audioEditor";
+        return Constants.AUDIO_EDITOR;
     }
 
     /** Compatibility mode */
@@ -284,38 +288,42 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     isCompatibilityModeEnabled() {
-        const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-compatibility-mode-enabled") : null;
-
-        if (!setting) {
-            return this.compatibilityModeEnabled;
+        if(this.configService) {
+            const setting = this.configService.getConfig(Constants.COMPATIBILITY_MODE_ENABLED);
+    
+            if (setting) {
+                return setting == "true";
+            }
         }
 
-        return setting == "true";
+        return this.compatibilityModeEnabled;
     }
 
     setCompatibilityModeEnabled(enabled: boolean) {
         this.compatibilityModeEnabled = enabled;
 
-        if (typeof window !== "undefined") {
-            window.localStorage.setItem("simplevoicechanger-compatibility-mode-enabled", "" + enabled);
+        if (this.configService) {
+            this.configService.setConfig(Constants.COMPATIBILITY_MODE_ENABLED, "" + enabled);
         }
     }
 
     isCompatibilityModeChecked() {
-        const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-compatibility-mode-checked") : null;
-
-        if (!setting) {
-            return this.compatibilityModeChecked;
+        if(this.configService) {
+            const setting = this.configService.getConfig(Constants.COMPATIBILITY_MODE_CHECKED);
+    
+            if (setting) {
+                return setting == "true";
+            }
         }
 
-        return setting == "true";
+        return this.compatibilityModeChecked;
     }
 
     setCompatibilityModeChecked(checked: boolean) {
         this.compatibilityModeChecked = checked;
 
-        if (typeof window !== "undefined") {
-            window.localStorage.setItem("simplevoicechanger-compatibility-mode-checked", "" + checked);
+        if (this.configService) {
+            this.configService.setConfig(Constants.COMPATIBILITY_MODE_CHECKED, "" + checked);
         }
     }
 
@@ -418,7 +426,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
                 if (worker) {
                     worker.onmessage = (e: any) => {
-                        if (e.data.command == 'exportWAV') {
+                        if (e.data.command == Constants.EXPORT_WAV_COMMAND) {
                             this.downloadAudioBlob(e.data.data);
                         }
 
@@ -428,7 +436,7 @@ export default class AudioEditor extends AbstractAudioElement {
                     };
 
                     worker.postMessage({
-                        command: "init",
+                        command: Constants.INIT_COMMAND,
                         config: {
                             sampleRate: this.currentContext.sampleRate,
                             numChannels: 2
@@ -442,13 +450,13 @@ export default class AudioEditor extends AbstractAudioElement {
                     }
 
                     worker.postMessage({
-                        command: "record",
+                        command: Constants.RECORD_COMMAND,
                         buffer
                     });
 
                     worker.postMessage({
-                        command: "exportWAV",
-                        type: "audio/wav"
+                        command: Constants.EXPORT_WAV_COMMAND,
+                        type: Constants.AUDIO_WAV
                     });
                 }
             } else {

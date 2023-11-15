@@ -24,7 +24,7 @@ export default class ApplicationObjectsSingleton {
             const audioRecorder = new VoiceRecorder(context, eventEmitter);
             const configService = new ApplicationConfigService();
 
-            ApplicationObjectsSingleton.audioEditor = new AudioEditor(context, audioPlayer, eventEmitter, Constants.audioBuffersToFetch);
+            ApplicationObjectsSingleton.audioEditor = new AudioEditor(context, audioPlayer, eventEmitter, configService, Constants.audioBuffersToFetch);
             ApplicationObjectsSingleton.audioPlayer = audioPlayer;
             ApplicationObjectsSingleton.audioRecorder = audioRecorder;
             ApplicationObjectsSingleton.eventEmitter = eventEmitter;
