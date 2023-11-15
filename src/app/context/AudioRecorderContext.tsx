@@ -70,10 +70,15 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
   }, []);
 
   const initRecorder = async () => {
-    setAudioRecorderAuthorizationPending(true);
-    await audioRecorderInstance.init();
-    setAudioRecorderAuthorizationPending(false);
-    setRecorderSettings(audioRecorderInstance.getSettings());
+    try {
+      setAudioRecorderAuthorizationPending(true);
+      await audioRecorderInstance.init();
+      setAudioRecorderAuthorizationPending(false);
+      setRecorderSettings(audioRecorderInstance.getSettings());
+    } catch(e) {
+      console.error(e);
+      setAudioRecorderAuthorizationPending(false);
+    }
   };
 
   const resetRecorderState = () => {

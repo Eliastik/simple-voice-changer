@@ -14,8 +14,12 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       maxWidth: {
+        "28": "7rem",
         "32": "8rem",
         "36": "9rem",
+      },
+      fontSize: {
+        "filters": "12.5px"
       }
     },
   },
