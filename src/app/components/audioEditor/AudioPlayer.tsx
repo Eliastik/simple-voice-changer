@@ -11,10 +11,10 @@ const AudioPlayer = () => {
 
     return (
         <>
-            <div className="toast toast-top toast-center">
-                {downloadingAudio && <div className="alert alert-info break-all flex flex-col gap-y-1">
-                    <span>{t("audioPlayer.preparingAudioDownload")}</span>
-                    {isCompatibilityModeEnabled && <span>{t("audioPlayer.preparingAudioDownloadWithCompatibility")}</span>}
+            <div className="toast toast-top toast-center lg:w-1/4 md:w-2/4 w-3/4 pointer-events-none">
+                {downloadingAudio && <div className="alert alert-info text-center w-auto opacity-90 flex flex-col gap-y-1 pointer-events-none">
+                    <span className="whitespace-normal">{t("audioPlayer.preparingAudioDownload")}</span>
+                    {isCompatibilityModeEnabled && <span className="whitespace-normal">{t("audioPlayer.preparingAudioDownloadWithCompatibility")}</span>}
                 </div>}
             </div>
             <div className="fixed bottom-0 w-full">
