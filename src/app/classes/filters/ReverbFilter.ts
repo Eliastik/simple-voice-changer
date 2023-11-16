@@ -1,4 +1,5 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
+import Constants from "../model/Constants";
 import { ReverbEnvironment } from "../model/ReverbEnvironment";
 
 export default class ReverbFilter extends AbstractAudioFilter {
@@ -25,7 +26,7 @@ export default class ReverbFilter extends AbstractAudioFilter {
     }
 
     getId(): string {
-        return "reverb";
+        return Constants.FILTERS_NAMES.REVERB;
     }
 
     getSettings() {

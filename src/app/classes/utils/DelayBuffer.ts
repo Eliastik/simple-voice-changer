@@ -37,7 +37,7 @@ export default class DelayBuffer {
         this.readPointer = 0;
         this.writePointer = this.n - 1;
 
-        for(let i = 0; i < this.length; i++) {
+        for (let i = 0; i < this.length; i++) {
             this._array[i] = 0;
         }
     }

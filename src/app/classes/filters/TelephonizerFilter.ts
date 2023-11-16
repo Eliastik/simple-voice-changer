@@ -1,4 +1,5 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
+import Constants from "../model/Constants";
 
 export default class BitCrusherFilter extends AbstractAudioFilter {
 
@@ -30,7 +31,7 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
     }
 
     getId(): string {
-        return "telephonizer";
+        return Constants.FILTERS_NAMES.TELEPHONIZER;
     }
 
     getSettings() {

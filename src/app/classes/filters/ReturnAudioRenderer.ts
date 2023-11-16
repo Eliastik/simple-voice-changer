@@ -1,4 +1,5 @@
 import AbstractAudioRenderer from "../model/AbstractAudioRenderer";
+import Constants from "../model/Constants";
 
 export default class ReturnAudioRenderer extends AbstractAudioRenderer {
     renderAudio(context: BaseAudioContext, buffer: AudioBuffer): Promise<AudioBuffer> {
@@ -29,6 +30,6 @@ export default class ReturnAudioRenderer extends AbstractAudioRenderer {
     }
 
     getId(): string {
-        return "returnAudio";
+        return Constants.FILTERS_NAMES.RETURN_AUDIO;
     }
 }

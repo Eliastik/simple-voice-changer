@@ -252,12 +252,12 @@ export default class AudioEditor extends AbstractAudioElement {
 
         for (const filter of this.filters) {
             if (filter.isEnabled()) {
-                if (filter.getId() == Constants.REVERB) {
+                if (filter.getId() == Constants.FILTERS_NAMES.REVERB) {
                     reverb = true;
                     reverbAddDuration = filter.getSettings().reverbEnvironment.additionalData.addDuration;
                 }
 
-                if (filter.getId() == Constants.ECHO) {
+                if (filter.getId() == Constants.FILTERS_NAMES.ECHO) {
                     echo = true;
                 }
             }

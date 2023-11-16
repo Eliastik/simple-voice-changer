@@ -1,4 +1,5 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
+import Constants from "../model/Constants";
 
 export default class PassThroughFilter extends AbstractAudioFilter {
 
@@ -24,7 +25,7 @@ export default class PassThroughFilter extends AbstractAudioFilter {
     }
 
     getId(): string {
-        return "passthroughfilter";
+        return Constants.FILTERS_NAMES.PASS_THROUGH;
     }
 
     getSettings() {

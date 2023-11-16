@@ -1,4 +1,5 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
+import Constants from "../model/Constants";
 
 export default class EchoFilter extends AbstractAudioFilter {
     private delay = 0.2;
@@ -31,7 +32,7 @@ export default class EchoFilter extends AbstractAudioFilter {
     }
 
     getId(): string {
-        return "echo";
+        return Constants.FILTERS_NAMES.ECHO;
     }
 
     getSettings() {

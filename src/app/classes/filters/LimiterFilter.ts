@@ -20,6 +20,7 @@
 // Original code: https://webaudiotech.com/sites/limiter_comparison/limiter.js
 // Additions by Eliastik (eliastiksofts.com): Stereo and multi-channel support, code simplified in one object class (Limiter)
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
+import Constants from "../model/Constants";
 import DelayBuffer from "../utils/DelayBuffer";
 
 export default class LimiterFilter extends AbstractAudioFilter {
@@ -148,11 +149,12 @@ export default class LimiterFilter extends AbstractAudioFilter {
     }
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
+        this.reset();
+
         if(this.limiterProcessor && context == this.limiterProcessor.context) {
             this.limiterProcessor.onaudioprocess = null;
         } else {
             this.limiterProcessor = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
-            this.reset();
         }
 
         this.limiterProcessor.onaudioprocess = e => this.limit(e);
@@ -178,7 +180,7 @@ export default class LimiterFilter extends AbstractAudioFilter {
     }
 
     getId(): string {
-        return "limiter";
+        return Constants.FILTERS_NAMES.LIMITER;
     }
 
     getSettings() {

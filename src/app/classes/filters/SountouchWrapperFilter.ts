@@ -1,6 +1,7 @@
 //@ts-ignore
 import { PitchShifter } from "soundtouchjs";
 import AbstractAudioFilterEntrypoint from "../model/AbstractAudioFilterEntrypoint";
+import Constants from "../model/Constants";
 
 export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoint {
 
@@ -34,7 +35,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
     }
 
     getId(): string {
-        return "soundtouch";
+        return Constants.FILTERS_NAMES.SOUNDTOUCH;
     }
 
     getSettings() {
