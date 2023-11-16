@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react";
+import Constants from "./model/Constants";
 
 export default function PWA() {
     let sw: ServiceWorkerContainer | undefined;
@@ -11,7 +12,7 @@ export default function PWA() {
 
     useEffect(() => {
         if (sw) {
-            sw.register("/service-worker.js", { scope: "/" }).then((registration) => {
+            sw.register("service-worker.js", { scope: Constants.serviceWorkerScope }).then((registration) => {
                 console.log("Service Worker registration successful with scope: ", registration.scope);
             }).catch((err) => {
                 console.log("Service Worker registration failed: ", err);

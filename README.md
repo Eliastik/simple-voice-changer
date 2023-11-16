@@ -6,31 +6,40 @@
 
 Simple Voice Changer lets you to edit the voice of an audio file or a recording quicly and easily: choose an audio file, or record your voice, and then you can edit and save! All the audio processing is made on your device and no data is sent over the Internet.
 
-This program uses the Web Audio API. A browser supporting this API is therefore necessary. Almost all recent browsers support it as of 23/04/2019 (except Internet Explorer).
+This program uses the Web Audio API. A browser supporting this API is therefore necessary.
 
 * Online version: [www.eliastiksofts.com/simple-voice-changer/demo](http://www.eliastiksofts.com/simple-voice-changer/demo/)
 * Github repository: [https://github.com/Eliastik/simple-voice-changer](https://github.com/Eliastik/simple-voice-changer)
 
 ## About
 
-* Version: 1.4 (01/21/2021)
+* Version: 2.0 (11/16/2023)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
+### Technologies
+
+* TypeScript
+* React
+* Tailwind CSS / DaisyUI
+* Web Audio API
+
 ### Credits
 
-* Uses the Bootstrap theme Cosmo from Bootswatch ([https://bootswatch.com/3/cosmo/](https://bootswatch.com/3/cosmo/)), under [MIT](https://tldrlegal.com/license/mit-license) license
-* Use the icon font [Font Awesome](https://fontawesome.com/v4.7.0/), under [SIL OFL 1.1](https://tldrlegal.com/license/open-font-license-(ofl)-explained) and [MIT](https://tldrlegal.com/license/mit-license) licenses
-* Uses the library [Soundtouch.js](https://github.com/ZVK/stretcher/blob/master/soundtouch.js) under [GNU LGPL 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html) license
-* Uses the library [Vocoder.js](https://github.com/jergason/Vocoder) under [MIT](https://github.com/jergason/Vocoder/blob/master/LICENSE.txt) license (slightly modified code)
-* Uses the library [Recorderjs](https://github.com/Eliastik/Recorderjs) (forked) and its [Worker version](https://github.com/mattdiamond/Recorderjs/blob/ac0eb8a7c2601fc4ec1cbd1b1ee49f45a6c79580/recorderWorker.js) under [MIT](https://tldrlegal.com/license/mit-license) license.
-* Uses the library [Boostrap Slider](https://github.com/seiyria/bootstrap-slider), under [MIT](https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md) license
-* Uses the library [Boostrap Native](https://github.com/thednp/bootstrap.native), under [MIT](https://github.com/thednp/bootstrap.native/blob/master/LICENSE) license
-* Uses the library [i18next](https://github.com/i18next/i18next) (with the module [i18next-browser-languageDetector](https://github.com/i18next/i18next-browser-languageDetector)) under [MIT](https://opensource.org/licenses/mit-license.php) license for the translation engine
+* See package.json file for the dependencies
 * Uses [Impulse Response](https://en.wikipedia.org/wiki/Impulse_response) audio files (used for the Reverberation function) [from here](http://www.cksde.com/p_6_250.htm) (Medium Damping Cave E002 M2S) and [here](https://openairlib.net/?page_id=36) (source link in the app reverb settings)
 * Uses [an icon](https://www.flaticon.com/free-icon/microphone_204320) by [Prosymbols](https://www.flaticon.com/authors/prosymbols) from [www.flaticon.com](https://www.flaticon.com/) under [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/) license
+* Uses some icons from [Heroicons](https://heroicons.com/) under the MIT License
+* Uses some icons from [Font Awesome](https://fontawesome.com/) - [License](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Changelog
+
+* Version 2.0 (11/16/2023) :
+    - The application has been (almost) entirely rewritten in TypeScript/React to improve code quality and modularity
+    - The application's UI has been completely redesigned from scratch to take advantage of this technical overhaul, using Tailwind CSS and the DaisyUI component library
+    - All features of version 1.4 have been carried over unchanged
+    - A dark mode has been added
+    - The application is now fully responsive
 
 * Version 1.4 (21/01/2021) :
     - Improved audio recorder: it's now possible to choose the input device, and change some settings (automatic gain, echo cancellation, noise cancellation, etc.)
@@ -115,24 +124,33 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 1.4 (21/01/2021)
+* Version du programme : 2.0 (16/11/2023)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
+### Technologies
+
+* TypeScript
+* React
+* Tailwind CSS / DaisyUI
+* Web Audio API
+
 ### Crédits
 
-* Utilise le thème Bootstrap Cosmo de Bootswatch ([https://bootswatch.com/3/cosmo/](https://bootswatch.com/3/cosmo/)), sous [licence MIT](https://tldrlegal.com/license/mit-license)
-* Utilise la police d'icônes [Font Awesome](https://fontawesome.com/v4.7.0/), sous [licence SIL OFL 1.1](https://tldrlegal.com/license/open-font-license-(ofl)-explained) et [MIT](https://tldrlegal.com/license/mit-license)
-* Utilise la bibliothèque logicielle [Soundtouch.js](https://github.com/ZVK/stretcher/blob/master/soundtouch.js) sous [licence GNU LGPL 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.fr.html)
-* Utilise la bibliothèque logicielle [Vocoder.js](https://github.com/jergason/Vocoder) sous [licence MIT](https://github.com/jergason/Vocoder/blob/master/LICENSE.txt) (code légèrement modifié)
-* Utilise la bibliothèque logicielle [Recorderjs](https://github.com/Eliastik/Recorderjs) (forkée) et sa [version Worker](https://github.com/mattdiamond/Recorderjs/blob/ac0eb8a7c2601fc4ec1cbd1b1ee49f45a6c79580/recorderWorker.js) sous [licence MIT](https://tldrlegal.com/license/mit-license).
-* Utilise la bibliothèque logicielle [Boostrap Slider](https://github.com/seiyria/bootstrap-slider), sous [licence MIT](https://github.com/seiyria/bootstrap-slider/blob/master/LICENSE.md)
-* Utilise la bibliothèque logicielle [Boostrap Native](https://github.com/thednp/bootstrap.native), sous [licence MIT](https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
-* Utilise la bibliothèque logicielle [i18next](https://github.com/i18next/i18next) (avec le module [i18next-browser-languageDetector](https://github.com/i18next/i18next-browser-languageDetector)) sous licence [MIT](https://opensource.org/licenses/mit-license.php) pour le moteur de traduction
+* Voir les dépendences du fichier package.json
 * Utilise des fichiers audio [Impulse Response](https://en.wikipedia.org/wiki/Impulse_response) (utilisés pour la fonction Réverbération) [venant d'ici](http://www.cksde.com/p_6_250.htm) (Medium Damping Cave E002 M2S) et [ici](https://openairlib.net/?page_id=36) (lien vers la source dans les paramètres de la fonction Réverbération de l'application)
 * Utilise [une icône](https://www.flaticon.com/free-icon/microphone_204320) réalisée par [Prosymbols](https://www.flaticon.com/authors/prosymbols) de [www.flaticon.com](https://www.flaticon.com/) sous licence [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
+* Utilise des icônes venant de chez [Heroicons](https://heroicons.com/) sous licence MIT
+* Utilise des icônes venant de chez [Font Awesome](https://fontawesome.com/) - [Licence](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Journal des changements
+
+* Version 2.0 (16/11/2023) :
+    - L'application a été (quasiment) entièrement réécrite en TypeScript/React pour en améliorer la qualité de code, et pour améliorer sa modularité
+    - L'interface de l'application a été totalement refaite de 0 en profitant de cette refonte technique, avec Tailwind CSS et la bilbiothèque de composants DaisyUI
+    - Toutes les fonctionnalités de la version 1.4 ont été reprises à l'identique
+    - Un mode sombre a été ajouté
+    - L'application est désormais entièrement responsive
 
 * Version 1.4 (21/01/2021) :
     - Amélioration de l'enregistreur audio : il est possible de choisir le périphérique d'entrée, et de modifier certains paramètres (gain automatique, annulation d'écho, suppression de bruit, etc.)
@@ -206,28 +224,9 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Version 1.0 (09/04/2019) :
     - Version initiale
 
-## TO-DO list
-
-### À faire :
-
-- [ ] Transformer l'application en classe réutilisable (permet le point suivant)
-- [ ] Fusionner les avancées de ce programme avec [Denis Brogniart – Ah !](https://github.com/Eliastik/ah) et les autres boîtes à son
-- [ ] Possibilité de modifier le volume/gain
-- [ ] Possibilité d'importer ses propres convolvers audio
-- [ ] Visualisation audio graphique
-- [ ] (Ajouter encore d'autres effets - autotune essayé)
-- [x] ES6 + babel ?
-- [x] Choix du micro pour l'enregistrement
-- [x] Case à cocher permettant de désactiver la gestion automatique du gain lors de l'enregistrement avec le micro
-- [x] (Corrigé) Problème sur Microsoft Edge : la sauvegarde ne fonctionne pas (aucun téléchargement/enregistrement ne fonctionne)
-- [x] Corriger message erreur "Application non compatible" sur le bouton "Enregistrer via le micro" si contexte non sécurisé (http, ...)
-- [x] Corriger le compresseur audio
-- [x] Ajouter plus d'effets
-- [x] Traduire l'application en anglais (i18next)
-
 ## Déclaration de licence
 
-Copyright (C) 2019-2021 Eliastik (eliastiksofts.com)
+Copyright (C) 2019-2023 Eliastik (eliastiksofts.com)
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes de la GNU General Public License telle que publiée par la Free Software Foundation ; soit la version 3 de la licence, soit (à votre gré) toute version ultérieure.
 
@@ -237,7 +236,7 @@ Vous devez avoir reçu une copie de la GNU General Public License en même temps
 
 ----
 
-Copyright (C) 2019-2021 Eliastik (eliastiksofts.com)
+Copyright (C) 2019-2023 Eliastik (eliastiksofts.com)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

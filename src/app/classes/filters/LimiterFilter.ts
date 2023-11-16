@@ -149,12 +149,11 @@ export default class LimiterFilter extends AbstractAudioFilter {
     }
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
-        this.reset();
-
         if(this.limiterProcessor && context == this.limiterProcessor.context) {
             this.limiterProcessor.onaudioprocess = null;
         } else {
             this.limiterProcessor = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
+            this.reset();
         }
 
         this.limiterProcessor.onaudioprocess = e => this.limit(e);

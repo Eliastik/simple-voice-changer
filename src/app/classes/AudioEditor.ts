@@ -42,13 +42,13 @@ export default class AudioEditor extends AbstractAudioElement {
     principalBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
 
-    constructor(context: AudioContext, player: BufferPlayer, eventEmitter: EventEmitter, configService: ConfigService, audioBuffersToFetch: string[]) {
+    constructor(context: AudioContext, player: BufferPlayer, eventEmitter?: EventEmitter, configService?: ConfigService, audioBuffersToFetch?: string[]) {
         super();
 
         this.currentContext = context;
-        this.eventEmitter = eventEmitter;
+        this.eventEmitter = eventEmitter || new EventEmitter();
         this.bufferPlayer = player;
-        this.configService = configService;
+        this.configService = configService || null;
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
         // Callback called just before starting audio player
@@ -67,7 +67,10 @@ export default class AudioEditor extends AbstractAudioElement {
 
         this.setupFilters();
         this.setupRenderers();
-        this.fetchBuffers(audioBuffersToFetch);
+
+        if(audioBuffersToFetch) {
+            this.fetchBuffers(audioBuffersToFetch);
+        }
 
         for (const filter of this.filters) {
             filter.initializeDefaultSettings();
