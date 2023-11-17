@@ -179,7 +179,8 @@
             "record": "Record",
             "pause": "Pause",
             "stop": "Stop and start editing",
-            "settings": "Recorder settings..."
+            "settings": "Recorder settings...",
+            "notAvailable": "Sorry, this feature is currently unavailable. Either your browser is incompatible with this feature, or you are currently in an unsecured context (non-https website)."
         },
         "recorderSettings": {
             "title": "Recorder settings",

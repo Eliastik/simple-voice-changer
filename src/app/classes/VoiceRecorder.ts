@@ -49,10 +49,14 @@ export default class VoiceRecorder {
 
     constructor(context: AudioContext, eventEmitter?: EventEmitter) {
         this.context = context;
-        this.eventEmitter = eventEmitter || new EventEmitter();;
+        this.eventEmitter = eventEmitter || new EventEmitter();
     }
 
     async init() {
+        if(!this.isRecordingAvailable()) {
+            return;
+        }
+
         this.eventEmitter?.emit(EventType.RECORDER_INIT);
 
         try {
@@ -310,5 +314,9 @@ export default class VoiceRecorder {
 
     on(event: string, callback: Function) {
         this.eventEmitter?.on(event, callback);
+    }
+
+    isRecordingAvailable() {
+        return typeof(navigator.mediaDevices) !== "undefined" && typeof(navigator.mediaDevices.getUserMedia) !== "undefined";
     }
 }

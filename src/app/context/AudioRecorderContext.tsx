@@ -36,8 +36,10 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
   const [recorderDisplayTime, setRecorderDisplayTime] = useState("00:00");
   // State: current time
   const [recorderTime, setRecorderTime] = useState(0);
-  // state: settings
+  // State: settings
   const [recorderSettings, setRecorderSettings] = useState<RecorderSettings>({ constraints: {}, deviceList: [], audioFeedback: false });
+  // State: recorder unavailable (in not secure context for example)
+  const [recorderUnavailable, setRecorderUnavailable] = useState(false);
 
   useEffect(() => {
     if (audioRecorderInstance != null) {
@@ -67,6 +69,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
       setAudioRecorderHasError(false);
       resetRecorderState();
     });
+
+    setRecorderUnavailable(!audioRecorderInstance.isRecordingAvailable());
   }, []);
 
   const initRecorder = async () => {
@@ -109,7 +113,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
       audioRecorderReady, audioRecorderHasError, initRecorder, audioRecorderAuthorizationPending,
       closeAudioRecorderError, audioRecording, recordAudio, pauseRecorderAudio, stopRecordAudio,
       recorderDisplayTime, exitAudioRecorder, recorderTime, recorderSettings, changeInput,
-      toggleAudioFeedback, toggleEchoCancellation, toggleNoiseReduction, toggleAutoGainControl
+      toggleAudioFeedback, toggleEchoCancellation, toggleNoiseReduction, toggleAutoGainControl,
+      recorderUnavailable
     }}>
       {children}
     </AudioRecorderContext.Provider>

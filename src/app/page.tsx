@@ -19,7 +19,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  }, [pauseAudioEditor]);
 
   return <MainComponent></MainComponent>
 };

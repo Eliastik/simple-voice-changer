@@ -175,7 +175,8 @@
             "record": "Enregistrer",
             "pause": "Pause",
             "stop": "Arrêter et démarrer l'édition",
-            "settings": "Paramètres…"
+            "settings": "Paramètres…",
+            "notAvailable": "Désolé, cette fonctionnalité n'est pas disponible pour le moment. Soit votre navigateur est incompatible avec cette fonctionnalité, soit vous vous trouvez dans un contexte non sécurisé (site web non https)."
         },
         "recorderSettings": {
             "title": "Paramètres de l'enregistreur audio",
