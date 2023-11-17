@@ -4,6 +4,7 @@
 ## Principal
 
 * [ ] - Migrate to Audio Worklets (Limiter/Soundtouch/Bitcrusher)
+* [ ] - Disable microphone button from the homepage if not available (not secure context)
 * [ ] - Transform the "classes" folder into a library (new Github repository)
 * [ ] - Advanced settings for the app: sample rate, buffer size, audio channels number
 * [ ] - Send custom audio buffer environment for the reverb filter

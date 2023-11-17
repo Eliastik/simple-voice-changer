@@ -6,7 +6,7 @@ const Constants = {
     official_website: "https://www.eliastiksofts.com/simple-voice-changer/",
     souce_code: "https://github.com/Eliastik/simple-voice-changer",
     app_license: "GNU GPL v3",
-    release_link: "https://github.com/Eliastik/simple-voice-changer/releases/tag/1.4",
+    release_link: "https://github.com/Eliastik/simple-voice-changer/releases/tag/2.0",
     audioBuffersToFetch: ["static/sounds/impulse_response.wav","static/sounds/modulator.mp3"],
     serviceWorkerScope: "/simple-voice-changer/demo/" // Same as from .env.prod
 };
