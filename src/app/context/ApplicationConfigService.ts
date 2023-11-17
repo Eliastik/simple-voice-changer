@@ -3,7 +3,7 @@ import Constants from "../model/Constants";
 import { UpdateData } from "../model/UpdateData";
 import semver from "semver";
 
-export default class ApplicationConfigService extends ConfigService {
+export default class ApplicationConfigService implements ConfigService {
     public setCurrentTheme(theme: string) {
         this.setConfig("current-theme", theme);
     }

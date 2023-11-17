@@ -107,7 +107,10 @@ export default class AudioEditor extends AbstractAudioElement {
         this.renderers.push(returnAudio, vocoder);
     }
 
-    /** Fetch default buffers from network */
+    /**
+     * Fetch default buffers from network
+     * @param audioBuffersToFetch List of audio URL to fetch as buffer
+     */
     fetchBuffers(audioBuffersToFetch: string[]) {
         if (this.downloadingInitialData) {
             return;
@@ -124,7 +127,12 @@ export default class AudioEditor extends AbstractAudioElement {
         });
     }
 
-    /** Connect the Audio API nodes of the enabled filters */
+    /**
+     * Connect the Audio API nodes of the enabled filters
+     * @param context The Audio Context
+     * @param buffer  The Audio Buffer
+     * @param keepCurrentInputOutput Keep current first input/output nodes?
+     */
     private connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepCurrentInputOutput: boolean) {
         const entrypointNode = keepCurrentInputOutput && this.currentNodes ? this.currentNodes.input :
             this.entrypointFilter?.getEntrypointNode(context, buffer).input;
@@ -162,6 +170,10 @@ export default class AudioEditor extends AbstractAudioElement {
         };
     }
 
+    /**
+     * Disconnect old audio nodes
+     * @param keepCurrentOutput Keeps current output nodes?
+     */
     private disconnectOldNodes(keepCurrentOutput: boolean) {
         if (this.currentNodes) {
             this.currentNodes.input.disconnect();
@@ -190,7 +202,10 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
-    /** Render the audio to a buffer */
+    /**
+     * Render the audio to a buffer
+     * @returns A promise resolved when the audio processing is finished
+     */
     async renderAudio(): Promise<void> {
         if (!this.currentContext) {
             console.error("AudioContext is not yet available");
@@ -217,7 +232,13 @@ export default class AudioEditor extends AbstractAudioElement {
         return await this.setupOutput(outputContext, durationAudio, offlineContext);
     }
 
-    /** Setup output buffers/nodes */
+    /**
+     * Setup output buffers/nodes
+     * @param outputContext Output audio context
+     * @param durationAudio Duration of the audio buffer
+     * @param offlineContext An offline context to do the rendering (can be omited, in this case the rendering is done in real time - "compatibility mode")
+     * @returns A promise resolved when the audio processing is done
+     */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
         if (this.renderedBuffer && this.bufferPlayer) {
             this.connectNodes(outputContext, this.renderedBuffer, false);
@@ -247,7 +268,11 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
-    /** Calculate approximative audio duration according to enabled filters and their settings */
+    /**
+     * Calculate approximative audio duration according to enabled filters and their settings
+     * @param speedAudio Current audio speed
+     * @returns The audio duration
+     */
     private calculateAudioDuration(speedAudio: number): number {
         let reverb = false;
         let reverbAddDuration = 1;
@@ -281,27 +306,39 @@ export default class AudioEditor extends AbstractAudioElement {
         return Constants.AUDIO_EDITOR;
     }
 
-    /** Compatibility mode */
+    /** Compatibility mode settings */
+
+    /**
+     * Enable the compatibility/direct audio rendering mode
+     */
     enableCompatibilityMode() {
         this.setCompatibilityModeEnabled(true);
     }
-
+    
+    /**
+     * Disable the compatibility/direct audio rendering mode
+     */
     disableCompatibilityMode() {
         this.setCompatibilityModeEnabled(false);
     }
 
+    /**
+     * Is the compatibility/direct audio rendering mode enabled?
+     *
+     * @returns boolean
+     */
     isCompatibilityModeEnabled() {
         if(this.configService) {
-            const setting = this.configService.getConfig(Constants.COMPATIBILITY_MODE_ENABLED);
-    
-            if (setting) {
-                return setting == "true";
-            }
+            return this.configService.getConfig(Constants.COMPATIBILITY_MODE_ENABLED) == "true";
         }
 
         return this.compatibilityModeEnabled;
     }
 
+    /**
+     * Enable/disable compatibility/direct audio rendering mode
+     * @param enabled boolean
+     */
     setCompatibilityModeEnabled(enabled: boolean) {
         this.compatibilityModeEnabled = enabled;
 
@@ -310,18 +347,22 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Was compatibility/direct audio rendering mode already checked for auto enabling? (if an error occurs rendering in offline context)
+     * @returns boolean
+     */
     isCompatibilityModeChecked() {
         if(this.configService) {
-            const setting = this.configService.getConfig(Constants.COMPATIBILITY_MODE_CHECKED);
-    
-            if (setting) {
-                return setting == "true";
-            }
+            return this.configService.getConfig(Constants.COMPATIBILITY_MODE_CHECKED) == "true";
         }
 
         return this.compatibilityModeChecked;
     }
 
+    /**
+     * Set compatibility/direct audio rendering mode already checked for auto enabling (if an error occurs rendering in offline context)
+     * @param checked boolean
+     */
     setCompatibilityModeChecked(checked: boolean) {
         this.compatibilityModeChecked = checked;
 
@@ -331,8 +372,13 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /** Filters settings */
+    
+    /**
+     * Get enabled/disabled state of all filters/renderers
+     * @returns The filters state (enabled/disabled)
+     */
     getFiltersState() {
-        const state: any = {};
+        const state: { [filterId: string]: boolean } = {};
 
         [...this.filters, ...this.renderers].forEach(filter => {
             state[filter.getId()] = filter.isEnabled();
@@ -340,9 +386,13 @@ export default class AudioEditor extends AbstractAudioElement {
 
         return state;
     }
-
+    
+    /**
+     * Get the settings of all filters/renderers
+     * @returns 
+     */
     getFiltersSettings(): Map<string, any> {
-        const settings = new Map<string, string[]>();
+        const settings = new Map<string, any>();
 
         for (const filter of this.filters) {
             settings.set(filter.getId(), filter.getSettings());
@@ -351,6 +401,10 @@ export default class AudioEditor extends AbstractAudioElement {
         return settings;
     }
 
+    /**
+     * Toggle enabled/disabled state for a filter/renderer
+     * @param filterId The filter/renderer ID
+     */
     toggleFilter(filterId: string) {
         const filter = this.filters.find(f => f.getId() === filterId);
         const renderer = this.renderers.find(f => f.getId() === filterId);
@@ -366,7 +420,12 @@ export default class AudioEditor extends AbstractAudioElement {
         this.reconnectNodesIfNeeded();
     }
 
-    async changeFilterSettings(filterId: string, settings: any) {
+    /**
+     * Change a filter/renderer setting
+     * @param filterId Filter ID
+     * @param settings Filter setting (key/value)
+     */
+    async changeFilterSettings(filterId: string, settings: { [setting: string]: string }) {
         const filter = this.filters.find(f => f.getId() === filterId);
 
         if (filter) {
@@ -378,6 +437,10 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Reset the settings of a filter/renderer
+     * @param filterId Id of the filter/renderer
+     */
     resetFilterSettings(filterId: string) {
         const filter = this.filters.find(f => f.getId() === filterId);
 
@@ -387,6 +450,9 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Reset all filters/renderers state (enabled/disabled) based on their default states
+     */
     resetAllFiltersState() {
         [...this.filters, ...this.renderers].forEach(element => {
             if (element.isDefaultEnabled()) {
@@ -399,6 +465,11 @@ export default class AudioEditor extends AbstractAudioElement {
         this.reconnectNodesIfNeeded();
     }
 
+    /** Events and exit */
+
+    /**
+     * Exit/reset the audio editor basic state
+     */
     exit() {
         if (this.bufferPlayer) {
             this.bufferPlayer.stop();
@@ -407,11 +478,19 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Subscribe to an event
+     * @param event The event ID
+     * @param callback The callback function
+     */
     on(event: string, callback: Function) {
         this.eventEmitter?.on(event, callback);
     }
 
-    /** Save buffer */
+    /**
+     * Save the rendered audio to a buffer
+     * @returns A promise resolved when the audio buffer is downloaded to the user
+     */
     saveBuffer(): Promise<boolean> {
         if (this.savingBuffer) {
             return Promise.reject();
@@ -497,7 +576,11 @@ export default class AudioEditor extends AbstractAudioElement {
         });
     }
 
-    downloadAudioBlob(blob: Blob) {
+    /**
+     * Download an audio Blob
+     * @param blob The blob
+     */
+    private downloadAudioBlob(blob: Blob) {
         Recorder.forceDownload(blob, "audio-" + new Date().toISOString() + ".wav");
     }
 }
