@@ -1,7 +1,7 @@
-import AbstractAudioFilter from "../model/AbstractAudioFilter";
+import AbstractAudioFilterWorklet from "../model/AbstractAudioFilterWorklet";
 import Constants from "../model/Constants";
 
-export default class BitCrusherFilter extends AbstractAudioFilter {
+export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     private bufferSize = 4096;
     private channels = 2;
     private bits = 8;
@@ -15,38 +15,24 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
         this.normFreq = normFreq;
     }
 
+    async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
+        await audioContext.audioWorklet.addModule(Constants.WORKLET_PATHS.BITCRUSHER);
+    }
+
     getNode(context: BaseAudioContext): AudioFilterNodes {
-        const bitCrusher = context.createScriptProcessor(this.bufferSize, this.channels, this.channels);
-        let phaser = 0;
-        let last = 0;
-        this.normFreq /= (context.sampleRate / 48000);
+        const bitCrusherNode = new AudioWorkletNode(context, "bitcrusher-processor");
 
-        bitCrusher.onaudioprocess = e => {
-            const step = 2 * Math.pow(1 / 2, this.bits);
-
-            for(let channel = 0; channel < e.inputBuffer.numberOfChannels; channel++) {
-                const input = e.inputBuffer.getChannelData(channel);
-                const output = e.outputBuffer.getChannelData(channel);
-
-                for(let i = 0; i < this.bufferSize; i++) {
-                    phaser += this.normFreq;
-
-                    if(phaser >= 1.0) {
-                        phaser -= 1.0;
-                        last = step * Math.floor((input[i] * (1 / step)) + 0.5);
-                    }
-
-                    output[i] = last;
-                }
-            }
-        };
+        /*if(bitCrusherNode.parameters) {
+            bitCrusherNode.parameters.get('bits').value = this.bits;
+            bitCrusherNode.parameters.get('normFreq').value = this.normFreq;
+        }*/
 
         return {
-            input: bitCrusher,
-            output: bitCrusher
+            input: bitCrusherNode,
+            output: bitCrusherNode,
         };
     }
-    
+
     getOrder(): number {
         return 6;
     }
@@ -65,11 +51,11 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
     }
 
     async setSetting(settingId: string, value: string) {
-        if(!value || value == "" || isNaN(Number(value))) {
+        if (!value || value == "" || isNaN(Number(value))) {
             return;
         }
 
-        switch(settingId) {
+        switch (settingId) {
             case "bits":
                 this.bits = parseInt(value);
                 break;

@@ -21,6 +21,7 @@
     "soundtouchjs": "^0.1.30"
   },
   "devDependencies": {
+    "@types/audioworklet": "^0.0.50",
     "@types/lodash": "^4.14.201",
     "@types/node": "^20.9.1",
     "@types/react": "^18.2.37",

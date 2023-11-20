@@ -26,4 +26,8 @@ export default abstract class AbstractAudioFilter extends AbstractAudioElement {
             this.setSetting(key, this.defaultSettings[key]);
         });
     }
+
+    public isWorklet() {
+        return false;
+    }
 }

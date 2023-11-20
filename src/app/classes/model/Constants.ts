@@ -19,6 +19,9 @@ const Constants = {
         SOUNDTOUCH: "soundtouch",
         TELEPHONIZER: "telephonizer",
         VOCODER: "vocoder"
+    },
+    WORKLET_PATHS: {
+        BITCRUSHER: "worklets/BitCrusherWorklet.js"
     }
 };
 

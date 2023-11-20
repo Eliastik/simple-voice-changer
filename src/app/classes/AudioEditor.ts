@@ -23,6 +23,7 @@ import { ConfigService } from "./model/ConfigService";
 import Constants from "./model/Constants";
 //@ts-ignore
 import { Recorder, getRecorderWorker } from "recorderjs";
+import AbstractAudioFilterWorklet from "./model/AbstractAudioFilterWorklet";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -202,6 +203,15 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /** Initialize worklets filters */
+    private async initializeWorklets(context: BaseAudioContext) {
+        for (const filter of this.filters) {
+            if (filter.isWorklet()) {
+                await (filter as AbstractAudioFilterWorklet).initializeWorklet(context);
+            }
+        }
+    }
+
     /**
      * Render the audio to a buffer
      * @returns A promise resolved when the audio processing is finished
@@ -241,6 +251,7 @@ export default class AudioEditor extends AbstractAudioElement {
      */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
         if (this.renderedBuffer && this.bufferPlayer) {
+            this.initializeWorklets(outputContext);
             this.connectNodes(outputContext, this.renderedBuffer, false);
 
             const speedAudio = this.entrypointFilter?.getSpeed()!;

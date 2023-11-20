@@ -39,6 +39,10 @@ const nextConfig = withPWA({
             from: "node_modules/@soundtouchjs/audio-worklet/dist/soundtouch-worklet.js",
             to: "../public/worklets",
           },
+          {
+            from: "src/app/classes/filters/worklets/BitCrusherWorklet.js",
+            to: "../public/worklets",
+          }
         ],
       })
     );
