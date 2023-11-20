@@ -6,6 +6,7 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     private channels = 2;
     private bits = 8;
     private normFreq = 0.15;
+    private currentBitCrusherNode: AudioWorkletNode | null = null;
 
     constructor(bufferSize: number, channels: number, bits: number, normFreq: number) {
         super();
@@ -20,17 +21,30 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     }
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
-        const bitCrusherNode = new AudioWorkletNode(context, "bitcrusher-processor");
-
-        /*if(bitCrusherNode.parameters) {
-            bitCrusherNode.parameters.get('bits').value = this.bits;
-            bitCrusherNode.parameters.get('normFreq').value = this.normFreq;
-        }*/
+        this.currentBitCrusherNode = new AudioWorkletNode(context, "bitcrusher-processor");
+        this.applyCurrentSettings();
 
         return {
-            input: bitCrusherNode,
-            output: bitCrusherNode,
+            input: this.currentBitCrusherNode,
+            output: this.currentBitCrusherNode,
         };
+    }
+
+    applyCurrentSettings() {
+        if(this.currentBitCrusherNode && this.currentBitCrusherNode.parameters) {
+            const bits = this.currentBitCrusherNode.parameters.get("bits");
+            const normFreq = this.currentBitCrusherNode.parameters.get("normFreq");
+
+            if(bits) {
+                bits.value = this.bits;
+                bits.setValueAtTime(this.bits, 0);
+            }
+
+            if(normFreq) {
+                normFreq.value = this.normFreq;
+                normFreq.setValueAtTime(this.normFreq, 0);
+            }
+        }
     }
 
     getOrder(): number {
@@ -63,5 +77,7 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
                 this.normFreq = parseFloat(value);
                 break;
         }
+
+        this.applyCurrentSettings();
     }
 }
