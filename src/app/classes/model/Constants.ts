@@ -21,7 +21,8 @@ const Constants = {
         VOCODER: "vocoder"
     },
     WORKLET_PATHS: {
-        BITCRUSHER: "worklets/BitCrusherWorklet.js"
+        BITCRUSHER: "worklets/BitCrusher.worklet.js",
+        LIMITER: "worklets/Limiter.worklet.js"
     }
 };
 

@@ -251,7 +251,7 @@ export default class AudioEditor extends AbstractAudioElement {
      */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
         if (this.renderedBuffer && this.bufferPlayer) {
-            this.initializeWorklets(outputContext);
+            await this.initializeWorklets(outputContext);
             this.connectNodes(outputContext, this.renderedBuffer, false);
 
             const speedAudio = this.entrypointFilter?.getSpeed()!;
