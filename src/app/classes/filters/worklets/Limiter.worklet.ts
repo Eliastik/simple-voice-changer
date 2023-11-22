@@ -59,11 +59,17 @@ class DelayBuffer {
 }
 
 class LimiterProcessor extends AudioWorkletProcessor {
-    sampleRate = 44100;
     delayBuffer: DelayBuffer[] = [];
     envelopeSample = 0;
-    bufferSize = 4096;
-    channels = 2;
+
+    constructor() {
+        super();
+        this.port.onmessage = (event) => {
+            if(event.data == "reset") {
+                this.reset();
+            }
+        };
+    }
 
     static get parameterDescriptors() {
         return [
@@ -73,6 +79,7 @@ class LimiterProcessor extends AudioWorkletProcessor {
             { name: "releaseTime", defaultValue: 3 },
             { name: "threshold", defaultValue: -0.05 },
             { name: "lookAheadTime", defaultValue: 0 },
+            { name: "sampleRate", defaultValue: 44100 }
         ];
     }
 
@@ -134,7 +141,7 @@ class LimiterProcessor extends AudioWorkletProcessor {
 
             // create a delay buffer
             if (this.delayBuffer[channel] == null) {
-                this.delayBuffer[channel] = new DelayBuffer(parameters.lookAheadTime[0] * this.sampleRate);
+                this.delayBuffer[channel] = new DelayBuffer(parameters.lookAheadTime[0] * parameters.sampleRate[0]);
             }
 
             // apply pre gain to signal
@@ -143,7 +150,7 @@ class LimiterProcessor extends AudioWorkletProcessor {
             }
 
             // compute the envelope
-            envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], this.sampleRate);
+            envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], parameters.sampleRate[0]);
         }
 
         for (let channel = 0; channel < inputBuffer.length; channel++) {
@@ -172,6 +179,16 @@ class LimiterProcessor extends AudioWorkletProcessor {
         }
 
         return true;
+    }
+
+    reset() {
+        for (let i = 0; i < this.delayBuffer.length; i++) {
+            if (this.delayBuffer[i] != null) {
+                this.delayBuffer[i].reset();
+            }
+        }
+
+        this.envelopeSample = 0;
     }
 }
 

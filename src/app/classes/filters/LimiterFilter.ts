@@ -9,20 +9,15 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
     private releaseTime = 3; // s
     private threshold = -0.05; // dB
     private lookAheadTime = 0.05; // s
-    private bufferSize = 4096;
-    private channels = 2;
 
-    constructor(sampleRate: number, preGain: number, postGain: number, attackTime: number, releaseTime: number, threshold: number, lookAheadTime: number, bufferSize: number, channels: number) {
+    constructor(preGain: number, postGain: number, attackTime: number, releaseTime: number, threshold: number, lookAheadTime: number) {
         super();
-        this.sampleRate = sampleRate || this.sampleRate;
         this.preGain = preGain || this.preGain;
         this.postGain = postGain || this.postGain;
         this.attackTime = attackTime || this.attackTime;
         this.releaseTime = releaseTime || this.releaseTime;
         this.threshold = threshold || this.threshold;
         this.lookAheadTime = lookAheadTime || this.lookAheadTime;
-        this.bufferSize = bufferSize || this.bufferSize;
-        this.channels = channels || this.channels;
         this.enable();
         this.setDefaultEnabled(true);
     }
@@ -32,13 +27,13 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
     }
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
-        /*if(this.currentWorkletNode && context == this.currentWorkletNode.context) {
-            this.currentWorkletNode.onaudioprocess = null;
-        } else {*/
-            this.currentWorkletNode = new AudioWorkletNode(context, "limiter-processor");
-            //this.reset();
-        //}
+        this.sampleRate = context.sampleRate;
+        
+        if(this.currentWorkletNode && context != this.currentWorkletNode.context) {
+            this.reset();
+        }
 
+        this.currentWorkletNode = new AudioWorkletNode(context, "limiter-processor");
         this.applyCurrentSettingsToWorklet();
 
         return {
@@ -47,16 +42,11 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
         };
     }
 
-    // TODO on worklet
-    /*reset() {
-        for (let i = 0; i < this.delayBuffer.length; i++) {
-            if (this.delayBuffer[i] != null) {
-                this.delayBuffer[i].reset();
-            }
+    reset() {
+        if(this.currentWorkletNode) {
+            this.currentWorkletNode.port.postMessage("reset");
         }
-
-        this.envelopeSample = 0;
-    }*/
+    }
 
     getOrder(): number {
         return 10;
@@ -74,6 +64,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
             releaseTime: this.releaseTime,
             threshold: this.threshold,
             lookAheadTime: this.lookAheadTime,
+            sampleRate: this.sampleRate
         };
     }
 
@@ -100,6 +91,9 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
                 break;
             case "lookAheadTime":
                 this.lookAheadTime = parseFloat(value);
+                break;
+            case "sampleRate":
+                this.sampleRate = parseFloat(value);
                 break;
         }
 

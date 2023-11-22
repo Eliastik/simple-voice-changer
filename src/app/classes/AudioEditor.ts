@@ -92,7 +92,7 @@ export default class AudioEditor extends AbstractAudioElement {
         const lowPass = new LowPassFilter(3500);
         const reverb = new ReverbFilter();
         const soundtouchWrapper = new SoundtouchWrapperFilter();
-        const limiterFilter = new LimiterFilter(44100, 0, 0, 0, 3, -0.05, 0.05, 4096, 2);
+        const limiterFilter = new LimiterFilter(0, 0, 0, 3, -0.05, 0.05);
         const telephonizerFilter = new TelephonizerFilter();
         const passthroughfilter = new PassThroughFilter();
 
