@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@soundtouchjs/audio-worklet": "^0.1.17",
+    "@dancecuts/soundtouchjs-scheduled-audio-worklet": "github:DanceCuts/soundtouchjs-scheduled-audio-worklet",
     "i18next": "^23.7.6",
     "lodash": "^4.17.21",
     "next": "^13.5.6",
@@ -17,8 +17,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^13.5.0",
     "recorderjs": "github:Eliastik/Recorderjs#37dfc2c",
-    "semver": "^7.5.4",
-    "soundtouchjs": "^0.1.30"
+    "semver": "^7.5.4"
   },
   "devDependencies": {
     "@types/audioworklet": "^0.0.50",

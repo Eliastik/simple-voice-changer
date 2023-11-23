@@ -22,7 +22,8 @@ const Constants = {
     },
     WORKLET_PATHS: {
         BITCRUSHER: "worklets/BitCrusher.worklet.js",
-        LIMITER: "worklets/Limiter.worklet.js"
+        LIMITER: "worklets/Limiter.worklet.js",
+        SOUNDTOUCH: "worklets/scheduled-soundtouch-worklet.js"
     }
 };
 

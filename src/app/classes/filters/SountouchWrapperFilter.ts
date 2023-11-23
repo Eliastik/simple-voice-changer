@@ -1,14 +1,15 @@
 //@ts-ignore
-import { PitchShifter } from "soundtouchjs";
-import AbstractAudioFilterEntrypoint from "../model/AbstractAudioFilterEntrypoint";
+import { createScheduledSoundTouchNode } from "@dancecuts/soundtouchjs-scheduled-audio-worklet";
 import Constants from "../model/Constants";
+import AbstractAudioFilterWorklet from "../model/AbstractAudioFilterWorklet";
+import AudioFilterEntrypointInterface from "../model/AudioFilterEntrypointInterface";
 
-export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoint {
+export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet implements AudioFilterEntrypointInterface {
 
-    private currentPitchShifter: any;
     private speedAudio = 1;
     private frequencyAudio = 1;
     private currentSpeedAudio = 1;
+    private currentPitchShifter: any;
 
     constructor() {
         super();
@@ -16,18 +17,32 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
         this.setDefaultEnabled(true);
     }
 
-    getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer): AudioFilterNodes {
-        if(this.currentPitchShifter) {
-            this.currentPitchShifter.disconnect();
-        }
+    async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
+        await audioContext.audioWorklet.addModule(Constants.WORKLET_PATHS.SOUNDTOUCH);
+    }
 
-        this.currentPitchShifter = new PitchShifter(context, buffer, 16384);
-        this.updateState();
+    async getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer): Promise<AudioFilterNodes> {
+        return new Promise(resolve => {
+            if(this.currentPitchShifter) {
+                this.currentPitchShifter.stop();
+            }
+    
+            this.currentPitchShifter = createScheduledSoundTouchNode(context, buffer);
+    
+            this.currentPitchShifter.onInitialized = () => {
+                this.currentPitchShifter.start();
+                this.updateState();
 
-        return {
-            input: this.currentPitchShifter,
-            output: this.currentPitchShifter
-        };
+                resolve({
+                    input: this.currentPitchShifter,
+                    output: this.currentPitchShifter
+                })
+            };
+        });
+    }
+    
+    getNode(context: BaseAudioContext): AudioFilterNodes {
+        throw new Error("Method not implemented.");
     }
     
     getOrder(): number {
@@ -46,18 +61,20 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterEntrypoi
     }
 
     updateState(): void {
-        if(this.currentPitchShifter && this.isEnabled()) {
-            this.currentPitchShifter.tempo = this.speedAudio;
-            this.currentSpeedAudio = this.speedAudio;
-        } else {
-            this.currentPitchShifter.tempo = 1;
-            this.currentSpeedAudio = 1;
-        }
-
-        if(this.currentPitchShifter && this.isEnabled()) {
-            this.currentPitchShifter.pitch = this.frequencyAudio;
-        } else {
-            this.currentPitchShifter.pitch = 1;
+        if(this.currentPitchShifter) {
+            if(this.isEnabled()) {
+                this.currentPitchShifter.tempo = this.speedAudio;
+                this.currentSpeedAudio = this.speedAudio;
+            } else {
+                this.currentPitchShifter.tempo = 1;
+                this.currentSpeedAudio = 1;
+            }
+    
+            if(this.isEnabled()) {
+                this.currentPitchShifter.pitch = this.frequencyAudio;
+            } else {
+                this.currentPitchShifter.pitch = 1;
+            }
         }
     }
 

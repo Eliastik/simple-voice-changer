@@ -1,6 +1,6 @@
 import AbstractAudioElement from "./model/AbstractAudioElement";
 import AbstractAudioFilter from "./model/AbstractAudioFilter";
-import AbstractAudioFilterEntrypoint from "./model/AbstractAudioFilterEntrypoint";
+import AudioFilterEntrypointInterface from "./model/AudioFilterEntrypointInterface";
 import AbstractAudioRenderer from "./model/AbstractAudioRenderer";
 import BassBoosterFilter from "./filters/BassBoosterFilter";
 import BitCrusherFilter from "./filters/BitCrusherFilter";
@@ -29,7 +29,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
     private currentContext: AudioContext | null;
     private configService: ConfigService | null;
-    private entrypointFilter: AbstractAudioFilterEntrypoint | null = null;
+    private entrypointFilter: (AbstractAudioFilter & AudioFilterEntrypointInterface) | null = null;
     private filters: AbstractAudioFilter[] = [];
     private renderers: AbstractAudioRenderer[] = [];
     private bufferPlayer: BufferPlayer | undefined;
@@ -134,9 +134,15 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param buffer  The Audio Buffer
      * @param keepCurrentInputOutput Keep current first input/output nodes?
      */
-    private connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepCurrentInputOutput: boolean) {
+    private async connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepCurrentInputOutput: boolean) {
+        if(!this.entrypointFilter) {
+            return;
+        }
+
+        const entrypointNodes = await this.entrypointFilter.getEntrypointNode(context, buffer);
+
         const entrypointNode = keepCurrentInputOutput && this.currentNodes ? this.currentNodes.input :
-            this.entrypointFilter?.getEntrypointNode(context, buffer).input;
+            entrypointNodes.input;
 
         const intermediateNodes: AudioFilterNodes[] = [];
         let previousNode: AudioNode | undefined = entrypointNode;
@@ -193,9 +199,9 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /** Reconnect the nodes if the compatibility/direct mode is enabled */
-    private reconnectNodesIfNeeded() {
+    private async reconnectNodesIfNeeded() {
         if (this.bufferPlayer?.compatibilityMode && this.currentContext && this.principalBuffer && this.bufferPlayer) {
-            this.connectNodes(this.currentContext, this.principalBuffer, true);
+            await this.connectNodes(this.currentContext, this.principalBuffer, true);
 
             const speedAudio = this.entrypointFilter?.getSpeed()!;
             this.bufferPlayer.speedAudio = speedAudio;
@@ -252,7 +258,7 @@ export default class AudioEditor extends AbstractAudioElement {
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
         if (this.renderedBuffer && this.bufferPlayer) {
             await this.initializeWorklets(outputContext);
-            this.connectNodes(outputContext, this.renderedBuffer, false);
+            await this.connectNodes(outputContext, this.renderedBuffer, false);
 
             const speedAudio = this.entrypointFilter?.getSpeed()!;
             this.bufferPlayer.speedAudio = speedAudio;
@@ -444,7 +450,7 @@ export default class AudioEditor extends AbstractAudioElement {
                 await filter.setSetting(key, settings[key]);
             }
 
-            this.reconnectNodesIfNeeded();
+            await this.reconnectNodesIfNeeded();
         }
     }
 
