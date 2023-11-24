@@ -12,7 +12,7 @@ const AudioRecorderMain = ({ }) => {
         <>
             <div className="flex justify-center items-center flex-grow flex-col pt-16 gap-8">
                 <span className="font-light text-6xl">{recorderDisplayTime}</span>
-                <div className="flex gap-4 flex-row">
+                <div className="flex gap-2 flex-row">
                     {!audioRecording && <button className="btn flex-col justify-evenly pl-2 pr-2 w-44 h-52" onClick={() => recordAudio()}>
                         <div className="fill-base-content">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16">
