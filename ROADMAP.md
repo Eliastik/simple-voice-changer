@@ -7,6 +7,7 @@
 * [x] - Disable microphone button from the homepage if not available (not secure context)
 * [x] - Migrate to Audio Worklets version for Soundtouch
     * [ ] - Bug with Firefox - No sound
+    * [ ] - Use SharedArrayBuffer
 * [ ] - Transform the "classes" folder into a library (new Github repository)
 * [ ] - Advanced settings for the app: sample rate, buffer size, audio channels number
 * [ ] - Send custom audio buffer environment for the reverb filter

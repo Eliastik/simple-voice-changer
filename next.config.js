@@ -64,7 +64,7 @@ const nextConfig = withPWA({
       new CopyPlugin({
         patterns: [
           {
-            from: "node_modules/@dancecuts/soundtouchjs-scheduled-audio-worklet/dist/scheduled-soundtouch-worklet.js",
+            from: "node_modules/@eliastik/soundtouchjs-audio-worklet/dist/scheduled-soundtouch-worklet.js",
             to: "../public/worklets",
           },
           ...worklets.map((worklet) => generateWorkletCopyConfig(worklet))

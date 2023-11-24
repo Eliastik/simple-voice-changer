@@ -1,5 +1,5 @@
 //@ts-ignore
-import { createScheduledSoundTouchNode } from "@dancecuts/soundtouchjs-scheduled-audio-worklet";
+import { createScheduledSoundTouchNode } from "@eliastik/soundtouchjs-audio-worklet";
 import Constants from "../model/Constants";
 import AbstractAudioFilterWorklet from "../model/AbstractAudioFilterWorklet";
 import AudioFilterEntrypointInterface from "../model/AudioFilterEntrypointInterface";
@@ -25,6 +25,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         return new Promise(resolve => {
             if(this.currentPitchShifter) {
                 this.currentPitchShifter.stop();
+                this.currentPitchShifter.disconnect();
             }
     
             this.currentPitchShifter = createScheduledSoundTouchNode(context, buffer);
