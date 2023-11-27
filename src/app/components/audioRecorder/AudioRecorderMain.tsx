@@ -10,10 +10,10 @@ const AudioRecorderMain = ({ }) => {
 
     return (
         <>
-            <div className="flex justify-center items-center flex-grow flex-col pt-16 gap-8">
+            <div className="flex justify-center items-center flex-grow flex-col pt-16 lg:gap-8 md:gap-6 gap-4">
                 <span className="font-light text-6xl">{recorderDisplayTime}</span>
                 <div className="flex gap-2 flex-row">
-                    {!audioRecording && <button className="btn flex-col justify-evenly pl-2 pr-2 w-44 h-52" onClick={() => recordAudio()}>
+                    {!audioRecording && <button className="btn flex-col justify-evenly pl-2 pr-2 lg:w-52 lg:h-60 md:w-44 md:h-52 w-40 h-48" onClick={() => recordAudio()}>
                         <div className="fill-base-content">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
@@ -21,7 +21,7 @@ const AudioRecorderMain = ({ }) => {
                         </div>
                         <span>{t("audioRecorder.record")}</span>
                     </button>}
-                    {audioRecording && <button className="btn flex-col justify-evenly pl-2 pr-2 w-44 h-52" onClick={() => pauseRecorderAudio()}>
+                    {audioRecording && <button className="btn flex-col justify-evenly pl-2 pr-2 lg:w-52 lg:h-60 md:w-44 md:h-52 w-40 h-48" onClick={() => pauseRecorderAudio()}>
                         <div className="fill-base-content">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
@@ -29,7 +29,7 @@ const AudioRecorderMain = ({ }) => {
                         </div>
                         <span>{t("audioRecorder.pause")}</span>
                     </button>}
-                    <button className="btn flex-col justify-evenly pl-2 pr-2 w-44 h-52" onClick={() => stopRecordAudio()} disabled={recorderTime <= 0}>
+                    <button className="btn flex-col justify-evenly pl-2 pr-2 lg:w-52 lg:h-60 md:w-44 md:h-52 w-40 h-48" onClick={() => stopRecordAudio()} disabled={recorderTime <= 0}>
                         <div className="fill-base-content">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z" />
