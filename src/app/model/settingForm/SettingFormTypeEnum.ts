@@ -7,4 +7,4 @@ export enum SettingFormTypeEnum {
     SimpleLink,
     DynamicLink,
     Range
-}
+};

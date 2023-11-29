@@ -5,4 +5,4 @@ export default interface SettingFormDynamicLink extends SettingForm {
     settingType: SettingFormTypeEnum.DynamicLink
     labelValue?: string
     linkValue?: string
-}
+};

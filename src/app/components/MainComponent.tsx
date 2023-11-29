@@ -13,24 +13,24 @@ import ErrorAuthorizationAudioRecorderDialog from "./dialogs/ErrorAuthorizationA
 import ErrorDownloadingBufferDialog from "./dialogs/ErrorDownloadingBufferDialog";
 import FirstLaunchDialog from "./dialogs/FirstLaunchDialog";
 
-const MainComponent = ({ }) => {
-  const { audioEditorReady, downloadingInitialData } = useAudioEditor();
-  const { audioRecorderReady } = useAudioRecorder();
+const MainComponent = () => {
+    const { audioEditorReady, downloadingInitialData } = useAudioEditor();
+    const { audioRecorderReady } = useAudioRecorder();
 
-  return (
-    <>
-      {!audioEditorReady && !audioRecorderReady && <HomeMenu></HomeMenu>}
-      {audioEditorReady && <AudioEditorMain></AudioEditorMain>}
-      {audioRecorderReady && <AudioRecorderMain></AudioRecorderMain>}
-      <LoadingAppDialog></LoadingAppDialog>
-      <LoadingAudioFileDialog></LoadingAudioFileDialog>
-      <AudioRecorderAuthorizationDialog></AudioRecorderAuthorizationDialog>
-      {!downloadingInitialData && <FirstLaunchDialog></FirstLaunchDialog>}
-      <ErrorAuthorizationAudioRecorderDialog></ErrorAuthorizationAudioRecorderDialog>
-      <ErrorLoadingAudioDialog></ErrorLoadingAudioDialog>
-      <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>
-    </>
-  )
+    return (
+        <>
+            {!audioEditorReady && !audioRecorderReady && <HomeMenu></HomeMenu>}
+            {audioEditorReady && <AudioEditorMain></AudioEditorMain>}
+            {audioRecorderReady && <AudioRecorderMain></AudioRecorderMain>}
+            <LoadingAppDialog></LoadingAppDialog>
+            <LoadingAudioFileDialog></LoadingAudioFileDialog>
+            <AudioRecorderAuthorizationDialog></AudioRecorderAuthorizationDialog>
+            {!downloadingInitialData && <FirstLaunchDialog></FirstLaunchDialog>}
+            <ErrorAuthorizationAudioRecorderDialog></ErrorAuthorizationAudioRecorderDialog>
+            <ErrorLoadingAudioDialog></ErrorLoadingAudioDialog>
+            <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>
+        </>
+    );
 };
 
 export default MainComponent;

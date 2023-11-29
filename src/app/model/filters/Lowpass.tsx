@@ -10,15 +10,15 @@ export const Lowpass: Filter = {
     info: "filters.lowpass.info",
     settingsModalTitle: "filters.lowpass.settings.title",
     settingsForm: [
-      {
-        settingId: "labelInfo",
-        settingTitle: "filters.lowpass.settings.label",
-        settingType: SettingFormTypeEnum.SimpleLabel
-      },
-      {
-        settingId: "lowFrequency",
-        settingTitle: "filters.lowpass.settings.lowFrequency",
-        settingType: SettingFormTypeEnum.NumberField
-      }
+        {
+            settingId: "labelInfo",
+            settingTitle: "filters.lowpass.settings.label",
+            settingType: SettingFormTypeEnum.SimpleLabel
+        },
+        {
+            settingId: "lowFrequency",
+            settingTitle: "filters.lowpass.settings.lowFrequency",
+            settingType: SettingFormTypeEnum.NumberField
+        }
     ]
-  };
+};

@@ -3,7 +3,7 @@ import Constants from "../model/Constants";
 
 export default class BitCrusherFilter extends AbstractAudioFilter {
 
-    getNode(context: BaseAudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext) {
         const lpf1 = context.createBiquadFilter();
         lpf1.type = "lowpass";
         lpf1.frequency.value = 2000.0;
@@ -38,6 +38,7 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
         return {};
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async setSetting(settingId: string, value: string) {
         throw new Error("Method not implemented.");
     }

@@ -3,6 +3,7 @@ import { createScheduledSoundTouchNode } from "@eliastik/soundtouchjs-audio-work
 import Constants from "../model/Constants";
 import AbstractAudioFilterWorklet from "../model/AbstractAudioFilterWorklet";
 import AudioFilterEntrypointInterface from "../model/AudioFilterEntrypointInterface";
+import { AudioFilterNodes } from "../model/AudioNodes";
 
 export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet implements AudioFilterEntrypointInterface {
 
@@ -37,11 +38,12 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
                 resolve({
                     input: this.currentPitchShifter,
                     output: this.currentPitchShifter
-                })
+                });
             };
         });
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getNode(context: BaseAudioContext): AudioFilterNodes {
         throw new Error("Method not implemented.");
     }
@@ -87,14 +89,14 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         const valueFloat = parseFloat(value);
 
         switch(settingId) {
-            case "speedAudio":
-                this.speedAudio = valueFloat;
-                break;
-            case "frequencyAudio":
-                this.frequencyAudio = valueFloat;
-                break;
-            default:
-                break;
+        case "speedAudio":
+            this.speedAudio = valueFloat;
+            break;
+        case "frequencyAudio":
+            this.frequencyAudio = valueFloat;
+            break;
+        default:
+            break;
         }
 
         this.updateState();

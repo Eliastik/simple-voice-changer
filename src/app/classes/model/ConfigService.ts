@@ -11,4 +11,4 @@ export interface ConfigService {
      * @param value The config value
      */
     setConfig(key: string, value: string): void;
-}
+};

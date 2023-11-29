@@ -1,4 +1,3 @@
-import SettingForm from "./SettingForm";
 import SettingFormDynamicLabel from "./SettingFormDynamicLabel";
 import SettingFormDynamicLink from "./SettingFormDynamicLink";
 import SettingFormNumberField from "./SettingFormNumberField";

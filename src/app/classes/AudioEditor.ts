@@ -123,7 +123,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.bufferFetcherService?.fetchAllBuffers(audioBuffersToFetch).then(() => {
             this.downloadingInitialData = false;
             this.eventEmitter?.emit(EventType.LOADED_BUFFERS);
-        }).catch(e => {
+        }).catch(() => {
             this.eventEmitter?.emit(EventType.LOADING_BUFFERS_ERROR);
         });
     }

@@ -19,7 +19,7 @@ const getStringFromTemplate = (data: any, str?: string) =>{
     }
     
     return "";
-}
+};
 
 const FilterSettingsForm = ({
     filterId,
@@ -74,8 +74,8 @@ const FilterSettingsForm = ({
                                             {setting.startIcon && <span>{setting.startIcon}</span>}
                                             <span>
                                                 <a href={setting.linkValue}
-                                                target="_blank"
-                                                className="link link-info link-hover">
+                                                    target="_blank"
+                                                    className="link link-info link-hover">
                                                     {t(setting.labelValue!)}
                                                 </a>
                                             </span>
@@ -86,8 +86,8 @@ const FilterSettingsForm = ({
                                             {setting.startIcon && <span>{setting.startIcon}</span>}
                                             <span>
                                                 <a href={getStringFromTemplate(currentSettings, setting.linkValue)}
-                                                target="_blank"
-                                                className="link link-info link-hover">
+                                                    target="_blank"
+                                                    className="link link-info link-hover">
                                                     {getStringFromTemplate(currentSettings, t(setting.labelValue!))}
                                                 </a>
                                             </span>
@@ -136,7 +136,7 @@ const FilterSettingsForm = ({
                                                     const currentSettingValue = setting.selectValues.find(val => val.value === e.target.value);
     
                                                     if(currentSettingValue) {
-                                                        additionalData = currentSettingValue.additionalData
+                                                        additionalData = currentSettingValue.additionalData;
                                                     }
                                                 }
 
@@ -147,16 +147,16 @@ const FilterSettingsForm = ({
 
                                                 setCurrentSettings(newSettings);
                                             }}>
-                                                {
-                                                    setting.selectValues && setting.selectValues.map((option => {
-                                                        return (
-                                                            <option value={option.value} key={option.name}>
-                                                                {t(option.name)}
-                                                            </option>
-                                                        );
-                                                    }))
-                                                }
-                                            </select>
+                                            {
+                                                setting.selectValues && setting.selectValues.map((option => {
+                                                    return (
+                                                        <option value={option.value} key={option.name}>
+                                                            {t(option.name)}
+                                                        </option>
+                                                    );
+                                                }))
+                                            }
+                                        </select>
                                     )}
                                 </div>
                             </div>
@@ -176,7 +176,7 @@ const FilterSettingsForm = ({
                 </div>
             </div>
         </>
-    )
+    );
 };
 
 export default FilterSettingsForm;

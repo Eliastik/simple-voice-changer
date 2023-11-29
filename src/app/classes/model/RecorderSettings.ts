@@ -4,4 +4,4 @@ export interface RecorderSettings {
     deviceList: MediaDeviceInfo[],
     constraints: AudioConstraint,
     audioFeedback: boolean
-}
+};

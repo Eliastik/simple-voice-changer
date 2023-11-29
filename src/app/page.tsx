@@ -5,23 +5,23 @@ import MainComponent from "./components/MainComponent";
 import { useAudioEditor } from "./context/AudioEditorContext";
 
 const Home = () => {
-  const { pauseAudioEditor } = useAudioEditor();
+    const { pauseAudioEditor } = useAudioEditor();
 
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      pauseAudioEditor();
-      event.preventDefault();
-      event.returnValue = '';
-    };
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            pauseAudioEditor();
+            event.preventDefault();
+            event.returnValue = "";
+        };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [pauseAudioEditor]);
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [pauseAudioEditor]);
 
-  return <MainComponent></MainComponent>
+    return <MainComponent></MainComponent>;
 };
 
 export default Home;

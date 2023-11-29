@@ -68,7 +68,7 @@ const AudioPlayer = () => {
                 </div>
             </div>
         </>
-    )
+    );
 };
 
 export default AudioPlayer;

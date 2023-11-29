@@ -8,7 +8,7 @@ import "./i18n";
 import PWA from "./pwa";
 import Constants from "./model/Constants";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 const LayoutChild = ({
     children,
@@ -31,7 +31,7 @@ const LayoutChild = ({
                 <PWA></PWA>
             </body>
         </html>
-    )
+    );
 };
 
 export default LayoutChild;

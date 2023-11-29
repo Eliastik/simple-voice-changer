@@ -19,7 +19,7 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
         await audioContext.audioWorklet.addModule(Constants.WORKLET_PATHS.BITCRUSHER);
     }
 
-    getNode(context: BaseAudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext) {
         this.currentWorkletNode = new AudioWorkletNode(context, "bitcrusher-processor");
         this.applyCurrentSettingsToWorklet();
 
@@ -52,12 +52,12 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
         }
 
         switch (settingId) {
-            case "bits":
-                this.bits = parseInt(value);
-                break;
-            case "normFreq":
-                this.normFreq = parseFloat(value);
-                break;
+        case "bits":
+            this.bits = parseInt(value);
+            break;
+        case "normFreq":
+            this.normFreq = parseFloat(value);
+            break;
         }
 
         this.applyCurrentSettingsToWorklet();

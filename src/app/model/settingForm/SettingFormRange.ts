@@ -9,4 +9,4 @@ export default interface SettingFormRange extends SettingForm {
     maxValueLabel?: string
     displayCurrentValue?: boolean,
     step?: number
-}
+};

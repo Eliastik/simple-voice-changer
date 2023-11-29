@@ -19,4 +19,4 @@ export enum EventType {
     RECORDER_PAUSED = "recorderPaused",
     RECORDER_RESETED = "recorderReseted",
     RECORDER_COUNT_UPDATE = "recorderCountUpdate"
-}
+};

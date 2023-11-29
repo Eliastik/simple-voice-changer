@@ -9,7 +9,7 @@ export default class LowPassFilter extends AbstractAudioFilter {
         this.lowFrequency = lowFrequency;
     }
     
-    getNode(context: BaseAudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext) {
         const lowPassFilter = context.createBiquadFilter();
         lowPassFilter.type = "lowpass";
         lowPassFilter.frequency.value = this.lowFrequency;
@@ -40,9 +40,9 @@ export default class LowPassFilter extends AbstractAudioFilter {
         }
         
         switch (settingId) {
-            case "lowFrequency":
-                this.lowFrequency = parseInt(value);
-                break;
+        case "lowFrequency":
+            this.lowFrequency = parseInt(value);
+            break;
         }
     }
 }

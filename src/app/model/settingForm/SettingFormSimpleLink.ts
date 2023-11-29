@@ -5,4 +5,4 @@ export default interface SettingFormSimpleLink extends SettingForm {
     settingType: SettingFormTypeEnum.SimpleLink
     labelValue?: string
     linkValue?: string
-}
+};

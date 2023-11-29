@@ -37,7 +37,7 @@ const FilterButton = ({
             <FilterInfoDialog filter={filter}></FilterInfoDialog>
             {filter.settingsForm && <FilterSettingsDialog filter={filter}></FilterSettingsDialog>}
         </>
-    )
+    );
 };
 
 export default FilterButton;

@@ -11,7 +11,7 @@ export default class EchoFilter extends AbstractAudioFilter {
         this.gain = gain;
     }
 
-    getNode(context: BaseAudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext) {
         const delayNode = context.createDelay(179);
         delayNode.delayTime.value = this.delay;
 
@@ -48,12 +48,12 @@ export default class EchoFilter extends AbstractAudioFilter {
         }
         
         switch(settingId) {
-            case "delay":
-                this.delay = parseFloat(value);
-                break;
-            case "gain":
-                this.gain = parseFloat(value);
-                break;
+        case "delay":
+            this.delay = parseFloat(value);
+            break;
+        case "gain":
+            this.gain = parseFloat(value);
+            break;
         }
     }
 }

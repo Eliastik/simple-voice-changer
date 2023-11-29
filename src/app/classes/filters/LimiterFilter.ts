@@ -26,7 +26,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
         await audioContext.audioWorklet.addModule(Constants.WORKLET_PATHS.LIMITER);
     }
 
-    getNode(context: BaseAudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext) {
         this.sampleRate = context.sampleRate;
         
         if(this.currentWorkletNode && context != this.currentWorkletNode.context) {
@@ -74,27 +74,27 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
         }
         
         switch (settingId) {
-            case "preGain":
-                this.preGain = parseFloat(value);
-                break;
-            case "postGain":
-                this.postGain = parseFloat(value);
-                break;
-            case "attackTime":
-                this.attackTime = parseFloat(value);
-                break;
-            case "releaseTime":
-                this.releaseTime = parseFloat(value);
-                break;
-            case "threshold":
-                this.threshold = parseFloat(value);
-                break;
-            case "lookAheadTime":
-                this.lookAheadTime = parseFloat(value);
-                break;
-            case "sampleRate":
-                this.sampleRate = parseFloat(value);
-                break;
+        case "preGain":
+            this.preGain = parseFloat(value);
+            break;
+        case "postGain":
+            this.postGain = parseFloat(value);
+            break;
+        case "attackTime":
+            this.attackTime = parseFloat(value);
+            break;
+        case "releaseTime":
+            this.releaseTime = parseFloat(value);
+            break;
+        case "threshold":
+            this.threshold = parseFloat(value);
+            break;
+        case "lookAheadTime":
+            this.lookAheadTime = parseFloat(value);
+            break;
+        case "sampleRate":
+            this.sampleRate = parseFloat(value);
+            break;
         }
 
         this.applyCurrentSettingsToWorklet();

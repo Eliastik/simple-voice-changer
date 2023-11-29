@@ -1,4 +1,5 @@
 import AbstractAudioElement from "./AbstractAudioElement";
+import { AudioFilterNodes } from "./AudioNodes";
 
 export default abstract class AbstractAudioFilter extends AbstractAudioElement {
     private defaultSettings: any;

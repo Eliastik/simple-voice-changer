@@ -3,4 +3,4 @@ export interface UpdateData {
     version: string,
     date: string,
     url: string
-}
+};

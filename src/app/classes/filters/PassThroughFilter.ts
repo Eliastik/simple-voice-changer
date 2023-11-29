@@ -36,5 +36,6 @@ export default class PassThroughFilter extends AbstractAudioFilter {
         return true;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async setSetting(settingId: string, value: string) { }
 }

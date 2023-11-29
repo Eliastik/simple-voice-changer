@@ -4,4 +4,4 @@ export interface ReverbEnvironment {
     size: number,
     addDuration: number,
     link: string
-}
+};

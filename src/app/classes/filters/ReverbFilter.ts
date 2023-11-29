@@ -11,9 +11,12 @@ export default class ReverbFilter extends AbstractAudioFilter {
         link: "http://www.cksde.com/p_6_250.htm"
     };
 
-    getNode(context: BaseAudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext) {
         const convolver = context.createConvolver();
-        convolver.buffer = this.bufferFetcherService?.getAudioBuffer(this.reverbEnvironment.url)!;
+
+        if(this.bufferFetcherService) {
+            convolver.buffer = this.bufferFetcherService.getAudioBuffer(this.reverbEnvironment.url)!;
+        }
 
         return {
             input: convolver,
@@ -62,7 +65,7 @@ export default class ReverbFilter extends AbstractAudioFilter {
                     addDuration: value.additionalData.addDuration,
                     link: value.additionalData.link
                 };
-            } catch(e) { }
+            } catch(e) { /* empty */ }
         }
     }
 }

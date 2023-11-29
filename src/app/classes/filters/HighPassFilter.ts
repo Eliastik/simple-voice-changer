@@ -9,7 +9,7 @@ export default class HighPassFilter extends AbstractAudioFilter {
         this.highFrequency = highFrequency;
     }
 
-    getNode(context: BaseAudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext) {
         const highPassFilter = context.createBiquadFilter();
         highPassFilter.type = "highpass";
         highPassFilter.frequency.value = this.highFrequency;
@@ -40,9 +40,9 @@ export default class HighPassFilter extends AbstractAudioFilter {
         }
         
         switch(settingId) {
-            case "highFrequency":
-                this.highFrequency = parseInt(value);
-                break;
+        case "highFrequency":
+            this.highFrequency = parseInt(value);
+            break;
         }
     }
 }

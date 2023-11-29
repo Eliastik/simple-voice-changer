@@ -4,4 +4,4 @@ export default interface AudioConstraint {
     autoGainControl?: boolean,
     deviceId?: string,
     groupId?: string
-}
+};

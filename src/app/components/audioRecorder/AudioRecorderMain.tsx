@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import RecorderConfigDialog from "../dialogs/RecorderConfigDialog";
 
-const AudioRecorderMain = ({ }) => {
+const AudioRecorderMain = () => {
     const { pauseRecorderAudio, audioRecording, recordAudio, stopRecordAudio, recorderTime, recorderDisplayTime } = useAudioRecorder();
     const { t } = useTranslation();
 
@@ -50,7 +50,7 @@ const AudioRecorderMain = ({ }) => {
             </div>
             <RecorderConfigDialog></RecorderConfigDialog>
         </>
-    )
+    );
 };
 
 export default AudioRecorderMain;

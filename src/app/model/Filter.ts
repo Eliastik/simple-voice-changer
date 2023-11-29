@@ -9,4 +9,4 @@ export default interface Filter {
     settingsModalTitle?: string,
     firstColumnStyle?: string,
     secondColumStyle?: string
-}
+};

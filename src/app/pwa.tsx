@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect } from "react";
 import Constants from "./model/Constants";
@@ -22,5 +22,5 @@ export default function PWA() {
 
     return (
         <></>
-    )
+    );
 };

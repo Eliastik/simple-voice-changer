@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*
  * Copyright (c) 2012 The Chromium Authors. All rights reserved.
  *

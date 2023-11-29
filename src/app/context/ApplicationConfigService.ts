@@ -62,7 +62,7 @@ export default class ApplicationConfigService implements ConfigService {
 
     /** Get current theme from OS (dark/light) */
     private getUserThemePreference(): string {
-        if (typeof window !== "undefined" && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
             return "dark";
         }
 
@@ -73,7 +73,7 @@ export default class ApplicationConfigService implements ConfigService {
     private getUserLanguage() {
         const found = [];
 
-        if (typeof navigator !== 'undefined') {
+        if (typeof navigator !== "undefined") {
             if (navigator.languages) {
                 for (let i = 0; i < navigator.languages.length; i++) {
                     found.push(navigator.languages[i]);

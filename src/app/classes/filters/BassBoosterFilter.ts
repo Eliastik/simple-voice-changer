@@ -15,7 +15,7 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
         this.dbReduce = dbReduce;
     }
 
-    getNode(context: BaseAudioContext): AudioFilterNodes {
+    getNode(context: BaseAudioContext) {
         const bassBoostFilter = context.createBiquadFilter();
         bassBoostFilter.type = "lowshelf";
         bassBoostFilter.frequency.value = this.frequencyBooster;
@@ -41,7 +41,7 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
         return Constants.FILTERS_NAMES.BASS_BOOST;
     }
 
-    getSettings(): any {
+    getSettings() {
         return {
             frequencyBooster: this.frequencyBooster,
             frequencyReduce: this.frequencyReduce,
@@ -56,18 +56,18 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
         }
 
         switch(settingId) {
-            case "frequencyBooster":
-                this.frequencyBooster = parseInt(value);
-                break;
-            case "frequencyReduce":
-                this.frequencyReduce = parseInt(value);
-                break;
-            case "dbBooster":
-                this.dbBooster = parseInt(value);
-                break;
-            case "dbReduce":
-                this.dbReduce = parseInt(value);
-                break;
+        case "frequencyBooster":
+            this.frequencyBooster = parseInt(value);
+            break;
+        case "frequencyReduce":
+            this.frequencyReduce = parseInt(value);
+            break;
+        case "dbBooster":
+            this.dbBooster = parseInt(value);
+            break;
+        case "dbReduce":
+            this.dbReduce = parseInt(value);
+            break;
         }
     }
 }

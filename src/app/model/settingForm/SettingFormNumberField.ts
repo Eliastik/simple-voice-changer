@@ -6,4 +6,4 @@ export default interface SettingFormNumberField extends SettingForm {
     minValue?: number,
     maxValue?: number,
     step?: number
-}
+};

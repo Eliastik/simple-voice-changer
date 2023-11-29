@@ -5,7 +5,7 @@ import utilFunctions from "./utils/Functions";
 export default class BufferFetcherService {
 
     private context: AudioContext;
-    private buffers: Map<string, AudioBuffer> = new Map<string, AudioBuffer>()
+    private buffers: Map<string, AudioBuffer> = new Map<string, AudioBuffer>();
     private bufferErrors: string[] = [];
     private eventEmitter: EventEmitter | null;
 
