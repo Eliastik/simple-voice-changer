@@ -24,6 +24,7 @@ import Constants from "./model/Constants";
 //@ts-ignore
 import { Recorder, getRecorderWorker } from "recorderjs";
 import AbstractAudioFilterWorklet from "./model/AbstractAudioFilterWorklet";
+import { AudioFilterNodes } from "./model/AudioNodes";
 
 export default class AudioEditor extends AbstractAudioElement {
 
