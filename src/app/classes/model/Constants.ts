@@ -24,7 +24,11 @@ const Constants = {
         BITCRUSHER: "worklets/BitCrusher.worklet.js",
         LIMITER: "worklets/Limiter.worklet.js",
         SOUNDTOUCH: "worklets/scheduled-soundtouch-worklet.js"
-    }
+    },
+    // Enable or disable the use of Audio Worklet version of Soundtouch
+    // If disabled, the ScriptProcessorNode version is used
+    ENABLE_SOUNDTOUCH_AUDIO_WORKLET: false,
+    SOUNDTOUCH_PITCH_SHIFTER_BUFFER_SIZE: 16384
 };
 
 export default Constants;

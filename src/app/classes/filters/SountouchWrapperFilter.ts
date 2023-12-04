@@ -1,5 +1,7 @@
 //@ts-ignore
 import { createScheduledSoundTouchNode } from "@eliastik/soundtouchjs-audio-worklet";
+//@ts-ignore
+import { PitchShifter } from "soundtouchjs";
 import Constants from "../model/Constants";
 import AbstractAudioFilterWorklet from "../model/AbstractAudioFilterWorklet";
 import AudioFilterEntrypointInterface from "../model/AudioFilterEntrypointInterface";
@@ -10,6 +12,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
     private speedAudio = 1;
     private frequencyAudio = 1;
     private currentSpeedAudio = 1;
+    private currentPitchShifterWorklet: any;
     private currentPitchShifter: any;
 
     constructor() {
@@ -24,22 +27,36 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
 
     async getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer): Promise<AudioFilterNodes> {
         return new Promise(resolve => {
-            if(this.currentPitchShifter) {
-                this.currentPitchShifter.stop();
-                this.currentPitchShifter.disconnect();
-            }
-    
-            this.currentPitchShifter = createScheduledSoundTouchNode(context, buffer);
-    
-            this.currentPitchShifter.onInitialized = () => {
-                this.currentPitchShifter.start();
+            if(Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET) {
+                if(this.currentPitchShifterWorklet) {
+                    this.currentPitchShifterWorklet.stop();
+                    this.currentPitchShifterWorklet.disconnect();
+                }
+            
+                this.currentPitchShifterWorklet = createScheduledSoundTouchNode(context, buffer);
+            
+                this.currentPitchShifterWorklet.onInitialized = () => {
+                    this.currentPitchShifterWorklet.start();
+                    this.updateState();
+        
+                    resolve({
+                        input: this.currentPitchShifterWorklet,
+                        output: this.currentPitchShifterWorklet
+                    });
+                };
+            } else {
+                if(this.currentPitchShifter) {
+                    this.currentPitchShifter.disconnect();
+                }
+        
+                this.currentPitchShifter = new PitchShifter(context, buffer, Constants.SOUNDTOUCH_PITCH_SHIFTER_BUFFER_SIZE);
                 this.updateState();
-
+        
                 resolve({
                     input: this.currentPitchShifter,
                     output: this.currentPitchShifter
                 });
-            };
+            }
         });
     }
     
@@ -63,20 +80,30 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         };
     }
 
+    private getCurrentPitchShifter() {
+        if(Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET) {
+            return this.currentPitchShifterWorklet;
+        }
+
+        return this.currentPitchShifter;
+    }
+
     updateState(): void {
-        if(this.currentPitchShifter) {
+        const pitchShifter = this.getCurrentPitchShifter();
+
+        if(pitchShifter) {
             if(this.isEnabled()) {
-                this.currentPitchShifter.tempo = this.speedAudio;
+                pitchShifter.tempo = this.speedAudio;
                 this.currentSpeedAudio = this.speedAudio;
             } else {
-                this.currentPitchShifter.tempo = 1;
+                pitchShifter.tempo = 1;
                 this.currentSpeedAudio = 1;
             }
     
             if(this.isEnabled()) {
-                this.currentPitchShifter.pitch = this.frequencyAudio;
+                pitchShifter.pitch = this.frequencyAudio;
             } else {
-                this.currentPitchShifter.pitch = 1;
+                pitchShifter.pitch = 1;
             }
         }
     }

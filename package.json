@@ -17,27 +17,28 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^13.5.0",
     "recorderjs": "github:Eliastik/Recorderjs#37dfc2c",
-    "semver": "^7.5.4"
+    "semver": "^7.5.4",
+    "soundtouchjs": "^0.1.30"
   },
   "devDependencies": {
     "@types/audioworklet": "^0.0.50",
     "@types/lodash": "^4.14.202",
-    "@types/node": "^20.10.1",
-    "@types/react": "^18.2.39",
+    "@types/node": "^20.10.3",
+    "@types/react": "^18.2.42",
     "@types/react-dom": "^18.2.17",
     "@types/semver": "^7.5.6",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
     "autoprefixer": "latest",
     "copy-webpack-plugin": "^11.0.0",
     "daisyui": "^3.9.4",
     "dotenv": "^16.3.1",
-    "eslint": "^8.54.0",
+    "eslint": "^8.55.0",
     "eslint-config-next": "^13.5.6",
     "eslint-plugin-react": "^7.33.2",
     "next-pwa": "^5.6.0",
-    "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.5",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
     "typescript": "^5.3.2"
   }
 }
