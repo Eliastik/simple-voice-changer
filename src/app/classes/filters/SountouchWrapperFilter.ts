@@ -123,7 +123,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
                 this.currentPitchShifterWorklet.disconnect();
             }
 
-            await this.initializeWorklet(offlineContext);
+            await offlineContext.audioWorklet.addModule(Constants.WORKLET_PATHS.SOUNDTOUCH);
     
             const bufferSource = offlineContext.createBufferSource();
             bufferSource.buffer = buffer;
@@ -163,6 +163,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             });
         } catch(e) {
             // Fallback to script processor node
+            console.error(e);
             return this.renderWithScriptProcessorNode(buffer, context);
         }
     }

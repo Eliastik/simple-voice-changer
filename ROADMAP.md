@@ -11,6 +11,7 @@
 * [x] - Migrate to Audio Worklets version for Soundtouch
 * [x] - Display audio render errors
 * [x] - Fix building of audio worklets (imports)
+* [x] - Bundle SoundtouchWorkletProcessor
 * [ ] - Limiter worklet: Regression with look ahead
 
 ### 2.1
@@ -31,6 +32,7 @@
 ## Would be good but not important
 
 * [ ] - Enhance limiter
+* [ ] - Fallback from Audio Worklets to ScriptProcessorNode for Limiter/Bitcrusher if there is an error loading worklet file
 * [ ] - Filter "Autotuner"?
 * [ ] - Save into localstorage filters settings?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?

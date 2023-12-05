@@ -1,14 +1,16 @@
+import { SoundtouchWorkletOptionsWrapper } from "../model/SoundtouchWorkletOptionsWrapper";
+
 let soundtouchWrapperFilterWorkletNodeClass: any;
 
 if(typeof(window) !== "undefined") {
     soundtouchWrapperFilterWorkletNodeClass = class SoundtouchWrapperFilterWorkletNode extends AudioWorkletNode {
 
         name: string = "";
-        running = false;
-        _tempo = 1;
-        _pitch = 1;
+        private running = false;
+        private _tempo = 1;
+        private _pitch = 1;
 
-        constructor(context: BaseAudioContext, workletName: string, options: any, pitch: number, tempo: number) {
+        constructor(context: BaseAudioContext, workletName: string, options: SoundtouchWorkletOptionsWrapper, pitch: number, tempo: number) {
             super(context, workletName, options);
 
             this.name = this.constructor.name;

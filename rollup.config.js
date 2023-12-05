@@ -43,6 +43,25 @@ const config = [
             cleanup(),
         ],
     },
+    {
+        input: path.join(__dirname, "src/app/classes/filters/worklets/Soundtouch.worklet.ts"),
+        output: [
+            {
+                file: "public/worklets/Soundtouch.worklet.js",
+                format: "esm",
+                sourcemap: false,
+                exports: "named",
+            },
+        ],
+        plugins: [
+            resolve({
+                browser: true,
+            }),
+            typescript(),
+            terser(),
+            cleanup(),
+        ],
+    },
 ];
 
 export default config;
