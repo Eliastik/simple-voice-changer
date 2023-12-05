@@ -1,4 +1,4 @@
-let soundtouchWrapperFilterWorkletNodeClass;
+let soundtouchWrapperFilterWorkletNodeClass: any;
 
 if(typeof(window) !== "undefined") {
     soundtouchWrapperFilterWorkletNodeClass = class SoundtouchWrapperFilterWorkletNode extends AudioWorkletNode {
@@ -84,8 +84,6 @@ if(typeof(window) !== "undefined") {
             }
         }
     };
-} else {
-    soundtouchWrapperFilterWorkletNodeClass = class SoundtouchWrapperFilterWorkletNode { };
 }
 
 export default soundtouchWrapperFilterWorkletNodeClass;

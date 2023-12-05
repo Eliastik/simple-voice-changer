@@ -29,48 +29,9 @@ const withPWA = require("next-pwa")({
     publicExcludes: ["!static/sounds/impulse_response_*"]
 });
 
-const generateWorkletCopyConfig = (workletFileName) => ({
-    from: `src/app/classes/filters/worklets/${workletFileName}.worklet.ts`,
-    to: `../public/worklets/${workletFileName}.worklet.js`,
-    context: "./",
-    transform(content, from) {
-        const compiled = typescript.transpileModule(content.toString(), {
-            compilerOptions: {
-                target: "es6",
-                module: "es6",
-            },
-        });
-
-        return compiled.outputText;
-    },
-});
-
 const nextConfig = withPWA({
     output: "export",
-    basePath: process.env.BASE_PATH,
-    webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-        config.module.rules.push({
-            test: /\.worklet.ts$/,
-            loader: "ts-loader",
-            exclude: /node_modules/,
-        });
-
-        // List of worklets to build
-        const worklets = [
-            "BitCrusher",
-            "Limiter"
-        ];
-
-        config.plugins.push(
-            new CopyPlugin({
-                patterns: [
-                    ...worklets.map((worklet) => generateWorkletCopyConfig(worklet))
-                ],
-            })
-        );
-
-        return config;
-    },
+    basePath: process.env.BASE_PATH
 });
 
 module.exports = nextConfig;

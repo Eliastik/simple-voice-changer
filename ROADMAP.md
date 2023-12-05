@@ -10,8 +10,8 @@
 * [x] - Fix OfflineAudioContext mode in Firefox (with Audio Worklets)
 * [x] - Migrate to Audio Worklets version for Soundtouch
 * [x] - Display audio render errors
+* [x] - Fix building of audio worklets (imports)
 * [ ] - Limiter worklet: Regression with look ahead
-* [ ] - Fix building of audio worklets (imports)
 
 ### 2.1
 * [ ] - Audio Worklet fixes :
