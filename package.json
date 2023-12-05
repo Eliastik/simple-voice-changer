@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@eliastik/soundtouchjs-audio-worklet": "github:Eliastik/soundtouchjs-audio-worklet#391030f",
     "i18next": "^23.7.7",
     "lodash": "^4.17.21",
     "next": "^13.5.6",

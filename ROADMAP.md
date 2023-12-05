@@ -3,18 +3,27 @@
 
 ## Principal
 
+### 2.0.1
+
 * [x] - Migrate to Audio Worklets (Limiter/Bitcrusher)
 * [x] - Disable microphone button from the homepage if not available (not secure context)
-* [ ] - Fix OfflineAudioContext mode in Firefox
+* [x] - Fix OfflineAudioContext mode in Firefox (with Audio Worklets)
 * [x] - Migrate to Audio Worklets version for Soundtouch
-    * [ ] - Fix performance when running multiple render (clean old worklets)
-    * [ ] - Bug with Firefox - No sound (Audio Worklet)
-    * [ ] - Use SharedArrayBuffer if possible
-* [ ] - Advanced settings for the app: sample rate, buffer size, audio channels number
+* [ ] - Display audio render errors
+
+### 2.1
+* [ ] - Audio Worklet fixes :
+    * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
+    * [ ] - Use Audio Worklet in compatibility/direct mode
+* [ ] - Advanced settings for the app: sample rate, buffer size, audio channels number, disable/enable audio worklet
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Convert Vocoder to standard filter
-* [ ] - Transform the "classes" folder into a library (new Github repository)
 * [ ] - Edit volume/gain
+
+### Other
+* [ ] - Transform the "classes" folder into a library (new Github repository)
+
+### Future versions
 * [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible) + display processing progress
 
 ## Would be good but not important

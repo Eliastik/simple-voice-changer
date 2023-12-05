@@ -54,23 +54,29 @@ export default class AudioEditor extends AbstractAudioElement {
         this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
 
         // Callback called just before starting audio player
-        this.bufferPlayer.onBeforePlaying(async () => {
-            if (this.isCompatibilityModeEnabled() && this.currentContext) {
-                await this.setupOutput(this.currentContext);
-            }
-        });
+        this.setup(audioBuffersToFetch);
+    }
 
-        // Callback called when playing is finished
-        this.bufferPlayer.on(EventType.PLAYING_FINISHED, () => {
-            if (this.bufferPlayer?.loop) {
-                this.bufferPlayer.start();
-            }
-        });
+    private setup(audioBuffersToFetch: string[] | undefined) {
+        if(this.bufferPlayer) {
+            this.bufferPlayer.onBeforePlaying(async () => {
+                if (this.isCompatibilityModeEnabled() && this.currentContext) {
+                    await this.setupOutput(this.currentContext);
+                }
+            });
+    
+            // Callback called when playing is finished
+            this.bufferPlayer.on(EventType.PLAYING_FINISHED, () => {
+                if (this.bufferPlayer?.loop) {
+                    this.bufferPlayer.start();
+                }
+            });
+        }
 
         this.setupFilters();
         this.setupRenderers();
 
-        if(audioBuffersToFetch) {
+        if (audioBuffersToFetch) {
             this.fetchBuffers(audioBuffersToFetch);
         }
 
@@ -135,15 +141,19 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param buffer  The Audio Buffer
      * @param keepCurrentInputOutput Keep current first input/output nodes?
      */
-    private async connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepCurrentInputOutput: boolean) {
+    private async connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepCurrentInputOutput: boolean, isCompatibilityMode: boolean) {
         if(!this.entrypointFilter) {
             return;
         }
 
-        const entrypointNodes = await this.entrypointFilter.getEntrypointNode(context, buffer);
+        let entrypointNode: AudioNode | null = null;
 
-        const entrypointNode = keepCurrentInputOutput && this.currentNodes ? this.currentNodes.input :
-            entrypointNodes.input;
+        if(keepCurrentInputOutput && this.currentNodes) {
+            entrypointNode = this.currentNodes.input;
+        } else {
+            const entrypointNodes = await this.entrypointFilter.getEntrypointNode(context, buffer, !isCompatibilityMode);
+            entrypointNode = entrypointNodes.input;
+        }
 
         const intermediateNodes: AudioFilterNodes[] = [];
         let previousNode: AudioNode | undefined = entrypointNode;
@@ -185,7 +195,7 @@ export default class AudioEditor extends AbstractAudioElement {
     private disconnectOldNodes(keepCurrentOutput: boolean) {
         if (this.currentNodes) {
             this.currentNodes.input.disconnect();
-
+            
             if (!keepCurrentOutput) {
                 this.currentNodes.output.disconnect();
             }
@@ -202,7 +212,7 @@ export default class AudioEditor extends AbstractAudioElement {
     /** Reconnect the nodes if the compatibility/direct mode is enabled */
     private async reconnectNodesIfNeeded() {
         if (this.bufferPlayer?.compatibilityMode && this.currentContext && this.principalBuffer && this.bufferPlayer) {
-            await this.connectNodes(this.currentContext, this.principalBuffer, true);
+            await this.connectNodes(this.currentContext, this.principalBuffer, true, this.bufferPlayer?.compatibilityMode);
 
             const speedAudio = this.entrypointFilter?.getSpeed()!;
             this.bufferPlayer.speedAudio = speedAudio;
@@ -259,7 +269,7 @@ export default class AudioEditor extends AbstractAudioElement {
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
         if (this.renderedBuffer && this.bufferPlayer) {
             await this.initializeWorklets(outputContext);
-            await this.connectNodes(outputContext, this.renderedBuffer, false);
+            await this.connectNodes(outputContext, this.renderedBuffer, false, this.isCompatibilityModeEnabled());
 
             const speedAudio = this.entrypointFilter?.getSpeed()!;
             this.bufferPlayer.speedAudio = speedAudio;
