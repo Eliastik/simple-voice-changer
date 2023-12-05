@@ -68,6 +68,10 @@
             "errorAuthorizationAudioRecorderDialog": {
                 "title": "Authorization error",
                 "info": "You have denied access to the device's microphone, so this feature cannot be used. Reset your browser's permissions for this application, then try again"
+            },
+            "errorProcessingAudio": {
+                "title": "Error processing audio",
+                "info": "An error has occurred during audio processing. Please try again."
             }
         },
         "filters": {

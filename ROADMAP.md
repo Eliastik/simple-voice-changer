@@ -9,7 +9,9 @@
 * [x] - Disable microphone button from the homepage if not available (not secure context)
 * [x] - Fix OfflineAudioContext mode in Firefox (with Audio Worklets)
 * [x] - Migrate to Audio Worklets version for Soundtouch
-* [ ] - Display audio render errors
+* [x] - Display audio render errors
+* [ ] - Limiter worklet: Regression with look ahead
+* [ ] - Fix building of audio worklets (imports)
 
 ### 2.1
 * [ ] - Audio Worklet fixes :

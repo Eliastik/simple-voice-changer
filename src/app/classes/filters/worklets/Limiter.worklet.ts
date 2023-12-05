@@ -19,44 +19,7 @@
 // Source: https://webaudiotech.com/2016/01/21/should-your-web-audio-app-have-a-limiter/
 // Original code: https://webaudiotech.com/sites/limiter_comparison/limiter.js
 // Additions by Eliastik (eliastiksofts.com): Stereo and multi-channel support, code simplified in one object class (Limiter), converted into AudioWorklet
-class DelayBuffer {
-    private _array: Float32Array = new Float32Array();
-    private n: number = 0;
-    private length: number = 0;
-    private readPointer: number = 0;
-    private writePointer: number = 0;
-
-    constructor(n: number) {
-        this.n = Math.floor(n);
-        this.init();
-    }
-
-    init() {
-        this._array = new Float32Array(2 * this.n);
-        this.length = this._array.length;
-        this.readPointer = 0;
-        this.writePointer = this.n - 1;
-
-        for (let i = 0; i < this.length; i++) {
-            this._array[i] = 0;
-        }
-    }
-
-    read() {
-        const value = this._array[this.readPointer % this.length];
-        this.readPointer++;
-        return value;
-    }
-
-    push(v: number) {
-        this._array[this.writePointer % this.length] = v;
-        this.writePointer++;
-    }
-
-    reset() {
-        this.init();
-    }
-}
+import DelayBuffer from "../../model/DelayBuffer";
 
 class LimiterProcessor extends AudioWorkletProcessor {
     delayBuffer: DelayBuffer[] = [];

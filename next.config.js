@@ -64,10 +64,6 @@ const nextConfig = withPWA({
         config.plugins.push(
             new CopyPlugin({
                 patterns: [
-                    {
-                        from: "node_modules/@eliastik/soundtouchjs-audio-worklet/dist/scheduled-soundtouch-worklet.js",
-                        to: "../public/worklets",
-                    },
                     ...worklets.map((worklet) => generateWorkletCopyConfig(worklet))
                 ],
             })

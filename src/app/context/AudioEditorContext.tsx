@@ -35,6 +35,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     const [audioEditorReady, setAudioEditorReady] = useState(false);
     // State: true when an audio processing is in progress
     const [audioProcessing, setAudioProcessing] = useState(false);
+    // State: true when there is an error processing audio
+    const [errorProcessingAudio, setErrorProcessingAudio] = useState(false);
     // State: object with enabled state for the filters
     const [filterState, setFilterState] = useState({});
     // State: object with all the settings of the filters
@@ -105,9 +107,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
             setLoadingPrincipalBuffer(false);
             setAudioEditorReady(true);
   
-            setAudioProcessing(true);
-            await audioEditorInstance.renderAudio();
-            setAudioProcessing(false);
+            await processAudio();
             setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
         } catch(e) {
             console.error(e);
@@ -121,11 +121,20 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         setFilterState(audioEditorInstance.getFiltersState());
     };
 
-    const validateSettings = async () => {
-        setAudioProcessing(true);
-        await audioEditorInstance.renderAudio();
-        setAudioProcessing(false);
+    const processAudio = async () => {
+        try {
+            setErrorProcessingAudio(false);
+            setAudioProcessing(true);
+            await audioEditorInstance.renderAudio();
+            setAudioProcessing(false);
+        } catch(e) {
+            console.error(e);
+            setAudioProcessing(false);
+            setErrorProcessingAudio(true);
+        }
     };
+
+    const validateSettings = async () => processAudio();
 
     const exitAudioEditor = () => {
         audioEditorInstance.exit();
@@ -149,6 +158,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
 
     const closeErrorLoadingPrincipalBuffer = () => setErrorLoadingPrincipalBuffer(false);
     const closeErrorDownloadingBufferData = () => setErrorDownloadingBufferData(false);
+    const closeErrorProcessingAudio = () => setErrorProcessingAudio(false);
+
     const downloadAudio = async () => {
         setDownloadingAudio(true);
         await audioEditorInstance.saveBuffer();
@@ -174,7 +185,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
             audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, validateSettings,
             exitAudioEditor, filtersSettings, changeFilterSettings, resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer,
             errorDownloadingBufferData, closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, toggleCompatibilityMode,
-            isCompatibilityModeAutoEnabled, pauseAudioEditor
+            isCompatibilityModeAutoEnabled, pauseAudioEditor, errorProcessingAudio, closeErrorProcessingAudio
         }}>
             {children}
         </AudioEditorContext.Provider>

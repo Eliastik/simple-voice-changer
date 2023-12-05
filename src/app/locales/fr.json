@@ -64,6 +64,10 @@
             "errorAuthorizationAudioRecorderDialog": {
                 "title": "Erreur d'autorisation",
                 "info": "Vous avez refusé l'accès au microphone de votre appareil, cette fonctionnalité ne peut donc pas être utilisée. Réinitialisez les autorisations de votre navigateur pour cette application, puis réessayez"
+            },
+            "errorProcessingAudio": {
+                "title": "Erreur lors du traitement audio",
+                "info": "Une erreur est survenue lors du traitement audio. Merci de réessayer."
             }
         },
         "filters": {

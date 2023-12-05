@@ -23,7 +23,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
     }
 
     async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
-        await audioContext.audioWorklet.addModule(Constants.WORKLET_PATHS.SOUNDTOUCH);
+        // Do nothing
     }
 
     async getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer, offline: boolean): Promise<AudioFilterNodes> {
