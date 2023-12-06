@@ -114,16 +114,23 @@ class LimiterProcessor extends AudioWorkletProcessor {
 
             // compute the envelope
             envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], parameters.sampleRate[0]);
+
+            if (parameters.lookAheadTime[0] > 0) {
+                // write signal into buffer and read delayed signal
+                for (let i = 0; i < out.length; i++) {
+                    this.delayBuffer[channel].push(out[i]);
+                }
+            }
         }
 
         for (let channel = 0; channel < inputBuffer.length; channel++) {
             const inp = inputBuffer[channel];
             const out = outputBuffer[channel];
 
+            // If look-ahead is enabled, read delayed signal from buffer
             if (parameters.lookAheadTime[0] > 0) {
                 // write signal into buffer and read delayed signal
                 for (let i = 0; i < out.length; i++) {
-                    this.delayBuffer[channel].push(out[i]);
                     out[i] = this.delayBuffer[channel].read();
                 }
             }

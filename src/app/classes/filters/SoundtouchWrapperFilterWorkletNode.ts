@@ -10,15 +10,29 @@ if(typeof(window) !== "undefined") {
         private _tempo = 1;
         private _pitch = 1;
 
-        constructor(context: BaseAudioContext, workletName: string, options: SoundtouchWorkletOptionsWrapper, pitch: number, tempo: number) {
+        constructor(context: BaseAudioContext, workletName: string, options: SoundtouchWorkletOptionsWrapper) {
             super(context, workletName, options);
-
             this.name = this.constructor.name;
-            this.port.onmessage = this.messageProcessor.bind(this);
             this.running = true;
-            this.tempo = tempo;
-            this.pitch = pitch;
             this.updateInterval = options.processorOptions.updateInterval;
+        }
+
+        async setup(tempo: number, pitch: number): Promise<void> {
+            return new Promise(resolve => {
+                if(this.port) {
+                    this.port.onmessage = (ev: any) => {
+                        if(ev && ev.data && ev.data.status === "OK" && ev.data.args[0] === "setup") {
+                            this.port.onmessage = this.messageProcessor.bind(this);
+                            resolve();
+                        }
+                    };
+    
+                    this.port.postMessage({ command: "setup", args: [tempo, pitch] });
+
+                    this._tempo = tempo;
+                    this._pitch = pitch;
+                }
+            });
         }
 
         set updateInterval(value: number) {

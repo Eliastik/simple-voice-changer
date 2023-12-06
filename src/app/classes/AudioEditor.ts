@@ -58,13 +58,13 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     private setup(audioBuffersToFetch: string[] | undefined) {
-        if(this.bufferPlayer) {
+        if (this.bufferPlayer) {
             this.bufferPlayer.onBeforePlaying(async () => {
                 if (this.isCompatibilityModeEnabled() && this.currentContext) {
                     await this.setupOutput(this.currentContext);
                 }
             });
-    
+
             // Callback called when playing is finished
             this.bufferPlayer.on(EventType.PLAYING_FINISHED, () => {
                 if (this.bufferPlayer?.loop) {
@@ -142,13 +142,13 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param keepCurrentInputOutput Keep current first input/output nodes?
      */
     private async connectNodes(context: BaseAudioContext, buffer: AudioBuffer, keepCurrentInputOutput: boolean, isCompatibilityMode: boolean) {
-        if(!this.entrypointFilter) {
+        if (!this.entrypointFilter) {
             return;
         }
 
         let entrypointNode: AudioNode | null = null;
 
-        if(keepCurrentInputOutput && this.currentNodes) {
+        if (keepCurrentInputOutput && this.currentNodes) {
             entrypointNode = this.currentNodes.input;
         } else {
             const entrypointNodes = await this.entrypointFilter.getEntrypointNode(context, buffer, !isCompatibilityMode);
@@ -195,7 +195,7 @@ export default class AudioEditor extends AbstractAudioElement {
     private disconnectOldNodes(keepCurrentOutput: boolean) {
         if (this.currentNodes) {
             this.currentNodes.input.disconnect();
-            
+
             if (!keepCurrentOutput) {
                 this.currentNodes.output.disconnect();
             }
@@ -211,10 +211,11 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Reconnect the nodes if the compatibility/direct mode is enabled */
     private async reconnectNodesIfNeeded() {
-        if (this.bufferPlayer?.compatibilityMode && this.currentContext && this.principalBuffer && this.bufferPlayer) {
+        if (this.bufferPlayer?.compatibilityMode && this.currentContext &&
+            this.principalBuffer && this.bufferPlayer && this.entrypointFilter) {
             await this.connectNodes(this.currentContext, this.principalBuffer, true, this.bufferPlayer?.compatibilityMode);
 
-            const speedAudio = this.entrypointFilter?.getSpeed()!;
+            const speedAudio = this.entrypointFilter.getSpeed();
             this.bufferPlayer.speedAudio = speedAudio;
             this.bufferPlayer.duration = this.calculateAudioDuration(speedAudio) * speedAudio;
         }
@@ -235,13 +236,16 @@ export default class AudioEditor extends AbstractAudioElement {
      */
     async renderAudio(): Promise<void> {
         if (!this.currentContext) {
-            console.error("AudioContext is not yet available");
-            return;
+            throw "AudioContext is not yet available";
+        }
+
+        if (!this.entrypointFilter) {
+            throw "Entrypoint filter is not available";
         }
 
         this.currentContext.resume();
 
-        const speedAudio = this.entrypointFilter?.getSpeed()!;
+        const speedAudio = this.entrypointFilter.getSpeed();
         const durationAudio = this.calculateAudioDuration(speedAudio);
         const offlineContext = new OfflineAudioContext(2, this.currentContext.sampleRate * durationAudio, this.currentContext.sampleRate);
         const outputContext = this.isCompatibilityModeEnabled() ? this.currentContext : offlineContext;
@@ -271,25 +275,29 @@ export default class AudioEditor extends AbstractAudioElement {
             await this.initializeWorklets(outputContext);
             await this.connectNodes(outputContext, this.renderedBuffer, false, this.isCompatibilityModeEnabled());
 
-            const speedAudio = this.entrypointFilter?.getSpeed()!;
-            this.bufferPlayer.speedAudio = speedAudio;
+            if (this.entrypointFilter) {
+                const speedAudio = this.entrypointFilter.getSpeed();
+                this.bufferPlayer.speedAudio = speedAudio;
+            }
 
-            if (!this.isCompatibilityModeEnabled() && offlineContext) {
-                this.currentNodes!.output.connect(outputContext.destination);
-                this.renderedBuffer = await offlineContext.startRendering();
-                this.bufferPlayer.loadBuffer(this.renderedBuffer);
+            if (!this.isCompatibilityModeEnabled() && offlineContext && this.currentNodes) {
+                this.currentNodes.output.connect(outputContext.destination);
+
+                const renderedBuffer = await offlineContext.startRendering();
 
                 if (!this.isCompatibilityModeChecked()) {
-                    const sum = this.renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
-
-                    this.setCompatibilityModeChecked(true);
+                    const sum = renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
 
                     if (sum == 0) {
+                        this.setCompatibilityModeChecked(true);
                         this.enableCompatibilityMode();
                         this.eventEmitter?.emit(EventType.COMPATIBILITY_MODE_AUTO_ENABLED);
-                        return await this.setupOutput(outputContext);
+                        return await this.setupOutput(this.currentContext!, durationAudio);
                     }
                 }
+
+                this.renderedBuffer = renderedBuffer;
+                this.bufferPlayer.loadBuffer(this.renderedBuffer);
             } else {
                 this.bufferPlayer.setCompatibilityMode(this.currentNodes!.output, durationAudio);
             }
@@ -342,7 +350,7 @@ export default class AudioEditor extends AbstractAudioElement {
     enableCompatibilityMode() {
         this.setCompatibilityModeEnabled(true);
     }
-    
+
     /**
      * Disable the compatibility/direct audio rendering mode
      */
@@ -356,8 +364,8 @@ export default class AudioEditor extends AbstractAudioElement {
      * @returns boolean
      */
     isCompatibilityModeEnabled() {
-        if(this.configService) {
-            return this.configService.getConfig(Constants.COMPATIBILITY_MODE_ENABLED) == "true";
+        if (this.configService) {
+            return this.configService.getConfig(Constants.COMPATIBILITY_MODE_ENABLED) === "true";
         }
 
         return this.compatibilityModeEnabled;
@@ -380,8 +388,8 @@ export default class AudioEditor extends AbstractAudioElement {
      * @returns boolean
      */
     isCompatibilityModeChecked() {
-        if(this.configService) {
-            return this.configService.getConfig(Constants.COMPATIBILITY_MODE_CHECKED) == "true";
+        if (this.configService) {
+            return this.configService.getConfig(Constants.COMPATIBILITY_MODE_CHECKED) === "true";
         }
 
         return this.compatibilityModeChecked;
@@ -400,7 +408,7 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /** Filters settings */
-    
+
     /**
      * Get enabled/disabled state of all filters/renderers
      * @returns The filters state (enabled/disabled)
@@ -414,7 +422,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
         return state;
     }
-    
+
     /**
      * Get the settings of all filters/renderers
      * @returns 

@@ -77,6 +77,15 @@ class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
                 });
                 break;
 
+            case "setup":
+                this.soundtouch.tempo = args[0];
+                this.soundtouch.pitch = args[1];
+                this.port.postMessage({
+                    status: "OK",
+                    args: [command, this.soundtouch.tempo, this.soundtouch.pitch],
+                });
+                break;
+
             case "setUpdateInterval":
                 this.options.updateInterval = args[0];
                 this.port.postMessage({

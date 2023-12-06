@@ -38,10 +38,10 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
                 bufferSource.buffer = buffer;
                 bufferSource.start();
 
-                return Promise.resolve({
+                return {
                     input: bufferSource,
                     output: bufferSource
-                });
+                };
             } else {
                 // If audio worklet is enabled for soundtouch, and if the speed of audio is untouched
                 // Soundtouch Audio Worklet don't support speed editing yet
@@ -61,10 +61,10 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         this.currentPitchShifter = this.getSoundtouchScriptProcessorNode(buffer, context);
         this.updateState();
 
-        return Promise.resolve({
+        return {
             input: this.currentPitchShifter,
             output: this.currentPitchShifter
-        });
+        };
     }
 
     private getSoundtouchScriptProcessorNode(buffer: AudioBuffer, context: BaseAudioContext): AudioNode {
@@ -91,20 +91,16 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         
         this.currentPitchShifter.connect(offlineContext.destination);
 
-        offlineContext.startRendering();
+        const renderedBuffer = await offlineContext.startRendering();
 
-        return new Promise(resolve => {
-            offlineContext.oncomplete = e => {
-                const bufferSource = context.createBufferSource();
-                bufferSource.buffer = e.renderedBuffer;
-                bufferSource.start();
-    
-                resolve({
-                    input: bufferSource,
-                    output: bufferSource
-                });
-            };
-        });
+        const bufferSourceRendered = context.createBufferSource();
+        bufferSourceRendered.buffer = renderedBuffer;
+        bufferSourceRendered.start();
+
+        return {
+            input: bufferSourceRendered,
+            output: bufferSourceRendered
+        };
     }
 
     /**
@@ -119,16 +115,20 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         const offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
 
         try {
+            // Stop current worklet
             if(this.currentPitchShifterWorklet) {
-                this.currentPitchShifterWorklet.disconnect();
+                this.currentPitchShifterWorklet.stop();
             }
 
+            // Setup worklet JS module
             await offlineContext.audioWorklet.addModule(Constants.WORKLET_PATHS.SOUNDTOUCH);
     
+            // Setup an audio buffer source from the audio buffer
             const bufferSource = offlineContext.createBufferSource();
             bufferSource.buffer = buffer;
             bufferSource.start();
     
+            // Create the worklet node
             this.currentPitchShifterWorklet = new SoundtouchWrapperFilterWorkletNode(offlineContext, "soundtouch-worklet", {
                 processorOptions: {
                     bypass: false,
@@ -137,30 +137,26 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
                     updateInterval: 10.0,
                     sampleRate: context.sampleRate
                 },
-            }, this.frequencyAudio, this.speedAudio);
+            });
     
+            // Connect the node for correct rendering
             bufferSource.connect(this.currentPitchShifterWorklet.node);
             this.currentPitchShifterWorklet.node.connect(offlineContext.destination);
-    
-            this.updateState();
-    
-            // TODO Refactor
-            setTimeout(() => {
-                offlineContext.startRendering();
-            }, 1);
-    
-            return new Promise(resolve => {
-                offlineContext.oncomplete = e => {
-                    const bufferSource = context.createBufferSource();
-                    bufferSource.buffer = e.renderedBuffer;
-                    bufferSource.start();
-        
-                    resolve({
-                        input: bufferSource,
-                        output: bufferSource
-                    });
-                };
-            });
+
+            // Setup pitch/speed of Soundtouch
+            await this.currentPitchShifterWorklet.setup(this.speedAudio, this.frequencyAudio);
+            
+            // Start rendering, then when rendering is finished, returns the rendered buffer as a buffer source
+            const renderedBuffer = await offlineContext.startRendering();
+
+            const bufferSourceRendered = context.createBufferSource();
+            bufferSourceRendered.buffer = renderedBuffer;
+            bufferSourceRendered.start();
+
+            return {
+                input: bufferSourceRendered,
+                output: bufferSourceRendered
+            };
         } catch(e) {
             // Fallback to script processor node
             console.error(e);
