@@ -48,4 +48,8 @@ export default class SoundtouchCustomFilter extends SimpleFilter {
     extract(target: any, numFrames = 0) {
         return super.extract(target, numFrames);
     }
+
+    clear() {
+        this.sourceSound = [];
+    }
 };

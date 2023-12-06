@@ -22,14 +22,17 @@
 import DelayBuffer from "../../model/DelayBuffer";
 
 class LimiterProcessor extends AudioWorkletProcessor {
-    delayBuffer: DelayBuffer[] = [];
-    envelopeSample = 0;
+    private delayBuffer: DelayBuffer[] = [];
+    private envelopeSample = 0;
+    private stopped = false;
 
     constructor() {
         super();
         this.port.onmessage = (event) => {
             if(event.data == "reset") {
                 this.reset();
+            } else if(event.data == "stop") {
+                this.stop();
             }
         };
     }
@@ -88,6 +91,8 @@ class LimiterProcessor extends AudioWorkletProcessor {
     }
 
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
+        if(this.stopped) return false;
+
         const inputBuffer = inputs[0];
         const outputBuffer = outputs[0];
         const envelopeData = [];
@@ -159,6 +164,18 @@ class LimiterProcessor extends AudioWorkletProcessor {
         }
 
         this.envelopeSample = 0;
+    }
+
+    stop() {
+        for (let i = 0; i < this.delayBuffer.length; i++) {
+            if (this.delayBuffer[i] != null) {
+                this.delayBuffer[i].clear();
+            }
+        }
+
+        this.delayBuffer = [];
+        this.envelopeSample = 0;
+        this.stopped = true;
     }
 }
 

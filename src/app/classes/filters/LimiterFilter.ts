@@ -29,9 +29,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
     getNode(context: BaseAudioContext) {
         this.sampleRate = context.sampleRate;
         
-        if(this.currentWorkletNode && context != this.currentWorkletNode.context) {
-            this.reset();
-        }
+        this.stop();
 
         this.currentWorkletNode = new AudioWorkletNode(context, "limiter-processor");
         this.applyCurrentSettingsToWorklet();
@@ -45,6 +43,12 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
     reset() {
         if(this.currentWorkletNode) {
             this.currentWorkletNode.port.postMessage("reset");
+        }
+    }
+
+    stop() {
+        if(this.currentWorkletNode) {
+            this.currentWorkletNode.port.postMessage("stop");
         }
     }
 

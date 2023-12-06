@@ -20,6 +20,8 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     }
 
     getNode(context: BaseAudioContext) {
+        this.stop();
+
         this.currentWorkletNode = new AudioWorkletNode(context, "bitcrusher-processor");
         this.applyCurrentSettingsToWorklet();
 
@@ -27,6 +29,12 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
             input: this.currentWorkletNode,
             output: this.currentWorkletNode,
         };
+    }
+
+    stop() {
+        if (this.currentWorkletNode) {
+            this.currentWorkletNode.port.postMessage("stop");
+        }
     }
 
     getOrder(): number {

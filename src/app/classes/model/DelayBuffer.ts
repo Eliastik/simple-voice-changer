@@ -35,4 +35,11 @@ export default class DelayBuffer {
     reset() {
         this.init();
     }
+
+    clear() {
+        this._array = new Float32Array();
+        this.length = 0;
+        this.readPointer = 0;
+        this.writePointer = 0;
+    }
 }

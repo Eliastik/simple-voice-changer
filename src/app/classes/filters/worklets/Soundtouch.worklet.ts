@@ -108,6 +108,13 @@ class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
 
         this.running = false;
 
+        if(this.filter) {
+            this.filter.clear();
+            this.recordedSamples = [];
+            this.inSamples = new Float32Array();
+            this.outSamples = new Float32Array();
+        }
+
         await this.updatePlayingAt();
 
         try {

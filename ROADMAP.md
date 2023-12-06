@@ -13,12 +13,13 @@
 * [x] - Fix building of audio worklets (imports)
 * [x] - Bundle SoundtouchWorkletProcessor
 * [ ] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time
+* [ ] - Option to disable/enable audio worklet
+* [ ] - Audio worklet memory optimizations
 
 ### 2.1
 * [ ] - Audio Worklet fixes :
-    * [ ] - Early audio cutoff fix
+    * [ ] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
-    * [ ] - Bug with lowering frequency
     * [ ] - Use Audio Worklet in compatibility/direct mode
 * [ ] - Advanced settings for the app: sample rate, buffer size, audio channels number, disable/enable audio worklet
 * [ ] - Send custom audio buffer environment for the reverb filter

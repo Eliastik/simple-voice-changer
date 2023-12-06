@@ -1,6 +1,16 @@
 class BitCrusherProcessor extends AudioWorkletProcessor {
-    phaser = 0;
-    last = 0;
+    private stopped = false;
+    private phaser = 0;
+    private last = 0;
+
+    constructor() {
+        super();
+        this.port.onmessage = (event) => {
+            if(event.data == "stop") {
+                this.stop();
+            }
+        };
+    }
 
     static get parameterDescriptors() {
         return [
@@ -10,6 +20,8 @@ class BitCrusherProcessor extends AudioWorkletProcessor {
     }
 
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
+        if(this.stopped) return false;
+        
         const input = inputs[0];
         const output = outputs[0];
 
@@ -30,6 +42,10 @@ class BitCrusherProcessor extends AudioWorkletProcessor {
         }
 
         return true;
+    }
+
+    stop() {
+        this.stopped = true;
     }
 }
 
