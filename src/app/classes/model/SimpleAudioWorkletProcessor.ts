@@ -1,3 +1,6 @@
+/**
+ * This class is the standard AudioWorkletProcessor interface
+ */
 export interface AudioWorkletProcessorInterface {
 
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean;
@@ -11,6 +14,9 @@ type ParameterDescriptors = {
     defaultValue: number;
 }[];
 
+/**
+ * This class is a polyfill for the AudioWorkletProcessor interface
+ */
 export default class SimpleAudioWorkletProcessor implements AudioWorkletProcessorInterface {
     private _port: MessagePort | null = null;
     messageProcessor?: ((event: any) => void) | undefined;

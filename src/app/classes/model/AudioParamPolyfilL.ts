@@ -1,7 +1,10 @@
+/**
+ * This class is a polyfill for the standard web AudioParam class used by worklets
+ */
 export default class AudioParamPolyfill implements AudioParam {
     private _value: number = 0;
     private _minValue: number = 0;
-    private _maxValue: number = 1;
+    private _maxValue: number = Number.MAX_SAFE_INTEGER;
     private _defaultValue: number = 0;
     private context: BaseAudioContext | null = null;
     automationRate: AutomationRate = "a-rate";

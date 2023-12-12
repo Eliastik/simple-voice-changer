@@ -29,9 +29,14 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
      * @param audioContext The audio context
      */
     async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
+        if (typeof (audioContext) === "undefined" || typeof (audioContext.audioWorklet) == "undefined") {
+            console.error("Audio Worklets not supported on this browser. Fallback to ScriptProcessor");
+            this.fallbackToScriptProcessor = true;
+        }
+
         await audioContext.audioWorklet.addModule(this.workletPath)
             .catch(e => {
-                console.error(`Error when loading Worklet for filter ${this.id}. Fallback to ScriptProcessor.`, e);
+                console.error(`Error when loading Worklet (${this.workletPath}) for filter ${this.id}. Fallback to ScriptProcessor. Exception:`, e);
                 this.fallbackToScriptProcessor = true;
             });
     }
@@ -42,7 +47,7 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
      * @param workletName The worklet name
      */
     private initializeNode(context: BaseAudioContext, workletName: string) {
-        if(Constants.ENABLE_AUDIO_WORKLET && !this.fallbackToScriptProcessor) {
+        if (Constants.ENABLE_AUDIO_WORKLET && !this.fallbackToScriptProcessor) {
             this.currentWorkletNode = new AudioWorkletNode(context, workletName);
         } else {
             this.currentWorkletNode = new WorkletScriptProcessorNodeAdapter(context, this.constructAudioWorkletProcessor());
@@ -54,13 +59,13 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
      * Uses the getSettings method to extract the settings.
      */
     protected applyCurrentSettingsToWorklet() {
-        if(this.currentWorkletNode && this.currentWorkletNode.parameters) {
+        if (this.currentWorkletNode && this.currentWorkletNode.parameters) {
             const currentSettings = this.getSettings();
 
-            for(const settingKey of Object.keys(currentSettings)) {
+            for (const settingKey of Object.keys(currentSettings)) {
                 const settingFromWorklet = this.currentWorkletNode.parameters.get(settingKey);
 
-                if(settingFromWorklet) {
+                if (settingFromWorklet) {
                     settingFromWorklet.value = currentSettings[settingKey];
                     settingFromWorklet.setValueAtTime(currentSettings[settingKey], 0);
                 }
@@ -75,8 +80,8 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
         this.initializeNode(context, this.workletName);
         this.applyCurrentSettingsToWorklet();
 
-        if(this.currentWorkletNode) {
-            if(this.currentWorkletNode instanceof WorkletScriptProcessorNodeAdapter) {
+        if (this.currentWorkletNode) {
+            if (this.currentWorkletNode instanceof WorkletScriptProcessorNodeAdapter) {
                 return {
                     input: this.currentWorkletNode.node!,
                     output: this.currentWorkletNode.node!,
