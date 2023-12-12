@@ -27,6 +27,7 @@ export default class WorkletScriptProcessorNodeAdapter {
 
         this.setupPort();
         this.setupProcessor();
+        this.setupWorkletScope(context);
     }
 
     private setupPort(): void {
@@ -73,6 +74,12 @@ export default class WorkletScriptProcessorNodeAdapter {
                     this._parameters.set(descriptor.name, new AudioParamPolyfill(this.currentContext, descriptor.defaultValue));
                 }
             });
+        }
+    }
+
+    private setupWorkletScope(context: BaseAudioContext) {
+        if(typeof(window) !== "undefined") {
+            window.sampleRate = context.sampleRate;
         }
     }
 
