@@ -1,4 +1,4 @@
-class BitCrusherProcessor extends AudioWorkletProcessor {
+export default class BitCrusherProcessor extends AudioWorkletProcessor {
     private stopped = false;
     private phaser = 0;
     private last = 0;
@@ -17,6 +17,10 @@ class BitCrusherProcessor extends AudioWorkletProcessor {
             { name: "bits", defaultValue: 8 },
             { name: "normFreq", defaultValue: 0.15 },
         ];
+    }
+
+    getDefaultParameterDescriptors() {
+        return BitCrusherProcessor.parameterDescriptors;
     }
 
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {

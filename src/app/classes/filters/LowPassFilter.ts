@@ -20,11 +20,11 @@ export default class LowPassFilter extends AbstractAudioFilter {
         };
     }
     
-    getOrder(): number {
+    get order(): number {
         return 5;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.LOW_PASS;
     }
 

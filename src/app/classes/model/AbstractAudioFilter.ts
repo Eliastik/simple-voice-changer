@@ -28,6 +28,7 @@ export default abstract class AbstractAudioFilter extends AbstractAudioElement {
         });
     }
 
+    /** Return if the current filter use an audio worklet */
     public isWorklet() {
         return false;
     }

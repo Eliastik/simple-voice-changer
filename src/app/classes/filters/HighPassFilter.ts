@@ -20,11 +20,11 @@ export default class HighPassFilter extends AbstractAudioFilter {
         };
     }
     
-    getOrder(): number {
+    get order(): number {
         return 4;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.HIGH_PASS;
     }
 

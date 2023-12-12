@@ -1,5 +1,6 @@
 import AbstractAudioFilterWorklet from "../model/AbstractAudioFilterWorklet";
 import Constants from "../model/Constants";
+import worklets from "./worklets";
 
 export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     private bufferSize = 4096;
@@ -15,33 +16,23 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
         this.normFreq = normFreq;
     }
 
-    async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
-        await audioContext.audioWorklet.addModule(Constants.WORKLET_PATHS.BITCRUSHER);
+    constructAudioWorkletProcessor(): any {
+        return new worklets.BitCrusherProcessor();
     }
 
-    getNode(context: BaseAudioContext) {
-        this.stop();
-
-        this.currentWorkletNode = new AudioWorkletNode(context, "bitcrusher-processor");
-        this.applyCurrentSettingsToWorklet();
-
-        return {
-            input: this.currentWorkletNode,
-            output: this.currentWorkletNode,
-        };
+    get workletPath(): string {
+        return Constants.WORKLET_PATHS.BITCRUSHER;
+    }
+    
+    get workletName(): string {
+        return "bitcrusher-processor";
     }
 
-    stop() {
-        if (this.currentWorkletNode) {
-            this.currentWorkletNode.port.postMessage("stop");
-        }
-    }
-
-    getOrder(): number {
+    get order(): number {
         return 6;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.BITCRUSHER;
     }
 

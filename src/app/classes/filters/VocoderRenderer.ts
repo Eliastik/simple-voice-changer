@@ -22,11 +22,11 @@ export default class VocoderRenderer extends AbstractAudioRenderer {
         });
     }
     
-    getOrder(): number {
+    get order(): number {
         return 1;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.VOCODER;
     }
 }

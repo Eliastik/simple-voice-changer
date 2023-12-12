@@ -161,7 +161,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.disconnectOldNodes(keepCurrentInputOutput);
 
         const filters = this.filters
-            .sort((a, b) => a.getOrder() - b.getOrder())
+            .sort((a, b) => a.order - b.order)
             .filter(filter => filter !== this.entrypointFilter && filter.isEnabled());
 
         for (const filter of filters) {
@@ -252,7 +252,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
         let currentBuffer = this.principalBuffer!;
 
-        for (const renderer of this.renderers.sort((a, b) => a.getOrder() - b.getOrder())) {
+        for (const renderer of this.renderers.sort((a, b) => a.order - b.order)) {
             if (renderer.isEnabled()) {
                 currentBuffer = await renderer.renderAudio(outputContext, currentBuffer);
             }
@@ -316,12 +316,12 @@ export default class AudioEditor extends AbstractAudioElement {
 
         for (const filter of this.filters) {
             if (filter.isEnabled()) {
-                if (filter.getId() == Constants.FILTERS_NAMES.REVERB) {
+                if (filter.id == Constants.FILTERS_NAMES.REVERB) {
                     reverb = true;
                     reverbAddDuration = filter.getSettings().reverbEnvironment.additionalData.addDuration;
                 }
 
-                if (filter.getId() == Constants.FILTERS_NAMES.ECHO) {
+                if (filter.id == Constants.FILTERS_NAMES.ECHO) {
                     echo = true;
                 }
             }
@@ -330,16 +330,16 @@ export default class AudioEditor extends AbstractAudioElement {
         return utils.calcAudioDuration(this.principalBuffer!, speedAudio, reverb, reverbAddDuration, echo);
     }
 
-    getOrder(): number {
+    get order(): number {
         return -1;
+    }
+
+    get id(): string {
+        return Constants.AUDIO_EDITOR;
     }
 
     isEnabled(): boolean {
         return true;
-    }
-
-    getId(): string {
-        return Constants.AUDIO_EDITOR;
     }
 
     /** Compatibility mode settings */
@@ -417,7 +417,7 @@ export default class AudioEditor extends AbstractAudioElement {
         const state: { [filterId: string]: boolean } = {};
 
         [...this.filters, ...this.renderers].forEach(filter => {
-            state[filter.getId()] = filter.isEnabled();
+            state[filter.id] = filter.isEnabled();
         });
 
         return state;
@@ -431,7 +431,7 @@ export default class AudioEditor extends AbstractAudioElement {
         const settings = new Map<string, any>();
 
         for (const filter of this.filters) {
-            settings.set(filter.getId(), filter.getSettings());
+            settings.set(filter.id, filter.getSettings());
         }
 
         return settings;
@@ -442,8 +442,8 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param filterId The filter/renderer ID
      */
     toggleFilter(filterId: string) {
-        const filter = this.filters.find(f => f.getId() === filterId);
-        const renderer = this.renderers.find(f => f.getId() === filterId);
+        const filter = this.filters.find(f => f.id === filterId);
+        const renderer = this.renderers.find(f => f.id === filterId);
 
         if (filter) {
             filter.toggle();
@@ -462,7 +462,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param settings Filter setting (key/value)
      */
     async changeFilterSettings(filterId: string, settings: { [setting: string]: string }) {
-        const filter = this.filters.find(f => f.getId() === filterId);
+        const filter = this.filters.find(f => f.id === filterId);
 
         if (filter) {
             for (const key of Object.keys(settings)) {
@@ -478,7 +478,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param filterId Id of the filter/renderer
      */
     resetFilterSettings(filterId: string) {
-        const filter = this.filters.find(f => f.getId() === filterId);
+        const filter = this.filters.find(f => f.id === filterId);
 
         if (filter) {
             filter.resetSettings();

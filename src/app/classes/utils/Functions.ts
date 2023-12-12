@@ -70,6 +70,24 @@ const utilFunctions = {
         }
 
         return buffer;
+    },
+    convertAudioBufferToFloat32Array: (buffer: AudioBuffer) => {
+        const array: Float32Array[] = [];
+
+        for(let channel = 0; channel < buffer.numberOfChannels; channel++) {
+            array.push(buffer.getChannelData(channel));
+        }
+
+        return array;
+    },
+    convertAudioParamToFloat32Array: (param: AudioParam, length: number) => {
+        const array = new Float32Array(length);
+
+        for(let i = 0; i < length; i++) {
+            array.set([param.value], i);
+        }
+
+        return array;
     }
 };
 

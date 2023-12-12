@@ -3,7 +3,7 @@ import { SoundTouch } from "soundtouchjs";
 import SoundtouchCustomFilter from "../../model/SoundtouchCustomFilter";
 import SoundtouchWorkletOptions from "../../model/SoundtouchWorkletOptions";
 
-class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
+export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
     private name: string;
     private options: SoundtouchWorkletOptions; // Change the type accordingly
     nOutputFrames: number;

@@ -1,5 +1,6 @@
 import AbstractAudioFilterWorklet from "../model/AbstractAudioFilterWorklet";
 import Constants from "../model/Constants";
+import worklets from "./worklets";
 
 export default class LimiterFilter extends AbstractAudioFilterWorklet {
     private sampleRate = 44100; // Hz
@@ -22,41 +23,23 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
         this.setDefaultEnabled(true);
     }
 
-    async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
-        await audioContext.audioWorklet.addModule(Constants.WORKLET_PATHS.LIMITER);
+    get workletPath(): string {
+        return Constants.WORKLET_PATHS.BITCRUSHER;
+    }
+    
+    get workletName(): string {
+        return "limiter-processor";
     }
 
-    getNode(context: BaseAudioContext) {
-        this.sampleRate = context.sampleRate;
-        
-        this.stop();
-
-        this.currentWorkletNode = new AudioWorkletNode(context, "limiter-processor");
-        this.applyCurrentSettingsToWorklet();
-
-        return {
-            input: this.currentWorkletNode,
-            output: this.currentWorkletNode
-        };
+    constructAudioWorkletProcessor(): any {
+        return new worklets.LimiterProcessor();
     }
 
-    reset() {
-        if(this.currentWorkletNode) {
-            this.currentWorkletNode.port.postMessage("reset");
-        }
-    }
-
-    stop() {
-        if(this.currentWorkletNode) {
-            this.currentWorkletNode.port.postMessage("stop");
-        }
-    }
-
-    getOrder(): number {
+    get order(): number {
         return 10;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.LIMITER;
     }
 

@@ -25,11 +25,11 @@ export default class ReturnAudioRenderer extends AbstractAudioRenderer {
         });
     }
 
-    getOrder(): number {
+    get order(): number {
         return 0;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.RETURN_AUDIO;
     }
 }

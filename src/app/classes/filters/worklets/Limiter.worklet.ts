@@ -21,7 +21,7 @@
 // Additions by Eliastik (eliastiksofts.com): Stereo and multi-channel support, code simplified in one object class (Limiter), converted into AudioWorklet
 import DelayBuffer from "../../model/DelayBuffer";
 
-class LimiterProcessor extends AudioWorkletProcessor {
+export default class LimiterProcessor extends AudioWorkletProcessor {
     private delayBuffer: DelayBuffer[] = [];
     private envelopeSample = 0;
     private stopped = false;
@@ -47,6 +47,10 @@ class LimiterProcessor extends AudioWorkletProcessor {
             { name: "lookAheadTime", defaultValue: 0 },
             { name: "sampleRate", defaultValue: 44100 }
         ];
+    }
+
+    getDefaultParameterDescriptors() {
+        return LimiterProcessor.parameterDescriptors;
     }
 
     getEnvelope(data: Float32Array, attackTime: number, releaseTime: number, sampleRate: number) {

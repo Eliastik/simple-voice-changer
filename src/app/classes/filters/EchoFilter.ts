@@ -27,11 +27,11 @@ export default class EchoFilter extends AbstractAudioFilter {
         };
     }
     
-    getOrder(): number {
+    get order(): number {
         return 7;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.ECHO;
     }
 

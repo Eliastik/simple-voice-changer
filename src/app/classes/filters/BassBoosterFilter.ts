@@ -33,11 +33,11 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
         };
     }
     
-    getOrder(): number {
+    get order(): number {
         return 3;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.BASS_BOOST;
     }
 

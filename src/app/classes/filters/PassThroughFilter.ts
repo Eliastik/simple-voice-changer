@@ -20,11 +20,11 @@ export default class PassThroughFilter extends AbstractAudioFilter {
         };
     }
 
-    getOrder(): number {
+    get order(): number {
         return Number.MAX_SAFE_INTEGER;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.PASS_THROUGH;
     }
 

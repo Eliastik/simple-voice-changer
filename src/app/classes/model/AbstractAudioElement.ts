@@ -7,7 +7,10 @@ export default abstract class AbstractAudioElement {
     bufferFetcherService: BufferFetcherService | undefined;
 
     /** Returns the order in which the filter/renderer needs to be applied */
-    abstract getOrder(): number;
+    abstract get order(): number;
+
+    /** Returns the id of this filter/renderer */
+    abstract get id(): string;
 
     /** Is this filter/renderer enabled? */
     isEnabled(): boolean {
@@ -42,7 +45,4 @@ export default abstract class AbstractAudioElement {
     toggle() {
         this.setEnabled(!this.isEnabled());
     }
-
-    /** Returns the id of this filter/renderer */
-    abstract getId(): string;
 }

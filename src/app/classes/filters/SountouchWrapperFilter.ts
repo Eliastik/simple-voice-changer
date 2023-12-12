@@ -6,6 +6,7 @@ import AudioFilterEntrypointInterface from "../model/AudioFilterEntrypointInterf
 import { AudioFilterNodes } from "../model/AudioNodes";
 import utils from "../utils/Functions";
 import SoundtouchWrapperFilterWorkletNode from "./SoundtouchWrapperFilterWorkletNode";
+import SimpleAudioWorkletProcessor from "../model/SimpleAudioWorkletProcessor";
 
 export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet implements AudioFilterEntrypointInterface {
 
@@ -24,6 +25,18 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
 
     async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
         // Do nothing
+    }
+
+    get workletPath(): string {
+        return Constants.WORKLET_PATHS.SOUNDTOUCH;
+    }
+
+    constructAudioWorkletProcessor(): SimpleAudioWorkletProcessor {
+        throw new Error("Method not implemented.");
+    }
+
+    get workletName(): string {
+        throw new Error("Method not implemented.");
     }
 
     async getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer, offline: boolean): Promise<AudioFilterNodes> {
@@ -163,17 +176,12 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             return this.renderWithScriptProcessorNode(buffer, context);
         }
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    getNode(context: BaseAudioContext): AudioFilterNodes {
-        throw new Error("Method not implemented.");
-    }
     
-    getOrder(): number {
+    get order(): number {
         return 2;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.SOUNDTOUCH;
     }
 

@@ -24,11 +24,11 @@ export default class ReverbFilter extends AbstractAudioFilter {
         };
     }
     
-    getOrder(): number {
+    get order(): number {
         return 9;
     }
 
-    getId(): string {
+    get id(): string {
         return Constants.FILTERS_NAMES.REVERB;
     }
 

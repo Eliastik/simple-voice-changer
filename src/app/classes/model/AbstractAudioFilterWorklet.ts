@@ -1,10 +1,53 @@
+import WorkletScriptProcessorNodeAdapter from "../utils/WorkletScriptProcessorNodeAdapter";
 import AbstractAudioFilter from "./AbstractAudioFilter";
+import Constants from "./Constants";
+import SimpleAudioWorkletProcessor from "./SimpleAudioWorkletProcessor";
+import "../utils/AudioWorkletProcessorPolyfill";
 
 export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFilter {
 
-    protected currentWorkletNode: AudioWorkletNode | null = null;
+    protected currentWorkletNode: AudioWorkletNode | WorkletScriptProcessorNodeAdapter | null = null;
+    protected fallbackToScriptProcessor = false;
 
-    abstract initializeWorklet(audioContext: BaseAudioContext): Promise<void>;
+    /**
+     * Construct the AudioWorkletPrcossor that will be used to fallback to ScriptProcessorNode
+     */
+    abstract constructAudioWorkletProcessor(): SimpleAudioWorkletProcessor; // AudioWorkletProcessor TODO
+
+    /**
+     * Return the worklet name (as registered with method registerProcessor)
+     */
+    abstract get workletName(): string;
+
+    /**
+     * Return the path to worklet file
+     */
+    abstract get workletPath(): string;
+
+    /**
+     * Initialize the audio worklet by loading the module
+     * @param audioContext The audio context
+     */
+    async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
+        await audioContext.audioWorklet.addModule(this.workletPath)
+            .catch(e => {
+                console.error(`Error when loading Worklet for filter ${this.id}. Fallback to ScriptProcessor.`, e);
+                this.fallbackToScriptProcessor = true;
+            });
+    }
+
+    /**
+     * Initialize the AudioWorkletNode or fallback to ScriptProcessorNode
+     * @param context The audio context
+     * @param workletName The worklet name
+     */
+    private initializeNode(context: BaseAudioContext, workletName: string) {
+        if(Constants.ENABLE_AUDIO_WORKLET && !this.fallbackToScriptProcessor) {
+            this.currentWorkletNode = new AudioWorkletNode(context, workletName);
+        } else {
+            this.currentWorkletNode = new WorkletScriptProcessorNodeAdapter(context, this.constructAudioWorkletProcessor());
+        }
+    }
 
     /**
      * Apply current settings to the audio worklet node.
@@ -22,6 +65,39 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
                     settingFromWorklet.setValueAtTime(currentSettings[settingKey], 0);
                 }
             }
+        }
+    }
+
+    /** Default implementation for GetNode - AbstractAudioFilterWorklet */
+    getNode(context: BaseAudioContext) {
+        this.stop();
+
+        this.initializeNode(context, this.workletName);
+        this.applyCurrentSettingsToWorklet();
+
+        if(this.currentWorkletNode) {
+            if(this.currentWorkletNode instanceof WorkletScriptProcessorNodeAdapter) {
+                return {
+                    input: this.currentWorkletNode.node!,
+                    output: this.currentWorkletNode.node!,
+                };
+            } else {
+                return {
+                    input: this.currentWorkletNode,
+                    output: this.currentWorkletNode,
+                };
+            }
+        }
+
+        throw "Worklet node has not yet been created";
+    }
+
+    /**
+     * Stop the current worklet node. The worklet need to respond to "stop" events.
+     */
+    stop() {
+        if (this.currentWorkletNode && this.currentWorkletNode.port) {
+            this.currentWorkletNode.port.postMessage("stop");
         }
     }
 
