@@ -39,6 +39,7 @@
         "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
         "@typescript-eslint/ban-types": "warn",
         "no-extra-semi": "off",
-        "@typescript-eslint/no-var-requires": "off"
+        "@typescript-eslint/no-var-requires": "off",
+        "prefer-const": "warn"
     }
 }
