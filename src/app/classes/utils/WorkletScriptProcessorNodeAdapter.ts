@@ -60,7 +60,6 @@ export default class WorkletScriptProcessorNodeAdapter {
                         records[key] = Functions.convertAudioParamToFloat32Array(value, 1);
                     }
                 }
-                console.log(records);
                 
                 this.workletProcessor.process(inputArray, ouputArray, records);
             }

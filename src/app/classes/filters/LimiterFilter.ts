@@ -24,7 +24,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
     }
 
     get workletPath(): string {
-        return Constants.WORKLET_PATHS.BITCRUSHER;
+        return Constants.WORKLET_PATHS.LIMITER;
     }
     
     get workletName(): string {
