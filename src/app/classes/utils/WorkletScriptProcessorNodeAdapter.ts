@@ -4,7 +4,7 @@ import Functions from "./Functions";
 
 /**
  * This class convert an audio worklet processor node to a script processor node
- * automagically
+ * automagically. Highly experimental, and might not work with some WorkletProcessor
  */
 export default class WorkletScriptProcessorNodeAdapter {
 
@@ -52,17 +52,15 @@ export default class WorkletScriptProcessorNodeAdapter {
                 const inputArray = [Functions.convertAudioBufferToFloat32Array(ev.inputBuffer)];
                 const ouputArray = [Functions.convertAudioBufferToFloat32Array(ev.outputBuffer)];
 
-                const records: Record<string, Float32Array> = {};
+                const records: [string, Float32Array][] = [];
 
-                for(const key of this._parameters.keys()) {
-                    const value = this.parameters.get(key);
-
-                    if(value) {
-                        records[key] = Functions.convertAudioParamToFloat32Array(value, 1);
-                    }
+                for (const [key, value] of this._parameters.entries()) {
+                    records.push([key, Functions.convertAudioParamToFloat32Array(value, 1)]);
                 }
+
+                const recordsMap: Record<string, Float32Array> = Object.fromEntries(records);
                 
-                this.workletProcessor.process(inputArray, ouputArray, records);
+                this.workletProcessor.process(inputArray, ouputArray, recordsMap);
             }
         };
 

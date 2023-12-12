@@ -36,7 +36,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
     }
 
     get workletName(): string {
-        throw new Error("Method not implemented.");
+        return Constants.WORKLET_NAMES.SOUNDTOUCH;
     }
 
     async getEntrypointNode(context: BaseAudioContext, buffer: AudioBuffer, offline: boolean): Promise<AudioFilterNodes> {
@@ -58,7 +58,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             } else {
                 // If audio worklet is enabled for soundtouch, and if the speed of audio is untouched
                 // Soundtouch Audio Worklet don't support speed editing yet
-                if(Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET && this.speedAudio == 1) {
+                if(Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET && this.isAudioWorkletCompatible(context) && this.speedAudio == 1) {
                     return this.renderWithWorklet(buffer, context);
                 } else {
                     return this.renderWithScriptProcessorNode(buffer, context);
@@ -157,7 +157,11 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             this.currentPitchShifterWorklet.node.connect(offlineContext.destination);
 
             // Setup pitch/speed of Soundtouch
-            await this.currentPitchShifterWorklet.setup(this.speedAudio, this.frequencyAudio);
+            if(this.isEnabled()) {
+                await this.currentPitchShifterWorklet.setup(this.speedAudio, this.frequencyAudio);
+            } else {
+                await this.currentPitchShifterWorklet.setup(1, 1);
+            }
             
             // Start rendering, then when rendering is finished, returns the rendered buffer as a buffer source
             const renderedBuffer = await offlineContext.startRendering();

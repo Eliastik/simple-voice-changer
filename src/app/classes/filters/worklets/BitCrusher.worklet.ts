@@ -1,3 +1,5 @@
+import Constants from "../../model/Constants";
+
 export default class BitCrusherProcessor extends AudioWorkletProcessor {
     private stopped = false;
     private phaser = 0;
@@ -53,4 +55,4 @@ export default class BitCrusherProcessor extends AudioWorkletProcessor {
     }
 }
 
-registerProcessor("bitcrusher-processor", BitCrusherProcessor);
+registerProcessor(Constants.WORKLET_NAMES.BITCRUSHER, BitCrusherProcessor);

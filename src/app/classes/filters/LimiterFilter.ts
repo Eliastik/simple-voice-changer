@@ -28,11 +28,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
     }
     
     get workletName(): string {
-        return "limiter-processor";
-    }
-
-    constructAudioWorkletProcessor(): any {
-        return new worklets.LimiterProcessor();
+        return Constants.WORKLET_NAMES.LIMITER;
     }
 
     get order(): number {
@@ -41,6 +37,10 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
 
     get id(): string {
         return Constants.FILTERS_NAMES.LIMITER;
+    }
+
+    constructAudioWorkletProcessor(): any {
+        return new worklets.LimiterProcessor();
     }
 
     getSettings() {

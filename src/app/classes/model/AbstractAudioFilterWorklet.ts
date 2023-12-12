@@ -29,7 +29,7 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
      * @param audioContext The audio context
      */
     async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
-        if (typeof (audioContext) === "undefined" || typeof (audioContext.audioWorklet) == "undefined") {
+        if(!this.isAudioWorkletCompatible(audioContext)) {
             console.error("Audio Worklets not supported on this browser. Fallback to ScriptProcessor");
             this.fallbackToScriptProcessor = true;
         }
@@ -39,6 +39,18 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
                 console.error(`Error when loading Worklet (${this.workletPath}) for filter ${this.id}. Fallback to ScriptProcessor. Exception:`, e);
                 this.fallbackToScriptProcessor = true;
             });
+    }
+
+    /**
+     * This method checks if the browser is compatible with audio worklets
+     * @param audioContext 
+     */
+    protected isAudioWorkletCompatible(audioContext: BaseAudioContext) {
+        if (typeof (audioContext) !== "undefined" && typeof (audioContext.audioWorklet) !== "undefined") {
+            return true;
+        }
+
+        return false;
     }
 
     /**

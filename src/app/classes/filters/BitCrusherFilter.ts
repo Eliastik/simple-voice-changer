@@ -25,7 +25,7 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     }
     
     get workletName(): string {
-        return "bitcrusher-processor";
+        return Constants.WORKLET_NAMES.BITCRUSHER;
     }
 
     get order(): number {

@@ -2,6 +2,7 @@
 import { SoundTouch } from "soundtouchjs";
 import SoundtouchCustomFilter from "../../model/SoundtouchCustomFilter";
 import SoundtouchWorkletOptions from "../../model/SoundtouchWorkletOptions";
+import Constants from "../../model/Constants";
 
 export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
     private name: string;
@@ -207,4 +208,4 @@ export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
     }
 }
 
-registerProcessor("soundtouch-worklet", SoundTouchWorkletProcessor);
+registerProcessor(Constants.WORKLET_NAMES.SOUNDTOUCH, SoundTouchWorkletProcessor);
