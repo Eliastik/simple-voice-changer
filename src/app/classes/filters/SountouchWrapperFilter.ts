@@ -58,7 +58,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             } else {
                 // If audio worklet is enabled for soundtouch, and if the speed of audio is untouched
                 // Soundtouch Audio Worklet don't support speed editing yet
-                if(Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET && this.isAudioWorkletCompatible(context) && this.speedAudio == 1) {
+                if(this.isAudioWorkletEnabled() && this.isAudioWorkletCompatible(context) && this.speedAudio == 1) {
                     return this.renderWithWorklet(buffer, context);
                 } else {
                     return this.renderWithScriptProcessorNode(buffer, context);
@@ -196,13 +196,22 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         };
     }
 
+    protected isAudioWorkletEnabled() {
+        if(this.configService) {
+            return this.configService.getConfig(Constants.PREFERENCES_KEYS.ENABLE_SOUNDTOUCH_AUDIO_WORKLET) == "true"
+                || Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;
+        }
+
+        return Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;
+    }
+
     private getCurrentPitchShifter() {
         if(this.isOfflineMode) {
             // If the settings are untouched, we don't use Soundtouch
             if(this.speedAudio == 1 && this.frequencyAudio == 1) {
                 return null;
             } else {
-                if(Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET && this.speedAudio == 1) {
+                if(this.isAudioWorkletEnabled() && this.currentPitchShifterWorklet && this.speedAudio == 1) {
                     return this.currentPitchShifterWorklet;
                 } else {
                     return this.currentPitchShifter;

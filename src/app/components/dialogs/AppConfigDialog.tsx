@@ -4,7 +4,7 @@ import i18next from "i18next";
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
 
 const AppConfigDialog = () => {
-    const { currentThemeValue, setTheme, currentLanguageValue, setLanguage } = useApplicationConfig();
+    const { currentThemeValue, setTheme, currentLanguageValue, setLanguage, isAudioWorkletEnabled, toggleAudioWorklet, isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet } = useApplicationConfig();
     const { isCompatibilityModeEnabled, toggleCompatibilityMode } = useAudioEditor();
     const { t } = useTranslation();
 
@@ -51,6 +51,46 @@ const AppConfigDialog = () => {
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                     </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-col mt-4 -m-1">
+                    <div className="collapse collapse-arrow border border-base-300 bg-base-200 overflow-visible">
+                        <input type="checkbox" className="peer" />
+                        <div className="collapse-title text-md">
+                            {(t("appSettings.advanced"))}
+                        </div>
+                        <div className="collapse-content flex flex-col">
+                            <div className="mt-3">
+                                <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                                    <div className="md:w-4/6">
+                                        <label htmlFor="toggleAudioWorkletEnabled">{t("appSettings.audioWorkletEnable")}</label>
+                                    </div>
+                                    <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
+                                        <input type="checkbox" className="toggle" id="toggleAudioWorkletEnabled" checked={isAudioWorkletEnabled} onChange={(e) => toggleAudioWorklet(e.target.checked)} />
+                                        <div className="tooltip tooltip-top" data-tip={t("appSettings.audioWorkletEnableInfos")}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-3">
+                                <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                                    <div className="md:w-4/6">
+                                        <label htmlFor="toggleSoundtouchAudioWorkletEnabled">{t("appSettings.soundtouchAudioWorkletEnable")}</label>
+                                    </div>
+                                    <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
+                                        <input type="checkbox" className="toggle" id="toggleSoundtouchAudioWorkletEnabled" checked={isSoundtouchAudioWorkletEnabled} onChange={(e) => toggleSoundtouchAudioWorklet(e.target.checked)} />
+                                        <div className="tooltip tooltip-top" data-tip={t("appSettings.soundtouchAudioWorkletEnableInfos")}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

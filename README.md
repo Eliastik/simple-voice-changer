@@ -21,6 +21,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 * TypeScript
 * React
+* NextJS
 * Tailwind CSS / DaisyUI
 * Web Audio API
 

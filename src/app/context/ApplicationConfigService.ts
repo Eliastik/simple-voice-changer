@@ -1,21 +1,22 @@
 import { ConfigService } from "../classes/model/ConfigService";
 import Constants from "../model/Constants";
+import LibConstants from "../classes/model/Constants";
 import { UpdateData } from "../model/UpdateData";
 import semver from "semver";
 
 export default class ApplicationConfigService implements ConfigService {
     public setCurrentTheme(theme: string) {
-        this.setConfig("current-theme", theme);
+        this.setConfig(Constants.PREFERENCES_KEYS.CURRENT_THEME, theme);
     }
 
     public getCurrentThemePreference(): string {
-        return this.getConfig("current-theme") || "auto";
+        return this.getConfig(Constants.PREFERENCES_KEYS.CURRENT_THEME) || Constants.THEMES.AUTO;
     }
 
     public getCurrentTheme(): string {
         const setting = this.getCurrentThemePreference();
 
-        if (setting == "auto") {
+        if (setting == Constants.THEMES.AUTO) {
             return this.getUserThemePreference();
         }
 
@@ -23,11 +24,11 @@ export default class ApplicationConfigService implements ConfigService {
     }
 
     public setCurrentLanguage(lng: string) {
-        this.setConfig("current-language", lng);
+        this.setConfig(Constants.PREFERENCES_KEYS.CURRENT_LANGUAGE, lng);
     }
 
     public getCurrentLanguagePreference() {
-        const setting = this.getConfig("current-language");
+        const setting = this.getConfig(Constants.PREFERENCES_KEYS.CURRENT_LANGUAGE);
 
         if (!setting) {
             return this.getUserLanguage().split("-")[0];
@@ -37,36 +38,36 @@ export default class ApplicationConfigService implements ConfigService {
     }
 
     public hasAlreadyUsedApp() {
-        return this.getConfig("already-used") == "true";
+        return this.getConfig(Constants.PREFERENCES_KEYS.ALREADY_USED) == "true";
     }
 
     public setAlreadyUsedApp() {
-        this.setConfig("already-used", "true");
+        this.setConfig(Constants.PREFERENCES_KEYS.ALREADY_USED, "true");
     }
 
-    getConfig(key: string): string | null {
-        const setting = typeof window !== "undefined" ? window.localStorage.getItem("simplevoicechanger-" + key) : null;
-
-        if (!setting) {
-            return null;
-        }
-
-        return setting;
+    public enableAudioWorklet(enable: boolean) {
+        this.setConfig(LibConstants.PREFERENCES_KEYS.ENABLE_AUDIO_WORKLET, enable ? "true" : "false");
     }
 
-    setConfig(key: string, value: string): void {
-        if (typeof window !== "undefined") {
-            window.localStorage.setItem("simplevoicechanger-" + key, value);
-        }
+    public isAudioWorkletEnabled(): boolean {
+        return this.getConfig(LibConstants.PREFERENCES_KEYS.ENABLE_AUDIO_WORKLET) == "true" || LibConstants.ENABLE_AUDIO_WORKLET;
+    }
+
+    public enableSoundtouchAudioWorklet(enable: boolean) {
+        this.setConfig(LibConstants.PREFERENCES_KEYS.ENABLE_SOUNDTOUCH_AUDIO_WORKLET, enable ? "true" : "false");
+    }
+
+    public isSoundtouchAudioWorkletEnabled(): boolean {
+        return this.getConfig(LibConstants.PREFERENCES_KEYS.ENABLE_SOUNDTOUCH_AUDIO_WORKLET) == "true" || LibConstants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;
     }
 
     /** Get current theme from OS (dark/light) */
     private getUserThemePreference(): string {
         if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            return "dark";
+            return Constants.THEMES.DARK;
         }
 
-        return "light";
+        return Constants.THEMES.LIGHT;
     }
 
     /** Get current user language from browser */
@@ -85,17 +86,17 @@ export default class ApplicationConfigService implements ConfigService {
             }
         }
 
-        return found.length > 0 ? found[0] : "en";
+        return found.length > 0 ? found[0] : Constants.DEFAULT_LANGUAGE;
     }
 
     /** Check for application update */
     public async checkAppUpdate(): Promise<UpdateData | null> {
-        const updateData = await fetch(Constants.updater_uri);
+        const updateData = await fetch(Constants.UPDATER_URI);
 
         if (updateData) {
             const updateJSON: UpdateData = await updateData.json();
 
-            if (semver.compare(Constants.app_version, updateJSON.version) === -1) {
+            if (semver.compare(Constants.APP_VERSION, updateJSON.version) === -1) {
                 return {
                     ...updateJSON,
                     hasUpdate: true
@@ -109,5 +110,21 @@ export default class ApplicationConfigService implements ConfigService {
         }
 
         return null;
+    }
+
+    getConfig(key: string): string | null {
+        const setting = typeof window !== "undefined" ? window.localStorage.getItem(Constants.PREFERENCES_KEYS.PREFIX + key) : null;
+
+        if (!setting) {
+            return null;
+        }
+
+        return setting;
+    }
+
+    setConfig(key: string, value: string): void {
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem(Constants.PREFERENCES_KEYS.PREFIX + key, value);
+        }
     }
 }

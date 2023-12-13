@@ -9,5 +9,9 @@ export default interface ApplicationConfigContextProps {
     setLanguage: (lng: string) => void,
     updateData: UpdateData | null,
     alreadyUsed: boolean,
-    closeFirstLaunchModal: () => void
+    closeFirstLaunchModal: () => void,
+    isAudioWorkletEnabled: boolean,
+    toggleAudioWorklet: (enabled: boolean) => void,
+    isSoundtouchAudioWorkletEnabled: boolean,
+    toggleSoundtouchAudioWorklet: (enabled: boolean) => void
 };

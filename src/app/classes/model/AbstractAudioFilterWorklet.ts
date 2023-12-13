@@ -12,7 +12,7 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
     /**
      * Construct the AudioWorkletPrcossor that will be used to fallback to ScriptProcessorNode
      */
-    abstract constructAudioWorkletProcessor(): SimpleAudioWorkletProcessor; // AudioWorkletProcessor TODO
+    abstract constructAudioWorkletProcessor(): SimpleAudioWorkletProcessor;
 
     /**
      * Return the worklet name (as registered with method registerProcessor)
@@ -54,12 +54,25 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
     }
 
     /**
+     * This method checks if audio worklet are enabled
+     * @param audioContext 
+     */
+    protected isAudioWorkletEnabled() {
+        if(this.configService) {
+            return this.configService.getConfig(Constants.PREFERENCES_KEYS.ENABLE_AUDIO_WORKLET) == "true"
+                || Constants.ENABLE_AUDIO_WORKLET;
+        }
+
+        return Constants.ENABLE_AUDIO_WORKLET;
+    }
+
+    /**
      * Initialize the AudioWorkletNode or fallback to ScriptProcessorNode
      * @param context The audio context
      * @param workletName The worklet name
      */
     private initializeNode(context: BaseAudioContext, workletName: string) {
-        if (Constants.ENABLE_AUDIO_WORKLET && !this.fallbackToScriptProcessor) {
+        if (this.isAudioWorkletEnabled() && !this.fallbackToScriptProcessor) {
             this.currentWorkletNode = new AudioWorkletNode(context, workletName);
         } else {
             this.currentWorkletNode = new WorkletScriptProcessorNodeAdapter(context, this.constructAudioWorkletProcessor());
@@ -106,7 +119,7 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
             }
         }
 
-        throw "Worklet node has not yet been created";
+        throw new Error("Worklet node has not yet been created");
     }
 
     /**

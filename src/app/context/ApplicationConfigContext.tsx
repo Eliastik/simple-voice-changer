@@ -6,6 +6,7 @@ import ApplicationConfigService from "./ApplicationConfigService";
 import i18next from "i18next";
 import { UpdateData } from "../model/UpdateData";
 import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
+import Constants from "../classes/model/Constants";
 
 const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
 
@@ -36,11 +37,17 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const [updateData, setUpdateData] = useState<UpdateData | null>(null);
     // State: true if the user already used the time one time
     const [alreadyUsed, setAlreadyUsed] = useState(false);
+    // State: audio worklet enabled/disabled
+    const [isAudioWorkletEnabled, setAudioWorkletEnabled] = useState(false);
+    // State: audio worklet enabled/disabled
+    const [isSoundtouchAudioWorkletEnabled, setSoundtouchAudioWorkletEnabled] = useState(false);
 
     useEffect(() => {
         setCurrentTheme(getService().getCurrentTheme());
         setCurrentThemeValue(getService().getCurrentThemePreference());
         setAlreadyUsed(getService().hasAlreadyUsedApp());
+        setAudioWorkletEnabled(getService().isAudioWorkletEnabled());
+        setSoundtouchAudioWorkletEnabled(getService().isSoundtouchAudioWorkletEnabled());
         getService().checkAppUpdate().then(result => setUpdateData(result));
     }, []);
 
@@ -66,10 +73,21 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setAlreadyUsed(true);
     };
 
+    const toggleAudioWorklet = (enabled: boolean) => {
+        getService().enableAudioWorklet(enabled);
+        setAudioWorkletEnabled(enabled);
+    };
+
+    const toggleSoundtouchAudioWorklet = (enabled: boolean) => {
+        getService().enableSoundtouchAudioWorklet(enabled);
+        setSoundtouchAudioWorkletEnabled(enabled);
+    };
+
     return (
         <ApplicationConfigContext.Provider value={{
             currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
-            updateData, alreadyUsed, closeFirstLaunchModal
+            updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
+            isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet
         }}>
             {children}
         </ApplicationConfigContext.Provider>

@@ -29,7 +29,7 @@ const AppInfoDialog = () => {
                             <div className="md:w-4/6">
                                 <label>{t("appInfos.appVersion")}</label>
                             </div>
-                            <a href={Constants.release_link} className="link link-info hover:no-underline" target="_blank">{Constants.app_version}</a>
+                            <a href={Constants.RELEASE_LINK} className="link link-info hover:no-underline" target="_blank">{Constants.APP_VERSION}</a>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ const AppInfoDialog = () => {
                             <div className="md:w-4/6">
                                 <label>{t("appInfos.versionDate")}</label>
                             </div>
-                            {(new Date(Constants.app_version_date)).toLocaleDateString(currentLanguageValue)}
+                            {(new Date(Constants.APP_VERSION_DATE)).toLocaleDateString(currentLanguageValue)}
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ const AppInfoDialog = () => {
                             <div className="md:w-4/6">
                                 <label>{t("appInfos.license")}</label>
                             </div>
-                            {Constants.app_license}
+                            {Constants.APP_LICENSE}
                         </div>
                     </div>
                 </div>
@@ -82,8 +82,8 @@ const AppInfoDialog = () => {
                                 <label>{t("appInfos.websites")}</label>
                             </div>
                             <div className="flex flex-col gap-y-4">
-                                <a href={Constants.official_website} className="link link-info hover:no-underline" target="_blank">{Constants.official_website}</a>
-                                <a href={Constants.souce_code} className="link link-info hover:no-underline" target="_blank">{Constants.souce_code}</a>
+                                <a href={Constants.OFFICIAL_WEBSITE} className="link link-info hover:no-underline" target="_blank">{Constants.OFFICIAL_WEBSITE}</a>
+                                <a href={Constants.SOURCE_CODE} className="link link-info hover:no-underline" target="_blank">{Constants.SOURCE_CODE}</a>
                             </div>
                         </div>
                     </div>

@@ -1,14 +1,26 @@
 const Constants = {
-    filesDownloadName: "simple_voice_changer",
-    app_version: "2.0.0",
-    app_version_date: "11/16/2023",
-    updater_uri: "https://www.eliastiksofts.com/simple-voice-changer/update.json",
-    official_website: "https://www.eliastiksofts.com/simple-voice-changer/",
-    souce_code: "https://github.com/Eliastik/simple-voice-changer",
-    app_license: "GNU GPL v3",
-    release_link: "https://github.com/Eliastik/simple-voice-changer/releases/tag/2.0",
-    audioBuffersToFetch: ["static/sounds/impulse_response.wav","static/sounds/modulator.mp3"],
-    serviceWorkerScope: "/simple-voice-changer/demo/" // Same as from .env.prod
+    DEFAULT_LANGUAGE: "en",
+    FILES_DOWNLOAD_NAME: "simple_voice_changer",
+    APP_VERSION: "2.0.0",
+    APP_VERSION_DATE: "11/16/2023",
+    UPDATER_URI: "https://www.eliastiksofts.com/simple-voice-changer/update.json",
+    OFFICIAL_WEBSITE: "https://www.eliastiksofts.com/simple-voice-changer/",
+    SOURCE_CODE: "https://github.com/Eliastik/simple-voice-changer",
+    APP_LICENSE: "GNU GPL v3",
+    RELEASE_LINK: "https://github.com/Eliastik/simple-voice-changer/releases/tag/2.0",
+    AUDIO_BUFFERS_TO_FETCH: ["static/sounds/impulse_response.wav","static/sounds/modulator.mp3"],
+    SERVICE_WORKER_SCOPE: "/simple-voice-changer/demo/", // Same as from .env.prod
+    PREFERENCES_KEYS: {
+        CURRENT_THEME: "current-theme",
+        CURRENT_LANGUAGE: "current-language",
+        ALREADY_USED: "already-used",
+        PREFIX: "simplevoicechanger-"
+    },
+    THEMES: {
+        AUTO: "auto",
+        DARK: "dark",
+        LIGHT: "light"
+    }
 };
 
 export default Constants;

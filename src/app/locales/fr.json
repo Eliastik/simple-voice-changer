@@ -8,7 +8,12 @@
             "colorThemeDark": "Thème sombre",
             "language": "Langue :",
             "compatibilityMode": "Mode de compatibilité/rendu direct :",
-            "compatibilityModeInfos": "Ce mode est activé automatiquement en cas de problème de compatibilité détecté. Activez-le si l'application ne produit aucun son. Ce mode permet également de modifier en temps réel les sons par rendu direct, mais la sauvegarde des sons modifiés prendra plus de temps à cause de contraintes techniques."
+            "compatibilityModeInfos": "Ce mode est activé automatiquement en cas de problème de compatibilité détecté. Activez-le si l'application ne produit aucun son. Ce mode permet également de modifier en temps réel les sons par rendu direct, mais la sauvegarde des sons modifiés prendra plus de temps à cause de contraintes techniques.",
+            "advanced": "Paramètres avancés",
+            "audioWorkletEnable": "Support des AudioWorklet :",
+            "audioWorkletEnableInfos": "Active l'utilisation de la technologie AudioWorklet pour certains filtres (limiteur, effet 8-bit). Cela améliore les performances de ces filtres, et remplace une ancienne technologie dépréciée.",
+            "soundtouchAudioWorkletEnable": "Support des AudioWorklet pour le filtre Modifier la vitesse / fréquence (expérimental) :",
+            "soundtouchAudioWorkletEnableInfos": "Active l'utilisation expérimentale de la technologie AudioWorklet pour ce filtre en particulier. Cela remplace une ancienne technologie dépréciée."
         },
         "homeMenu": {
             "selectAudioFile": "Sélectionner un fichier audio",

@@ -13,16 +13,16 @@
 * [x] - Fix building of audio worklets (imports)
 * [x] - Bundle SoundtouchWorkletProcessor
 * [x] - Audio worklet memory optimizations
-* [ ] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
-* [ ] - Option to disable/enable audio worklet
+* [x] - Option to disable/enable audio worklet
     * [x] - AudioWorklet polyfill to ScriptProcessorNode
+* [ ] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
+* [ ] - Convert Vocoder to standard filter
 
 ### 2.1
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
-* [ ] - Convert Vocoder to standard filter
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Edit volume/gain
 * [ ] - Advanced settings for the app: sample rate, buffer size, audio channels number

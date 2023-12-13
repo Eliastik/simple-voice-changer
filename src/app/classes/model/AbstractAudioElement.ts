@@ -1,10 +1,12 @@
 import BufferFetcherService from "../BufferFetcherService";
+import { ConfigService } from "./ConfigService";
 
 export default abstract class AbstractAudioElement {
 
     private enabled = false;
     private defaultEnabled = false;
-    bufferFetcherService: BufferFetcherService | undefined;
+    bufferFetcherService: BufferFetcherService | null = null;
+    configService: ConfigService | null = null;
 
     /** Returns the order in which the filter/renderer needs to be applied */
     abstract get order(): number;

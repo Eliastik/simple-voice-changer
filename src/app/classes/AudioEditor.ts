@@ -29,7 +29,6 @@ import { AudioFilterNodes } from "./model/AudioNodes";
 export default class AudioEditor extends AbstractAudioElement {
 
     private currentContext: AudioContext | null;
-    private configService: ConfigService | null;
     private entrypointFilter: (AbstractAudioFilter & AudioFilterEntrypointInterface) | null = null;
     private filters: AbstractAudioFilter[] = [];
     private renderers: AbstractAudioRenderer[] = [];
@@ -83,10 +82,12 @@ export default class AudioEditor extends AbstractAudioElement {
         for (const filter of this.filters) {
             filter.initializeDefaultSettings();
             filter.bufferFetcherService = this.bufferFetcherService;
+            filter.configService = this.configService;
         }
 
         for (const renderer of this.renderers) {
             renderer.bufferFetcherService = this.bufferFetcherService;
+            renderer.configService = this.configService;
         }
     }
 
@@ -365,7 +366,7 @@ export default class AudioEditor extends AbstractAudioElement {
      */
     isCompatibilityModeEnabled() {
         if (this.configService) {
-            return this.configService.getConfig(Constants.COMPATIBILITY_MODE_ENABLED) === "true";
+            return this.configService.getConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_ENABLED) === "true";
         }
 
         return this.compatibilityModeEnabled;
@@ -379,7 +380,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.compatibilityModeEnabled = enabled;
 
         if (this.configService) {
-            this.configService.setConfig(Constants.COMPATIBILITY_MODE_ENABLED, "" + enabled);
+            this.configService.setConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_ENABLED, "" + enabled);
         }
     }
 
@@ -389,7 +390,7 @@ export default class AudioEditor extends AbstractAudioElement {
      */
     isCompatibilityModeChecked() {
         if (this.configService) {
-            return this.configService.getConfig(Constants.COMPATIBILITY_MODE_CHECKED) === "true";
+            return this.configService.getConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_CHECKED) === "true";
         }
 
         return this.compatibilityModeChecked;
@@ -403,7 +404,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.compatibilityModeChecked = checked;
 
         if (this.configService) {
-            this.configService.setConfig(Constants.COMPATIBILITY_MODE_CHECKED, "" + checked);
+            this.configService.setConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_CHECKED, "" + checked);
         }
     }
 

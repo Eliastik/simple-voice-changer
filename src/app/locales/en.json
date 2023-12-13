@@ -8,7 +8,11 @@
             "colorThemeDark": "Dark theme",
             "language": "Language:",
             "compatibilityMode": "Compatibility mode/direct rendering:",
-            "compatibilityModeInfos": "This mode is automatically enabled when a compatibility issue is detected. Enable it if the application is not producing any sound. This mode also allows real-time modification of sounds, but saving the modified sounds will take longer due to technical constraints."
+            "compatibilityModeInfos": "This mode is automatically enabled when a compatibility issue is detected. Enable it if the application is not producing any sound. This mode also allows real-time modification of sounds, but saving the modified sounds will take longer due to technical constraints.",
+            "audioWorkletEnable": "AudioWorklet support:",
+            "audioWorkletEnableInfos": "Enables the use of AudioWorklet technology for certain filters (limiter, 8-bit effect). This improves performance of these filters and replaces deprecated technology.",
+            "soundtouchAudioWorkletEnable": "AudioWorklet support for Change speed / frequency filter (experimental):",
+            "soundtouchAudioWorkletEnableInfos": "Enables experimental use of AudioWorklet technology for this specific filter. This replaces deprecated technology."
         },
         "homeMenu": {
             "selectAudioFile": "Select an audio file",

@@ -1,6 +1,4 @@
 const Constants = {
-    COMPATIBILITY_MODE_ENABLED: "compatibility-mode-enabled",
-    COMPATIBILITY_MODE_CHECKED: "compatibility-mode-checked",
     AUDIO_EDITOR: "audioEditor",
     EXPORT_WAV_COMMAND: "exportWAV",
     AUDIO_WAV: "audio/wav",
@@ -29,6 +27,12 @@ const Constants = {
         BITCRUSHER: "bitcrusher-processor",
         LIMITER: "limiter-processor",
         SOUNDTOUCH: "soundtouch-worklet"
+    },
+    PREFERENCES_KEYS: {
+        COMPATIBILITY_MODE_ENABLED: "compatibility-mode-enabled",
+        COMPATIBILITY_MODE_CHECKED: "compatibility-mode-checked",
+        ENABLE_AUDIO_WORKLET: "enable-audio-worklet",
+        ENABLE_SOUNDTOUCH_AUDIO_WORKLET: "enable-soundtouch-audio-worklet"
     },
     // Enable or disable the use of Audio Worklet version of Soundtouch
     // If disabled, the ScriptProcessorNode version is used
