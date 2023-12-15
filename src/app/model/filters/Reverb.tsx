@@ -11,6 +11,14 @@ export const Reverb: Filter = {
     settingsModalTitle: "filters.reverb.settings.title",
     firstColumnStyle: "md:w-3/6",
     secondColumStyle: "md:w-5/6",
+    disabledCondition: (filterSettings: any) => {
+        if(filterSettings.downloadedBuffers
+            && filterSettings.downloadedBuffers.filter((buffer: string) => !buffer.startsWith("static/sounds/impulse_response")).length <= 0) {
+            return "filters.reverb.disabled";
+        }
+
+        return null;
+    },
     settingsForm: [
         {
             settingId: "labelInfo",

@@ -8,5 +8,6 @@ export default interface Filter {
     settingsForm?: SettingFormType[],
     settingsModalTitle?: string,
     firstColumnStyle?: string,
-    secondColumStyle?: string
+    secondColumStyle?: string,
+    disabledCondition?: (filterSettings: any) => string | null
 };

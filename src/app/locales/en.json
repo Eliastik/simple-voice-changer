@@ -180,7 +180,8 @@
                     "source": "Source",
                     "downloaded": "This environment has already been temporarily downloaded to your device",
                     "notDownloaded": "This environment has not been downloaded yet. By clicking Validate, the environment will be temporarily downloaded to your device."
-                }
+                },
+                "disabled": "This filter is currently unavailable, as no environment has yet been downloaded. Go to the filter settings, then select and download an environment, then click on Validate."
             }
         },
         "audioRecorder": {
