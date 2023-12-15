@@ -15,8 +15,8 @@
 * [x] - Audio worklet memory optimizations
 * [x] - Option to disable/enable audio worklet
     * [x] - AudioWorklet polyfill to ScriptProcessorNode
-* [ ] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
 * [ ] - Convert Vocoder to standard filter
+* [ ] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
 
 ### 2.1
 * [ ] - Audio Worklet fixes (Soundtouch only) :
@@ -35,8 +35,8 @@
 
 ## Would be good but not important
 
+* [x] - Fallback from Audio Worklets to ScriptProcessorNode for Limiter/Bitcrusher if there is an error loading worklet file
 * [ ] - Enhance limiter
-* [ ] - Fallback from Audio Worklets to ScriptProcessorNode for Limiter/Bitcrusher if there is an error loading worklet file
 * [ ] - Filter "Autotuner"?
 * [ ] - Save into localstorage filters settings?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?

@@ -7,7 +7,7 @@ const ErrorProcessingAudio = () => {
 
     return (
         <>
-            <input type="checkbox" id="errorLoadingAudioDialog" className="modal-toggle" checked={errorProcessingAudio} readOnly />
+            <input type="checkbox" id="errorProcessingAudioDialog" className="modal-toggle" checked={errorProcessingAudio} readOnly />
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.errorProcessingAudio.title")}</h3>

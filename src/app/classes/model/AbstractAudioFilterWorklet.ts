@@ -59,8 +59,7 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
      */
     protected isAudioWorkletEnabled() {
         if(this.configService) {
-            return this.configService.getConfig(Constants.PREFERENCES_KEYS.ENABLE_AUDIO_WORKLET) == "true"
-                || Constants.ENABLE_AUDIO_WORKLET;
+            return this.configService.isAudioWorkletEnabled();
         }
 
         return Constants.ENABLE_AUDIO_WORKLET;

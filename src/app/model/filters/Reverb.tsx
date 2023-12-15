@@ -23,12 +23,12 @@ export const Reverb: Filter = {
             settingType: SettingFormTypeEnum.SelectField,
             selectValues: [
                 {
-                    name: "Medium Damping Cave E002 M2S",
-                    value: "static/sounds/impulse_response.wav",
+                    name: Constants.DEFAULT_REVERB_ENVIRONMENT.name,
+                    value: Constants.DEFAULT_REVERB_ENVIRONMENT.url,
                     additionalData: {
-                        size: 1350278,
-                        link: "http://www.cksde.com/p_6_250.htm",
-                        addDuration: 4,
+                        size: Constants.DEFAULT_REVERB_ENVIRONMENT.size,
+                        link: Constants.DEFAULT_REVERB_ENVIRONMENT.link,
+                        addDuration: Constants.DEFAULT_REVERB_ENVIRONMENT.addDuration,
                     }
                 },
                 {

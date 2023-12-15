@@ -45,7 +45,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         // In offline (compatibility) mode
         if(offline) {
             // If the settings are untouched, we don't use Soundtouch
-            if(this.speedAudio == 1 && this.frequencyAudio == 1) {
+            if(!this.isEnabled() || (this.speedAudio == 1 && this.frequencyAudio == 1)) {
                 // Just return an audio buffer source node
                 const bufferSource = context.createBufferSource();
                 bufferSource.buffer = buffer;
@@ -198,8 +198,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
 
     protected isAudioWorkletEnabled() {
         if(this.configService) {
-            return this.configService.getConfig(Constants.PREFERENCES_KEYS.ENABLE_SOUNDTOUCH_AUDIO_WORKLET) == "true"
-                || Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;
+            return this.configService.isSoundtouchAudioWorkletEnabled();
         }
 
         return Constants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;

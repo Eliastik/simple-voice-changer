@@ -38,7 +38,14 @@ const Constants = {
     // If disabled, the ScriptProcessorNode version is used
     ENABLE_SOUNDTOUCH_AUDIO_WORKLET: true,
     ENABLE_AUDIO_WORKLET: true,
-    SOUNDTOUCH_PITCH_SHIFTER_BUFFER_SIZE: 16384
+    SOUNDTOUCH_PITCH_SHIFTER_BUFFER_SIZE: 16384,
+    DEFAULT_REVERB_ENVIRONMENT: {
+        name: "Medium Damping Cave E002 M2S",
+        url: "static/sounds/impulse_response.wav",
+        size: 1350278,
+        addDuration: 4,
+        link: "http://www.cksde.com/p_6_250.htm"
+    }
 };
 
 export default Constants;

@@ -265,7 +265,7 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /**
-     * Setup output buffers/nodes
+     * Setup output buffers/nodes, then process the audio
      * @param outputContext Output audio context
      * @param durationAudio Duration of the audio buffer
      * @param offlineContext An offline context to do the rendering (can be omited, in this case the rendering is done in real time - "compatibility mode")

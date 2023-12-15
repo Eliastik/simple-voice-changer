@@ -50,7 +50,13 @@ export default class ApplicationConfigService implements ConfigService {
     }
 
     public isAudioWorkletEnabled(): boolean {
-        return this.getConfig(LibConstants.PREFERENCES_KEYS.ENABLE_AUDIO_WORKLET) == "true" || LibConstants.ENABLE_AUDIO_WORKLET;
+        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.ENABLE_AUDIO_WORKLET);
+
+        if(setting != null) {
+            return setting == "true";
+        }
+
+        return LibConstants.ENABLE_AUDIO_WORKLET;
     }
 
     public enableSoundtouchAudioWorklet(enable: boolean) {
@@ -58,7 +64,13 @@ export default class ApplicationConfigService implements ConfigService {
     }
 
     public isSoundtouchAudioWorkletEnabled(): boolean {
-        return this.getConfig(LibConstants.PREFERENCES_KEYS.ENABLE_SOUNDTOUCH_AUDIO_WORKLET) == "true" || LibConstants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;
+        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.ENABLE_SOUNDTOUCH_AUDIO_WORKLET);
+
+        if(setting != null) {
+            return setting == "true";
+        }
+
+        return LibConstants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;
     }
 
     /** Get current theme from OS (dark/light) */

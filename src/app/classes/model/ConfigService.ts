@@ -11,4 +11,14 @@ export interface ConfigService {
      * @param value The config value
      */
     setConfig(key: string, value: string): void;
+
+    /**
+     * Check if AudioWorklet is enabled for the filters
+     */
+    isAudioWorkletEnabled(): boolean;
+
+    /** 
+     * Check if AudioWorklet mode is enabled for Soundtouch
+     */
+    isSoundtouchAudioWorkletEnabled(): boolean;
 };

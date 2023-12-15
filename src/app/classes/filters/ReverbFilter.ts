@@ -3,13 +3,7 @@ import Constants from "../model/Constants";
 import { ReverbEnvironment } from "../model/ReverbEnvironment";
 
 export default class ReverbFilter extends AbstractAudioFilter {
-    private reverbEnvironment: ReverbEnvironment = {
-        name: "Medium Damping Cave E002 M2S",
-        url: "static/sounds/impulse_response.wav",
-        size: 1350278,
-        addDuration: 4,
-        link: "http://www.cksde.com/p_6_250.htm"
-    };
+    private reverbEnvironment: ReverbEnvironment = Constants.DEFAULT_REVERB_ENVIRONMENT;
 
     getNode(context: BaseAudioContext) {
         const convolver = context.createConvolver();
