@@ -45,8 +45,7 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
             { name: "attackTime", defaultValue: 0 },
             { name: "releaseTime", defaultValue: 3 },
             { name: "threshold", defaultValue: -0.05 },
-            { name: "lookAheadTime", defaultValue: 0 },
-            { name: "sampleRate", defaultValue: 44100 }
+            { name: "lookAheadTime", defaultValue: 0 }
         ];
     }
 
@@ -108,39 +107,34 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
 
         // apply pre gain to signal
         // compute the envelope for each channel
-        for (let channel = 0; channel < inputBuffer.length; channel++) {
+        for (let channel = 0; channel < outputBuffer.length; channel++) {
             const inp = inputBuffer[channel];
             const out = outputBuffer[channel];
 
             // create a delay buffer
             if (this.delayBuffer[channel] == null) {
-                this.delayBuffer[channel] = new DelayBuffer(parameters.lookAheadTime[0] * parameters.sampleRate[0]);
+                this.delayBuffer[channel] = new DelayBuffer(parameters.lookAheadTime[0] * sampleRate);
             }
 
             // apply pre gain to signal
-            for (let k = 0; k < inp.length; ++k) {
-                out[k] = preGainAmp * inp[k];
+            if(inp) {
+                for (let k = 0; k < inp.length; ++k) {
+                    out[k] = preGainAmp * inp[k];
+                }
             }
-
+            
             // compute the envelope
-            envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], parameters.sampleRate[0]);
+            envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], sampleRate);
+        }
+
+        for (let channel = 0; channel < outputBuffer.length; channel++) {
+            const inp = inputBuffer[channel];
+            const out = outputBuffer[channel];
 
             if (parameters.lookAheadTime[0] > 0) {
                 // write signal into buffer and read delayed signal
                 for (let i = 0; i < out.length; i++) {
                     this.delayBuffer[channel].push(out[i]);
-                }
-            }
-        }
-
-        for (let channel = 0; channel < inputBuffer.length; channel++) {
-            const inp = inputBuffer[channel];
-            const out = outputBuffer[channel];
-
-            // If look-ahead is enabled, read delayed signal from buffer
-            if (parameters.lookAheadTime[0] > 0) {
-                // write signal into buffer and read delayed signal
-                for (let i = 0; i < out.length; i++) {
                     out[i] = this.delayBuffer[channel].read();
                 }
             }
@@ -148,13 +142,15 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
             // limiter mode: slope is 1
             const slope = 1;
 
-            for (let i = 0; i < inp.length; i++) {
-                let gainDB = slope * (parameters.threshold[0] - this.ampToDB(this.getMaxEnvelope(envelopeData, inputBuffer.length, i))); // max gain
+            if(inp) {
+                for (let i = 0; i < inp.length; i++) {
+                    let gainDB = slope * (parameters.threshold[0] - this.ampToDB(this.getMaxEnvelope(envelopeData, outputBuffer.length, i))); // max gain
 
-                // is gain below zero?
-                gainDB = Math.min(0, gainDB);
-                const gain = this.dBToAmp(gainDB);
-                out[i] *= (gain * postGainAmp);
+                    // is gain below zero?
+                    gainDB = Math.min(0, gainDB);
+                    const gain = this.dBToAmp(gainDB);
+                    out[i] *= (gain * postGainAmp);
+                }
             }
         }
 

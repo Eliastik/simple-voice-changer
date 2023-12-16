@@ -311,24 +311,19 @@ export default class AudioEditor extends AbstractAudioElement {
      * @returns The audio duration
      */
     private calculateAudioDuration(speedAudio: number): number {
-        let reverb = false;
-        let reverbAddDuration = 1;
-        let echo = false;
+        if(this.principalBuffer) {
+            let duration = utils.calcAudioDuration(this.principalBuffer, speedAudio);
 
-        for (const filter of this.filters) {
-            if (filter.isEnabled()) {
-                if (filter.id == Constants.FILTERS_NAMES.REVERB) {
-                    reverb = true;
-                    reverbAddDuration = filter.getSettings().reverbEnvironment.additionalData.addDuration;
-                }
-
-                if (filter.id == Constants.FILTERS_NAMES.ECHO) {
-                    echo = true;
+            for (const filter of this.filters) {
+                if (filter.isEnabled()) {
+                    duration += filter.getAddingTime();
                 }
             }
+
+            return duration;
         }
 
-        return utils.calcAudioDuration(this.principalBuffer!, speedAudio, reverb, reverbAddDuration, echo);
+        return 0;
     }
 
     get order(): number {

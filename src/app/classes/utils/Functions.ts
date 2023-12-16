@@ -1,18 +1,10 @@
 const utilFunctions = {
-    calcAudioDuration: (audio: AudioBuffer, speed: number, reverb: boolean, reverbAddDuration: number, echo: boolean) => {
+    calcAudioDuration: (audio: AudioBuffer, speed: number) => {
         if (audio) {
             let duration = audio.duration + 1;
-            const reverb_duration = reverbAddDuration;
 
-            if (speed) duration = duration / speed;
-
-            if (echo && reverb) {
-                const addDuration = Math.max(5, reverb_duration);
-                duration = duration + addDuration;
-            } else if (echo) {
-                duration = duration + 5;
-            } else if (reverb) {
-                duration = duration + reverb_duration;
+            if (speed) {
+                duration = duration / speed;
             }
 
             return duration;
@@ -74,7 +66,7 @@ const utilFunctions = {
     convertAudioBufferToFloat32Array: (buffer: AudioBuffer) => {
         const array: Float32Array[] = [];
 
-        for(let channel = 0; channel < buffer.numberOfChannels; channel++) {
+        for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
             array.push(buffer.getChannelData(channel));
         }
 
@@ -83,7 +75,7 @@ const utilFunctions = {
     convertAudioParamToFloat32Array: (param: AudioParam, length: number) => {
         const array = new Float32Array(length);
 
-        for(let i = 0; i < length; i++) {
+        for (let i = 0; i < length; i++) {
             array.set([param.value], i);
         }
 

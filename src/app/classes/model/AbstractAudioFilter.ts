@@ -10,6 +10,11 @@ export default abstract class AbstractAudioFilter extends AbstractAudioElement {
     abstract getSettings(): any;
     /** Set a filter setting */
     abstract setSetting(settingId: string, value: string): Promise<void>;
+    
+    /** Get the amount of time this filter add to the audio */
+    getAddingTime(): number {
+        return 0;
+    }
 
     /** Store the default settings */
     public initializeDefaultSettings() {

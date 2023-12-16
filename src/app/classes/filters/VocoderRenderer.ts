@@ -10,7 +10,7 @@ export default class VocoderRenderer extends AbstractAudioRenderer {
 
     renderAudio(context: BaseAudioContext, buffer: AudioBuffer): Promise<AudioBuffer> {
         return new Promise(resolve => {
-            const durationAudio = utils.calcAudioDuration(buffer, 1, false, 0, false);
+            const durationAudio = utils.calcAudioDuration(buffer, 1);
             const offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
             
             offlineContext.oncomplete = e => {

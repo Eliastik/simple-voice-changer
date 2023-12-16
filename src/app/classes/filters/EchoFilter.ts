@@ -35,6 +35,10 @@ export default class EchoFilter extends AbstractAudioFilter {
         return Constants.FILTERS_NAMES.ECHO;
     }
 
+    getAddingTime() {
+        return 5;
+    }
+
     getSettings() {
         return {
             delay: this.delay,

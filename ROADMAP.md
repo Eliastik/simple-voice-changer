@@ -15,8 +15,8 @@
 * [x] - Audio worklet memory optimizations
 * [x] - Option to disable/enable audio worklet
     * [x] - AudioWorklet polyfill to ScriptProcessorNode
+* [x] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
 * [ ] - Convert Vocoder to standard filter
-* [ ] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
 
 ### 2.1
 * [ ] - Audio Worklet fixes (Soundtouch only) :

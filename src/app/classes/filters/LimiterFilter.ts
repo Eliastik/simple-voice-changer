@@ -3,7 +3,6 @@ import Constants from "../model/Constants";
 import worklets from "./worklets";
 
 export default class LimiterFilter extends AbstractAudioFilterWorklet {
-    private sampleRate = 44100; // Hz
     private preGain = 0; // dB
     private postGain = 0; // dB
     private attackTime = 0; // s
@@ -43,6 +42,10 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
         return new worklets.LimiterProcessor();
     }
 
+    getAddingTime() {
+        return this.lookAheadTime;
+    }
+
     getSettings() {
         return {
             preGain: this.preGain,
@@ -50,8 +53,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
             attackTime: this.attackTime,
             releaseTime: this.releaseTime,
             threshold: this.threshold,
-            lookAheadTime: this.lookAheadTime,
-            sampleRate: this.sampleRate
+            lookAheadTime: this.lookAheadTime
         };
     }
 
@@ -78,9 +80,6 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
             break;
         case "lookAheadTime":
             this.lookAheadTime = parseFloat(value);
-            break;
-        case "sampleRate":
-            this.sampleRate = parseFloat(value);
             break;
         }
 

@@ -92,7 +92,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
      * @returns A promise resolving to audio nodes with the rendered audio as a buffer source
      */
     private async renderWithScriptProcessorNode(buffer: AudioBuffer, context: BaseAudioContext): Promise<AudioFilterNodes> {
-        const durationAudio = utils.calcAudioDuration(buffer, 1, false, 0, false);
+        const durationAudio = utils.calcAudioDuration(buffer, this.speedAudio);
         const offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
 
         if (this.currentPitchShifter) {
@@ -124,7 +124,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
      * @returns A promise resolving to audio nodes with the rendered audio as a buffer source
      */
     private async renderWithWorklet(buffer: AudioBuffer, context: BaseAudioContext): Promise<AudioFilterNodes> {
-        const durationAudio = utils.calcAudioDuration(buffer, 1, false, 0, false);
+        const durationAudio = utils.calcAudioDuration(buffer, this.speedAudio);
         const offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
 
         try {
@@ -224,20 +224,20 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
     updateState(): void {
         const pitchShifter = this.getCurrentPitchShifter();
 
-        if(pitchShifter) {
-            if(this.isEnabled()) {
-                pitchShifter.tempo = this.speedAudio;
-                this.currentSpeedAudio = this.speedAudio;
-            } else {
-                pitchShifter.tempo = 1;
-                this.currentSpeedAudio = 1;
-            }
-    
-            if(this.isEnabled()) {
-                pitchShifter.pitch = this.frequencyAudio;
-            } else {
+        if(!this.isEnabled()) {
+            if(pitchShifter) {
                 pitchShifter.pitch = 1;
+                pitchShifter.tempo = 1;
             }
+                
+            this.currentSpeedAudio = 1;
+        } else {
+            if(pitchShifter) {
+                pitchShifter.pitch = this.frequencyAudio;
+                pitchShifter.tempo = this.speedAudio;
+            }
+            
+            this.currentSpeedAudio = this.speedAudio;
         }
     }
 
@@ -259,6 +259,11 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             break;
         }
 
+        this.updateState();
+    }
+
+    setEnabled(state: boolean): void {
+        super.setEnabled(state);
         this.updateState();
     }
 

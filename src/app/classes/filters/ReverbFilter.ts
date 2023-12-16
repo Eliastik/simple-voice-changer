@@ -26,6 +26,16 @@ export default class ReverbFilter extends AbstractAudioFilter {
         return Constants.FILTERS_NAMES.REVERB;
     }
 
+    getAddingTime() {
+        const settings = this.getSettings();
+
+        if(settings && settings.reverbEnvironment) {
+            return settings.reverbEnvironment.additionalData.addDuration;
+        }
+
+        return 0;
+    }
+
     getSettings() {
         if(!this.reverbEnvironment) {
             return {};
