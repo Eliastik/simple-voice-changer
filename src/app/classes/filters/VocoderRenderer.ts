@@ -1,7 +1,7 @@
 import AbstractAudioRenderer from "../model/AbstractAudioRenderer";
 import Constants from "../model/Constants";
 import Functions from "../utils/Functions";
-import vocoder from "../utils/Vocoder";
+import Vocoder from "../utils/Vocoder";
 
 export default class VocoderRenderer extends AbstractAudioRenderer {
 
@@ -19,10 +19,11 @@ export default class VocoderRenderer extends AbstractAudioRenderer {
             };
 
             if(this.bufferFetcherService) {
-                const modulator = this.bufferFetcherService.getAudioBuffer("modulator.mp3");
+                const modulatorBuffer = this.bufferFetcherService.getAudioBuffer(Constants.VOCODER_MODULATOR);
 
-                if(modulator) {
-                    vocoder(offlineContext, modulator, buffer);
+                if(modulatorBuffer) {
+                    const vocoder = new Vocoder(offlineContext, modulatorBuffer!, buffer);
+                    vocoder.init();
                 }
             }
 

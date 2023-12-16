@@ -45,7 +45,8 @@ const Constants = {
         size: 1350278,
         addDuration: 4,
         link: "http://www.cksde.com/p_6_250.htm"
-    }
+    },
+    VOCODER_MODULATOR: "modulator.mp3"
 };
 
 export default Constants;

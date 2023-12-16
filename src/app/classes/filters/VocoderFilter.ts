@@ -1,14 +1,17 @@
 import AbstractAudioFilter from "../model/AbstractAudioFilter";
 import { AudioFilterNodes } from "../model/AudioNodes";
 import Constants from "../model/Constants";
-import vocoder from "../utils/Vocoder";
+import Vocoder from "../utils/Vocoder";
 
 export default class VocoderFilter extends AbstractAudioFilter {
 
     getNode(context: BaseAudioContext): AudioFilterNodes {
-        const modulatorBuffer = this.bufferFetcherService?.getAudioBuffer("modulator.mp3");
+        const modulatorBuffer = this.bufferFetcherService?.getAudioBuffer(Constants.VOCODER_MODULATOR);
 
-        const { modulatorGain, outputGain } = vocoder(context, modulatorBuffer!);
+        const vocoder = new Vocoder(context, modulatorBuffer!);
+        vocoder.init();
+
+        const { modulatorGain, outputGain } = vocoder.getNodes();
 
         return {
             input: modulatorGain!,
