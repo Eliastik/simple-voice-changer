@@ -12,7 +12,6 @@ import ReturnAudioRenderer from "./filters/ReturnAudioRenderer";
 import ReverbFilter from "./filters/ReverbFilter";
 import SoundtouchWrapperFilter from "./filters/SountouchWrapperFilter";
 import TelephonizerFilter from "./filters/TelephonizerFilter";
-import VocoderRenderer from "./filters/VocoderRenderer";
 import utils from "./utils/Functions";
 import BufferPlayer from "./BufferPlayer";
 import BufferFetcherService from "./BufferFetcherService";
@@ -25,6 +24,7 @@ import Constants from "./model/Constants";
 import { Recorder, getRecorderWorker } from "recorderjs";
 import AbstractAudioFilterWorklet from "./model/AbstractAudioFilterWorklet";
 import { AudioFilterNodes } from "./model/AudioNodes";
+import VocoderFilter from "./filters/VocoderFilter";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -100,20 +100,20 @@ export default class AudioEditor extends AbstractAudioElement {
         const lowPass = new LowPassFilter(3500);
         const reverb = new ReverbFilter();
         const soundtouchWrapper = new SoundtouchWrapperFilter();
-        const limiterFilter = new LimiterFilter(0, 0, 0, 3, -0.05, 0.05);
+        const limiterFilter = new LimiterFilter(0, 0, 0, 3, -0.05, 0.1);
         const telephonizerFilter = new TelephonizerFilter();
         const passthroughfilter = new PassThroughFilter();
+        const vocoder = new VocoderFilter();
 
         this.entrypointFilter = soundtouchWrapper;
-        this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper, passthroughfilter);
+        this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper, passthroughfilter, vocoder);
     }
 
     /** Setup the renderers */
     setupRenderers() {
         const returnAudio = new ReturnAudioRenderer();
-        const vocoder = new VocoderRenderer();
 
-        this.renderers.push(returnAudio, vocoder);
+        this.renderers.push(returnAudio);
     }
 
     /**

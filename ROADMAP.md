@@ -16,12 +16,12 @@
 * [x] - Option to disable/enable audio worklet
     * [x] - AudioWorklet polyfill to ScriptProcessorNode
 * [x] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
-    * [ ] - Optimize default look-ahead value
-* [ ] - Convert Vocoder to standard filter
+    * [x] - Optimize default look-ahead value
+* [x] - Convert Vocoder to standard filter
+* [ ] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode), audio channels number
 
 ### 2.1
 
-* [ ] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode), audio channels number
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)

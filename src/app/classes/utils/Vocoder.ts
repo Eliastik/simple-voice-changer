@@ -31,10 +31,10 @@
 
 // Since all this stuff depends on global data, just wrap it all in a clousure
 // for tidyness, and so we can call it multiple times.
-export default function vocoder(ctx: AudioContext | OfflineAudioContext, cb: AudioBuffer, mb: AudioBuffer) {
+export default function vocoder(ctx: BaseAudioContext, cb: AudioBuffer, mb?: AudioBuffer) {
 
-    let audioContext: AudioContext | OfflineAudioContext | null = null;
-    let modulatorBuffer: AudioBuffer | null = null;
+    let audioContext: BaseAudioContext | null = null;
+    let modulatorBuffer: AudioBuffer | undefined;
     let carrierBuffer: AudioBuffer | null = null;
     let modulatorNode: AudioBufferSourceNode | null = null;
     let carrierNode = null;
@@ -89,6 +89,7 @@ export default function vocoder(ctx: AudioContext | OfflineAudioContext, cb: Aud
     let numVocoderBands: number;
 
     let hpFilterGain = null;
+    let outputGain = null;
 
     function shutOffCarrier() {
         if (oscillatorNode && noiseNode && carrierSampleNode) {
@@ -239,7 +240,10 @@ export default function vocoder(ctx: AudioContext | OfflineAudioContext, cb: Aud
         hpFilterGain.gain.value = 0.0;
 
         hpFilter.connect(hpFilterGain);
-        hpFilterGain.connect(audioContext.destination);
+
+        if(modulatorBuffer) {
+            hpFilterGain.connect(audioContext.destination);
+        }
 
         //clear the arrays
         modFilterBands.length = 0;
@@ -252,8 +256,11 @@ export default function vocoder(ctx: AudioContext | OfflineAudioContext, cb: Aud
         carrierFilterPostGains.length = 0;
         carrierBandGains.length = 0;
 
-        let outputGain = audioContext.createGain();
-        outputGain.connect(audioContext.destination);
+        outputGain = audioContext.createGain();
+
+        if(modulatorBuffer) {
+            outputGain.connect(audioContext.destination);
+        }
 
         let rectifierCurve = new Float32Array(65536);
         for (let i = -32768; i < 32768; i++)
@@ -444,18 +451,22 @@ export default function vocoder(ctx: AudioContext | OfflineAudioContext, cb: Aud
 
         vocoding = true;
 
-        modulatorNode = audioContext.createBufferSource();
-        modulatorNode.buffer = modulatorBuffer;
         modulatorGain = audioContext.createGain();
         modulatorGain.gain.value = modulatorGainValue;
-        modulatorNode.connect(modulatorGain);
+
+        if(modulatorBuffer) {
+            modulatorNode = audioContext.createBufferSource();
+            modulatorNode.buffer = modulatorBuffer;
+            modulatorNode.connect(modulatorGain);
+            modulatorNode.start(0);
+        }
+
         if (modulatorInput)
             modulatorGain.connect(modulatorInput);
-        modulatorNode.start(0);
     }
 
     // Initialization function for the page.
-    function init(ctx: AudioContext | OfflineAudioContext, carrierB: AudioBuffer, modulatorB: AudioBuffer) {
+    function init(ctx: BaseAudioContext, carrierB: AudioBuffer, modulatorB?: AudioBuffer) {
         audioContext = ctx;
         carrierBuffer = carrierB;
         modulatorBuffer = modulatorB;
@@ -473,6 +484,8 @@ export default function vocoder(ctx: AudioContext | OfflineAudioContext, cb: Aud
         modulatorGain: modulatorGain,
         synthLevel: oscillatorGain,
         noiseNode: noiseGain,
-        oscillatorNode: oscillatorNode
+        oscillatorNode: oscillatorNode,
+        hpFilterGain: hpFilterGain,
+        outputGain: outputGain
     };
 }
