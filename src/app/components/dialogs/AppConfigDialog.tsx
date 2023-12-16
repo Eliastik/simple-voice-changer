@@ -10,7 +10,7 @@ const AppConfigDialog = () => {
 
     return (
         <dialog id="modalSettings" className="modal">
-            <div className="modal-box overflow-x-hidden">
+            <div className="modal-box">
                 <h3 className="font-bold text-lg">{t("appSettings.title")}</h3>
                 <form method="dialog">
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -47,7 +47,7 @@ const AppConfigDialog = () => {
                             </div>
                             <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
                                 <input type="checkbox" className="toggle" id="compatibilityMode" checked={isCompatibilityModeEnabled} onChange={(e) => toggleCompatibilityMode(e.target.checked)} />
-                                <div className="tooltip tooltip-top" data-tip={t("appSettings.compatibilityModeInfos")}>
+                                <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.compatibilityModeInfos")}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                     </svg>
@@ -62,7 +62,7 @@ const AppConfigDialog = () => {
                         <div className="collapse-title text-md">
                             {(t("appSettings.advanced"))}
                         </div>
-                        <div className="collapse-content flex flex-col">
+                        <div className="collapse-content flex flex-col overflow-visible">
                             <div className="mt-3">
                                 <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
                                     <div className="md:w-4/6">
@@ -70,7 +70,7 @@ const AppConfigDialog = () => {
                                     </div>
                                     <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
                                         <input type="checkbox" className="toggle" id="toggleAudioWorkletEnabled" checked={isAudioWorkletEnabled} onChange={(e) => toggleAudioWorklet(e.target.checked)} />
-                                        <div className="tooltip tooltip-top" data-tip={t("appSettings.audioWorkletEnableInfos")}>
+                                        <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.audioWorkletEnableInfos")}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                             </svg>
@@ -85,7 +85,7 @@ const AppConfigDialog = () => {
                                     </div>
                                     <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
                                         <input type="checkbox" className="toggle" id="toggleSoundtouchAudioWorkletEnabled" checked={isSoundtouchAudioWorkletEnabled} onChange={(e) => toggleSoundtouchAudioWorklet(e.target.checked)} />
-                                        <div className="tooltip tooltip-top" data-tip={t("appSettings.soundtouchAudioWorkletEnableInfos")}>
+                                        <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.soundtouchAudioWorkletEnableInfos")}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                             </svg>

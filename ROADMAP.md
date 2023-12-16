@@ -13,6 +13,7 @@
 * [x] - Fix building of audio worklets (imports)
 * [x] - Bundle SoundtouchWorkletProcessor
 * [x] - Audio worklet memory optimizations
+* [x] - Fallback from Audio Worklets to ScriptProcessorNode for Limiter/Bitcrusher if there is an error loading worklet file
 * [x] - Option to disable/enable audio worklet
     * [x] - AudioWorklet polyfill to ScriptProcessorNode
 * [x] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
@@ -31,14 +32,15 @@
 * [ ] - Edit volume/gain
 
 ### Other
+
 * [ ] - Transform the "classes" folder into a library (new Github repository)
 
 ### Future versions
+
 * [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible) + display processing progress
 
 ## Would be good but not important
 
-* [x] - Fallback from Audio Worklets to ScriptProcessorNode for Limiter/Bitcrusher if there is an error loading worklet file
 * [ ] - Enhance limiter
 * [ ] - Filter "Autotuner"?
 * [ ] - Save into localstorage filters settings?
