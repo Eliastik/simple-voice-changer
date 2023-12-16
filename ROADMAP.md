@@ -18,12 +18,13 @@
 * [x] - Limiter worklet: Regression with look ahead + increase audio length with look ahead time + performance
     * [x] - Optimize default look-ahead value
 * [x] - Convert Vocoder to standard filter
+* [x] - Audio Worklet fixes (Soundtouch only) :
+    * [x] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
 * [ ] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode), audio channels number
 
 ### 2.1
 
 * [ ] - Audio Worklet fixes (Soundtouch only) :
-    * [ ] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
 * [ ] - Send custom audio buffer environment for the reverb filter

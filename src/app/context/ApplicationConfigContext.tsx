@@ -6,7 +6,6 @@ import ApplicationConfigService from "./ApplicationConfigService";
 import i18next from "i18next";
 import { UpdateData } from "../model/UpdateData";
 import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
-import Constants from "../classes/model/Constants";
 
 const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
 

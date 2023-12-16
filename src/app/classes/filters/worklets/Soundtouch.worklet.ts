@@ -109,7 +109,7 @@ export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
 
         this.running = false;
 
-        if(this.filter) {
+        if (this.filter) {
             this.filter.clear();
             this.recordedSamples = [];
             this.inSamples = new Float32Array();
@@ -202,6 +202,11 @@ export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
         for (let i = 0; i < framesExtracted; i++) {
             left[i] = this.outSamples[i * 2];
             right[i] = this.outSamples[i * 2 + 1];
+
+            if (isNaN(left[i]) || isNaN(right[i])) {
+                left[i] = 0;
+                right[i] = 0;
+            }
         }
 
         return framesExtracted;

@@ -145,7 +145,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
                 processorOptions: {
                     bypass: false,
                     recording: false,
-                    nInputFrames: durationAudio * context.sampleRate,
+                    nInputFrames: this.approximateNInputFrames(durationAudio, context),
                     updateInterval: 10.0,
                     sampleRate: context.sampleRate
                 },
@@ -170,6 +170,11 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             console.error(e);
             return this.renderWithScriptProcessorNode(buffer, context);
         }
+    }
+
+    private approximateNInputFrames(durationAudio: number, context: BaseAudioContext) {
+        // {frequencyAudio, multiplicator}: {{0.1, 10}, {0.2, 5}, {0.3, 3.33}, {0.4, 2.5}, {0.5, 2}, {0.6, 1.67}, {0.7, 1.43}, {0.8, 1.25}, {0.9, 1.11}, {1, 1}}
+        return durationAudio * context.sampleRate * (Math.round(14 * Math.exp(-4 * this.frequencyAudio)) + 1);
     }
     
     get order(): number {

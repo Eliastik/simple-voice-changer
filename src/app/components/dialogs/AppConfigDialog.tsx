@@ -10,7 +10,7 @@ const AppConfigDialog = () => {
 
     return (
         <dialog id="modalSettings" className="modal">
-            <div className="modal-box overflow-y-visible">
+            <div className="modal-box overflow-x-hidden">
                 <h3 className="font-bold text-lg">{t("appSettings.title")}</h3>
                 <form method="dialog">
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>

@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const isDev = process.env.NODE_ENV === "development";
 require("dotenv").config({ path: `.env.${isDev ? "dev" : "prod"}` });
-const CopyPlugin = require("copy-webpack-plugin");
-const typescript = require("typescript");
 
 const withPWA = require("next-pwa")({
     dest: "public",
@@ -10,7 +8,7 @@ const withPWA = require("next-pwa")({
     disable: isDev,
     scope: process.env.BASE_PATH,
     exclude: [
-        ({ asset, compilation }) => {
+        ({ asset }) => {
             if (
                 asset.name.startsWith("server/") ||
         asset.name.startsWith("../public/worklets/") ||
