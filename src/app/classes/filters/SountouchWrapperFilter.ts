@@ -125,7 +125,6 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
      */
     private async renderWithWorklet(buffer: AudioBuffer, context: BaseAudioContext): Promise<AudioFilterNodes> {
         const durationAudio = utils.calcAudioDuration(buffer, this.speedAudio);
-        const offlineContext = new OfflineAudioContext(2, context.sampleRate * durationAudio, context.sampleRate);
 
         try {
             // Stop current worklet
@@ -134,15 +133,15 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             }
 
             // Setup worklet JS module
-            await offlineContext.audioWorklet.addModule(Constants.WORKLET_PATHS.SOUNDTOUCH);
+            await context.audioWorklet.addModule(Constants.WORKLET_PATHS.SOUNDTOUCH);
     
             // Setup an audio buffer source from the audio buffer
-            const bufferSource = offlineContext.createBufferSource();
+            const bufferSource = context.createBufferSource();
             bufferSource.buffer = buffer;
             bufferSource.start();
     
             // Create the worklet node
-            this.currentPitchShifterWorklet = new SoundtouchWrapperFilterWorkletNode(offlineContext, "soundtouch-worklet", {
+            this.currentPitchShifterWorklet = new SoundtouchWrapperFilterWorkletNode(context, "soundtouch-worklet", {
                 processorOptions: {
                     bypass: false,
                     recording: false,
@@ -154,7 +153,6 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
     
             // Connect the node for correct rendering
             bufferSource.connect(this.currentPitchShifterWorklet.node);
-            this.currentPitchShifterWorklet.node.connect(offlineContext.destination);
 
             // Setup pitch/speed of Soundtouch
             if(this.isEnabled()) {
@@ -162,17 +160,10 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             } else {
                 await this.currentPitchShifterWorklet.setup(1, 1);
             }
-            
-            // Start rendering, then when rendering is finished, returns the rendered buffer as a buffer source
-            const renderedBuffer = await offlineContext.startRendering();
-
-            const bufferSourceRendered = context.createBufferSource();
-            bufferSourceRendered.buffer = renderedBuffer;
-            bufferSourceRendered.start();
 
             return {
-                input: bufferSourceRendered,
-                output: bufferSourceRendered
+                input: this.currentPitchShifterWorklet,
+                output: this.currentPitchShifterWorklet
             };
         } catch(e) {
             // Fallback to script processor node
