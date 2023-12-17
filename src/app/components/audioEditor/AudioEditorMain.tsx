@@ -14,7 +14,7 @@ const AudioEditorMain = () => {
 
     return (
         <>
-            <div className="toast toast-top toast-center md:w-2/4 w-3/4 pointer-events-none">
+            <div className="toast toast-top toast-center md:w-2/4 w-3/4 pointer-events-none z-50">
                 {isCompatibilityModeAutoEnabled && <div className="alert alert-info text-center w-auto opacity-90 flex flex-col gap-y-1 pointer-events-none">
                     <span className="whitespace-normal">{t("audioEditorMain.compatibilityModeAutoEnabled")}</span>
                 </div>}

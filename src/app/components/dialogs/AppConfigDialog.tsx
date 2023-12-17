@@ -2,11 +2,27 @@ import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
+import Constants from "@/app/classes/model/Constants";
 
 const AppConfigDialog = () => {
-    const { currentThemeValue, setTheme, currentLanguageValue, setLanguage, isAudioWorkletEnabled, toggleAudioWorklet, isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet } = useApplicationConfig();
+    const {
+        currentThemeValue,
+        setTheme,
+        currentLanguageValue,
+        setLanguage, 
+        isAudioWorkletEnabled,
+        toggleAudioWorklet,
+        isSoundtouchAudioWorkletEnabled,
+        toggleSoundtouchAudioWorklet,
+        bufferSize,
+        changeBufferSize
+    } = useApplicationConfig();
     const { isCompatibilityModeEnabled, toggleCompatibilityMode } = useAudioEditor();
     const { t } = useTranslation();
+
+    const InfoIcon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+    </svg>;
 
     return (
         <dialog id="modalSettings" className="modal">
@@ -48,9 +64,7 @@ const AppConfigDialog = () => {
                             <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
                                 <input type="checkbox" className="toggle" id="compatibilityMode" checked={isCompatibilityModeEnabled} onChange={(e) => toggleCompatibilityMode(e.target.checked)} />
                                 <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.compatibilityModeInfos")}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                    </svg>
+                                    {InfoIcon}
                                 </div>
                             </div>
                         </div>
@@ -71,9 +85,7 @@ const AppConfigDialog = () => {
                                     <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
                                         <input type="checkbox" className="toggle" id="toggleAudioWorkletEnabled" checked={isAudioWorkletEnabled} onChange={(e) => toggleAudioWorklet(e.target.checked)} />
                                         <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.audioWorkletEnableInfos")}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                            </svg>
+                                            {InfoIcon}
                                         </div>
                                     </div>
                                 </div>
@@ -86,9 +98,22 @@ const AppConfigDialog = () => {
                                     <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
                                         <input type="checkbox" className="toggle" id="toggleSoundtouchAudioWorkletEnabled" checked={isSoundtouchAudioWorkletEnabled} onChange={(e) => toggleSoundtouchAudioWorklet(e.target.checked)} />
                                         <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.soundtouchAudioWorkletEnableInfos")}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                            </svg>
+                                            {InfoIcon}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-3">
+                                <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                                    <div className="md:w-2/6">
+                                        <label htmlFor="bufferSizeInput">{t("appSettings.bufferSize")}</label>
+                                    </div>
+                                    <div className="flex flex-row gap-x-2 items-center">
+                                        <select className="select select-bordered flex-1" id="bufferSizeInput" value={bufferSize} onChange={(e) => changeBufferSize(parseInt(e.target.value))}>
+                                            {Constants.VALID_BUFFER_SIZE.map(size => <option value={size} key={size}>{size != 0 ? size : t("appSettings.defaultBufferSize")}</option>)}
+                                        </select>
+                                        <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.bufferSizeInfos")}>
+                                            {InfoIcon}
                                         </div>
                                     </div>
                                 </div>

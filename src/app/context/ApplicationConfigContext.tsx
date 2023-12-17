@@ -40,6 +40,8 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const [isAudioWorkletEnabled, setAudioWorkletEnabled] = useState(false);
     // State: audio worklet enabled/disabled
     const [isSoundtouchAudioWorkletEnabled, setSoundtouchAudioWorkletEnabled] = useState(false);
+    // State: buffer size
+    const [bufferSize, setBufferSize] = useState(0);
 
     useEffect(() => {
         setCurrentTheme(getService().getCurrentTheme());
@@ -48,6 +50,7 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setAudioWorkletEnabled(getService().isAudioWorkletEnabled());
         setSoundtouchAudioWorkletEnabled(getService().isSoundtouchAudioWorkletEnabled());
         getService().checkAppUpdate().then(result => setUpdateData(result));
+        setBufferSize(getService().getBufferSize());
     }, []);
 
     const setTheme = (theme: string) => {
@@ -82,11 +85,16 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setSoundtouchAudioWorkletEnabled(enabled);
     };
 
+    const changeBufferSize = (size: number) => {
+        getService().setBufferSize(size);
+        setBufferSize(size);
+    };
+
     return (
         <ApplicationConfigContext.Provider value={{
             currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
             updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
-            isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet
+            isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize
         }}>
             {children}
         </ApplicationConfigContext.Provider>

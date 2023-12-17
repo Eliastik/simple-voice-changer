@@ -11,7 +11,7 @@ const AudioPlayer = () => {
 
     return (
         <>
-            <div className="toast toast-top toast-center lg:w-1/4 md:w-2/4 w-3/4 pointer-events-none">
+            <div className="toast toast-top toast-center lg:w-1/4 md:w-2/4 w-3/4 pointer-events-none z-50">
                 {downloadingAudio && <div className="alert alert-info text-center w-auto opacity-90 flex flex-col gap-y-1 pointer-events-none">
                     <span className="whitespace-normal">{t("audioPlayer.preparingAudioDownload")}</span>
                     {isCompatibilityModeEnabled && <span className="whitespace-normal">{t("audioPlayer.preparingAudioDownloadWithCompatibility")}</span>}

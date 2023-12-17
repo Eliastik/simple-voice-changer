@@ -74,7 +74,7 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
         if (this.isAudioWorkletEnabled() && !this.fallbackToScriptProcessor) {
             this.currentWorkletNode = new AudioWorkletNode(context, workletName);
         } else {
-            this.currentWorkletNode = new WorkletScriptProcessorNodeAdapter(context, this.constructAudioWorkletProcessor());
+            this.currentWorkletNode = new WorkletScriptProcessorNodeAdapter(context, this.constructAudioWorkletProcessor(), this.configService?.getBufferSize());
         }
     }
 

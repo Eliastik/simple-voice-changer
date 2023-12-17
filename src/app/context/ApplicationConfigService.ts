@@ -73,6 +73,20 @@ export default class ApplicationConfigService implements ConfigService {
         return LibConstants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;
     }
 
+    public setBufferSize(value: number) {
+        this.setConfig(LibConstants.PREFERENCES_KEYS.BUFFER_SIZE, "" + value);
+    }
+
+    public getBufferSize(): number {
+        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.BUFFER_SIZE);
+
+        if(setting != null) {
+            return parseInt(setting);
+        }
+
+        return LibConstants.DEFAULT_BUFFER_SIZE;
+    }
+
     /** Get current theme from OS (dark/light) */
     private getUserThemePreference(): string {
         if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {

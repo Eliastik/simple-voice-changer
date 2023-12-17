@@ -21,4 +21,9 @@ export interface ConfigService {
      * Check if AudioWorklet mode is enabled for Soundtouch
      */
     isSoundtouchAudioWorkletEnabled(): boolean;
+
+    /**
+     * Get buffer size setting
+     */
+    getBufferSize(): number;
 };

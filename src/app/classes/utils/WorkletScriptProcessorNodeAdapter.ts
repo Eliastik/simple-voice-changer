@@ -14,13 +14,13 @@ export default class WorkletScriptProcessorNodeAdapter {
     private _scriptProcessorNode: ScriptProcessorNode | null;
     private currentContext: BaseAudioContext | null = null;
 
-    constructor(context: BaseAudioContext, node: SimpleAudioWorkletProcessor) {
+    constructor(context: BaseAudioContext, node: SimpleAudioWorkletProcessor, bufferSize?: number) {
         this.workletProcessor = node;
         this.currentContext = context;
 
         // Create a ScriptProcessorNode with the same number of input and output channels
         this._scriptProcessorNode = context.createScriptProcessor(
-            0,
+            bufferSize,
             2,
             2
         );

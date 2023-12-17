@@ -13,5 +13,7 @@ export default interface ApplicationConfigContextProps {
     isAudioWorkletEnabled: boolean,
     toggleAudioWorklet: (enabled: boolean) => void,
     isSoundtouchAudioWorkletEnabled: boolean,
-    toggleSoundtouchAudioWorklet: (enabled: boolean) => void
+    toggleSoundtouchAudioWorklet: (enabled: boolean) => void,
+    bufferSize: number,
+    changeBufferSize: (size: number) => void
 };

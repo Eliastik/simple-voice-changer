@@ -20,6 +20,10 @@
     left: -18px;
 }
 
+.tooltip.tooltip-config-dialog-input::before {
+    position: absolute;
+    left: -140px;
+}
 
 @responsive {
     .tooltip.tooltip-config-dialog-md::before {

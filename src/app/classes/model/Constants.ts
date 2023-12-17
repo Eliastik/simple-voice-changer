@@ -32,7 +32,8 @@ const Constants = {
         COMPATIBILITY_MODE_ENABLED: "compatibility-mode-enabled",
         COMPATIBILITY_MODE_CHECKED: "compatibility-mode-checked",
         ENABLE_AUDIO_WORKLET: "enable-audio-worklet",
-        ENABLE_SOUNDTOUCH_AUDIO_WORKLET: "enable-soundtouch-audio-worklet"
+        ENABLE_SOUNDTOUCH_AUDIO_WORKLET: "enable-soundtouch-audio-worklet",
+        BUFFER_SIZE: "buffer-size"
     },
     // Enable or disable the use of Audio Worklet version of Soundtouch
     // If disabled, the ScriptProcessorNode version is used
@@ -46,7 +47,9 @@ const Constants = {
         addDuration: 4,
         link: "http://www.cksde.com/p_6_250.htm"
     },
-    VOCODER_MODULATOR: "modulator.mp3"
+    VOCODER_MODULATOR: "modulator.mp3",
+    DEFAULT_BUFFER_SIZE: 0,
+    VALID_BUFFER_SIZE: [0, 256, 512, 1024, 2048, 4096, 8192, 16384]
 };
 
 export default Constants;
