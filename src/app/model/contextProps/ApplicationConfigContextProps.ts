@@ -15,5 +15,7 @@ export default interface ApplicationConfigContextProps {
     isSoundtouchAudioWorkletEnabled: boolean,
     toggleSoundtouchAudioWorklet: (enabled: boolean) => void,
     bufferSize: number,
-    changeBufferSize: (size: number) => void
+    changeBufferSize: (size: number) => void,
+    sampleRate: number,
+    changeSampleRate: (frequency: number) => void
 };

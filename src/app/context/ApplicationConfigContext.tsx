@@ -18,7 +18,7 @@ export const useApplicationConfig = (): ApplicationConfigContextProps => {
 };
 
 interface ApplicationConfigProviderProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 const getService = (): ApplicationConfigService => {
@@ -42,6 +42,8 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const [isSoundtouchAudioWorkletEnabled, setSoundtouchAudioWorkletEnabled] = useState(false);
     // State: buffer size
     const [bufferSize, setBufferSize] = useState(0);
+    // State: sample rate
+    const [sampleRate, setSampleRate] = useState(0);
 
     useEffect(() => {
         setCurrentTheme(getService().getCurrentTheme());
@@ -49,8 +51,10 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setAlreadyUsed(getService().hasAlreadyUsedApp());
         setAudioWorkletEnabled(getService().isAudioWorkletEnabled());
         setSoundtouchAudioWorkletEnabled(getService().isSoundtouchAudioWorkletEnabled());
-        getService().checkAppUpdate().then(result => setUpdateData(result));
         setBufferSize(getService().getBufferSize());
+        setSampleRate(getService().getSampleRate());
+
+        getService().checkAppUpdate().then(result => setUpdateData(result));
     }, []);
 
     const setTheme = (theme: string) => {
@@ -90,11 +94,17 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setBufferSize(size);
     };
 
+    const changeSampleRate = (frequency: number) => {
+        getService().setSampleRate(frequency);
+        setSampleRate(frequency);
+    };
+
     return (
         <ApplicationConfigContext.Provider value={{
             currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
             updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
-            isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize
+            isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize,
+            sampleRate, changeSampleRate
         }}>
             {children}
         </ApplicationConfigContext.Provider>

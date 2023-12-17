@@ -3,14 +3,12 @@ import Constants from "../model/Constants";
 import worklets from "./worklets";
 
 export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
-    private bufferSize = 4096;
     private channels = 2;
     private bits = 8;
     private normFreq = 0.15;
 
-    constructor(bufferSize: number, channels: number, bits: number, normFreq: number) {
+    constructor(channels: number, bits: number, normFreq: number) {
         super();
-        this.bufferSize = bufferSize;
         this.channels = channels;
         this.bits = bits;
         this.normFreq = normFreq;
@@ -38,7 +36,6 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
 
     getSettings() {
         return {
-            bufferSize: this.bufferSize,
             channels: this.channels,
             bits: this.bits,
             normFreq: this.normFreq,

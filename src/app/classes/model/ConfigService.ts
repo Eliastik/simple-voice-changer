@@ -26,4 +26,9 @@ export interface ConfigService {
      * Get buffer size setting
      */
     getBufferSize(): number;
+
+    /**
+     * Get sample rate, or 0 for auto
+     */
+    getSampleRate(): number;
 };

@@ -212,6 +212,10 @@ export default class BufferPlayer {
         this.eventEmitter?.on(event, callback);
     }
 
+    updateContext(context: AudioContext) {
+        this.context = context;
+    }
+
     get currentTimeDisplay() {
         return ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
     }

@@ -15,7 +15,9 @@ const AppConfigDialog = () => {
         isSoundtouchAudioWorkletEnabled,
         toggleSoundtouchAudioWorklet,
         bufferSize,
-        changeBufferSize
+        changeBufferSize,
+        sampleRate,
+        changeSampleRate
     } = useApplicationConfig();
     const { isCompatibilityModeEnabled, toggleCompatibilityMode } = useAudioEditor();
     const { t } = useTranslation();
@@ -79,6 +81,40 @@ const AppConfigDialog = () => {
                         <div className="collapse-content flex flex-col overflow-visible">
                             <div className="mt-3">
                                 <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                                    <div className="md:w-3/6">
+                                        <label htmlFor="samplingFrequencySelect">{t("appSettings.samplingFrequency")}</label>
+                                    </div>
+                                    <div className="flex flex-row gap-x-2 items-center">
+                                        <select className="select select-bordered flex-1" id="samplingFrequencySelect" value={sampleRate} onChange={(e) => changeSampleRate(parseInt(e.target.value))}>
+                                            {Constants.VALID_SAMPLE_RATES.map(frequency =>
+                                                <option value={frequency} key={frequency}>
+                                                    {frequency != 0 ? new Intl.NumberFormat(currentLanguageValue).format(frequency) : t("appSettings.defaultSampleRate")} {frequency > 0 && t("appSettings.sampleRateHz")}
+                                                </option>
+                                            )}
+                                        </select>
+                                        <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.samplingFrequencyInfo")}>
+                                            {InfoIcon}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-3">
+                                <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                                    <div className="md:w-3/6">
+                                        <label htmlFor="bufferSizeSelect">{t("appSettings.bufferSize")}</label>
+                                    </div>
+                                    <div className="flex flex-row gap-x-2 items-center">
+                                        <select className="select select-bordered flex-1" id="bufferSizeSelect" value={bufferSize} onChange={(e) => changeBufferSize(parseInt(e.target.value))}>
+                                            {Constants.VALID_BUFFER_SIZE.map(size => <option value={size} key={size}>{size != 0 ? size : t("appSettings.defaultBufferSize")}</option>)}
+                                        </select>
+                                        <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.bufferSizeInfos")}>
+                                            {InfoIcon}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-3">
+                                <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
                                     <div className="md:w-4/6">
                                         <label htmlFor="toggleAudioWorkletEnabled">{t("appSettings.audioWorkletEnable")}</label>
                                     </div>
@@ -98,21 +134,6 @@ const AppConfigDialog = () => {
                                     <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
                                         <input type="checkbox" className="toggle" id="toggleSoundtouchAudioWorkletEnabled" checked={isSoundtouchAudioWorkletEnabled} onChange={(e) => toggleSoundtouchAudioWorklet(e.target.checked)} />
                                         <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.soundtouchAudioWorkletEnableInfos")}>
-                                            {InfoIcon}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="mt-3">
-                                <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
-                                    <div className="md:w-2/6">
-                                        <label htmlFor="bufferSizeInput">{t("appSettings.bufferSize")}</label>
-                                    </div>
-                                    <div className="flex flex-row gap-x-2 items-center">
-                                        <select className="select select-bordered flex-1" id="bufferSizeInput" value={bufferSize} onChange={(e) => changeBufferSize(parseInt(e.target.value))}>
-                                            {Constants.VALID_BUFFER_SIZE.map(size => <option value={size} key={size}>{size != 0 ? size : t("appSettings.defaultBufferSize")}</option>)}
-                                        </select>
-                                        <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.bufferSizeInfos")}>
                                             {InfoIcon}
                                         </div>
                                     </div>

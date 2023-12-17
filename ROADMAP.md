@@ -3,7 +3,7 @@
 
 ## Principal
 
-### 2.0.1
+### 2.1
 
 * [x] - Migrate to Audio Worklets (Limiter/Bitcrusher)
 * [x] - Disable microphone button from the homepage if not available (not secure context)
@@ -21,18 +21,15 @@
 * [x] - Convert Vocoder to standard filter
 * [x] - Audio Worklet fixes (Soundtouch only) :
     * [x] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
-* [ ] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode), audio channels number
+* [x] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode)
 
-### 2.1
+### 2.1.1
 
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Edit volume/gain
-
-### Other
-
 * [ ] - Transform the "classes" folder into a library (new Github repository)
 
 ### Future versions
@@ -41,7 +38,9 @@
 
 ## Would be good but not important
 
-* [ ] - Enhance limiter
+* [ ] - Advanced settings for audio channel number? By default use the number of channel of the host if possible (but some filters force 2-channel)
+* [ ] - Enhance limiter?
 * [ ] - Filter "Autotuner"?
 * [ ] - Save into localstorage filters settings?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
+* [ ] - Real-time filters editing when recording audio (reuse existing filters)?

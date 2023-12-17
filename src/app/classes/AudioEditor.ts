@@ -18,13 +18,13 @@ import BufferFetcherService from "./BufferFetcherService";
 import EventEmitter from "./EventEmitter";
 import PassThroughFilter from "./filters/PassThroughFilter";
 import { EventType } from "./model/EventTypeEnum";
-import { ConfigService } from "./model/ConfigService";
 import Constants from "./model/Constants";
 //@ts-ignore
 import { Recorder, getRecorderWorker } from "recorderjs";
 import AbstractAudioFilterWorklet from "./model/AbstractAudioFilterWorklet";
 import { AudioFilterNodes } from "./model/AudioNodes";
 import VocoderFilter from "./filters/VocoderFilter";
+import { ConfigService } from "./model/ConfigService";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -39,6 +39,7 @@ export default class AudioEditor extends AbstractAudioElement {
     private compatibilityModeChecked = false;
     private savingBuffer = false;
     private currentNodes: AudioFilterNodes | null = null;
+    private previousSampleRate = Constants.DEFAULT_SAMPLE_RATE;
 
     principalBuffer: AudioBuffer | null = null;
     downloadingInitialData = false;
@@ -57,6 +58,10 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     private setup(audioBuffersToFetch: string[] | undefined) {
+        if (this.configService) {
+            this.previousSampleRate = this.configService.getSampleRate();
+        }
+
         if (this.bufferPlayer) {
             this.bufferPlayer.onBeforePlaying(async () => {
                 if (this.isCompatibilityModeEnabled() && this.currentContext) {
@@ -94,7 +99,7 @@ export default class AudioEditor extends AbstractAudioElement {
     /** Setup all audio filters */
     setupFilters() {
         const bassBooster = new BassBoosterFilter(200, 15, 200, -2);
-        const bitCrusher = new BitCrusherFilter(4096, 2, 8, 0.15);
+        const bitCrusher = new BitCrusherFilter(2, 8, 0.15);
         const echo = new EchoFilter(0.2, 0.75);
         const highPass = new HighPassFilter(3500);
         const lowPass = new LowPassFilter(3500);
@@ -232,6 +237,45 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /**
+     * Create new context if needed, for example if sample rate setting have changed
+     */
+    private async createNewContextIfNeeded() {
+        let currentSampleRate = Constants.DEFAULT_SAMPLE_RATE;
+
+        if(this.configService) {
+            currentSampleRate = this.configService.getSampleRate();
+        }
+
+        // If sample rate setting has changed, create a new audio context
+        if(currentSampleRate != this.previousSampleRate) {
+            this.createNewContext(currentSampleRate);
+        }
+    }
+
+    /** 
+     * Stop previous audio context and create a new one
+     */
+    private async createNewContext(sampleRate: number) {
+        if(this.currentContext) {
+            await this.currentContext.close();
+        }
+        
+        const options: AudioContextOptions = {
+            latencyHint: "interactive"
+        };
+
+        if(sampleRate != 0) {
+            options.sampleRate = sampleRate;
+        }
+
+        this.currentContext = new AudioContext(options);
+
+        if(this.bufferPlayer) {
+            this.bufferPlayer.updateContext(this.currentContext);
+        }
+    }
+
+    /**
      * Render the audio to a buffer
      * @returns A promise resolved when the audio processing is finished
      */
@@ -243,6 +287,8 @@ export default class AudioEditor extends AbstractAudioElement {
         if (!this.entrypointFilter) {
             throw "Entrypoint filter is not available";
         }
+        
+        this.createNewContextIfNeeded();
 
         this.currentContext.resume();
 

@@ -87,6 +87,20 @@ export default class ApplicationConfigService implements ConfigService {
         return LibConstants.DEFAULT_BUFFER_SIZE;
     }
 
+    public setSampleRate(value: number) {
+        this.setConfig(LibConstants.PREFERENCES_KEYS.SAMPLE_RATE, "" + value);
+    }
+
+    public getSampleRate(): number {
+        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.SAMPLE_RATE);
+
+        if(setting != null) {
+            return parseInt(setting);
+        }
+
+        return LibConstants.DEFAULT_SAMPLE_RATE;
+    }
+
     /** Get current theme from OS (dark/light) */
     private getUserThemePreference(): string {
         if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
