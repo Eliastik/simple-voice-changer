@@ -86,6 +86,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
 
         audioEditorInstance.on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => {
             setCompatibilityModeAutoEnabled(true);
+            setCompatibilityModeEnabled(true);
 
             setTimeout(() => {
                 setCompatibilityModeAutoEnabled(false);
