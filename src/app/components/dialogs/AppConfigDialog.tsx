@@ -9,7 +9,7 @@ const AppConfigDialog = () => {
         currentThemeValue,
         setTheme,
         currentLanguageValue,
-        setLanguage, 
+        setLanguage,
         isAudioWorkletEnabled,
         toggleAudioWorklet,
         isSoundtouchAudioWorkletEnabled,
@@ -19,7 +19,7 @@ const AppConfigDialog = () => {
         sampleRate,
         changeSampleRate
     } = useApplicationConfig();
-    const { isCompatibilityModeEnabled, toggleCompatibilityMode } = useAudioEditor();
+    const { isCompatibilityModeEnabled, toggleCompatibilityMode, actualSampleRate, defaultDeviceSampleRate } = useAudioEditor();
     const { t } = useTranslation();
 
     const InfoIcon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -84,17 +84,27 @@ const AppConfigDialog = () => {
                                     <div className="md:w-3/6">
                                         <label htmlFor="samplingFrequencySelect">{t("appSettings.samplingFrequency")}</label>
                                     </div>
-                                    <div className="flex flex-row gap-x-2 items-center">
-                                        <select className="select select-bordered flex-1" id="samplingFrequencySelect" value={sampleRate} onChange={(e) => changeSampleRate(parseInt(e.target.value))}>
-                                            {Constants.VALID_SAMPLE_RATES.map(frequency =>
-                                                <option value={frequency} key={frequency}>
-                                                    {frequency != 0 ? new Intl.NumberFormat(currentLanguageValue).format(frequency) : t("appSettings.defaultSampleRate")} {frequency > 0 && t("appSettings.sampleRateHz")}
-                                                </option>
+                                    <div className="flex flex-col">
+                                        <div className="flex flex-row gap-x-2 items-center justify-end">
+                                            <select className="select select-bordered flex-1" id="samplingFrequencySelect" value={sampleRate} onChange={(e) => changeSampleRate(parseInt(e.target.value))}>
+                                                {Constants.VALID_SAMPLE_RATES.map(frequency =>
+                                                    <option value={frequency} key={frequency}>
+                                                        {frequency != 0 ? new Intl.NumberFormat(currentLanguageValue).format(frequency) : t("appSettings.defaultSampleRate")} {frequency > 0 && t("appSettings.sampleRateHz")}
+                                                    </option>
+                                                )}
+                                            </select>
+                                            {sampleRate > defaultDeviceSampleRate && (
+                                                <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md text-warning" data-tip={t("appSettings.samplingFrequencyTooHigh")}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                                    </svg>
+                                                </div>
                                             )}
-                                        </select>
-                                        <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.samplingFrequencyInfo")}>
-                                            {InfoIcon}
+                                            <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.samplingFrequencyInfo")}>
+                                                {InfoIcon}
+                                            </div>
                                         </div>
+                                        {actualSampleRate > 0 && <div className="justify-end text-xs mt-2">{t("appSettings.actualSampleRate")} {new Intl.NumberFormat(currentLanguageValue).format(actualSampleRate / 1000)} {t("appSettings.sampleRateKHz")}</div>}
                                     </div>
                                 </div>
                             </div>
@@ -148,7 +158,7 @@ const AppConfigDialog = () => {
                     </form>
                 </div>
             </div>
-        </dialog>
+        </dialog >
     );
 };
 

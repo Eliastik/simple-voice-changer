@@ -52,8 +52,10 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
     // State: true if compatibility/direct was auto enabled
     const [isCompatibilityModeAutoEnabled, setCompatibilityModeAutoEnabled] = useState(false);
-    // State:current real sample rate
+    // State: current real sample rate
     const [actualSampleRate, setActualSampleRate] = useState(0);
+    // State: default device sample rate
+    const [defaultDeviceSampleRate, setDefaultDeviceSampleRate] = useState(0);
 
     useEffect(() => {
         if (audioEditorInstance != null) {
@@ -97,6 +99,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         setFilterState(audioEditorInstance.getFiltersState());
         setFiltersSettings(audioEditorInstance.getFiltersSettings());
         setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
+        setActualSampleRate(audioEditorInstance.currentSampleRate);
+        setDefaultDeviceSampleRate(audioEditorInstance.defaultDeviceSampleRate);
     }, []);
 
     const loadAudioPrincipalBuffer = async (file: File | null, audioBuffer?: AudioBuffer) => {
@@ -193,7 +197,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
             audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, validateSettings,
             exitAudioEditor, filtersSettings, changeFilterSettings, resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer,
             errorDownloadingBufferData, closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, toggleCompatibilityMode,
-            isCompatibilityModeAutoEnabled, pauseAudioEditor, errorProcessingAudio, closeErrorProcessingAudio, actualSampleRate
+            isCompatibilityModeAutoEnabled, pauseAudioEditor, errorProcessingAudio, closeErrorProcessingAudio, actualSampleRate, defaultDeviceSampleRate
         }}>
             {children}
         </AudioEditorContext.Provider>

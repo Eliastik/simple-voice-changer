@@ -16,10 +16,13 @@
             "bufferSize": "Buffer size:",
             "bufferSizeInfos": "This buffer size is used in audio processing when AudioWorklet support is disabled. By leaving this value to auto, your browser automatically determines the best size for your environment. A higher value improves audio quality but comes at the expense of latency.",
             "defaultBufferSize": "Auto",
-            "samplingFrequency": "Sampling frequency:",
-            "samplingFrequencyInfo": "Sets the sampling frequency used for audio processing. A higher frequency enhances quality, but audio processing will require more memory. Uses the default sampling frequency set on your system.",
+            "samplingFrequency": "Sample rate:",
+            "samplingFrequencyInfo": "Sets the sample rate used for audio processing. A higher frequency enhances quality, but audio processing will require more memory. Uses the default sampling frequency set on your system.",
             "defaultSampleRate": "Default",
-            "sampleRateHz": "Hz"
+            "sampleRateHz": "Hz",
+            "sampleRateKHz": "kHz",
+            "actualSampleRate": "Current rate:",
+            "samplingFrequencyTooHigh": "You have selected a sample rate that is too high for your device to handle. You risk encountering unexpected problems."
         },
         "homeMenu": {
             "selectAudioFile": "Select an audio file",

@@ -190,8 +190,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
         // If sample rate setting has changed, create a new audio context
         if (currentSampleRate != this.previousSampleRate) {
-            this.createNewContext(currentSampleRate);
-            this.eventEmitter?.emit(EventType.SAMPLE_RATE_CHANGED, currentSampleRate);
+            await this.createNewContext(currentSampleRate);
         }
     }
 
@@ -212,6 +211,7 @@ export default class AudioEditor extends AbstractAudioElement {
         }
 
         this.currentContext = new AudioContext(options);
+        this.eventEmitter?.emit(EventType.SAMPLE_RATE_CHANGED, this.currentContext.sampleRate);
 
         if (this.bufferPlayer) {
             this.bufferPlayer.updateContext(this.currentContext);
@@ -229,6 +229,26 @@ export default class AudioEditor extends AbstractAudioElement {
         if (this.currentContext) {
             this.currentContext.resume();
         }
+    }
+
+    get currentSampleRate(): number {
+        if(this.currentContext) {
+            return this.currentContext.sampleRate;
+        }
+
+        return 0;
+    }
+
+    get defaultDeviceSampleRate(): number {
+        const tempContext = new AudioContext();
+        let sampleRate = 0;
+
+        if(tempContext) {
+            sampleRate = tempContext.sampleRate;
+            tempContext.close();
+        }
+
+        return sampleRate;
     }
 
     /** Decode and load an audio buffer from an audio file */

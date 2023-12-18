@@ -20,7 +20,10 @@
             "samplingFrequency": "Fréquence d'échantillonage :",
             "samplingFrequencyInfo": "Paramètre la fréquence d'échantillonage utilisée pour les traitements audio. Plus elle est élevée, meilleure est la qualité, mais le traitement audio nécessitera plus de mémoire. Utilise par défaut la fréquence d'échantillonage paramétrée sur votre système.",
             "defaultSampleRate": "Par défaut",
-            "sampleRateHz": "Hz"
+            "sampleRateHz": "Hz",
+            "sampleRateKHz": "kHz",
+            "actualSampleRate": "Fréquence actuelle :",
+            "samplingFrequencyTooHigh": "Vous avez sélectionné une fréquence d'échantillonage trop élevée que votre appareil ne peut potentiellement pas supporter. Vous risquez de rencontrer des problèmes inattendus."
         },
         "homeMenu": {
             "selectAudioFile": "Sélectionner un fichier audio",
