@@ -18,20 +18,13 @@ export default class ApplicationObjectsSingleton {
 
     private static initialize() {
         if (!ApplicationObjectsSingleton.ready) {
-            const context = new AudioContext({
-                latencyHint: "interactive"
-            });
-
-            const recorderContext = new AudioContext({
-                latencyHint: "balanced"
-            });
-
             const eventEmitter = new EventEmitter();
-            const audioPlayer = new BufferPlayer(context, eventEmitter);
-            const audioRecorder = new VoiceRecorder(recorderContext, eventEmitter);
             const configService = new ApplicationConfigService();
 
-            ApplicationObjectsSingleton.audioEditor = new AudioEditor(context, audioPlayer, eventEmitter, configService, Constants.AUDIO_BUFFERS_TO_FETCH);
+            const audioPlayer = new BufferPlayer(null, eventEmitter, configService);
+            const audioRecorder = new VoiceRecorder(null, eventEmitter, configService);
+
+            ApplicationObjectsSingleton.audioEditor = new AudioEditor(null, audioPlayer, eventEmitter, configService, Constants.AUDIO_BUFFERS_TO_FETCH);
             ApplicationObjectsSingleton.audioPlayer = audioPlayer;
             ApplicationObjectsSingleton.audioRecorder = audioRecorder;
             ApplicationObjectsSingleton.eventEmitter = eventEmitter;

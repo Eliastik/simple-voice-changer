@@ -27,9 +27,13 @@ import EventEmitter from "./EventEmitter";
 import { EventType } from "./model/EventTypeEnum";
 import AudioConstraintWrapper from "./model/AudioConstraintWrapper";
 import { RecorderSettings } from "./model/RecorderSettings";
+import { ConfigService } from "./model/ConfigService";
+import AbstractAudioElement from "./model/AbstractAudioElement";
+import Constants from "./model/Constants";
 
-export default class VoiceRecorder {
-    private context: AudioContext | null = null;
+export default class VoiceRecorder extends AbstractAudioElement {
+    
+    private context: AudioContext | null | undefined;
     private input: MediaStreamAudioSourceNode | null = null;
     private stream: MediaStream | null = null;
     private recorder: Recorder | null = null;
@@ -46,15 +50,28 @@ export default class VoiceRecorder {
         }
     };
     private eventEmitter: EventEmitter | null = null;
+    private previousSampleRate = Constants.DEFAULT_SAMPLE_RATE;
 
-    constructor(context: AudioContext, eventEmitter?: EventEmitter) {
+    constructor(context?: AudioContext | null, eventEmitter?: EventEmitter, configService?: ConfigService) {
+        super();
         this.context = context;
         this.eventEmitter = eventEmitter || new EventEmitter();
+        this.configService = configService || null;
+
+        if (this.configService) {
+            this.previousSampleRate = this.configService.getSampleRate();
+        }
     }
 
     async init() {
         if(!this.isRecordingAvailable()) {
             return;
+        }
+
+        if(!this.context) {
+            await this.createNewContext(this.previousSampleRate);
+        } else {
+            await this.createNewContextIfNeeded();
         }
 
         this.eventEmitter?.emit(EventType.RECORDER_INIT);
@@ -81,6 +98,35 @@ export default class VoiceRecorder {
         }
 
         navigator.mediaDevices.ondevicechange = () => this.updateInputList();
+    }
+
+    private async createNewContextIfNeeded() {
+        let currentSampleRate = Constants.DEFAULT_SAMPLE_RATE;
+
+        if (this.configService) {
+            currentSampleRate = this.configService.getSampleRate();
+        }
+
+        // If sample rate setting has changed, create a new audio context
+        if (currentSampleRate != this.previousSampleRate) {
+            this.createNewContext(currentSampleRate);
+        }
+    }
+
+    private async createNewContext(sampleRate: number) {
+        if (this.context) {
+            await this.context.close();
+        }
+
+        const options: AudioContextOptions = {
+            latencyHint: "balanced"
+        };
+
+        if (sampleRate != 0) {
+            options.sampleRate = sampleRate;
+        }
+
+        this.context = new AudioContext(options);
     }
 
     successCallback() {
@@ -318,5 +364,13 @@ export default class VoiceRecorder {
 
     isRecordingAvailable() {
         return typeof(navigator.mediaDevices) !== "undefined" && typeof(navigator.mediaDevices.getUserMedia) !== "undefined";
+    }
+
+    get order(): number {
+        return -1;
+    }
+
+    get id(): string {
+        throw Constants.VOICE_RECORDER;
     }
 }

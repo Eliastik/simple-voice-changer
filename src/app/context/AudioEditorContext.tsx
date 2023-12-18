@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
 import AudioEditor from "../classes/AudioEditor";
-import utils from "../classes/utils/Functions";
 import AudioEditorContextProps from "../model/contextProps/AudioEditorContextProps";
 import AudioEditorPlayerSingleton from "./ApplicationObjectsSingleton";
 import { EventType } from "../classes/model/EventTypeEnum";
@@ -23,7 +22,7 @@ export const useAudioEditor = (): AudioEditorContextProps => {
 };
 
 interface AudioEditorProviderProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) => {
@@ -53,9 +52,11 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
     // State: true if compatibility/direct was auto enabled
     const [isCompatibilityModeAutoEnabled, setCompatibilityModeAutoEnabled] = useState(false);
+    // State:current real sample rate
+    const [actualSampleRate, setActualSampleRate] = useState(0);
 
     useEffect(() => {
-        if(audioEditorInstance != null) {
+        if (audioEditorInstance != null) {
             return;
         }
 
@@ -65,22 +66,22 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         audioEditorInstance.on(EventType.LOADING_BUFFERS, () => setDownloadingInitialData(true));
         audioEditorInstance.on(EventType.LOADING_BUFFERS_ERROR, () => setDownloadingInitialData(false));
         audioEditorInstance.on(EventType.FETCHING_BUFFERS, () => setDownloadingBufferData(true));
-  
+
         audioEditorInstance.on(EventType.LOADED_BUFFERS, () => {
             setDownloadingInitialData(false);
             setFiltersSettings(audioEditorInstance.getFiltersSettings());
         });
-  
+
         audioEditorInstance.on(EventType.FINISHED_FETCHING_BUFFERS, () => {
             setDownloadingBufferData(false);
             setFiltersSettings(audioEditorInstance.getFiltersSettings());
         });
-  
+
         audioEditorInstance.on(EventType.FETCHING_BUFFERS_ERROR, () => {
             setDownloadingBufferData(false);
             setErrorDownloadingBufferData(true);
         });
-  
+
         audioEditorInstance.on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => {
             setCompatibilityModeAutoEnabled(true);
 
@@ -88,8 +89,9 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
                 setCompatibilityModeAutoEnabled(false);
             }, 10000);
         });
-  
+
         audioEditorInstance.on(EventType.RECORDER_STOPPED, (buffer: AudioBuffer) => loadAudioPrincipalBuffer(null, buffer));
+        audioEditorInstance.on(EventType.SAMPLE_RATE_CHANGED, (currentSampleRate: number) => setActualSampleRate(currentSampleRate));
 
         setDownloadingInitialData(audioEditorInstance.downloadingInitialData);
         setFilterState(audioEditorInstance.getFiltersState());
@@ -101,15 +103,21 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         setLoadingPrincipalBuffer(true);
 
         try {
-            const buffer = audioBuffer ? audioBuffer : await utils.loadAudioBuffer(file!);
-            audioEditorInstance.principalBuffer = buffer;
-  
+            if (file) {
+                await audioEditorInstance.loadBufferFromFile(file);
+            } else if (audioBuffer) {
+                audioEditorInstance.loadBuffer(audioBuffer);
+            } else {
+                throw new Error("No audio file or audio buffer!");
+            }
+
             setLoadingPrincipalBuffer(false);
             setAudioEditorReady(true);
-  
+
             await processAudio();
+
             setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             setLoadingPrincipalBuffer(false);
             setErrorLoadingPrincipalBuffer(true);
@@ -127,7 +135,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
             setAudioProcessing(true);
             await audioEditorInstance.renderAudio();
             setAudioProcessing(false);
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             setAudioProcessing(false);
             setErrorProcessingAudio(true);
@@ -167,13 +175,13 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     };
 
     const toggleCompatibilityMode = (enabled: boolean) => {
-        if(audioEditorInstance) {
-            if(enabled) {
+        if (audioEditorInstance) {
+            if (enabled) {
                 audioEditorInstance.enableCompatibilityMode();
             } else {
                 audioEditorInstance.disableCompatibilityMode();
             }
-  
+
             setCompatibilityModeEnabled(enabled);
         }
     };
@@ -185,7 +193,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
             audioEditorInstance, loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, validateSettings,
             exitAudioEditor, filtersSettings, changeFilterSettings, resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer, closeErrorLoadingPrincipalBuffer,
             errorDownloadingBufferData, closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState, isCompatibilityModeEnabled, toggleCompatibilityMode,
-            isCompatibilityModeAutoEnabled, pauseAudioEditor, errorProcessingAudio, closeErrorProcessingAudio
+            isCompatibilityModeAutoEnabled, pauseAudioEditor, errorProcessingAudio, closeErrorProcessingAudio, actualSampleRate
         }}>
             {children}
         </AudioEditorContext.Provider>

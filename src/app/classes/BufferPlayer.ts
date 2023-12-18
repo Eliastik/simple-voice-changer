@@ -20,10 +20,14 @@
 // Used to play the audio buffer, with time controls, pause/play, stop and loop
 
 import EventEmitter from "./EventEmitter";
+import AbstractAudioElement from "./model/AbstractAudioElement";
+import { ConfigService } from "./model/ConfigService";
+import Constants from "./model/Constants";
 import { EventType } from "./model/EventTypeEnum";
 
 // Also used in compatibility mode (which doesn't use audio buffer) with less functions (no time control)
-export default class BufferPlayer {
+export default class BufferPlayer extends AbstractAudioElement {
+
     private context: AudioContext | OfflineAudioContext | null = null;
     private buffer: AudioBuffer | null = null;
     private source: AudioBufferSourceNode | null = null;
@@ -40,9 +44,11 @@ export default class BufferPlayer {
     compatibilityMode = false;
     currentNode: AudioNode | null = null;
 
-    constructor(context: AudioContext | OfflineAudioContext, eventEmitter?: EventEmitter) {
+    constructor(context: AudioContext | OfflineAudioContext | null, eventEmitter?: EventEmitter, configService?: ConfigService) {
+        super();
         this.context = context;
         this.eventEmitter = eventEmitter || new EventEmitter();
+        this.configService = configService || null;
     }
 
     init() {
@@ -230,5 +236,13 @@ export default class BufferPlayer {
 
     get remainingTimeDisplay() {
         return ("0" + Math.trunc((this.duration - this.displayTime) / 60)).slice(-2) + ":" + ("0" + Math.trunc((this.duration - this.displayTime) % 60)).slice(-2);
+    }
+
+    get order(): number {
+        return -1;
+    }
+
+    get id(): string {
+        return Constants.BUFFER_PLAYER;
     }
 }

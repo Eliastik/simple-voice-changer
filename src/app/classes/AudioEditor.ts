@@ -25,33 +25,49 @@ import AbstractAudioFilterWorklet from "./model/AbstractAudioFilterWorklet";
 import { AudioFilterNodes } from "./model/AudioNodes";
 import VocoderFilter from "./filters/VocoderFilter";
 import { ConfigService } from "./model/ConfigService";
+import utilFunctions from "./utils/Functions";
 
 export default class AudioEditor extends AbstractAudioElement {
 
-    private currentContext: AudioContext | null;
-    private entrypointFilter: (AbstractAudioFilter & AudioFilterEntrypointInterface) | null = null;
-    private filters: AbstractAudioFilter[] = [];
-    private renderers: AbstractAudioRenderer[] = [];
-    private bufferPlayer: BufferPlayer | undefined;
-    private eventEmitter: EventEmitter | undefined;
+    /** The current audio context */
+    private currentContext: AudioContext | null | undefined;
+    /** The audio buffer to be processed */
+    private principalBuffer: AudioBuffer | null = null;
+    /** The resulting audio buffer */
     private renderedBuffer: AudioBuffer | null = null;
-    private compatibilityModeEnabled = false;
-    private compatibilityModeChecked = false;
-    private savingBuffer = false;
+    /** The entrypoint filter */
+    private entrypointFilter: (AbstractAudioFilter & AudioFilterEntrypointInterface) | null = null;
+    /** A list of filters */
+    private filters: AbstractAudioFilter[] = [];
+    /** A list of renderers */
+    private renderers: AbstractAudioRenderer[] = [];
+    /** The audio player */
+    private bufferPlayer: BufferPlayer | undefined;
+    /** The event emitter */
+    private eventEmitter: EventEmitter | undefined;
+    /** The current connected nodes */
     private currentNodes: AudioFilterNodes | null = null;
+
+    /** Compatibility/direct mode (when not using an OfflineAudioContext) */
+    private compatibilityModeEnabled = false;
+    /** True if we already detected and auto enabled compatibility mode */
+    private compatibilityModeChecked = false;
+    /** If we are currently processing and downloading the buffer */
+    private savingBuffer = false;
+    /** The previous sample rate setting */
     private previousSampleRate = Constants.DEFAULT_SAMPLE_RATE;
 
-    principalBuffer: AudioBuffer | null = null;
+    /** True if we are downloading initial buffer data */
     downloadingInitialData = false;
 
-    constructor(context: AudioContext, player: BufferPlayer, eventEmitter?: EventEmitter, configService?: ConfigService, audioBuffersToFetch?: string[]) {
+    constructor(context?: AudioContext | null, player?: BufferPlayer, eventEmitter?: EventEmitter, configService?: ConfigService, audioBuffersToFetch?: string[]) {
         super();
-
+        
         this.currentContext = context;
         this.eventEmitter = eventEmitter || new EventEmitter();
-        this.bufferPlayer = player;
+        this.bufferPlayer = player || new BufferPlayer(context!);
         this.configService = configService || null;
-        this.bufferFetcherService = new BufferFetcherService(this.currentContext, this.eventEmitter);
+        this.bufferFetcherService = new BufferFetcherService(this.currentContext!, this.eventEmitter);
 
         // Callback called just before starting audio player
         this.setup(audioBuffersToFetch);
@@ -60,9 +76,15 @@ export default class AudioEditor extends AbstractAudioElement {
     private setup(audioBuffersToFetch: string[] | undefined) {
         if (this.configService) {
             this.previousSampleRate = this.configService.getSampleRate();
+            this.eventEmitter?.emit(EventType.SAMPLE_RATE_CHANGED, this.previousSampleRate);
+        }
+
+        if(!this.currentContext) {
+            this.createNewContext(this.previousSampleRate);
         }
 
         if (this.bufferPlayer) {
+            // Callback called just before starting playing audio, when compatibility mode is enabled
             this.bufferPlayer.onBeforePlaying(async () => {
                 if (this.isCompatibilityModeEnabled() && this.currentContext) {
                     await this.setupOutput(this.currentContext);
@@ -77,27 +99,43 @@ export default class AudioEditor extends AbstractAudioElement {
             });
         }
 
-        this.setupFilters();
-        this.setupRenderers();
+        this.setupDefaultFilters();
+        this.setupDefaultRenderers();
 
         if (audioBuffersToFetch) {
             this.fetchBuffers(audioBuffersToFetch);
         }
+    }
 
-        for (const filter of this.filters) {
+    /**
+     * Add a new custom filter for this audio editor
+     * @param filters One or more AbstractAudioFilter
+     */
+    addFilters(...filters: AbstractAudioFilter[]) {
+        for (const filter of filters) {
             filter.initializeDefaultSettings();
             filter.bufferFetcherService = this.bufferFetcherService;
             filter.configService = this.configService;
         }
 
-        for (const renderer of this.renderers) {
+        this.filters.push(...filters);
+    }
+
+    /**
+     * Add a new custom renderer for this audio editor
+     * @param renderers One or more AbstractAudioRenderer
+     */
+    addRenderers(...renderers: AbstractAudioRenderer[]) {
+        for (const renderer of renderers) {
             renderer.bufferFetcherService = this.bufferFetcherService;
             renderer.configService = this.configService;
         }
+
+        this.renderers.push(...renderers);
     }
 
     /** Setup all audio filters */
-    setupFilters() {
+    private setupDefaultFilters() {
         const bassBooster = new BassBoosterFilter(200, 15, 200, -2);
         const bitCrusher = new BitCrusherFilter(2, 8, 0.15);
         const echo = new EchoFilter(0.2, 0.75);
@@ -111,21 +149,20 @@ export default class AudioEditor extends AbstractAudioElement {
         const vocoder = new VocoderFilter();
 
         this.entrypointFilter = soundtouchWrapper;
-        this.filters.push(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper, passthroughfilter, vocoder);
+        this.addFilters(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper, passthroughfilter, vocoder);
     }
 
     /** Setup the renderers */
-    setupRenderers() {
+    private setupDefaultRenderers() {
         const returnAudio = new ReturnAudioRenderer();
-
-        this.renderers.push(returnAudio);
+        this.addRenderers(returnAudio);
     }
 
     /**
      * Fetch default buffers from network
      * @param audioBuffersToFetch List of audio URL to fetch as buffer
      */
-    fetchBuffers(audioBuffersToFetch: string[]) {
+    private fetchBuffers(audioBuffersToFetch: string[]) {
         if (this.downloadingInitialData) {
             return;
         }
@@ -139,6 +176,75 @@ export default class AudioEditor extends AbstractAudioElement {
         }).catch(() => {
             this.eventEmitter?.emit(EventType.LOADING_BUFFERS_ERROR);
         });
+    }
+
+    /**
+     * Create new context if needed, for example if sample rate setting have changed
+     */
+    private async createNewContextIfNeeded() {
+        let currentSampleRate = Constants.DEFAULT_SAMPLE_RATE;
+
+        if (this.configService) {
+            currentSampleRate = this.configService.getSampleRate();
+        }
+
+        // If sample rate setting has changed, create a new audio context
+        if (currentSampleRate != this.previousSampleRate) {
+            this.createNewContext(currentSampleRate);
+            this.eventEmitter?.emit(EventType.SAMPLE_RATE_CHANGED, currentSampleRate);
+        }
+    }
+
+    /** 
+     * Stop previous audio context and create a new one
+     */
+    private async createNewContext(sampleRate: number) {
+        if (this.currentContext) {
+            await this.currentContext.close();
+        }
+
+        const options: AudioContextOptions = {
+            latencyHint: "interactive"
+        };
+
+        if (sampleRate != 0) {
+            options.sampleRate = sampleRate;
+        }
+
+        this.currentContext = new AudioContext(options);
+
+        if (this.bufferPlayer) {
+            this.bufferPlayer.updateContext(this.currentContext);
+        }
+
+        if(this.bufferFetcherService) {
+            this.bufferFetcherService.updateContext(this.currentContext);
+        }
+    }
+
+    /** Prepare the AudioContext before use */
+    private async prepareContext() {
+        await this.createNewContextIfNeeded();
+
+        if (this.currentContext) {
+            this.currentContext.resume();
+        }
+    }
+
+    /** Decode and load an audio buffer from an audio file */
+    async loadBufferFromFile(file: File) {
+        await this.prepareContext();
+
+        if (this.currentContext) {
+            this.principalBuffer = await utilFunctions.loadAudioBuffer(this.currentContext, file);
+        } else {
+            throw new Error("Audio Context is not ready!");
+        }
+    }
+
+    /** Change the principal audio buffer of this editor */
+    loadBuffer(audioBuffer: AudioBuffer) {
+        this.principalBuffer = audioBuffer;
     }
 
     /**
@@ -236,61 +342,25 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
-    /**
-     * Create new context if needed, for example if sample rate setting have changed
-     */
-    private async createNewContextIfNeeded() {
-        let currentSampleRate = Constants.DEFAULT_SAMPLE_RATE;
-
-        if(this.configService) {
-            currentSampleRate = this.configService.getSampleRate();
-        }
-
-        // If sample rate setting has changed, create a new audio context
-        if(currentSampleRate != this.previousSampleRate) {
-            this.createNewContext(currentSampleRate);
-        }
-    }
-
-    /** 
-     * Stop previous audio context and create a new one
-     */
-    private async createNewContext(sampleRate: number) {
-        if(this.currentContext) {
-            await this.currentContext.close();
-        }
-        
-        const options: AudioContextOptions = {
-            latencyHint: "interactive"
-        };
-
-        if(sampleRate != 0) {
-            options.sampleRate = sampleRate;
-        }
-
-        this.currentContext = new AudioContext(options);
-
-        if(this.bufferPlayer) {
-            this.bufferPlayer.updateContext(this.currentContext);
-        }
+    getOutputBuffer() {
+        return this.renderedBuffer;
     }
 
     /**
      * Render the audio to a buffer
-     * @returns A promise resolved when the audio processing is finished
+     * @returns A promise resolved when the audio processing is finished.
+     * The resulting audio buffer can then be obtained by using the "getOutputBuffer" method.
      */
     async renderAudio(): Promise<void> {
+        await this.prepareContext();
+
         if (!this.currentContext) {
-            throw "AudioContext is not yet available";
+            throw new Error("AudioContext is not yet available");
         }
 
         if (!this.entrypointFilter) {
-            throw "Entrypoint filter is not available";
+            throw new Error("Entrypoint filter is not available");
         }
-        
-        this.createNewContextIfNeeded();
-
-        this.currentContext.resume();
 
         const speedAudio = this.entrypointFilter.getSpeed();
         const durationAudio = this.calculateAudioDuration(speedAudio);
@@ -357,7 +427,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * @returns The audio duration
      */
     private calculateAudioDuration(speedAudio: number): number {
-        if(this.principalBuffer) {
+        if (this.principalBuffer) {
             let duration = utils.calcAudioDuration(this.principalBuffer, speedAudio);
 
             for (const filter of this.filters) {
@@ -417,7 +487,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * Enable/disable compatibility/direct audio rendering mode
      * @param enabled boolean
      */
-    setCompatibilityModeEnabled(enabled: boolean) {
+    private setCompatibilityModeEnabled(enabled: boolean) {
         this.compatibilityModeEnabled = enabled;
 
         if (this.configService) {
@@ -441,7 +511,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * Set compatibility/direct audio rendering mode already checked for auto enabling (if an error occurs rendering in offline context)
      * @param checked boolean
      */
-    setCompatibilityModeChecked(checked: boolean) {
+    private setCompatibilityModeChecked(checked: boolean) {
         this.compatibilityModeChecked = checked;
 
         if (this.configService) {
@@ -598,7 +668,7 @@ export default class AudioEditor extends AbstractAudioElement {
                     worker.postMessage({
                         command: Constants.INIT_COMMAND,
                         config: {
-                            sampleRate: this.currentContext.sampleRate,
+                            sampleRate: this.renderedBuffer.sampleRate,
                             numChannels: 2
                         }
                     });

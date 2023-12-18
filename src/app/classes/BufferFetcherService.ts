@@ -14,7 +14,7 @@ export default class BufferFetcherService {
         this.eventEmitter = eventEmitter || new EventEmitter();
     }
 
-    public async fetchBuffer(bufferURI: string) {
+    async fetchBuffer(bufferURI: string) {
         if(this.buffers.get(this.getKeyFromLocation(bufferURI)) != null) {
             return;
         }
@@ -42,17 +42,17 @@ export default class BufferFetcherService {
         }
     }
 
-    public async fetchAllBuffers(bufferURIs: string[]) {
+    async fetchAllBuffers(bufferURIs: string[]) {
         for(const uri of bufferURIs) {
             await this.fetchBuffer(uri);
         }
     }
 
-    public getAudioBuffer(filename: string): AudioBuffer | undefined {
+    getAudioBuffer(filename: string): AudioBuffer | undefined {
         return this.buffers.get(this.getKeyFromLocation(filename));
     }
 
-    public async getOrFetchAudioBuffer(filename: string): Promise<AudioBuffer | undefined> {
+    async getOrFetchAudioBuffer(filename: string): Promise<AudioBuffer | undefined> {
         if(this.getAudioBuffer(filename) == null) {
             await this.fetchBuffer(filename);
         }
@@ -60,11 +60,15 @@ export default class BufferFetcherService {
         return this.getAudioBuffer(filename);
     }
 
-    public getDownloadedBuffersList(): string[] {
+    getDownloadedBuffersList(): string[] {
         return Array.from(this.buffers.keys());
     }
 
     private getKeyFromLocation(location: string) {
         return location.substring(location.lastIndexOf("/") + 1);
+    }
+
+    updateContext(context: AudioContext) {
+        this.context = context;
     }
 }

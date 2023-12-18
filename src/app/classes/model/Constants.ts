@@ -1,5 +1,7 @@
 const Constants = {
     AUDIO_EDITOR: "audioEditor",
+    VOICE_RECORDER: "voiceRecorder",
+    BUFFER_PLAYER: "bufferPlayer",
     EXPORT_WAV_COMMAND: "exportWAV",
     AUDIO_WAV: "audio/wav",
     RECORD_COMMAND: "record",

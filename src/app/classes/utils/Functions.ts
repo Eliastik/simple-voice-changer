@@ -12,8 +12,7 @@ const utilFunctions = {
 
         return 0;
     },
-    loadAudioBuffer: async (file: File) => {
-        const context = new AudioContext();
+    loadAudioBuffer: async (context: AudioContext, file: File) => {
         const arrayBuffer = await utilFunctions.readAsArrayBufferPromisified(file);
         const audioBuffer = await context.decodeAudioData(arrayBuffer);
         return utilFunctions.decodeBuffer(context, audioBuffer);

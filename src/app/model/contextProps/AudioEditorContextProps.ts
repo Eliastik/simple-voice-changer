@@ -27,5 +27,6 @@ export default interface AudioEditorContextProps {
     isCompatibilityModeAutoEnabled: boolean,
     pauseAudioEditor: () => void,
     errorProcessingAudio: boolean,
-    closeErrorProcessingAudio: () => void
+    closeErrorProcessingAudio: () => void,
+    actualSampleRate: number
 };
