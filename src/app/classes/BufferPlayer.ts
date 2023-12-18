@@ -51,6 +51,7 @@ export default class BufferPlayer extends AbstractAudioElement {
         this.configService = configService || null;
     }
 
+    /** Init this buffer player */
     init() {
         this.playing = false;
 
@@ -69,6 +70,10 @@ export default class BufferPlayer extends AbstractAudioElement {
         this.updateInfos();
     }
 
+    /**
+     * Load an audio buffer
+     * @param buffer The buffer
+     */
     loadBuffer(buffer: AudioBuffer) {
         this.compatibilityMode = false;
         this.reset();
@@ -76,6 +81,11 @@ export default class BufferPlayer extends AbstractAudioElement {
         this.init();
     }
 
+    /**
+     * Enable compatibility mode
+     * @param currentNode Current audio node to read
+     * @param duration The audio duration
+     */
     setCompatibilityMode(currentNode: AudioNode, duration?: number) {
         this.compatibilityMode = true;
         this.reset();
@@ -89,6 +99,9 @@ export default class BufferPlayer extends AbstractAudioElement {
         this.updateInfos();
     }
 
+    /**
+     * Reset this player
+     */
     reset() {
         clearInterval(this.interval!);
         this.currentTime = 0;
@@ -96,6 +109,9 @@ export default class BufferPlayer extends AbstractAudioElement {
         this.stop();
     }
 
+    /**
+     * Stop playing the audio
+     */
     stop() {
         clearInterval(this.interval!);
 
@@ -117,6 +133,9 @@ export default class BufferPlayer extends AbstractAudioElement {
         this.updateInfos();
     }
 
+    /**
+     * Start playing the audio
+     */
     async start() {
         if (this.source || this.compatibilityMode) {
             this.stop();
@@ -170,14 +189,22 @@ export default class BufferPlayer extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Pause the audio
+     */
     pause() {
         this.stop();
     }
 
-    updateInfos() {
+    /** Send an event to update the informations of this player */
+    private updateInfos() {
         this.eventEmitter?.emit(EventType.PLAYING_UPDATE);
     }
 
+    /**
+     * Set the current starting time of this player
+     * @param percent Where to start playing, in percent
+     */
     setTimePercent(percent: number) {
         if(!this.compatibilityMode) {
             this.currentTime = Math.round(this.duration * (percent / 100));
@@ -192,6 +219,10 @@ export default class BufferPlayer extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Set the current starting time of this player
+     * @param time Where to start playing, in milliseconds
+     */
     setTime(time: number) {
         if (!this.compatibilityMode) {
             this.currentTime = time;
@@ -206,34 +237,62 @@ export default class BufferPlayer extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Callback called just before starting playing the audio
+     * @param callback The callback
+     */
     onBeforePlaying(callback: () => void) {
         this.onBeforePlayingCallback = callback;
     }
 
+    /**
+     * Enable/disable loop playing
+     */
     toggleLoop() {
         this.loop = !this.loop;
     }
 
+    /**
+     * Observe an event
+     * @param event The event name
+     * @param callback Callback called when an event of this type occurs
+     */
     on(event: string, callback: Function) {
         this.eventEmitter?.on(event, callback);
     }
 
+    /**
+     * Set a new audio context
+     * @param context The new audio context
+     */
     updateContext(context: AudioContext) {
         this.context = context;
     }
 
+    /**
+     * Get the time in text format
+     */
     get currentTimeDisplay() {
         return ("0" + Math.trunc(this.displayTime / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.displayTime % 60)).slice(-2);
     }
 
+    /** 
+     * Get the audio duration in text format
+     */
     get maxTimeDisplay() {
         return ("0" + Math.trunc(this.duration / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.duration % 60)).slice(-2);
     }
 
+    /**
+     * Get the percent played
+     */
     get percent() {
         return (100 - Math.round((this.duration - this.displayTime) / this.duration * 100));
     }
 
+    /**
+     * Get the remaining time in text format
+     */
     get remainingTimeDisplay() {
         return ("0" + Math.trunc((this.duration - this.displayTime) / 60)).slice(-2) + ":" + ("0" + Math.trunc((this.duration - this.displayTime) % 60)).slice(-2);
     }

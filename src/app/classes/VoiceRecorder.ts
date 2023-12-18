@@ -63,6 +63,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
+    /** Initialize this voice recorder */
     async init() {
         if(!this.isRecordingAvailable()) {
             return;
@@ -100,6 +101,9 @@ export default class VoiceRecorder extends AbstractAudioElement {
         navigator.mediaDevices.ondevicechange = () => this.updateInputList();
     }
 
+    /**
+     * Create new context if needed, for example if sample rate setting have changed
+     */
     private async createNewContextIfNeeded() {
         let currentSampleRate = Constants.DEFAULT_SAMPLE_RATE;
 
@@ -113,6 +117,9 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
+    /** 
+     * Stop previous audio context and create a new one
+     */
     private async createNewContext(sampleRate: number) {
         if (this.context) {
             await this.context.close();
@@ -129,14 +136,18 @@ export default class VoiceRecorder extends AbstractAudioElement {
         this.context = new AudioContext(options);
     }
 
-    successCallback() {
+    private successCallback() {
         this.eventEmitter?.emit(EventType.RECORDER_SUCCESS);
     }
 
-    errorCallback() {
+    private errorCallback() {
         this.eventEmitter?.emit(EventType.RECORDER_ERROR);
     }
 
+    /**
+     * Enable or disable audio feedback
+     * @param enable boolean
+     */
     audioFeedback(enable: boolean) {
         if (this.context) {
             if (enable) {
@@ -151,7 +162,11 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
-    getConstraints() {
+    /**
+     * Get current constraints/settings
+     * @returns MediaTrackSettings
+     */
+    private getConstraints() {
         if (this.stream) {
             const tracks = this.stream.getTracks();
 
@@ -163,7 +178,10 @@ export default class VoiceRecorder extends AbstractAudioElement {
         return null;
     }
 
-    updateConstraints() {
+    /**
+     * Update the current constraints
+     */
+    private updateConstraints() {
         const constraints = this.getConstraints();
 
         if (constraints) {
@@ -172,7 +190,11 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
-    async resetConstraints(newConstraint?: AudioConstraintWrapper) {
+    /**
+     * Reset the current constraints
+     * @param newConstraint AudioConstraintWrapper
+     */
+    private async resetConstraints(newConstraint?: AudioConstraintWrapper) {
         if (this.stream) {
             const precAudioFeedback = this.enableAudioFeedback;
             const precRecording = this.recording;
@@ -211,7 +233,13 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
-    async setup(stream: MediaStream | null, precRecording: boolean, precAudioFeedback: boolean) {
+    /**
+     * Setup this voice recorder
+     * @param stream MediaStream
+     * @param precRecording Was recording?
+     * @param precAudioFeedback Has audio feedback?
+     */
+    private async setup(stream: MediaStream | null, precRecording: boolean, precAudioFeedback: boolean) {
         if (stream && this.context) {
             this.input = this.context.createMediaStreamSource(stream);
             this.stream = stream;
@@ -230,6 +258,10 @@ export default class VoiceRecorder extends AbstractAudioElement {
         await this.updateInputList();
     }
 
+    /**
+     * Enable/disable noise suppression
+     * @param enable boolean
+     */
     setNoiseSuppression(enable: boolean) {
         this.resetConstraints({
             audio: {
@@ -238,6 +270,10 @@ export default class VoiceRecorder extends AbstractAudioElement {
         });
     }
 
+    /**
+     * Enable/disable auto gain
+     * @param enable boolean
+     */
     setAutoGain(enable: boolean) {
         this.resetConstraints({
             audio: {
@@ -246,6 +282,10 @@ export default class VoiceRecorder extends AbstractAudioElement {
         });
     }
 
+    /**
+     * Enable/disable echo cancellation
+     * @param enable boolean
+     */
     setEchoCancellation(enable: boolean) {
         this.resetConstraints({
             audio: {
@@ -254,7 +294,10 @@ export default class VoiceRecorder extends AbstractAudioElement {
         });
     }
 
-    async updateInputList() {
+    /**
+     * Update current audio input list
+     */
+    private async updateInputList() {
         if (this.deviceList) {
             const devices = await navigator.mediaDevices.enumerateDevices();
             this.deviceList = [];
@@ -267,6 +310,11 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Change audio input
+     * @param deviceId Device ID
+     * @param groupId Group ID (optional)
+     */
     changeInput(deviceId: string, groupId: string | undefined) {
         if (groupId) {
             this.constraints.audio.deviceId = deviceId;
@@ -275,6 +323,9 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Start audio recording
+     */
     record() {
         if (this.alreadyInit) {
             if (!this.recorder) this.recorder = new Recorder(this.input);
@@ -285,6 +336,9 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Stop audio recording
+     */
     async stop() {
         if (this.alreadyInit && this.recorder) {
             this.recorder.stop();
@@ -306,6 +360,9 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Pause audio recording
+     */
     pause() {
         if (this.alreadyInit) {
             this.recorder && this.recorder.stop();
@@ -315,7 +372,10 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
-    stopStream() {
+    /**
+     * Stop stream
+     */
+    private stopStream() {
         if (this.stream) {
             const tracks = this.stream.getTracks();
 
@@ -325,6 +385,9 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Reset this voice recorder
+     */
     reset() {
         this.recorder && this.recorder.stop();
         this.recorder && this.recorder.clear();
@@ -342,14 +405,24 @@ export default class VoiceRecorder extends AbstractAudioElement {
         this.eventEmitter?.emit(EventType.RECORDER_RESETED);
     }
 
+    /**
+     * Get current recording time in text format
+     */
     get currentTimeDisplay() {
         return this.timer?.seconds ? ("0" + Math.trunc(this.timer?.seconds / 60)).slice(-2) + ":" + ("0" + Math.trunc(this.timer?.seconds % 60)).slice(-2) : "00:00";
     }
 
+    /**
+     * Get current recording time in seconds
+     */
     get currentTime() {
         return this.timer ? this.timer.seconds : 0;
     }
 
+    /**
+     * Get the current settings for this voice recorder
+     * @returns RecorderSettings
+     */
     getSettings(): RecorderSettings {
         return {
             deviceList: this.deviceList,
@@ -358,10 +431,19 @@ export default class VoiceRecorder extends AbstractAudioElement {
         };
     }
 
+    /**
+     * Observe an event
+     * @param event The event name
+     * @param callback Callback called when an event of this type occurs
+     */
     on(event: string, callback: Function) {
         this.eventEmitter?.on(event, callback);
     }
 
+    /**
+     * Check if browser is compatible with audio recording
+     * @returns boolean
+     */
     isRecordingAvailable() {
         return typeof(navigator.mediaDevices) !== "undefined" && typeof(navigator.mediaDevices.getUserMedia) !== "undefined";
     }
