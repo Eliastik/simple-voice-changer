@@ -22,6 +22,7 @@
 * [x] - Audio Worklet fixes (Soundtouch only) :
     * [x] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
 * [x] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode)
+* [ ] - Bug hunting
 
 ### 2.1.1
 
@@ -41,6 +42,7 @@
 * [ ] - Advanced settings for audio channel number? By default use the number of channel of the host if possible (but some filters force 2-channel)
 * [ ] - Enhance limiter?
 * [ ] - Filter "Autotuner"?
+* [ ] - Filter "equalizer"?
 * [ ] - Save into localstorage filters settings?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
 * [ ] - Real-time filters editing when recording audio (reuse existing filters)?
