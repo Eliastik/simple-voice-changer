@@ -6,7 +6,7 @@ import { terser } from "rollup-plugin-terser";
 
 const config = [
     {
-        input: path.join(__dirname, "src/app/classes/filters/worklets/BitCrusher.worklet.ts"),
+        input: path.join(__dirname, "src/app/lib/filters/worklets/BitCrusher.worklet.ts"),
         output: [
             {
                 file: "public/worklets/BitCrusher.worklet.js",
@@ -25,7 +25,7 @@ const config = [
         ],
     },
     {
-        input: path.join(__dirname, "src/app/classes/filters/worklets/Limiter.worklet.ts"),
+        input: path.join(__dirname, "src/app/lib/filters/worklets/Limiter.worklet.ts"),
         output: [
             {
                 file: "public/worklets/Limiter.worklet.js",
@@ -44,7 +44,7 @@ const config = [
         ],
     },
     {
-        input: path.join(__dirname, "src/app/classes/filters/worklets/Soundtouch.worklet.ts"),
+        input: path.join(__dirname, "src/app/lib/filters/worklets/Soundtouch.worklet.ts"),
         output: [
             {
                 file: "public/worklets/Soundtouch.worklet.js",

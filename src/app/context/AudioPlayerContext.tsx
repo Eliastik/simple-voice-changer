@@ -2,9 +2,9 @@
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
 import AudioEditorPlayerSingleton from "./ApplicationObjectsSingleton";
-import BufferPlayer from "../classes/BufferPlayer";
+import BufferPlayer from "../lib/BufferPlayer";
 import AudioPlayerContextProps from "../model/contextProps/AudioPlayerContextProps";
-import { EventType } from "../classes/model/EventTypeEnum";
+import { EventType } from "../lib/model/EventTypeEnum";
 
 let audioPlayerInstance: BufferPlayer;
 

@@ -1,4 +1,4 @@
-import { RecorderSettings } from "../../classes/model/RecorderSettings";
+import { RecorderSettings } from "../../lib/model/RecorderSettings";
 
 export default interface AudiRecorderContextProps {
     audioRecorderReady: boolean,

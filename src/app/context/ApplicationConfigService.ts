@@ -1,6 +1,6 @@
-import { ConfigService } from "../classes/model/ConfigService";
+import { ConfigService } from "../lib/services/ConfigService";
 import Constants from "../model/Constants";
-import LibConstants from "../classes/model/Constants";
+import LibConstants from "../lib/model/Constants";
 import { UpdateData } from "../model/UpdateData";
 import semver from "semver";
 

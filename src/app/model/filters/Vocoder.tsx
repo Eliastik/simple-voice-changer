@@ -1,4 +1,4 @@
-import Constants from "@/app/classes/model/Constants";
+import Constants from "@/app/lib/model/Constants";
 import Filter from "../Filter";
 
 export const Vocoder: Filter = {

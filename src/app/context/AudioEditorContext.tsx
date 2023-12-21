@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import AudioEditor from "../classes/AudioEditor";
+import AudioEditor from "../lib/AudioEditor";
 import AudioEditorContextProps from "../model/contextProps/AudioEditorContextProps";
 import AudioEditorPlayerSingleton from "./ApplicationObjectsSingleton";
-import { EventType } from "../classes/model/EventTypeEnum";
-import BufferPlayer from "../classes/BufferPlayer";
+import { EventType } from "../lib/model/EventTypeEnum";
+import BufferPlayer from "../lib/BufferPlayer";
 
 // Construct an audio editor instance - singleton
 let audioEditorInstance: AudioEditor;

@@ -1,7 +1,7 @@
-import AudioEditor from "../classes/AudioEditor";
-import BufferPlayer from "../classes/BufferPlayer";
-import EventEmitter from "../classes/EventEmitter";
-import VoiceRecorder from "../classes/VoiceRecorder";
+import AudioEditor from "../lib/AudioEditor";
+import BufferPlayer from "../lib/BufferPlayer";
+import EventEmitter from "../lib/utils/EventEmitter";
+import VoiceRecorder from "../lib/VoiceRecorder";
 import Constants from "../model/Constants";
 import ApplicationConfigService from "./ApplicationConfigService";
 

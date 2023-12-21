@@ -3,9 +3,9 @@
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
 import AudioEditorPlayerSingleton from "./ApplicationObjectsSingleton";
 import AudioRecorderContextProps from "../model/contextProps/AudioRecorderContextProps";
-import VoiceRecorder from "../classes/VoiceRecorder";
-import { EventType } from "../classes/model/EventTypeEnum";
-import { RecorderSettings } from "../classes/model/RecorderSettings";
+import VoiceRecorder from "../lib/VoiceRecorder";
+import { EventType } from "../lib/model/EventTypeEnum";
+import { RecorderSettings } from "../lib/model/RecorderSettings";
 
 let audioRecorderInstance: VoiceRecorder;
 
