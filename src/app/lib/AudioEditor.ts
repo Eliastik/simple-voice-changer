@@ -26,6 +26,10 @@ import { AudioFilterNodes } from "./model/AudioNodes";
 import VocoderFilter from "./filters/VocoderFilter";
 import { ConfigService } from "./services/ConfigService";
 import utilFunctions from "./utils/Functions";
+import GenericSettingValue from "./model/filtersSettings/GenericSettingValue";
+import { FilterSettings } from "./model/filtersSettings/FilterSettings";
+import RecorderWorkerMessage from "./model/RecorderWorkerMessage";
+import { EventEmitterCallback } from "./model/EventEmitterCallback";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -560,8 +564,8 @@ export default class AudioEditor extends AbstractAudioElement {
      * Get the settings of all filters/renderers
      * @returns 
      */
-    getFiltersSettings(): Map<string, any> {
-        const settings = new Map<string, any>();
+    getFiltersSettings(): Map<string, FilterSettings> {
+        const settings = new Map<string, FilterSettings>();
 
         for (const filter of this.filters) {
             settings.set(filter.id, filter.getSettings());
@@ -594,7 +598,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param filterId Filter ID
      * @param settings Filter setting (key/value)
      */
-    async changeFilterSettings(filterId: string, settings: { [setting: string]: string }) {
+    async changeFilterSettings(filterId: string, settings: { [setting: string]: string | GenericSettingValue | undefined }) {
         const filter = this.filters.find(f => f.id === filterId);
 
         if (filter) {
@@ -652,7 +656,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param event The event ID
      * @param callback The callback function
      */
-    on(event: string, callback: Function) {
+    on(event: string, callback: EventEmitterCallback) {
         this.eventEmitter?.on(event, callback);
     }
 
@@ -676,7 +680,7 @@ export default class AudioEditor extends AbstractAudioElement {
                 const worker = getRecorderWorker.default();
 
                 if (worker) {
-                    worker.onmessage = (e: any) => {
+                    worker.onmessage = (e: RecorderWorkerMessage) => {
                         if (e.data.command == Constants.EXPORT_WAV_COMMAND) {
                             this.downloadAudioBlob(e.data.data);
                         }

@@ -88,10 +88,11 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
 
             for (const settingKey of Object.keys(currentSettings)) {
                 const settingFromWorklet = this.currentWorkletNode.parameters.get(settingKey);
+                const settingValue = currentSettings[settingKey];
 
-                if (settingFromWorklet) {
-                    settingFromWorklet.value = currentSettings[settingKey];
-                    settingFromWorklet.setValueAtTime(currentSettings[settingKey], 0);
+                if (settingFromWorklet && settingValue instanceof Number) {
+                    settingFromWorklet.value = currentSettings[settingKey] as number;
+                    settingFromWorklet.setValueAtTime(currentSettings[settingKey] as number, 0);
                 }
             }
         }

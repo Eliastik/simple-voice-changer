@@ -1,5 +1,5 @@
 import SimpleAudioWorkletProcessor from "./SimpleAudioWorkletProcessor";
-import AudioParamPolyfill from "./AudioParamPolyfilL";
+import AudioParamPolyfill from "./AudioParamPolyfill";
 import Functions from "../utils/Functions";
 
 /**

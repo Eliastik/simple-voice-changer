@@ -70,7 +70,7 @@ if(typeof(window) !== "undefined") {
             this.running = false;
         }
 
-        messageProcessor(e: any) {
+        messageProcessor(e: MessageEvent<any>) {
             if (e.data.command) {
                 const { command } = e.data;
                 

@@ -1,3 +1,5 @@
+import { EventEmitterCallback } from "./EventEmitterCallback";
+
 export default interface AudioEditorEvents {
-    [key: string]: Function[]
+    [key: string]: EventEmitterCallback[]
 };

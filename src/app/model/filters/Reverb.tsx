@@ -1,6 +1,7 @@
 import Constants from "@/app/lib/model/Constants";
 import Filter from "../Filter";
 import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
+import ReverbSettings from "@/app/lib/model/filtersSettings/ReverbSettings";
 
 export const Reverb: Filter = {
     filterId: Constants.FILTERS_NAMES.REVERB,
@@ -11,7 +12,7 @@ export const Reverb: Filter = {
     settingsModalTitle: "filters.reverb.settings.title",
     firstColumnStyle: "md:w-3/6",
     secondColumStyle: "md:w-5/6",
-    disabledCondition: (filterSettings: any) => {
+    disabledCondition: (filterSettings: ReverbSettings) => {
         if(filterSettings.downloadedBuffers
             && filterSettings.downloadedBuffers.filter((buffer: string) => buffer.startsWith("impulse_response")).length <= 0) {
             return "filters.reverb.disabled";
@@ -222,13 +223,16 @@ export const Reverb: Filter = {
             startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>,
-            displayCondition: (filterSettings: any) => {
-                const url = filterSettings.reverbEnvironment.value;
-
-                if (url) {
-                    return filterSettings.downloadedBuffers &&
-                        filterSettings.downloadedBuffers.includes(url.substring(url.lastIndexOf("/") + 1));
+            displayCondition: (filterSettings: ReverbSettings) => {
+                if(filterSettings.reverbEnvironment) {
+                    const url = filterSettings.reverbEnvironment.value;
+    
+                    if (url && filterSettings.downloadedBuffers) {
+                        return filterSettings.downloadedBuffers.includes(url.substring(url.lastIndexOf("/") + 1));
+                    }
                 }
+
+                return false;
             }
         },
         {
@@ -240,13 +244,16 @@ export const Reverb: Filter = {
             startIcon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>,
-            displayCondition: (filterSettings: any) => {
-                const url = filterSettings.reverbEnvironment.value;
+            displayCondition: (filterSettings: ReverbSettings) => {
+                if(filterSettings.reverbEnvironment) {
+                    const url = filterSettings.reverbEnvironment.value;
 
-                if (url) {
-                    return filterSettings.downloadedBuffers &&
-                        !filterSettings.downloadedBuffers.includes(url.substring(url.lastIndexOf("/") + 1));
+                    if (url && filterSettings.downloadedBuffers) {
+                        return !filterSettings.downloadedBuffers.includes(url.substring(url.lastIndexOf("/") + 1));
+                    }
                 }
+
+                return false;
             }
         }
     ]

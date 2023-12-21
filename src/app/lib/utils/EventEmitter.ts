@@ -1,4 +1,5 @@
 import AudioEditorEvents from "../model/AudioEditorEvent";
+import { EventEmitterCallback } from "../model/EventEmitterCallback";
 
 class EventEmitter {
     listeners: AudioEditorEvents = {};
@@ -7,14 +8,14 @@ class EventEmitter {
         this.listeners = {};
     }
 
-    on(event: string, callback: Function) {
+    on(event: string, callback: EventEmitterCallback) {
         if (!this.listeners[event]) {
             this.listeners[event] = [];
         }
         this.listeners[event].push(callback);
     }
 
-    emit(event: string, data?: any) {
+    emit(event: string, data?: string | number | AudioBuffer) {
         if (this.listeners[event]) {
             this.listeners[event].forEach(callback => {
                 callback(data);
@@ -22,7 +23,7 @@ class EventEmitter {
         }
     }
 
-    off(event: string, callback: Function) {
+    off(event: string, callback: EventEmitterCallback) {
         if (this.listeners[event]) {
             this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
         }

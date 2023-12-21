@@ -7,14 +7,15 @@ import { AudioFilterNodes } from "../model/AudioNodes";
 import utils from "../utils/Functions";
 import SoundtouchWrapperFilterWorkletNode from "./worklets/SoundtouchWrapperFilterWorkletNode";
 import SimpleAudioWorkletProcessor from "../workletPolyfill/SimpleAudioWorkletProcessor";
+import SoundtouchSettings from "../model/filtersSettings/SoundtouchSettings";
 
 export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet implements AudioFilterEntrypointInterface {
 
     private speedAudio = 1;
     private frequencyAudio = 1;
     private currentSpeedAudio = 1;
-    private currentPitchShifterWorklet: any;
-    private currentPitchShifter: any;
+    private currentPitchShifterWorklet: typeof SoundtouchWrapperFilterWorkletNode;
+    private currentPitchShifter: PitchShifter;
     private isOfflineMode = false;
 
     constructor() {
@@ -23,7 +24,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         this.setDefaultEnabled(true);
     }
 
-    async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
+    async initializeWorklet(): Promise<void> {
         // Do nothing
     }
 
@@ -185,7 +186,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         return Constants.FILTERS_NAMES.SOUNDTOUCH;
     }
 
-    getSettings() {
+    getSettings(): SoundtouchSettings {
         return {
             speedAudio: this.speedAudio,
             frequencyAudio: this.frequencyAudio

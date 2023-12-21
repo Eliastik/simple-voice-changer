@@ -1,3 +1,4 @@
+import { FilterSettings } from "@/app/lib/model/filtersSettings/FilterSettings";
 import { SettingFormTypeEnum } from "./SettingFormTypeEnum";
 
 export default interface SettingForm {
@@ -7,5 +8,5 @@ export default interface SettingForm {
     defaultValue?: string,
     cssClass?: string
     startIcon?: JSX.Element,
-    displayCondition?: (filterSettings: any) => boolean
+    displayCondition?: (filterSettings: FilterSettings) => boolean
 };

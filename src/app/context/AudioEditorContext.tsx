@@ -6,6 +6,7 @@ import AudioEditorContextProps from "../model/contextProps/AudioEditorContextPro
 import AudioEditorPlayerSingleton from "./ApplicationObjectsSingleton";
 import { EventType } from "../lib/model/EventTypeEnum";
 import BufferPlayer from "../lib/BufferPlayer";
+import SelectFormValue from "../model/settingForm/SelectFormValue";
 
 // Construct an audio editor instance - singleton
 let audioEditorInstance: AudioEditor;
@@ -93,8 +94,13 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
             }, 10000);
         });
 
-        audioEditorInstance.on(EventType.RECORDER_STOPPED, (buffer: AudioBuffer) => loadAudioPrincipalBuffer(null, buffer));
-        audioEditorInstance.on(EventType.SAMPLE_RATE_CHANGED, (currentSampleRate: number) => setActualSampleRate(currentSampleRate));
+        audioEditorInstance.on(EventType.RECORDER_STOPPED, (buffer) => {
+            loadAudioPrincipalBuffer(null, buffer as AudioBuffer);
+        });
+
+        audioEditorInstance.on(EventType.SAMPLE_RATE_CHANGED, (currentSampleRate) => {
+            setActualSampleRate(currentSampleRate as number);
+        });
 
         setDownloadingInitialData(audioEditorInstance.downloadingInitialData);
         setFilterState(audioEditorInstance.getFiltersState());
@@ -154,7 +160,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         setAudioEditorReady(false);
     };
 
-    const changeFilterSettings = async (filterId: string, settings: any) => {
+    const changeFilterSettings = async (filterId: string, settings: { [setting: string]: string | SelectFormValue | undefined }) => {
         await audioEditorInstance.changeFilterSettings(filterId, settings);
         setFiltersSettings(audioEditorInstance.getFiltersSettings());
     };

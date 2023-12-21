@@ -24,6 +24,7 @@ import AbstractAudioElement from "./filters/interfaces/AbstractAudioElement";
 import { ConfigService } from "./services/ConfigService";
 import Constants from "./model/Constants";
 import { EventType } from "./model/EventTypeEnum";
+import { EventEmitterCallback } from "./model/EventEmitterCallback";
 
 // Also used in compatibility mode (which doesn't use audio buffer) with less functions (no time control)
 export default class BufferPlayer extends AbstractAudioElement {
@@ -257,7 +258,7 @@ export default class BufferPlayer extends AbstractAudioElement {
      * @param event The event name
      * @param callback Callback called when an event of this type occurs
      */
-    on(event: string, callback: Function) {
+    on(event: string, callback: EventEmitterCallback) {
         this.eventEmitter?.on(event, callback);
     }
 

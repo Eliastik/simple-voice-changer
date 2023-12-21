@@ -44,7 +44,7 @@ export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
         this.running = true;
     }
 
-    messageProcessor(event: any) {
+    messageProcessor(event: MessageEvent<any>) {
         if (event.data.command) {
             const { command, args } = event.data;
             switch (command) {
@@ -132,6 +132,7 @@ export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
         this.port.postMessage({ command: "update", args: [this.playingAt] });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
         if (!this.running) return false;
 

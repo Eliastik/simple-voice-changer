@@ -1,5 +1,3 @@
-export default interface SelectFormValue {
-    name: string;
-    value: string;
-    additionalData?: any;
-};
+import GenericSettingValue from "@/app/lib/model/filtersSettings/GenericSettingValue";
+
+export default interface SelectFormValue extends GenericSettingValue {};

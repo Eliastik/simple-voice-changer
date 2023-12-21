@@ -1,3 +1,4 @@
+import { FilterSettings } from "../lib/model/filtersSettings/FilterSettings";
 import { SettingFormType } from "./settingForm/SettingFormType";
 export default interface Filter {
     filterId: string,
@@ -9,5 +10,5 @@ export default interface Filter {
     settingsModalTitle?: string,
     firstColumnStyle?: string,
     secondColumStyle?: string,
-    disabledCondition?: (filterSettings: any) => string | null
+    disabledCondition?: (filterSettings: FilterSettings) => string | null
 };

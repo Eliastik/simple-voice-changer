@@ -1,5 +1,6 @@
 import AbstractAudioFilter from "./interfaces/AbstractAudioFilter";
 import Constants from "../model/Constants";
+import BassBoosterSettings from "../model/filtersSettings/BassBoosterSettings";
 
 export default class BassBoosterFilter extends AbstractAudioFilter {
     private frequencyBooster = 200;
@@ -41,7 +42,7 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
         return Constants.FILTERS_NAMES.BASS_BOOST;
     }
 
-    getSettings() {
+    getSettings(): BassBoosterSettings {
         return {
             frequencyBooster: this.frequencyBooster,
             frequencyReduce: this.frequencyReduce,

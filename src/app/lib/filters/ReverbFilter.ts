@@ -1,6 +1,8 @@
 import AbstractAudioFilter from "./interfaces/AbstractAudioFilter";
 import Constants from "../model/Constants";
 import { ReverbEnvironment } from "../model/ReverbEnvironment";
+import ReverbSettings from "../model/filtersSettings/ReverbSettings";
+import GenericSettingValue from "../model/filtersSettings/GenericSettingValue";
 
 export default class ReverbFilter extends AbstractAudioFilter {
     private reverbEnvironment: ReverbEnvironment = Constants.DEFAULT_REVERB_ENVIRONMENT;
@@ -29,14 +31,14 @@ export default class ReverbFilter extends AbstractAudioFilter {
     getAddingTime() {
         const settings = this.getSettings();
 
-        if(settings && settings.reverbEnvironment) {
-            return settings.reverbEnvironment.additionalData.addDuration;
+        if(settings && settings.reverbEnvironment && settings.reverbEnvironment.additionalData) {
+            return settings.reverbEnvironment.additionalData.addDuration as number;
         }
 
         return 0;
     }
 
-    getSettings() {
+    getSettings(): ReverbSettings {
         if(!this.reverbEnvironment) {
             return {};
         }
@@ -55,20 +57,30 @@ export default class ReverbFilter extends AbstractAudioFilter {
         };
     }
 
-    async setSetting(settingId: string, value: any) {
+    async setSetting(settingId: string, value: GenericSettingValue) {
         if(settingId == "reverbEnvironment") {
             const url = value.value;
 
             try {
                 await this.bufferFetcherService?.fetchBuffer(url);
 
-                this.reverbEnvironment = {
-                    name: value.name,
-                    url,
-                    size: value.additionalData.size,
-                    addDuration: value.additionalData.addDuration,
-                    link: value.additionalData.link
-                };
+                if(value.additionalData) {
+                    this.reverbEnvironment = {
+                        name: value.name,
+                        url,
+                        size: value.additionalData.size as number,
+                        addDuration: value.additionalData.addDuration as number,
+                        link: value.additionalData.link as string
+                    };
+                } else {
+                    this.reverbEnvironment = {
+                        name: value.name,
+                        url,
+                        size: 0,
+                        addDuration: 0,
+                        link: ""
+                    };
+                }
             } catch(e) { /* empty */ }
         }
     }

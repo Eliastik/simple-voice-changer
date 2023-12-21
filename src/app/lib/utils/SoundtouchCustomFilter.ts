@@ -1,5 +1,5 @@
 //@ts-ignore
-import { SimpleFilter } from "soundtouchjs"; 
+import { SimpleFilter, SoundTouch } from "soundtouchjs"; 
 
 const noop = () => { return; };
 
@@ -7,7 +7,7 @@ export default class SoundtouchCustomFilter extends SimpleFilter {
     callback: () => void;
     private sourceSound: number[] = [];
 
-    constructor(pipe: any, callback = noop){
+    constructor(pipe: SoundTouch, callback = noop){
         super(null, pipe, callback);
         this.callback = callback;
         super.historyBufferSize = 22050;
@@ -39,7 +39,7 @@ export default class SoundtouchCustomFilter extends SimpleFilter {
     /* Override */
     fillInputBuffer(numFrames = 0){ // samples are LRLR 
         const samples = new Float32Array(numFrames * 2);
-        const numFramesExtracted = this.extractSource(samples,numFrames);
+        const numFramesExtracted = this.extractSource(samples, numFrames);
 
         if (numFramesExtracted > 0)
             super.inputBuffer.putSamples(samples, 0, numFramesExtracted);

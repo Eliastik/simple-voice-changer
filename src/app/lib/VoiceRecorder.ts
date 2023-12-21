@@ -30,6 +30,7 @@ import { RecorderSettings } from "./model/RecorderSettings";
 import { ConfigService } from "./services/ConfigService";
 import AbstractAudioElement from "./filters/interfaces/AbstractAudioElement";
 import Constants from "./model/Constants";
+import { EventEmitterCallback } from "./model/EventEmitterCallback";
 
 export default class VoiceRecorder extends AbstractAudioElement {
     
@@ -216,7 +217,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
                     this.pause();
 
                     if (!newConstraint ||
-                        (newConstraints && (newConstraints as any)[newConstraintName] != (newConstraint.audio as any)[newConstraintName])) {
+                        (newConstraints && (newConstraints as any)[newConstraintName] != newConstraint.audio[newConstraintName])) {
                         this.stopStream();
 
                         const stream = await navigator.mediaDevices.getUserMedia(this.constraints);
@@ -436,7 +437,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
      * @param event The event name
      * @param callback Callback called when an event of this type occurs
      */
-    on(event: string, callback: Function) {
+    on(event: string, callback: EventEmitterCallback) {
         this.eventEmitter?.on(event, callback);
     }
 

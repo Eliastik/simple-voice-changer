@@ -1,6 +1,7 @@
 import AbstractAudioFilterWorklet from "./interfaces/AbstractAudioFilterWorklet";
 import Constants from "../model/Constants";
 import worklets from "./worklets";
+import BitCrusherSettings from "../model/filtersSettings/BitCrusherSettings";
 
 export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     private channels = 2;
@@ -34,7 +35,7 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
         return Constants.FILTERS_NAMES.BITCRUSHER;
     }
 
-    getSettings() {
+    getSettings(): BitCrusherSettings {
         return {
             channels: this.channels,
             bits: this.bits,

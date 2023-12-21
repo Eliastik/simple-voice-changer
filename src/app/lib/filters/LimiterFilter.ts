@@ -1,6 +1,7 @@
 import AbstractAudioFilterWorklet from "./interfaces/AbstractAudioFilterWorklet";
 import Constants from "../model/Constants";
 import worklets from "./worklets";
+import LimiterSettings from "../model/filtersSettings/LimiterSettings";
 
 export default class LimiterFilter extends AbstractAudioFilterWorklet {
     private preGain = 0; // dB
@@ -46,7 +47,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
         return this.lookAheadTime;
     }
 
-    getSettings() {
+    getSettings(): LimiterSettings {
         return {
             preGain: this.preGain,
             postGain: this.postGain,

@@ -23,7 +23,7 @@ export default class VocoderFilter extends AbstractAudioFilter {
         return {};
     }
 
-    setSetting(settingId: string, value: string): Promise<void> {
+    setSetting(): Promise<void> {
         throw new Error("Method not implemented.");
     }
     

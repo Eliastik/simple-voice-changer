@@ -1,5 +1,3 @@
-import AudioEditor from "../../lib/AudioEditor";
-
 export default interface AudioPlayerContextProps {
     playing: boolean,
     playAudioBuffer: () => void,
