@@ -17,5 +17,6 @@ export default interface ApplicationConfigContextProps {
     bufferSize: number,
     changeBufferSize: (size: number) => void,
     sampleRate: number,
-    changeSampleRate: (frequency: number) => void
+    changeSampleRate: (frequency: number) => void,
+    updateCurrentTheme: () => void
 };

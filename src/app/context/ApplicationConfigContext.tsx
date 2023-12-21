@@ -99,12 +99,18 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setSampleRate(frequency);
     };
 
+    const updateCurrentTheme = () => {
+        if(currentThemeValue === "auto") {
+            setCurrentTheme(getService().getCurrentTheme());
+        }
+    };
+
     return (
         <ApplicationConfigContext.Provider value={{
             currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
             updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
             isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize,
-            sampleRate, changeSampleRate
+            sampleRate, changeSampleRate, updateCurrentTheme
         }}>
             {children}
         </ApplicationConfigContext.Provider>
