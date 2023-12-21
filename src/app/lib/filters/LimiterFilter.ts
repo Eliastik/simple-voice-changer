@@ -59,7 +59,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
     }
 
     async setSetting(settingId: string, value: string) {
-        if(!value || value == "" || isNaN(Number(value))) {
+        if(typeof(value) === "undefined" || isNaN(Number(value))) {
             return;
         }
         

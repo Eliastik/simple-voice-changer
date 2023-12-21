@@ -33,7 +33,7 @@ export default abstract class AbstractAudioFilter extends AbstractAudioElement {
     public resetSettings() {
         if(this.defaultSettings) {
             Object.keys(this.defaultSettings).forEach(key => {
-                if(this.defaultSettings && this.defaultSettings[key]) {
+                if(this.defaultSettings && typeof(this.defaultSettings[key]) !== "undefined") {
                     this.setSetting(key, this.defaultSettings[key] as (string | GenericSettingValue));
                 }
             });
