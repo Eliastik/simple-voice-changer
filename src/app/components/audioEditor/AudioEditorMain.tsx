@@ -20,7 +20,7 @@ const AudioEditorMain = () => {
                 </div>}
             </div>
             <div className="flex justify-center items-center flex-grow gap-6 flex-col pt-16 pb-16">
-                <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-3 md:gap-4 gap-2 place-content-center p-2 md:p-0">
+                <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-3 md:gap-4 gap-2 place-content-center p-2 md:mt-2 md:p-0">
                     {filters.map(filter => <FilterButton filter={filter} enabled={filterState[filter.filterId]} key={filter.filterId}></FilterButton>)}
                 </div>
                 <div className="flex flex-row md:gap-x-3 gap-x-1 sticky bottom-20">
