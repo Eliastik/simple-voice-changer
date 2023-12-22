@@ -1,6 +1,8 @@
 import GenericSettingValue from "./GenericSettingValue";
 
+export type FilterSettingValue = string | number | GenericSettingValue | string[] | undefined;
+
 export interface FilterSettings {
-    [key: string]: number | GenericSettingValue | string[] | undefined,
+    [key: string]: FilterSettingValue,
     downloadedBuffers?: string[]
 };

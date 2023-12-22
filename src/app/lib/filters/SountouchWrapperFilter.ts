@@ -8,6 +8,7 @@ import utils from "../utils/Functions";
 import SoundtouchWrapperFilterWorkletNode from "./worklets/SoundtouchWrapperFilterWorkletNode";
 import SimpleAudioWorkletProcessor from "../workletPolyfill/SimpleAudioWorkletProcessor";
 import SoundtouchSettings from "../model/filtersSettings/SoundtouchSettings";
+import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
 
 export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet implements AudioFilterEntrypointInterface {
 
@@ -238,12 +239,12 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
         }
     }
 
-    async setSetting(settingId: string, value: string) {
+    async setSetting(settingId: string, value: FilterSettingValue) {
         if(!value || value == "" || isNaN(Number(value))) {
             return;
         }
 
-        const valueFloat = parseFloat(value);
+        const valueFloat = parseFloat(value as string);
 
         switch(settingId) {
         case "speedAudio":

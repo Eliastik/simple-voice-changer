@@ -18,7 +18,7 @@ const FilterButton = ({
     const filterSettings = filtersSettings && filtersSettings.get(filter.filterId);
 
     useEffect(() => {
-        if (filter.disabledCondition) {
+        if (filter.disabledCondition && filterSettings) {
             const reason = filter.disabledCondition(filterSettings);
 
             setFilterDisabled(reason != null);

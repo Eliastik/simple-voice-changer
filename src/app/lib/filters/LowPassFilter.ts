@@ -1,6 +1,7 @@
 import AbstractAudioFilter from "./interfaces/AbstractAudioFilter";
 import Constants from "../model/Constants";
 import LowPassSettings from "../model/filtersSettings/LowPassSettings";
+import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
 
 export default class LowPassFilter extends AbstractAudioFilter {
     private lowFrequency = 3500;
@@ -35,14 +36,14 @@ export default class LowPassFilter extends AbstractAudioFilter {
         };
     }
 
-    async setSetting(settingId: string, value: string) {
+    async setSetting(settingId: string, value: FilterSettingValue) {
         if(!value || value == "" || isNaN(Number(value))) {
             return;
         }
         
         switch (settingId) {
         case "lowFrequency":
-            this.lowFrequency = parseInt(value);
+            this.lowFrequency = parseInt(value as string);
             break;
         }
     }

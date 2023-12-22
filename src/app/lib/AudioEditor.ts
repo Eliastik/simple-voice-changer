@@ -30,6 +30,7 @@ import GenericSettingValue from "./model/filtersSettings/GenericSettingValue";
 import { FilterSettings } from "./model/filtersSettings/FilterSettings";
 import RecorderWorkerMessage from "./model/RecorderWorkerMessage";
 import { EventEmitterCallback } from "./model/EventEmitterCallback";
+import { FilterState } from "./model/FilterState";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -550,8 +551,8 @@ export default class AudioEditor extends AbstractAudioElement {
      * Get enabled/disabled state of all filters/renderers
      * @returns The filters state (enabled/disabled)
      */
-    getFiltersState() {
-        const state: { [filterId: string]: boolean } = {};
+    getFiltersState(): FilterState {
+        const state: FilterState = {};
 
         [...this.filters, ...this.renderers].forEach(filter => {
             state[filter.id] = filter.isEnabled();
@@ -598,7 +599,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param filterId Filter ID
      * @param settings Filter setting (key/value)
      */
-    async changeFilterSettings(filterId: string, settings: { [setting: string]: string | GenericSettingValue | undefined }) {
+    async changeFilterSettings(filterId: string, settings: FilterSettings) {
         const filter = this.filters.find(f => f.id === filterId);
 
         if (filter) {

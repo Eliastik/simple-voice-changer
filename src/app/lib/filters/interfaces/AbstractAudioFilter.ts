@@ -1,6 +1,6 @@
 import AbstractAudioElement from "./AbstractAudioElement";
 import { AudioFilterNodes } from "../../model/AudioNodes";
-import { FilterSettings } from "../../model/filtersSettings/FilterSettings";
+import { FilterSettingValue, FilterSettings } from "../../model/filtersSettings/FilterSettings";
 import GenericSettingValue from "../../model/filtersSettings/GenericSettingValue";
 
 export default abstract class AbstractAudioFilter extends AbstractAudioElement {
@@ -12,7 +12,7 @@ export default abstract class AbstractAudioFilter extends AbstractAudioElement {
     /** Return an object with current settings of this filter */
     abstract getSettings(): FilterSettings;
     /** Set a filter setting */
-    abstract setSetting(settingId: string, value: string | GenericSettingValue | undefined): Promise<void>;
+    abstract setSetting(settingId: string, value: FilterSettingValue): Promise<void>;
     
     /** Get the amount of time this filter add to the audio */
     getAddingTime(): number {
@@ -34,7 +34,7 @@ export default abstract class AbstractAudioFilter extends AbstractAudioElement {
         if(this.defaultSettings) {
             Object.keys(this.defaultSettings).forEach(key => {
                 if(this.defaultSettings && typeof(this.defaultSettings[key]) !== "undefined") {
-                    this.setSetting(key, this.defaultSettings[key] as (string | GenericSettingValue));
+                    this.setSetting(key, this.defaultSettings[key]);
                 }
             });
         }

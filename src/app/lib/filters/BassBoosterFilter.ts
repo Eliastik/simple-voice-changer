@@ -1,6 +1,7 @@
 import AbstractAudioFilter from "./interfaces/AbstractAudioFilter";
 import Constants from "../model/Constants";
 import BassBoosterSettings from "../model/filtersSettings/BassBoosterSettings";
+import { FilterSettingValue, FilterSettings } from "../model/filtersSettings/FilterSettings";
 
 export default class BassBoosterFilter extends AbstractAudioFilter {
     private frequencyBooster = 200;
@@ -51,23 +52,23 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
         };
     }
 
-    async setSetting(settingId: string, value: string) {
-        if(!value || value == "" || isNaN(Number(value))) {
+    async setSetting(settingId: string, value: FilterSettingValue) {
+        if(!value || isNaN(Number(value))) {
             return;
         }
 
         switch(settingId) {
         case "frequencyBooster":
-            this.frequencyBooster = parseInt(value);
+            this.frequencyBooster = parseInt(value as string);
             break;
         case "frequencyReduce":
-            this.frequencyReduce = parseInt(value);
+            this.frequencyReduce = parseInt(value as string);
             break;
         case "dbBooster":
-            this.dbBooster = parseInt(value);
+            this.dbBooster = parseInt(value as string);
             break;
         case "dbReduce":
-            this.dbReduce = parseInt(value);
+            this.dbReduce = parseInt(value as string);
             break;
         }
     }

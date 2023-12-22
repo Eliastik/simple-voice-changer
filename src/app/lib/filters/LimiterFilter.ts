@@ -2,6 +2,7 @@ import AbstractAudioFilterWorklet from "./interfaces/AbstractAudioFilterWorklet"
 import Constants from "../model/Constants";
 import worklets from "./worklets";
 import LimiterSettings from "../model/filtersSettings/LimiterSettings";
+import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
 
 export default class LimiterFilter extends AbstractAudioFilterWorklet {
     private preGain = 0; // dB
@@ -58,29 +59,29 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
         };
     }
 
-    async setSetting(settingId: string, value: string) {
+    async setSetting(settingId: string, value: FilterSettingValue) {
         if(typeof(value) === "undefined" || isNaN(Number(value))) {
             return;
         }
         
         switch (settingId) {
         case "preGain":
-            this.preGain = parseFloat(value);
+            this.preGain = parseFloat(value as string);
             break;
         case "postGain":
-            this.postGain = parseFloat(value);
+            this.postGain = parseFloat(value as string);
             break;
         case "attackTime":
-            this.attackTime = parseFloat(value);
+            this.attackTime = parseFloat(value as string);
             break;
         case "releaseTime":
-            this.releaseTime = parseFloat(value);
+            this.releaseTime = parseFloat(value as string);
             break;
         case "threshold":
-            this.threshold = parseFloat(value);
+            this.threshold = parseFloat(value as string);
             break;
         case "lookAheadTime":
-            this.lookAheadTime = parseFloat(value);
+            this.lookAheadTime = parseFloat(value as string);
             break;
         }
 

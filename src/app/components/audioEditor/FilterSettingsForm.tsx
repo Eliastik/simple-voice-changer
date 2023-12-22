@@ -6,13 +6,17 @@ import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import { SettingFormType } from "@/app/model/settingForm/SettingFormType";
 import { SettingFormTypeEnum } from "@/app/model/settingForm/SettingFormTypeEnum";
+import { FilterSettings } from "@/app/lib/model/filtersSettings/FilterSettings";
+import SelectFormValue from "@/app/model/settingForm/SelectFormValue";
 
-const getStringFromTemplate = (data: any, str?: string) =>{
+const getStringFromTemplate = (data: FilterSettings | null | undefined, str?: string) =>{
     if(str) {
         const template = _.template(str);
 
         try {
-            return template(data);
+            if(data) {
+                return template(data);
+            }
         } catch(e) {
             return "";
         }
@@ -29,7 +33,7 @@ const FilterSettingsForm = ({
     secondColumnStyle
 }: { filterId: string, settingsModalTitle?: string, settingsForm?: SettingFormType[], firstColumnStyle?: string, secondColumnStyle?: string }) => {
     const { filtersSettings, changeFilterSettings, resetFilterSettings } = useAudioEditor();
-    const [currentSettings, setCurrentSettings] = useState(null);
+    const [currentSettings, setCurrentSettings] = useState<FilterSettings | null | undefined>(null);
     const { t } = useTranslation();
 
     const filterSettings = filtersSettings && filtersSettings.get(filterId);
@@ -95,27 +99,33 @@ const FilterSettingsForm = ({
                                     }
                                     {setting.settingType === SettingFormTypeEnum.NumberField && (
                                         <input type="number" className={`input input-bordered ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`} id={`${filterId}_${setting.settingId}`}
-                                            value={currentSettings ? currentSettings[setting.settingId] : ""}
+                                            value={currentSettings ? currentSettings[setting.settingId] as string : ""}
                                             step={setting.step ? 0.1 : setting.step}
                                             min={setting.minValue}
                                             max={setting.maxValue}
                                             onChange={(e) => {
-                                                const newSettings: any = _.cloneDeep(currentSettings);
-                                                newSettings[setting.settingId] = e.target.value;
-                                                setCurrentSettings(newSettings);
+                                                const newSettings: FilterSettings | null | undefined = _.cloneDeep(currentSettings);
+
+                                                if(newSettings) {
+                                                    newSettings[setting.settingId] = e.target.value;
+                                                    setCurrentSettings(newSettings);
+                                                }
                                             }}></input>
                                     )}
                                     {setting.settingType === SettingFormTypeEnum.Range && (
                                         <div className={`flex flex-col ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`}>
                                             <input type="range" className="range range-accent" id={`${filterId}_${setting.settingId}`}
-                                                value={currentSettings ? currentSettings[setting.settingId] : ""}
+                                                value={currentSettings ? currentSettings[setting.settingId] as string : ""}
                                                 step={setting.step ? 0.1 : setting.step}
                                                 min={setting.minValue}
                                                 max={setting.maxValue}
                                                 onChange={(e) => {
-                                                    const newSettings: any = _.cloneDeep(currentSettings);
-                                                    newSettings[setting.settingId] = e.target.value;
-                                                    setCurrentSettings(newSettings);
+                                                    const newSettings: FilterSettings | null | undefined = _.cloneDeep(currentSettings);
+
+                                                    if(newSettings) {
+                                                        newSettings[setting.settingId] = e.target.value;
+                                                        setCurrentSettings(newSettings);
+                                                    }
                                                 }}></input>
                                             <div className="flex justify-between items-center flex-wrap font-light mt-3 mb-3">
                                                 <span>{setting.minValueLabel && t(setting.minValueLabel)}</span>
@@ -126,24 +136,29 @@ const FilterSettingsForm = ({
                                     )}
                                     {setting.settingType === SettingFormTypeEnum.SelectField && (
                                         <select className={`select select-bordered ${secondColumnStyle ? secondColumnStyle : "md:w-3/6"}`} id={`${filterId}_${setting.settingId}`}
-                                            value={currentSettings ? currentSettings[setting.settingId] && (currentSettings[setting.settingId] as any).value : ""}
+                                            value={currentSettings ? currentSettings[setting.settingId] && (currentSettings[setting.settingId] as SelectFormValue).value : ""}
                                             onChange={(e) => {
-                                                const newSettings: any = _.cloneDeep(currentSettings);
+                                                const newSettings: FilterSettings | null | undefined = _.cloneDeep(currentSettings);
                                                 
-                                                let additionalData = null;
+                                                let additionalData = undefined;
+                                                let settingName = "";
 
                                                 if(setting.selectValues) {
                                                     const currentSettingValue = setting.selectValues.find(val => val.value === e.target.value);
     
                                                     if(currentSettingValue) {
                                                         additionalData = currentSettingValue.additionalData;
+                                                        settingName = currentSettingValue.name;
                                                     }
                                                 }
 
-                                                newSettings[setting.settingId] = {
-                                                    value: e.target.value,
-                                                    additionalData
-                                                };
+                                                if(newSettings) {
+                                                    newSettings[setting.settingId] = {
+                                                        name: settingName,
+                                                        value: e.target.value,
+                                                        additionalData
+                                                    };
+                                                }
 
                                                 setCurrentSettings(newSettings);
                                             }}>
@@ -166,7 +181,9 @@ const FilterSettingsForm = ({
                 <div className="modal-action">
                     <form method="dialog">
                         <button className="btn btn-neutral mr-2" onClick={() => {
-                            changeFilterSettings(filterId, currentSettings);
+                            if(currentSettings) {
+                                changeFilterSettings(filterId, currentSettings);
+                            }
                         }}>{t("validate")}</button>
                         <button className="btn btn-error" onClick={(e) => {
                             resetFilterSettings(filterId);

@@ -36,6 +36,7 @@
 ### Future versions
 
 * [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible) + display processing progress
+    * [ ] Cancel audio processing
 
 ## Would be good but not important
 

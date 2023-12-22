@@ -3,6 +3,7 @@ import Constants from "../model/Constants";
 import { ReverbEnvironment } from "../model/ReverbEnvironment";
 import ReverbSettings from "../model/filtersSettings/ReverbSettings";
 import GenericSettingValue from "../model/filtersSettings/GenericSettingValue";
+import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
 
 export default class ReverbFilter extends AbstractAudioFilter {
     private reverbEnvironment: ReverbEnvironment = Constants.DEFAULT_REVERB_ENVIRONMENT;
@@ -57,31 +58,35 @@ export default class ReverbFilter extends AbstractAudioFilter {
         };
     }
 
-    async setSetting(settingId: string, value: GenericSettingValue) {
+    async setSetting(settingId: string, value: FilterSettingValue) {
         if(settingId == "reverbEnvironment") {
-            const url = value.value;
+            const reverbEnvironment = value as GenericSettingValue;
 
-            try {
-                await this.bufferFetcherService?.fetchBuffer(url);
-
-                if(value.additionalData) {
-                    this.reverbEnvironment = {
-                        name: value.name,
-                        url,
-                        size: value.additionalData.size as number,
-                        addDuration: value.additionalData.addDuration as number,
-                        link: value.additionalData.link as string
-                    };
-                } else {
-                    this.reverbEnvironment = {
-                        name: value.name,
-                        url,
-                        size: 0,
-                        addDuration: 0,
-                        link: ""
-                    };
-                }
-            } catch(e) { /* empty */ }
+            if(reverbEnvironment) {
+                const url = reverbEnvironment.value;
+    
+                try {
+                    await this.bufferFetcherService?.fetchBuffer(url);
+    
+                    if(reverbEnvironment.additionalData) {
+                        this.reverbEnvironment = {
+                            name: reverbEnvironment.name,
+                            url,
+                            size: reverbEnvironment.additionalData.size as number,
+                            addDuration: reverbEnvironment.additionalData.addDuration as number,
+                            link: reverbEnvironment.additionalData.link as string
+                        };
+                    } else {
+                        this.reverbEnvironment = {
+                            name: reverbEnvironment.name,
+                            url,
+                            size: 0,
+                            addDuration: 0,
+                            link: ""
+                        };
+                    }
+                } catch(e) { /* empty */ }
+            }
         }
     }
 }

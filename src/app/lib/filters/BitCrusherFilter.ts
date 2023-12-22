@@ -2,6 +2,7 @@ import AbstractAudioFilterWorklet from "./interfaces/AbstractAudioFilterWorklet"
 import Constants from "../model/Constants";
 import worklets from "./worklets";
 import BitCrusherSettings from "../model/filtersSettings/BitCrusherSettings";
+import { FilterSettingValue, FilterSettings } from "../model/filtersSettings/FilterSettings";
 
 export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     private channels = 2;
@@ -43,17 +44,17 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
         };
     }
 
-    async setSetting(settingId: string, value: string) {
+    async setSetting(settingId: string, value: FilterSettingValue) {
         if (!value || value == "" || isNaN(Number(value))) {
             return;
         }
 
         switch (settingId) {
         case "bits":
-            this.bits = parseInt(value);
+            this.bits = parseInt(value as string);
             break;
         case "normFreq":
-            this.normFreq = parseFloat(value);
+            this.normFreq = parseFloat(value as string);
             break;
         }
 

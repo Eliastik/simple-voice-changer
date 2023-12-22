@@ -1,5 +1,6 @@
 import AbstractAudioFilter from "./interfaces/AbstractAudioFilter";
 import Constants from "../model/Constants";
+import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
 
 export default class BitCrusherFilter extends AbstractAudioFilter {
 
@@ -39,7 +40,7 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async setSetting(settingId: string, value: string) {
+    async setSetting(settingId: string, value: FilterSettingValue) {
         throw new Error("Method not implemented.");
     }
 }

@@ -6,7 +6,8 @@ import AudioEditorContextProps from "../model/contextProps/AudioEditorContextPro
 import AudioEditorPlayerSingleton from "./ApplicationObjectsSingleton";
 import { EventType } from "../lib/model/EventTypeEnum";
 import BufferPlayer from "../lib/BufferPlayer";
-import SelectFormValue from "../model/settingForm/SelectFormValue";
+import { FilterSettings } from "../lib/model/filtersSettings/FilterSettings";
+import { FilterState } from "../lib/model/FilterState";
 
 // Construct an audio editor instance - singleton
 let audioEditorInstance: AudioEditor;
@@ -38,9 +39,9 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     // State: true when there is an error processing audio
     const [errorProcessingAudio, setErrorProcessingAudio] = useState(false);
     // State: object with enabled state for the filters
-    const [filterState, setFilterState] = useState({});
+    const [filterState, setFilterState] = useState<FilterState>({});
     // State: object with all the settings of the filters
-    const [filtersSettings, setFiltersSettings] = useState(new Map());
+    const [filtersSettings, setFiltersSettings] = useState<Map<string, FilterSettings>>(new Map());
     // State: true if we are loading initial audio buffer from the network (when starting the application)
     const [downloadingInitialData, setDownloadingInitialData] = useState(true);
     // State: true if we are loading audio buffer from network (used for the reverb filter)
@@ -160,7 +161,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         setAudioEditorReady(false);
     };
 
-    const changeFilterSettings = async (filterId: string, settings: { [setting: string]: string | SelectFormValue | undefined }) => {
+    const changeFilterSettings = async (filterId: string, settings: FilterSettings) => {
         await audioEditorInstance.changeFilterSettings(filterId, settings);
         setFiltersSettings(audioEditorInstance.getFiltersSettings());
     };
