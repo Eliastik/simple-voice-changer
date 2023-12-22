@@ -20,6 +20,7 @@
 // The Voice Recorder class
 // Used to record a sound (voice, etc.) with the user microphone
 // Offer control with play/pause and audio feedback
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import { Recorder } from "recorderjs";
 import TimerSaveTime from "./utils/TimerSaveTime";
@@ -31,6 +32,7 @@ import { ConfigService } from "./services/ConfigService";
 import AbstractAudioElement from "./filters/interfaces/AbstractAudioElement";
 import Constants from "./model/Constants";
 import { EventEmitterCallback } from "./model/EventEmitterCallback";
+import AudioConstraint from "./model/AudioConstraint";
 
 export default class VoiceRecorder extends AbstractAudioElement {
     
@@ -217,7 +219,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
                     this.pause();
 
                     if (!newConstraint ||
-                        (newConstraints && (newConstraints as any)[newConstraintName] != newConstraint.audio[newConstraintName])) {
+                        (newConstraints && (newConstraints as AudioConstraint)[newConstraintName] != newConstraint.audio[newConstraintName])) {
                         this.stopStream();
 
                         const stream = await navigator.mediaDevices.getUserMedia(this.constraints);

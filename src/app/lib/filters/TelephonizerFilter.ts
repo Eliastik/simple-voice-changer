@@ -40,7 +40,5 @@ export default class BitCrusherFilter extends AbstractAudioFilter {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async setSetting(settingId: string, value: FilterSettingValue) {
-        throw new Error("Method not implemented.");
-    }
+    async setSetting(settingId: string, value: FilterSettingValue) { }
 }

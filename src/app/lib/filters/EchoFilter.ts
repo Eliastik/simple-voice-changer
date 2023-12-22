@@ -49,7 +49,7 @@ export default class EchoFilter extends AbstractAudioFilter {
     }
 
     async setSetting(settingId: string, value: FilterSettingValue) {
-        if(!value || value == "" || isNaN(Number(value))) {
+        if(typeof(value) === "undefined" || isNaN(Number(value))) {
             return;
         }
         

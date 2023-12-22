@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * This class is a polyfill for the standard web AudioParam class used by worklets
  */

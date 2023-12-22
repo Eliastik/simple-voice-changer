@@ -1,5 +1,7 @@
+import SoundtouchWorkletMessage from "../../model/SoundtouchWorkletMessage";
 import { SoundtouchWorkletOptionsWrapper } from "../../model/SoundtouchWorkletOptionsWrapper";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let soundtouchWrapperFilterWorkletNodeClass: any;
 
 if(typeof(window) !== "undefined") {
@@ -20,7 +22,7 @@ if(typeof(window) !== "undefined") {
         async setup(tempo: number, pitch: number): Promise<void> {
             return new Promise(resolve => {
                 if(this.port) {
-                    this.port.onmessage = (ev: any) => {
+                    this.port.onmessage = (ev: MessageEvent<SoundtouchWorkletMessage>) => {
                         if(ev && ev.data && ev.data.status === "OK" && ev.data.args[0] === "setup") {
                             this.port.onmessage = this.messageProcessor.bind(this);
                             resolve();
@@ -70,7 +72,7 @@ if(typeof(window) !== "undefined") {
             this.running = false;
         }
 
-        messageProcessor(e: MessageEvent<any>) {
+        messageProcessor(e: MessageEvent<SoundtouchWorkletMessage>) {
             if (e.data.command) {
                 const { command } = e.data;
                 
@@ -87,10 +89,10 @@ if(typeof(window) !== "undefined") {
 
                     switch (e.data.args[0]) {
                     case "getTempo":
-                        this._tempo = value;
+                        this._tempo = value as number;
                         break;
                     case "getPitch":
-                        this._pitch = value;
+                        this._pitch = value as number;
                         break;
                     default:
                         break;

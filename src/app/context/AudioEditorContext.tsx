@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, FC, useEffect, useCallback } from "react";
 import AudioEditor from "../lib/AudioEditor";
 import AudioEditorContextProps from "../model/contextProps/AudioEditorContextProps";
 import AudioEditorPlayerSingleton from "./ApplicationObjectsSingleton";
@@ -59,6 +59,31 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     // State: default device sample rate
     const [defaultDeviceSampleRate, setDefaultDeviceSampleRate] = useState(0);
 
+    const loadAudioPrincipalBuffer = useCallback(async (file: File | null, audioBuffer?: AudioBuffer) => {
+        setLoadingPrincipalBuffer(true);
+    
+        try {
+            if (file) {
+                await audioEditorInstance.loadBufferFromFile(file);
+            } else if (audioBuffer) {
+                audioEditorInstance.loadBuffer(audioBuffer);
+            } else {
+                throw new Error("No audio file or audio buffer!");
+            }
+    
+            setLoadingPrincipalBuffer(false);
+            setAudioEditorReady(true);
+    
+            await processAudio();
+    
+            setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
+        } catch (e) {
+            console.error(e);
+            setLoadingPrincipalBuffer(false);
+            setErrorLoadingPrincipalBuffer(true);
+        }
+    }, []);
+
     useEffect(() => {
         if (audioEditorInstance != null) {
             return;
@@ -109,32 +134,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
         setActualSampleRate(audioEditorInstance.currentSampleRate);
         setDefaultDeviceSampleRate(audioEditorInstance.defaultDeviceSampleRate);
-    }, []);
-
-    const loadAudioPrincipalBuffer = async (file: File | null, audioBuffer?: AudioBuffer) => {
-        setLoadingPrincipalBuffer(true);
-
-        try {
-            if (file) {
-                await audioEditorInstance.loadBufferFromFile(file);
-            } else if (audioBuffer) {
-                audioEditorInstance.loadBuffer(audioBuffer);
-            } else {
-                throw new Error("No audio file or audio buffer!");
-            }
-
-            setLoadingPrincipalBuffer(false);
-            setAudioEditorReady(true);
-
-            await processAudio();
-
-            setCompatibilityModeEnabled(audioEditorInstance.isCompatibilityModeEnabled());
-        } catch (e) {
-            console.error(e);
-            setLoadingPrincipalBuffer(false);
-            setErrorLoadingPrincipalBuffer(true);
-        }
-    };
+    }, [loadAudioPrincipalBuffer]);
 
     const toggleFilter = (filterId: string) => {
         audioEditorInstance.toggleFilter(filterId);

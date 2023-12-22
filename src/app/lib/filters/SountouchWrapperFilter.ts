@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import { PitchShifter } from "soundtouchjs";
 import Constants from "../model/Constants";
@@ -240,7 +241,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
     }
 
     async setSetting(settingId: string, value: FilterSettingValue) {
-        if(!value || value == "" || isNaN(Number(value))) {
+        if(typeof(value) === "undefined" || isNaN(Number(value))) {
             return;
         }
 

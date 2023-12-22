@@ -6,7 +6,7 @@ export interface AudioWorkletProcessorInterface {
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean;
     get parameters(): AudioParamMap;
     get parameterDescriptors(): AudioParamMap;
-    messageProcessor?: (event: any) => void;
+    messageProcessor?: (event: MessageEvent) => void;
 }
 
 type ParameterDescriptors = {
@@ -19,13 +19,14 @@ type ParameterDescriptors = {
  */
 export default class SimpleAudioWorkletProcessor implements AudioWorkletProcessorInterface {
     private _port: MessagePort | null = null;
-    messageProcessor?: ((event: any) => void) | undefined;
+    messageProcessor?: ((event: MessageEvent) => void) | undefined;
 
     constructor() {
         const port = new MessageChannel().port1;
         this._port = port;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
         return true;
     }
@@ -41,6 +42,7 @@ export default class SimpleAudioWorkletProcessor implements AudioWorkletProcesso
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private onMessage(event: MessageEvent): void {
         throw new Error("Method not implemented.");
     }

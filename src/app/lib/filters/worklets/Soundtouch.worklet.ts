@@ -1,8 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import { SoundTouch } from "soundtouchjs";
 import SoundtouchCustomFilter from "../../utils/SoundtouchCustomFilter";
 import SoundtouchWorkletOptions from "../../model/SoundtouchWorkletOptions";
 import Constants from "../../model/Constants";
+import SoundtouchWorkletMessage from "../../model/SoundtouchWorkletMessage";
 
 export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
     private name: string;
@@ -44,7 +46,7 @@ export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
         this.running = true;
     }
 
-    messageProcessor(event: MessageEvent<any>) {
+    messageProcessor(event: MessageEvent<SoundtouchWorkletMessage>) {
         if (event.data.command) {
             const { command, args } = event.data;
             switch (command) {
@@ -88,7 +90,7 @@ export default class SoundTouchWorkletProcessor extends AudioWorkletProcessor {
                 break;
 
             case "setUpdateInterval":
-                this.options.updateInterval = args[0];
+                this.options.updateInterval = args[0] as number;
                 this.port.postMessage({
                     status: "OK",
                     args: [command, this.updateInterval],

@@ -19,6 +19,7 @@ import EventEmitter from "./utils/EventEmitter";
 import PassThroughFilter from "./filters/PassThroughFilter";
 import { EventType } from "./model/EventTypeEnum";
 import Constants from "./model/Constants";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import { Recorder, getRecorderWorker } from "recorderjs";
 import AbstractAudioFilterWorklet from "./filters/interfaces/AbstractAudioFilterWorklet";
@@ -26,7 +27,6 @@ import { AudioFilterNodes } from "./model/AudioNodes";
 import VocoderFilter from "./filters/VocoderFilter";
 import { ConfigService } from "./services/ConfigService";
 import utilFunctions from "./utils/Functions";
-import GenericSettingValue from "./model/filtersSettings/GenericSettingValue";
 import { FilterSettings } from "./model/filtersSettings/FilterSettings";
 import RecorderWorkerMessage from "./model/RecorderWorkerMessage";
 import { EventEmitterCallback } from "./model/EventEmitterCallback";
