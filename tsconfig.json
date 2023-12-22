@@ -22,7 +22,12 @@
       "@/*": ["./src/*"]
     },
     "types": [
-      "@types/audioworklet"
+      "@types/audioworklet",
+      "@types/lodash",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "@types/semver"
     ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
