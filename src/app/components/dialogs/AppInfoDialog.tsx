@@ -18,7 +18,7 @@ const AppInfoDialog = () => {
                     <div className="mt-3">
                         <div className="font-light text-sm flex flex-col md:flex-row gap-3 md:items-center justify-between">
                             <div className="w-full">
-                                <span>{t("appInfos.infos")}</span>
+                                <span>{t("appInfos.infos", { appName: Constants.APP_NAME })}</span>
                             </div>
                         </div>
                     </div>

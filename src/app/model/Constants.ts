@@ -1,8 +1,10 @@
 const Constants = {
+    APP_NAME: "Simple Voice Changer",
+    APP_BY: "By Eliastik's Softs",
     DEFAULT_LANGUAGE: "en",
     FILES_DOWNLOAD_NAME: "simple_voice_changer",
     APP_VERSION: "2.1.0",
-    APP_VERSION_DATE: "12/19/2023",
+    APP_VERSION_DATE: "12/23/2023",
     UPDATER_URI: "https://www.eliastiksofts.com/simple-voice-changer/update.json",
     OFFICIAL_WEBSITE: "https://www.eliastiksofts.com/simple-voice-changer/",
     SOURCE_CODE: "https://github.com/Eliastik/simple-voice-changer",

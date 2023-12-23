@@ -1,4 +1,5 @@
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
+import Constants from "@/app/model/Constants";
 import { useTranslation } from "react-i18next";
 
 const FirstLaunchDialog = () => {
@@ -19,7 +20,7 @@ const FirstLaunchDialog = () => {
                         <div className="mt-3">
                             <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
                                 <div className="w-full">
-                                    <span>{t("appInfos.infos")}</span>
+                                    <span>{t("appInfos.infos", { appName: Constants.APP_NAME })}</span>
                                 </div>
                             </div>
                         </div>

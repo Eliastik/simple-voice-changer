@@ -5,6 +5,7 @@ import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import AppInfoDialog from "../dialogs/AppInfoDialog";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import DaisyUIModal from "@/app/model/DaisyUIModal";
+import Constants from "@/app/model/Constants";
 
 const Navbar = () => {
     const { audioEditorReady } = useAudioEditor();
@@ -21,8 +22,8 @@ const Navbar = () => {
                 </div>}
                 <div className="flex-1">
                     <div className="btn btn-ghost normal-case sm:text-xl text-lg block text-left">
-                        <div>Simple Voice Changer</div>
-                        <div className="font-light text-xs">By Eliastik&apos;s Softs</div>
+                        <div>{Constants.APP_NAME}</div>
+                        <div className="font-light text-xs">{Constants.APP_BY}</div>
                     </div>
                 </div>
                 <div className="flex-none">

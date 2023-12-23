@@ -4,9 +4,10 @@ import { ApplicationConfigProvider } from "./context/ApplicationConfigContext";
 import { AudioPlayerProvider } from "./context/AudioPlayerContext";
 import { AudioRecorderProvider } from "./context/AudioRecorderContext";
 import LayoutChild from "./layoutChild";
+import Constants from "./model/Constants";
 
 export const metadata = {
-    title: "Simple Voice Changer"
+    title: Constants.APP_NAME
 };
 
 const RootLayout = ({
