@@ -6,7 +6,7 @@ const withPWA = require("next-pwa")({
     dest: "public",
     sw: "service-worker.js",
     disable: isDev,
-    scope: process.env.BASE_PATH,
+    scope: process.env.NEXT_PUBLIC_BASE_PATH,
     exclude: [
         ({ asset }) => {
             if (
@@ -29,7 +29,7 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = withPWA({
     output: "export",
-    basePath: process.env.BASE_PATH
+    basePath: process.env.NEXT_PUBLIC_BASE_PATH
 });
 
 module.exports = nextConfig;

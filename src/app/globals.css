@@ -25,7 +25,7 @@
     left: -140px;
 }
 
-@responsive {
+@layer utilities {
     .tooltip.tooltip-config-dialog-md::before {
         position: absolute;
         left: -125px;
