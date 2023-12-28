@@ -95,7 +95,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
             // Callback called when playing is finished
             this.bufferPlayer.on(EventType.PLAYING_FINISHED, () => {
-                if (this.bufferPlayer?.loop) {
+                if (this.bufferPlayer && this.bufferPlayer.loop) {
                     this.bufferPlayer.start();
                 }
             });
@@ -346,9 +346,10 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Reconnect the nodes if the compatibility/direct mode is enabled */
     private async reconnectNodesIfNeeded() {
-        if (this.bufferPlayer?.compatibilityMode && this.currentContext &&
-            this.principalBuffer && this.bufferPlayer && this.entrypointFilter) {
-            await this.connectNodes(this.currentContext, this.principalBuffer, true, this.bufferPlayer?.compatibilityMode);
+        if (this.bufferPlayer && this.bufferPlayer.compatibilityMode &&
+            this.currentContext && this.principalBuffer &&
+            this.bufferPlayer && this.entrypointFilter) {
+            await this.connectNodes(this.currentContext, this.principalBuffer, true, this.bufferPlayer.compatibilityMode);
 
             const speedAudio = this.entrypointFilter.getSpeed();
             this.bufferPlayer.speedAudio = speedAudio;
@@ -411,11 +412,11 @@ export default class AudioEditor extends AbstractAudioElement {
      * @returns A promise resolved when the audio processing is done
      */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
-        if (this.renderedBuffer && this.bufferPlayer && this.configService) {
+        if (this.renderedBuffer && this.configService) {
             await this.initializeWorklets(outputContext);
             await this.connectNodes(outputContext, this.renderedBuffer, false, this.configService.isCompatibilityModeEnabled());
 
-            if (this.entrypointFilter) {
+            if (this.entrypointFilter && this.bufferPlayer) {
                 const speedAudio = this.entrypointFilter.getSpeed();
                 this.bufferPlayer.speedAudio = speedAudio;
             }
@@ -437,9 +438,14 @@ export default class AudioEditor extends AbstractAudioElement {
                 }
 
                 this.renderedBuffer = renderedBuffer;
-                this.bufferPlayer.loadBuffer(this.renderedBuffer);
+
+                if(this.bufferPlayer) {
+                    this.bufferPlayer.loadBuffer(this.renderedBuffer);
+                }
             } else {
-                this.bufferPlayer.setCompatibilityMode(this.currentNodes!.output, durationAudio);
+                if(this.bufferPlayer) {
+                    this.bufferPlayer.setCompatibilityMode(this.currentNodes!.output, durationAudio);
+                }
             }
         }
     }

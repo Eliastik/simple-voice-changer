@@ -150,7 +150,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
                     recording: false,
                     nInputFrames: this.approximateNInputFrames(durationAudio, context),
                     updateInterval: 10.0,
-                    sampleRate: context.sampleRate
+                    sampleRate: buffer.sampleRate
                 },
             });
     
