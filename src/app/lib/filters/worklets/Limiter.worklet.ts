@@ -31,13 +31,13 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
     constructor() {
         super();
         this.port.onmessage = (event) => {
-            if(event.data == "reset") {
+            if (event.data == "reset") {
                 this.reset();
-            } else if(event.data == "stop") {
+            } else if (event.data == "stop") {
                 this.stop();
-            } else if(event.data == "disable") {
+            } else if (event.data == "disable") {
                 this.disabled = true;
-            } else if(event.data == "enable") {
+            } else if (event.data == "enable") {
                 this.disabled = false;
             }
         };
@@ -100,7 +100,7 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
     }
 
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
-        if(this.stopped) return false;
+        if (this.stopped) return false;
 
         const inputBuffer = inputs[0];
         const outputBuffer = outputs[0];
@@ -122,23 +122,23 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
             }
 
             // apply pre gain to signal
-            if(inp) {
+            if (inp) {
                 for (let k = 0; k < inp.length; ++k) {
                     out[k] = preGainAmp * inp[k];
                 }
             }
-            
+
             // compute the envelope
             envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], sampleRate);
         }
 
         // If disabled we don't apply the limitation to the audio
-        if(this.disabled) {
+        if (this.disabled) {
             for (let channel = 0; channel < outputBuffer.length; channel++) {
                 const inp = inputBuffer[channel];
                 const out = outputBuffer[channel];
 
-                if(inp) {
+                if (inp) {
                     for (let i = 0; i < inp.length; i++) {
                         out[i] = inp[i];
                     }
@@ -163,7 +163,7 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
             // limiter mode: slope is 1
             const slope = 1;
 
-            if(inp) {
+            if (inp) {
                 for (let i = 0; i < inp.length; i++) {
                     let gainDB = slope * (parameters.threshold[0] - this.ampToDB(this.getMaxEnvelope(envelopeData, outputBuffer.length, i))); // max gain
 

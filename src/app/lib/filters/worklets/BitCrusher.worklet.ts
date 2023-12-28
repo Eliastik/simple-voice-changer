@@ -2,8 +2,8 @@ import Constants from "../../model/Constants";
 
 export default class BitCrusherProcessor extends AudioWorkletProcessor {
     private stopped = false;
-    private phaser = 0;
-    private last = 0;
+    private phaser: number[] | null = null;
+    private last: number[] | null = null;
 
     constructor() {
         super();
@@ -26,28 +26,40 @@ export default class BitCrusherProcessor extends AudioWorkletProcessor {
     }
 
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
-        if(this.stopped) return false;
-        
+        if (this.stopped) return false;
+
         const input = inputs[0];
         const output = outputs[0];
 
         const step = 2 * Math.pow(1 / 2, parameters.bits[0]);
         const currentNormFreq = parameters.normFreq[0] / (sampleRate / 48000);
 
-        for (let channel = 0; channel < input.length; channel++) {
-            const inp = input[channel];
-            const out = output[channel];
+        if(this.last == null) {
+            this.last = new Array(input.length).fill(0);
+        }
 
-            if(inp) {
-                for (let i = 0; i < inp.length; i++) {
-                    this.phaser += currentNormFreq;
+        if(this.phaser == null) {
+            this.phaser = new Array(input.length).fill(0);
+        }
+
+        if(input && input[0]) {
+            const blockSize = input[0].length;
     
-                    if (this.phaser >= 1.0) {
-                        this.phaser -= 1.0;
-                        this.last = step * Math.floor((inp[i] * (1 / step)) + 0.5);
+            for (let channel = 0; channel < input.length; channel++) {
+                const inp = input[channel];
+                const out = output[channel];
+    
+                if (inp) {
+                    for (let i = 0; i < blockSize; i++) {
+                        this.phaser[channel] += currentNormFreq;
+    
+                        if (this.phaser[channel] >= 1.0) {
+                            this.phaser[channel] -= 1.0;
+                            this.last[channel] = step * Math.floor((inp[i] * (1 / step)) + 0.5);
+                        }
+    
+                        out[i] = this.last[channel];
                     }
-    
-                    out[i] = this.last;
                 }
             }
         }
@@ -57,6 +69,8 @@ export default class BitCrusherProcessor extends AudioWorkletProcessor {
 
     stop() {
         this.stopped = true;
+        this.phaser = null;
+        this.last = null;
     }
 }
 

@@ -25,7 +25,7 @@
 * [x] Make the limiter the last audio filter of the chain
 * [ ] - Bug hunting
     * [x] Fix audio worklet fallback/polyfill port message not working
-    * [ ] Fix 8-bit effect (using 4098 samples)
+    * [x] Fix 8-bit effect
 
 ### 2.1.1
 
