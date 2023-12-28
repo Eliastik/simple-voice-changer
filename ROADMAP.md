@@ -24,8 +24,8 @@
 * [x] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode)
 * [x] Make the limiter the last audio filter of the chain
 * [ ] - Bug hunting
+    * [x] Fix audio worklet fallback/polyfill port message not working
     * [ ] Fix 8-bit effect (using 4098 samples)
-    * [ ] Fix audio worklet fallback/polyfill port message not working
 
 ### 2.1.1
 

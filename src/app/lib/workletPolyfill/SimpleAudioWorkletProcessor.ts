@@ -18,12 +18,11 @@ type ParameterDescriptors = {
  * This class is a polyfill for the AudioWorkletProcessor interface
  */
 export default class SimpleAudioWorkletProcessor implements AudioWorkletProcessorInterface {
-    private _port: MessagePort | null = null;
+    private messageChannel: MessageChannel | null = null;
     messageProcessor?: ((event: MessageEvent) => void) | undefined;
 
     constructor() {
-        const port = new MessageChannel().port1;
-        this._port = port;
+        this.messageChannel = new MessageChannel();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -32,19 +31,11 @@ export default class SimpleAudioWorkletProcessor implements AudioWorkletProcesso
     }
 
     get port(): MessagePort | null {
-        return this._port;
+        return this.messageChannel && this.messageChannel.port1;
     }
 
-    set port(port: MessagePort | null) {
-        if (port) {
-            this._port = port;
-            port.onmessage = this.onMessage.bind(this);
-        }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private onMessage(event: MessageEvent): void {
-        throw new Error("Method not implemented.");
+    get port2(): MessagePort | null {
+        return this.messageChannel && this.messageChannel.port2;
     }
 
     get parameters(): AudioParamMap {

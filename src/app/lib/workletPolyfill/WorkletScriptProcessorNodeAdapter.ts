@@ -31,15 +31,15 @@ export default class WorkletScriptProcessorNodeAdapter {
     }
 
     private setupPort(): void {
-        const port = new MessageChannel().port1;
+        const messageChannel = new MessageChannel();
 
-        port.onmessage = (ev) => {
-            if(this.workletProcessor && this.workletProcessor.port) {
-                this.workletProcessor.port.postMessage(ev.data);
+        messageChannel.port1.onmessage = (ev) => {
+            if(this.workletProcessor && this.workletProcessor.port2) {
+                this.workletProcessor.port2.postMessage(ev.data);
             }
         };
 
-        this._port = port;
+        this._port = messageChannel.port2;
     }
 
     private setupProcessor() {
