@@ -1,6 +1,7 @@
 "use client";
 
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
+import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import FilterButton from "./FilterButton";
 import filters from "@/app/model/Filters";
 import AudioPlayer from "./AudioPlayer";
@@ -9,7 +10,8 @@ import DownloadingBufferDialog from "../dialogs/DownloadingBufferDialog";
 import { useTranslation } from "react-i18next";
 
 const AudioEditorMain = () => {
-    const { filterState, validateSettings, resetAllFiltersState, isCompatibilityModeAutoEnabled } = useAudioEditor();
+    const { filterState, validateSettings, resetAllFiltersState } = useAudioEditor();
+    const { isCompatibilityModeAutoEnabled } = useApplicationConfig();
     const { t } = useTranslation();
 
     return (

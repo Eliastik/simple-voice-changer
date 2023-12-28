@@ -31,6 +31,7 @@ import { FilterSettings } from "./model/filtersSettings/FilterSettings";
 import RecorderWorkerMessage from "./model/RecorderWorkerMessage";
 import { EventEmitterCallback } from "./model/EventEmitterCallback";
 import { FilterState } from "./model/FilterState";
+import GenericConfigService from "./utils/GenericConfigService";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -53,10 +54,6 @@ export default class AudioEditor extends AbstractAudioElement {
     /** The current connected nodes */
     private currentNodes: AudioFilterNodes | null = null;
 
-    /** Compatibility/direct mode (when not using an OfflineAudioContext) */
-    private compatibilityModeEnabled = false;
-    /** True if we already detected and auto enabled compatibility mode */
-    private compatibilityModeChecked = false;
     /** If we are currently processing and downloading the buffer */
     private savingBuffer = false;
     /** The previous sample rate setting */
@@ -71,7 +68,7 @@ export default class AudioEditor extends AbstractAudioElement {
         this.currentContext = context;
         this.eventEmitter = eventEmitter || new EventEmitter();
         this.bufferPlayer = player || new BufferPlayer(context!);
-        this.configService = configService || null;
+        this.configService = configService || new GenericConfigService();
         this.bufferFetcherService = new BufferFetcherService(this.currentContext!, this.eventEmitter);
 
         // Callback called just before starting audio player
@@ -91,7 +88,7 @@ export default class AudioEditor extends AbstractAudioElement {
         if (this.bufferPlayer) {
             // Callback called just before starting playing audio, when compatibility mode is enabled
             this.bufferPlayer.onBeforePlaying(async () => {
-                if (this.isCompatibilityModeEnabled() && this.currentContext) {
+                if (this.bufferPlayer && this.bufferPlayer.compatibilityMode && this.currentContext) {
                     await this.setupOutput(this.currentContext);
                 }
             });
@@ -391,7 +388,7 @@ export default class AudioEditor extends AbstractAudioElement {
         const speedAudio = this.entrypointFilter.getSpeed();
         const durationAudio = this.calculateAudioDuration(speedAudio);
         const offlineContext = new OfflineAudioContext(2, this.currentContext.sampleRate * durationAudio, this.currentContext.sampleRate);
-        const outputContext = this.isCompatibilityModeEnabled() ? this.currentContext : offlineContext;
+        const outputContext = this.configService && this.configService.isCompatibilityModeEnabled() ? this.currentContext : offlineContext;
 
         let currentBuffer = this.principalBuffer!;
 
@@ -414,26 +411,26 @@ export default class AudioEditor extends AbstractAudioElement {
      * @returns A promise resolved when the audio processing is done
      */
     private async setupOutput(outputContext: BaseAudioContext, durationAudio?: number, offlineContext?: OfflineAudioContext): Promise<void> {
-        if (this.renderedBuffer && this.bufferPlayer) {
+        if (this.renderedBuffer && this.bufferPlayer && this.configService) {
             await this.initializeWorklets(outputContext);
-            await this.connectNodes(outputContext, this.renderedBuffer, false, this.isCompatibilityModeEnabled());
+            await this.connectNodes(outputContext, this.renderedBuffer, false, this.configService.isCompatibilityModeEnabled());
 
             if (this.entrypointFilter) {
                 const speedAudio = this.entrypointFilter.getSpeed();
                 this.bufferPlayer.speedAudio = speedAudio;
             }
 
-            if (!this.isCompatibilityModeEnabled() && offlineContext && this.currentNodes) {
+            if (!this.configService.isCompatibilityModeEnabled() && offlineContext && this.currentNodes) {
                 this.currentNodes.output.connect(outputContext.destination);
 
                 const renderedBuffer = await offlineContext.startRendering();
 
-                if (!this.isCompatibilityModeChecked()) {
+                if (!this.configService.isCompatibilityModeChecked()) {
                     const sum = renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
 
                     if (sum == 0) {
                         this.setCompatibilityModeChecked(true);
-                        this.enableCompatibilityMode();
+                        this.configService.enableCompatibilityMode();
                         this.eventEmitter?.emit(EventType.COMPATIBILITY_MODE_AUTO_ENABLED);
                         return await this.setupOutput(this.currentContext!, durationAudio);
                     }
@@ -480,67 +477,12 @@ export default class AudioEditor extends AbstractAudioElement {
         return true;
     }
 
-    /** Compatibility mode settings */
-
-    /**
-     * Enable the compatibility/direct audio rendering mode
-     */
-    enableCompatibilityMode() {
-        this.setCompatibilityModeEnabled(true);
-    }
-
-    /**
-     * Disable the compatibility/direct audio rendering mode
-     */
-    disableCompatibilityMode() {
-        this.setCompatibilityModeEnabled(false);
-    }
-
-    /**
-     * Is the compatibility/direct audio rendering mode enabled?
-     *
-     * @returns boolean
-     */
-    isCompatibilityModeEnabled() {
-        if (this.configService) {
-            return this.configService.getConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_ENABLED) === "true";
-        }
-
-        return this.compatibilityModeEnabled;
-    }
-
-    /**
-     * Enable/disable compatibility/direct audio rendering mode
-     * @param enabled boolean
-     */
-    private setCompatibilityModeEnabled(enabled: boolean) {
-        this.compatibilityModeEnabled = enabled;
-
-        if (this.configService) {
-            this.configService.setConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_ENABLED, "" + enabled);
-        }
-    }
-
-    /**
-     * Was compatibility/direct audio rendering mode already checked for auto enabling? (if an error occurs rendering in offline context)
-     * @returns boolean
-     */
-    isCompatibilityModeChecked() {
-        if (this.configService) {
-            return this.configService.getConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_CHECKED) === "true";
-        }
-
-        return this.compatibilityModeChecked;
-    }
-
     /**
      * Set compatibility/direct audio rendering mode already checked for auto enabling (if an error occurs rendering in offline context)
      * @param checked boolean
      */
     private setCompatibilityModeChecked(checked: boolean) {
-        this.compatibilityModeChecked = checked;
-
-        if (this.configService) {
+        if(this.configService) {
             this.configService.setConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_CHECKED, "" + checked);
         }
     }

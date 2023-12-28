@@ -21,7 +21,6 @@
 
 import EventEmitter from "./utils/EventEmitter";
 import AbstractAudioElement from "./filters/interfaces/AbstractAudioElement";
-import { ConfigService } from "./services/ConfigService";
 import Constants from "./model/Constants";
 import { EventType } from "./model/EventTypeEnum";
 import { EventEmitterCallback } from "./model/EventEmitterCallback";
@@ -45,11 +44,10 @@ export default class BufferPlayer extends AbstractAudioElement {
     compatibilityMode = false;
     currentNode: AudioNode | null = null;
 
-    constructor(context: AudioContext | OfflineAudioContext | null, eventEmitter?: EventEmitter, configService?: ConfigService) {
+    constructor(context: AudioContext | OfflineAudioContext | null, eventEmitter?: EventEmitter) {
         super();
         this.context = context;
         this.eventEmitter = eventEmitter || new EventEmitter();
-        this.configService = configService || null;
     }
 
     /** Init this buffer player */

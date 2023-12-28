@@ -1,10 +1,26 @@
-import { ConfigService } from "../lib/services/ConfigService";
 import Constants from "../model/Constants";
 import LibConstants from "../lib/model/Constants";
 import { UpdateData } from "../model/UpdateData";
 import semver from "semver";
+import GenericConfigService from "../lib/utils/GenericConfigService";
 
-export default class ApplicationConfigService implements ConfigService {
+export default class ApplicationConfigService extends GenericConfigService {
+    getConfig(key: string): string | null {
+        const setting = typeof window !== "undefined" ? window.localStorage.getItem(Constants.PREFERENCES_KEYS.PREFIX + key) : null;
+
+        if (!setting) {
+            return null;
+        }
+
+        return setting;
+    }
+
+    setConfig(key: string, value: string): void {
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem(Constants.PREFERENCES_KEYS.PREFIX + key, value);
+        }
+    }
+
     public setCurrentTheme(theme: string) {
         this.setConfig(Constants.PREFERENCES_KEYS.CURRENT_THEME, theme);
     }
@@ -49,56 +65,16 @@ export default class ApplicationConfigService implements ConfigService {
         this.setConfig(LibConstants.PREFERENCES_KEYS.ENABLE_AUDIO_WORKLET, enable ? "true" : "false");
     }
 
-    public isAudioWorkletEnabled(): boolean {
-        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.ENABLE_AUDIO_WORKLET);
-
-        if(setting != null) {
-            return setting == "true";
-        }
-
-        return LibConstants.ENABLE_AUDIO_WORKLET;
-    }
-
     public enableSoundtouchAudioWorklet(enable: boolean) {
         this.setConfig(LibConstants.PREFERENCES_KEYS.ENABLE_SOUNDTOUCH_AUDIO_WORKLET, enable ? "true" : "false");
-    }
-
-    public isSoundtouchAudioWorkletEnabled(): boolean {
-        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.ENABLE_SOUNDTOUCH_AUDIO_WORKLET);
-
-        if(setting != null) {
-            return setting == "true";
-        }
-
-        return LibConstants.ENABLE_SOUNDTOUCH_AUDIO_WORKLET;
     }
 
     public setBufferSize(value: number) {
         this.setConfig(LibConstants.PREFERENCES_KEYS.BUFFER_SIZE, "" + value);
     }
 
-    public getBufferSize(): number {
-        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.BUFFER_SIZE);
-
-        if(setting != null) {
-            return parseInt(setting);
-        }
-
-        return LibConstants.DEFAULT_BUFFER_SIZE;
-    }
-
     public setSampleRate(value: number) {
         this.setConfig(LibConstants.PREFERENCES_KEYS.SAMPLE_RATE, "" + value);
-    }
-
-    public getSampleRate(): number {
-        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.SAMPLE_RATE);
-
-        if(setting != null) {
-            return parseInt(setting);
-        }
-
-        return LibConstants.DEFAULT_SAMPLE_RATE;
     }
 
     /** Get current theme from OS (dark/light) */
@@ -151,20 +127,4 @@ export default class ApplicationConfigService implements ConfigService {
 
         return null;
     }
-
-    getConfig(key: string): string | null {
-        const setting = typeof window !== "undefined" ? window.localStorage.getItem(Constants.PREFERENCES_KEYS.PREFIX + key) : null;
-
-        if (!setting) {
-            return null;
-        }
-
-        return setting;
-    }
-
-    setConfig(key: string, value: string): void {
-        if (typeof window !== "undefined") {
-            window.localStorage.setItem(Constants.PREFERENCES_KEYS.PREFIX + key, value);
-        }
-    }
-}
+};

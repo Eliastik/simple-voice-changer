@@ -1,9 +1,7 @@
 import { FilterState } from "@/app/lib/model/FilterState";
-import AudioEditor from "../../lib/AudioEditor";
 import { FilterSettings } from "@/app/lib/model/filtersSettings/FilterSettings";
 
 export default interface AudioEditorContextProps {
-    audioEditorInstance: AudioEditor;
     loadAudioPrincipalBuffer: (buffer: File) => void;
     audioEditorReady: boolean,
     loadingPrincipalBuffer: boolean,
@@ -24,9 +22,6 @@ export default interface AudioEditorContextProps {
     downloadAudio: () => void,
     downloadingAudio: boolean,
     resetAllFiltersState: () => void,
-    isCompatibilityModeEnabled: boolean,
-    toggleCompatibilityMode: (enabled: boolean) => void,
-    isCompatibilityModeAutoEnabled: boolean,
     pauseAudioEditor: () => void,
     errorProcessingAudio: boolean,
     closeErrorProcessingAudio: () => void,

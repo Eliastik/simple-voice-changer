@@ -6,6 +6,8 @@ import ApplicationConfigService from "./ApplicationConfigService";
 import i18next from "i18next";
 import { UpdateData } from "../model/UpdateData";
 import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
+import AudioEditor from "../lib/AudioEditor";
+import { EventType } from "../lib/model/EventTypeEnum";
 
 const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
 
@@ -24,6 +26,12 @@ interface ApplicationConfigProviderProps {
 const getService = (): ApplicationConfigService => {
     return ApplicationObjectsSingleton.getConfigServiceInstance()!;
 };
+
+const getAudioEditor = (): AudioEditor => {
+    return ApplicationObjectsSingleton.getAudioEditorInstance()!;
+};
+
+let isReady = false;
 
 export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ children }) => {
     // State: current theme (light/dark)
@@ -44,8 +52,16 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const [bufferSize, setBufferSize] = useState(0);
     // State: sample rate
     const [sampleRate, setSampleRate] = useState(0);
+    // State: true if compatibility/direct mode is enabled
+    const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
+    // State: true if compatibility/direct was auto enabled
+    const [isCompatibilityModeAutoEnabled, setCompatibilityModeAutoEnabled] = useState(false);
 
     useEffect(() => {
+        if(isReady) {
+            return;
+        }
+
         setCurrentTheme(getService().getCurrentTheme());
         setCurrentThemeValue(getService().getCurrentThemePreference());
         setAlreadyUsed(getService().hasAlreadyUsedApp());
@@ -53,8 +69,20 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setSoundtouchAudioWorkletEnabled(getService().isSoundtouchAudioWorkletEnabled());
         setBufferSize(getService().getBufferSize());
         setSampleRate(getService().getSampleRate());
+        setCompatibilityModeEnabled(getService().isCompatibilityModeEnabled());
+
+        getAudioEditor().on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => {
+            setCompatibilityModeAutoEnabled(true);
+            setCompatibilityModeEnabled(true);
+
+            setTimeout(() => {
+                setCompatibilityModeAutoEnabled(false);
+            }, 10000);
+        });
 
         getService().checkAppUpdate().then(result => setUpdateData(result));
+
+        isReady = true;
     }, []);
 
     const setTheme = (theme: string) => {
@@ -105,12 +133,23 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         }
     };
 
+    const toggleCompatibilityMode = (enabled: boolean) => {
+        if (enabled) {
+            getService().enableCompatibilityMode();
+        } else {
+            getService().disableCompatibilityMode();
+        }
+
+        setCompatibilityModeEnabled(enabled);
+    };
+
     return (
         <ApplicationConfigContext.Provider value={{
             currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
             updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
             isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize,
-            sampleRate, changeSampleRate, updateCurrentTheme
+            sampleRate, changeSampleRate, updateCurrentTheme, isCompatibilityModeEnabled,
+            toggleCompatibilityMode, isCompatibilityModeAutoEnabled,
         }}>
             {children}
         </ApplicationConfigContext.Provider>

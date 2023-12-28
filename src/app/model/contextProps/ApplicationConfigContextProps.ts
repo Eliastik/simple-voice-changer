@@ -18,5 +18,8 @@ export default interface ApplicationConfigContextProps {
     changeBufferSize: (size: number) => void,
     sampleRate: number,
     changeSampleRate: (frequency: number) => void,
-    updateCurrentTheme: () => void
+    updateCurrentTheme: () => void,
+    isCompatibilityModeEnabled: boolean,
+    toggleCompatibilityMode: (enabled: boolean) => void,
+    isCompatibilityModeAutoEnabled: boolean,
 };

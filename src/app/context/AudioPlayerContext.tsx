@@ -1,12 +1,10 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import AudioEditorPlayerSingleton from "./ApplicationObjectsSingleton";
 import BufferPlayer from "../lib/BufferPlayer";
 import AudioPlayerContextProps from "../model/contextProps/AudioPlayerContextProps";
 import { EventType } from "../lib/model/EventTypeEnum";
-
-let audioPlayerInstance: BufferPlayer;
+import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
 
 const AudioPlayerContext = createContext<AudioPlayerContextProps | undefined>(undefined);
 
@@ -19,8 +17,14 @@ export const useAudioPlayer = (): AudioPlayerContextProps => {
 };
 
 interface AudioPlayerProviderProps {
-  children: ReactNode;
+    children: ReactNode;
 }
+
+const getAudioPlayer = (): BufferPlayer => {
+    return ApplicationObjectsSingleton.getAudioPlayerInstance()!;
+};
+
+let isReady = false;
 
 export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) => {
     // State: true if the audio player is playing the audio
@@ -41,62 +45,62 @@ export const AudioPlayerProvider: FC<AudioPlayerProviderProps> = ({ children }) 
     const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
 
     useEffect(() => {
-        if(audioPlayerInstance != null) {
+        if (isReady) {
             return;
         }
 
-        audioPlayerInstance = AudioEditorPlayerSingleton.getAudioPlayerInstance()!;
+        getAudioPlayer().on(EventType.PLAYING_FINISHED, () => setPlaying(false));
+        getAudioPlayer().on(EventType.PLAYING_UPDATE, () => updatePlayerState());
 
-        audioPlayerInstance.on(EventType.PLAYING_FINISHED, () => setPlaying(false));
-        audioPlayerInstance.on(EventType.PLAYING_UPDATE, () => updatePlayerState());
-
-        audioPlayerInstance.on(EventType.PLAYING_STARTED, () => {
+        getAudioPlayer().on(EventType.PLAYING_STARTED, () => {
             setPlaying(true);
             updatePlayerState();
         });
 
-        audioPlayerInstance.on(EventType.PLAYING_STOPPED, () => {
+        getAudioPlayer().on(EventType.PLAYING_STOPPED, () => {
             setPlaying(false);
             updatePlayerState();
         });
 
         updatePlayerState();
+
+        isReady = true;
     }, []);
 
     const playAudioBuffer = async () => {
-        await audioPlayerInstance.start();
+        await getAudioPlayer().start();
         setPlaying(true);
         updatePlayerState();
     };
 
     const pauseAudioBuffer = () => {
-        audioPlayerInstance.pause();
+        getAudioPlayer().pause();
         setPlaying(false);
         updatePlayerState();
     };
 
     const stopAudioBuffer = () => {
-        audioPlayerInstance.stop();
+        getAudioPlayer().stop();
         setPlaying(false);
         updatePlayerState();
     };
 
     const loopAudioBuffer = () => {
-        audioPlayerInstance.toggleLoop();
+        getAudioPlayer().toggleLoop();
         updatePlayerState();
     };
 
     const updatePlayerState = () => {
-        setCurrentTimeDisplay(audioPlayerInstance.currentTimeDisplay);
-        setMaxTimeDisplay(audioPlayerInstance.maxTimeDisplay);
-        setPercent(audioPlayerInstance.percent);
-        setLooping(audioPlayerInstance.loop);
-        setCurrentTime(audioPlayerInstance.currentTime);
-        setMaxTime(audioPlayerInstance.duration);
-        setCompatibilityModeEnabled(audioPlayerInstance.compatibilityMode);
+        setCurrentTimeDisplay(getAudioPlayer().currentTimeDisplay);
+        setMaxTimeDisplay(getAudioPlayer().maxTimeDisplay);
+        setPercent(getAudioPlayer().percent);
+        setLooping(getAudioPlayer().loop);
+        setCurrentTime(getAudioPlayer().currentTime);
+        setMaxTime(getAudioPlayer().duration);
+        setCompatibilityModeEnabled(getAudioPlayer().compatibilityMode);
     };
 
-    const setTimePlayer = (value: number) => audioPlayerInstance.setTime(value);
+    const setTimePlayer = (value: number) => getAudioPlayer().setTime(value);
 
     return (
         <AudioPlayerContext.Provider value={{
