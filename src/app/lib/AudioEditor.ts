@@ -184,16 +184,27 @@ export default class AudioEditor extends AbstractAudioElement {
      * Create new context if needed, for example if sample rate setting have changed
      */
     private async createNewContextIfNeeded() {
-        let currentSampleRate = Constants.DEFAULT_SAMPLE_RATE;
+        const isCompatibilityModeEnabled = this.configService && this.configService.isCompatibilityModeEnabled();
 
-        if (this.configService) {
-            currentSampleRate = this.configService.getSampleRate();
-        }
-
-        // If sample rate setting has changed, create a new audio context
-        if (currentSampleRate != this.previousSampleRate) {
-            await this.createNewContext(currentSampleRate);
-            this.previousSampleRate = currentSampleRate;
+        if(isCompatibilityModeEnabled && this.principalBuffer) {
+            // If compatibility mode is enabled, we use the sample rate of the input audio buffer
+            if(this.currentSampleRate != this.principalBuffer.sampleRate) {
+                await this.createNewContext(this.principalBuffer.sampleRate);
+                this.previousSampleRate = this.principalBuffer.sampleRate;
+            }
+        } else {
+            // Otherwise we change the context if the sample rate has changed
+            let currentSampleRate = Constants.DEFAULT_SAMPLE_RATE;
+    
+            if (this.configService) {
+                currentSampleRate = this.configService.getSampleRate();
+            }
+    
+            // If sample rate setting has changed, create a new audio context
+            if (currentSampleRate != this.previousSampleRate) {
+                await this.createNewContext(currentSampleRate);
+                this.previousSampleRate = currentSampleRate;
+            }
         }
     }
 
@@ -234,6 +245,9 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Get the current sample rate used
+     */
     get currentSampleRate(): number {
         if(this.currentContext) {
             return this.currentContext.sampleRate;
@@ -242,6 +256,9 @@ export default class AudioEditor extends AbstractAudioElement {
         return 0;
     }
 
+    /**
+     * Get the default device sample rate
+     */
     get defaultDeviceSampleRate(): number {
         const tempContext = new AudioContext();
         let sampleRate = 0;
@@ -256,6 +273,8 @@ export default class AudioEditor extends AbstractAudioElement {
 
     /** Decode and load an audio buffer from an audio file */
     async loadBufferFromFile(file: File) {
+        this.principalBuffer = null;
+        
         await this.prepareContext();
 
         if (this.currentContext) {
@@ -366,6 +385,10 @@ export default class AudioEditor extends AbstractAudioElement {
         }
     }
 
+    /**
+     * Get the rendered audio buffer
+     * @returns The AudioBuffer
+     */
     getOutputBuffer() {
         return this.renderedBuffer;
     }
