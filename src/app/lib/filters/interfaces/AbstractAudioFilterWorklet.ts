@@ -8,6 +8,7 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
 
     protected currentWorkletNode: AudioWorkletNode | WorkletScriptProcessorNodeAdapter | null = null;
     protected fallbackToScriptProcessor = false;
+    protected keepCurrentNodeIfPossible = false;
 
     /**
      * Construct the AudioWorkletPrcossor that will be used to fallback to ScriptProcessorNode
@@ -29,6 +30,8 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
      * @param audioContext The audio context
      */
     async initializeWorklet(audioContext: BaseAudioContext): Promise<void> {
+        this.stop();
+
         if(!this.isAudioWorkletCompatible(audioContext)) {
             console.error("Audio Worklets not supported on this browser. Fallback to ScriptProcessor");
             this.fallbackToScriptProcessor = true;
@@ -99,9 +102,12 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
 
     /** Default implementation for GetNode - AbstractAudioFilterWorklet */
     getNode(context: BaseAudioContext) {
-        this.stop();
+        if(!this.keepCurrentNodeIfPossible || !this.currentWorkletNode
+            || this.currentWorkletNode.context != context) {
+            this.stop();
+            this.initializeNode(context, this.workletName);
+        }
 
-        this.initializeNode(context, this.workletName);
         this.applyCurrentSettingsToWorklet();
 
         if (this.currentWorkletNode) {
@@ -128,6 +134,21 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
         if (this.currentWorkletNode && this.currentWorkletNode.port) {
             this.currentWorkletNode.port.postMessage("stop");
         }
+
+        this.currentWorkletNode = null;
+    }
+
+    /**
+     * Pass the current disabled/enabled state to the worklet.
+     * The worklet need to respond to "enable"/"disable" events.
+     * @param state The current disabled/enabled state
+     */
+    setEnabled(state: boolean): void {
+        if (this.currentWorkletNode && this.currentWorkletNode.port) {
+            this.currentWorkletNode.port.postMessage(state ? "enable" : "disable");
+        }
+
+        super.setEnabled(state);
     }
 
     public isWorklet(): boolean {

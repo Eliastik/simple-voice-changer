@@ -26,6 +26,7 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
     private delayBuffer: DelayBuffer[] = [];
     private envelopeSample = 0;
     private stopped = false;
+    private disabled = false;
 
     constructor() {
         super();
@@ -34,6 +35,10 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
                 this.reset();
             } else if(event.data == "stop") {
                 this.stop();
+            } else if(event.data == "disable") {
+                this.disabled = true;
+            } else if(event.data == "enable") {
+                this.disabled = false;
             }
         };
     }
@@ -125,6 +130,22 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
             
             // compute the envelope
             envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], sampleRate);
+        }
+
+        // If disabled we don't apply the limitation to the audio
+        if(this.disabled) {
+            for (let channel = 0; channel < outputBuffer.length; channel++) {
+                const inp = inputBuffer[channel];
+                const out = outputBuffer[channel];
+
+                if(inp) {
+                    for (let i = 0; i < inp.length; i++) {
+                        out[i] = inp[i];
+                    }
+                }
+            }
+
+            return true;
         }
 
         for (let channel = 0; channel < outputBuffer.length; channel++) {

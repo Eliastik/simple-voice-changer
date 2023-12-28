@@ -20,6 +20,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
         this.releaseTime = releaseTime || this.releaseTime;
         this.threshold = threshold || this.threshold;
         this.lookAheadTime = lookAheadTime || this.lookAheadTime;
+        this.keepCurrentNodeIfPossible = true;
         this.enable();
         this.setDefaultEnabled(true);
     }

@@ -147,11 +147,10 @@ export default class AudioEditor extends AbstractAudioElement {
         const soundtouchWrapper = new SoundtouchWrapperFilter();
         const limiterFilter = new LimiterFilter(0, 0, 0, 3, -0.05, 0.1);
         const telephonizerFilter = new TelephonizerFilter();
-        const passthroughfilter = new PassThroughFilter();
         const vocoder = new VocoderFilter();
 
         this.entrypointFilter = soundtouchWrapper;
-        this.addFilters(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper, passthroughfilter, vocoder);
+        this.addFilters(bassBooster, bitCrusher, echo, highPass, lowPass, reverb, limiterFilter, telephonizerFilter, soundtouchWrapper, vocoder);
     }
 
     /** Setup the renderers */
@@ -314,9 +313,10 @@ export default class AudioEditor extends AbstractAudioElement {
 
         this.disconnectOldNodes(keepCurrentInputOutput);
 
+        // Sort by filter order, then remove the disabled filter (but always keep the last/output filter)
         const filters = this.filters
             .sort((a, b) => a.order - b.order)
-            .filter(filter => filter !== this.entrypointFilter && filter.isEnabled());
+            .filter((filter, index) => filter !== this.entrypointFilter && (filter.isEnabled() || index >= this.filters.length - 1));
 
         for (const filter of filters) {
             const node = filter.getNode(context);

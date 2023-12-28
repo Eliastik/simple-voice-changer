@@ -92,4 +92,8 @@ export default class WorkletScriptProcessorNodeAdapter {
     get node() {
         return this._scriptProcessorNode;
     }
+
+    get context() {
+        return this._scriptProcessorNode?.context;
+    }
 }

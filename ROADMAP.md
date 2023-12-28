@@ -22,7 +22,10 @@
 * [x] - Audio Worklet fixes (Soundtouch only) :
     * [x] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
 * [x] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode)
+* [x] Make the limiter the last audio filter of the chain
 * [ ] - Bug hunting
+    * [ ] Fix 8-bit effect (using 4098 samples)
+    * [ ] Fix audio worklet fallback/polyfill port message not working
 
 ### 2.1.1
 
