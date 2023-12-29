@@ -39,6 +39,9 @@ export default class AudioEditor extends AbstractAudioElement {
     private currentContext: AudioContext | null | undefined;
     /** The audio buffer to be processed */
     private principalBuffer: AudioBuffer | null = null;
+    /** The sum of all the samples of the principal buffer,
+     * used to detect the need to enable the compatibility mode */
+    private sumPrincipalBuffer: number = 0;
     /** The resulting audio buffer */
     private renderedBuffer: AudioBuffer | null = null;
     /** The entrypoint filter */
@@ -64,7 +67,7 @@ export default class AudioEditor extends AbstractAudioElement {
 
     constructor(context?: AudioContext | null, player?: BufferPlayer, eventEmitter?: EventEmitter, configService?: ConfigService, audioBuffersToFetch?: string[]) {
         super();
-        
+
         this.currentContext = context;
         this.eventEmitter = eventEmitter || new EventEmitter();
         this.bufferPlayer = player || new BufferPlayer(context!);
@@ -78,10 +81,13 @@ export default class AudioEditor extends AbstractAudioElement {
     private setup(audioBuffersToFetch: string[] | undefined) {
         if (this.configService) {
             this.previousSampleRate = this.configService.getSampleRate();
-            this.eventEmitter?.emit(EventType.SAMPLE_RATE_CHANGED, this.previousSampleRate);
+
+            if (this.eventEmitter) {
+                this.eventEmitter.emit(EventType.SAMPLE_RATE_CHANGED, this.previousSampleRate);
+            }
         }
 
-        if(!this.currentContext) {
+        if (!this.currentContext) {
             this.createNewContext(this.previousSampleRate);
         }
 
@@ -164,18 +170,26 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param audioBuffersToFetch List of audio URL to fetch as buffer
      */
     private fetchBuffers(audioBuffersToFetch: string[]) {
-        if (this.downloadingInitialData) {
+        if (this.downloadingInitialData || !this.bufferFetcherService) {
             return;
         }
 
         this.downloadingInitialData = true;
-        this.eventEmitter?.emit(EventType.LOADING_BUFFERS);
 
-        this.bufferFetcherService?.fetchAllBuffers(audioBuffersToFetch).then(() => {
+        if (this.eventEmitter) {
+            this.eventEmitter.emit(EventType.LOADING_BUFFERS);
+        }
+
+        this.bufferFetcherService.fetchAllBuffers(audioBuffersToFetch).then(() => {
             this.downloadingInitialData = false;
-            this.eventEmitter?.emit(EventType.LOADED_BUFFERS);
+
+            if (this.eventEmitter) {
+                this.eventEmitter.emit(EventType.LOADED_BUFFERS);
+            }
         }).catch(() => {
-            this.eventEmitter?.emit(EventType.LOADING_BUFFERS_ERROR);
+            if (this.eventEmitter) {
+                this.eventEmitter.emit(EventType.LOADING_BUFFERS_ERROR);
+            }
         });
     }
 
@@ -185,20 +199,20 @@ export default class AudioEditor extends AbstractAudioElement {
     private async createNewContextIfNeeded() {
         const isCompatibilityModeEnabled = this.configService && this.configService.isCompatibilityModeEnabled();
 
-        if(isCompatibilityModeEnabled && this.principalBuffer) {
+        if (isCompatibilityModeEnabled && this.principalBuffer) {
             // If compatibility mode is enabled, we use the sample rate of the input audio buffer
-            if(this.currentSampleRate != this.principalBuffer.sampleRate) {
+            if (this.currentSampleRate != this.principalBuffer.sampleRate) {
                 await this.createNewContext(this.principalBuffer.sampleRate);
                 this.previousSampleRate = this.principalBuffer.sampleRate;
             }
         } else {
             // Otherwise we change the context if the sample rate has changed
             let currentSampleRate = Constants.DEFAULT_SAMPLE_RATE;
-    
+
             if (this.configService) {
                 currentSampleRate = this.configService.getSampleRate();
             }
-    
+
             // If sample rate setting has changed, create a new audio context
             if (currentSampleRate != this.previousSampleRate) {
                 await this.createNewContext(currentSampleRate);
@@ -224,13 +238,16 @@ export default class AudioEditor extends AbstractAudioElement {
         }
 
         this.currentContext = new AudioContext(options);
-        this.eventEmitter?.emit(EventType.SAMPLE_RATE_CHANGED, this.currentContext.sampleRate);
+
+        if (this.eventEmitter) {
+            this.eventEmitter.emit(EventType.SAMPLE_RATE_CHANGED, this.currentContext.sampleRate);
+        }
 
         if (this.bufferPlayer) {
             this.bufferPlayer.updateContext(this.currentContext);
         }
 
-        if(this.bufferFetcherService) {
+        if (this.bufferFetcherService) {
             this.bufferFetcherService.updateContext(this.currentContext);
         }
     }
@@ -248,7 +265,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * Get the current sample rate used
      */
     get currentSampleRate(): number {
-        if(this.currentContext) {
+        if (this.currentContext) {
             return this.currentContext.sampleRate;
         }
 
@@ -262,7 +279,7 @@ export default class AudioEditor extends AbstractAudioElement {
         const tempContext = new AudioContext();
         let sampleRate = 0;
 
-        if(tempContext) {
+        if (tempContext) {
             sampleRate = tempContext.sampleRate;
             tempContext.close();
         }
@@ -273,11 +290,12 @@ export default class AudioEditor extends AbstractAudioElement {
     /** Decode and load an audio buffer from an audio file */
     async loadBufferFromFile(file: File) {
         this.principalBuffer = null;
-        
+
         await this.prepareContext();
 
         if (this.currentContext) {
             this.principalBuffer = await utilFunctions.loadAudioBuffer(this.currentContext, file);
+            this.sumPrincipalBuffer = utils.sumAudioBuffer(this.principalBuffer);
         } else {
             throw new Error("Audio Context is not ready!");
         }
@@ -286,6 +304,7 @@ export default class AudioEditor extends AbstractAudioElement {
     /** Change the principal audio buffer of this editor */
     loadBuffer(audioBuffer: AudioBuffer) {
         this.principalBuffer = audioBuffer;
+        this.sumPrincipalBuffer = utils.sumAudioBuffer(this.principalBuffer);
     }
 
     /**
@@ -448,25 +467,32 @@ export default class AudioEditor extends AbstractAudioElement {
                 this.currentNodes.output.connect(outputContext.destination);
 
                 const renderedBuffer = await offlineContext.startRendering();
+                const sumRenderedAudio = utils.sumAudioBuffer(renderedBuffer);
 
-                if (!this.configService.isCompatibilityModeChecked()) {
-                    const sum = renderedBuffer.getChannelData(0).reduce((a, b) => a + b, 0);
-
-                    if (sum == 0) {
+                if (sumRenderedAudio == 0 && this.sumPrincipalBuffer !== 0) {
+                    if (!this.configService.isCompatibilityModeChecked()) {
                         this.setCompatibilityModeChecked(true);
                         this.configService.enableCompatibilityMode();
-                        this.eventEmitter?.emit(EventType.COMPATIBILITY_MODE_AUTO_ENABLED);
+
+                        if (this.eventEmitter) {
+                            this.eventEmitter.emit(EventType.COMPATIBILITY_MODE_AUTO_ENABLED);
+                        }
+
                         return await this.setupOutput(this.currentContext!, durationAudio);
+                    }
+
+                    if (this.eventEmitter) {
+                        this.eventEmitter.emit(EventType.RENDERING_AUDIO_PROBLEM_DETECTED);
                     }
                 }
 
                 this.renderedBuffer = renderedBuffer;
 
-                if(this.bufferPlayer) {
+                if (this.bufferPlayer) {
                     this.bufferPlayer.loadBuffer(this.renderedBuffer);
                 }
             } else {
-                if(this.bufferPlayer) {
+                if (this.bufferPlayer) {
                     this.bufferPlayer.setCompatibilityMode(this.currentNodes!.output, durationAudio);
                 }
             }
@@ -511,7 +537,7 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param checked boolean
      */
     private setCompatibilityModeChecked(checked: boolean) {
-        if(this.configService) {
+        if (this.configService) {
             this.configService.setConfig(Constants.PREFERENCES_KEYS.COMPATIBILITY_MODE_CHECKED, "" + checked);
         }
     }
@@ -629,7 +655,20 @@ export default class AudioEditor extends AbstractAudioElement {
      * @param callback The callback function
      */
     on(event: string, callback: EventEmitterCallback) {
-        this.eventEmitter?.on(event, callback);
+        if (this.eventEmitter) {
+            this.eventEmitter.on(event, callback);
+        }
+    }
+
+    /**
+     * Unsubscribe to an event
+     * @param event The event ID
+     * @param callback The callback function
+     */
+    off(event: string, callback: EventEmitterCallback) {
+        if (this.eventEmitter) {
+            this.eventEmitter.off(event, callback);
+        }
     }
 
     /**
@@ -643,8 +682,12 @@ export default class AudioEditor extends AbstractAudioElement {
 
         this.savingBuffer = true;
 
-        return new Promise(resolve => {
-            if (!this.bufferPlayer?.compatibilityMode) {
+        return new Promise((resolve, reject) => {
+            if (!this.bufferPlayer) {
+                return reject();
+            }
+
+            if (!this.bufferPlayer.compatibilityMode) {
                 if (!this.renderedBuffer || !this.currentContext) {
                     return resolve(false);
                 }
@@ -687,7 +730,7 @@ export default class AudioEditor extends AbstractAudioElement {
                     });
                 }
             } else {
-                this.bufferPlayer?.start().then(() => {
+                this.bufferPlayer.start().then(() => {
                     const rec = new Recorder(this.currentNodes!.output);
                     rec.record();
 
@@ -698,24 +741,24 @@ export default class AudioEditor extends AbstractAudioElement {
                             this.downloadAudioBlob(blob);
 
                             this.savingBuffer = false;
-                            this.eventEmitter?.off(EventType.PLAYING_FINISHED, finishedCallback);
+                            this.off(EventType.PLAYING_FINISHED, finishedCallback);
 
                             resolve(true);
                         });
                     };
 
-                    this.eventEmitter?.on(EventType.PLAYING_FINISHED, finishedCallback);
+                    this.on(EventType.PLAYING_FINISHED, finishedCallback);
 
                     const playingStoppedCallback = () => {
                         rec.stop();
 
                         this.savingBuffer = false;
-                        this.eventEmitter?.off(EventType.PLAYING_STOPPED, playingStoppedCallback);
+                        this.off(EventType.PLAYING_STOPPED, playingStoppedCallback);
 
                         resolve(true);
                     };
 
-                    this.eventEmitter?.on(EventType.PLAYING_STOPPED, playingStoppedCallback);
+                    this.on(EventType.PLAYING_STOPPED, playingStoppedCallback);
                 });
             }
         });

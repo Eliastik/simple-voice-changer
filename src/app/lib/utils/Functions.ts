@@ -79,6 +79,18 @@ const utilFunctions = {
         }
 
         return array;
+    },
+    sumAudioBufferChannel(buffer: AudioBuffer, channel: number) {
+        return buffer.getChannelData(channel).reduce((a, b) => a + b, 0);
+    },
+    sumAudioBuffer(buffer: AudioBuffer) {
+        let sum = 0;
+
+        for(let channel = 0; channel < buffer.numberOfChannels; channel++) {
+            sum += this.sumAudioBufferChannel(buffer, channel);
+        }
+
+        return sum;
     }
 };
 

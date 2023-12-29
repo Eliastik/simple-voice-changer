@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 
 const AudioEditorMain = () => {
     const { filterState, validateSettings, resetAllFiltersState } = useAudioEditor();
-    const { isCompatibilityModeAutoEnabled } = useApplicationConfig();
+    const { isCompatibilityModeAutoEnabled, hasProblemRenderingAudio } = useApplicationConfig();
     const { t } = useTranslation();
 
     return (
@@ -19,6 +19,9 @@ const AudioEditorMain = () => {
             <div className="toast toast-top toast-center md:w-2/4 w-3/4 pointer-events-none z-50">
                 {isCompatibilityModeAutoEnabled && <div className="alert alert-info text-center w-auto opacity-90 flex flex-col gap-y-1 pointer-events-none">
                     <span className="whitespace-normal">{t("audioEditorMain.compatibilityModeAutoEnabled")}</span>
+                </div>}
+                {hasProblemRenderingAudio && <div className="alert alert-info text-center w-auto opacity-90 flex flex-col gap-y-1 pointer-events-none">
+                    <span className="whitespace-normal">{t("audioEditorMain.hasProblemRenderingAudio")}</span>
                 </div>}
             </div>
             <div className="flex justify-center items-center flex-grow gap-6 flex-col pt-16 pb-16">

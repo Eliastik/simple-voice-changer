@@ -22,4 +22,5 @@ export default interface ApplicationConfigContextProps {
     isCompatibilityModeEnabled: boolean,
     toggleCompatibilityMode: (enabled: boolean) => void,
     isCompatibilityModeAutoEnabled: boolean,
+    hasProblemRenderingAudio: boolean
 };

@@ -32,7 +32,8 @@
         "audioEditorMain": {
             "validateSettings": "Valider les paramètres",
             "resetSettings": "Réinitialiser",
-            "compatibilityModeAutoEnabled": "Le mode de compatibilité a été automatiquement activé, car un problème avec votre navigateur web a été détecté"
+            "compatibilityModeAutoEnabled": "Le mode de compatibilité a été automatiquement activé, car un problème avec votre navigateur web a été détecté",
+            "hasProblemRenderingAudio": "Un problème a été détecté avec votre navigateur web lors du rendu audio. Essayez d'activer le mode de compatibilité dans les paramètres, ou modifiez les filtres appliqués."
         },
         "audioPlayer": {
             "play": "Lire",
