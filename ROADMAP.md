@@ -32,6 +32,7 @@
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
+* [ ] - Recorderjs is using ScriptProcessorNode for recording, convert to AudioWorklet
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Edit volume/gain
 * [ ] - Transform the "classes" folder into a library (new Github repository)
