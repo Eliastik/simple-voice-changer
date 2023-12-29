@@ -127,25 +127,11 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
                     out[k] = preGainAmp * inp[k];
                 }
             }
-
+    
             // compute the envelope
-            envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], sampleRate);
-        }
-
-        // If disabled we don't apply the limitation to the audio
-        if (this.disabled) {
-            for (let channel = 0; channel < outputBuffer.length; channel++) {
-                const inp = inputBuffer[channel];
-                const out = outputBuffer[channel];
-
-                if (inp) {
-                    for (let i = 0; i < inp.length; i++) {
-                        out[i] = inp[i];
-                    }
-                }
+            if(!this.disabled) {
+                envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], sampleRate);
             }
-
-            return true;
         }
 
         for (let channel = 0; channel < outputBuffer.length; channel++) {
@@ -158,6 +144,11 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
                     this.delayBuffer[channel].push(out[i]);
                     out[i] = this.delayBuffer[channel].read();
                 }
+            }
+
+            // If disabled we don't apply the limitation to the audio
+            if (this.disabled) {
+                continue;
             }
 
             // limiter mode: slope is 1
