@@ -16,7 +16,6 @@ import utils from "./utils/Functions";
 import BufferPlayer from "./BufferPlayer";
 import BufferFetcherService from "./services/BufferFetcherService";
 import EventEmitter from "./utils/EventEmitter";
-import PassThroughFilter from "./filters/PassThroughFilter";
 import { EventType } from "./model/EventTypeEnum";
 import Constants from "./model/Constants";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

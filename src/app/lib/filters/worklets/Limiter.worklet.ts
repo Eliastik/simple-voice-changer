@@ -54,7 +54,7 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
         ];
     }
 
-    getDefaultParameterDescriptors() {
+    get defaultParameterDescriptors() {
         return LimiterProcessor.parameterDescriptors;
     }
 

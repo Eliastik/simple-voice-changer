@@ -1,8 +1,8 @@
 import AbstractAudioFilterWorklet from "./interfaces/AbstractAudioFilterWorklet";
 import Constants from "../model/Constants";
-import worklets from "./worklets";
 import BitCrusherSettings from "../model/filtersSettings/BitCrusherSettings";
 import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
+import "./worklets/BitCrusher.worklet";
 
 export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     private channels = 2;
@@ -14,10 +14,6 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
         this.channels = channels;
         this.bits = bits;
         this.normFreq = normFreq;
-    }
-
-    constructAudioWorkletProcessor(): any {
-        return new worklets.BitCrusherProcessor();
     }
 
     get workletPath(): string {

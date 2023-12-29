@@ -1,19 +1,14 @@
 import WorkletScriptProcessorNodeAdapter from "../../workletPolyfill/WorkletScriptProcessorNodeAdapter";
 import AbstractAudioFilter from "./AbstractAudioFilter";
 import Constants from "../../model/Constants";
-import SimpleAudioWorkletProcessor from "../../workletPolyfill/SimpleAudioWorkletProcessor";
 import "../../workletPolyfill/AudioWorkletProcessorPolyfill";
+import RegisterProcessorPolyfill from "../../workletPolyfill/RegisterProcessorPolyfill";
 
 export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFilter {
 
     protected currentWorkletNode: AudioWorkletNode | WorkletScriptProcessorNodeAdapter | null = null;
     protected fallbackToScriptProcessor = false;
     protected keepCurrentNodeIfPossible = false;
-
-    /**
-     * Construct the AudioWorkletPrcossor that will be used to fallback to ScriptProcessorNode
-     */
-    abstract constructAudioWorkletProcessor(): SimpleAudioWorkletProcessor;
 
     /**
      * Return the worklet name (as registered with method registerProcessor)
@@ -77,7 +72,13 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
         if (this.isAudioWorkletEnabled() && !this.fallbackToScriptProcessor) {
             this.currentWorkletNode = new AudioWorkletNode(context, workletName);
         } else {
-            this.currentWorkletNode = new WorkletScriptProcessorNodeAdapter(context, this.constructAudioWorkletProcessor(), this.configService?.getBufferSize());
+            const processor = RegisterProcessorPolyfill.getProcessor(workletName);
+
+            if(processor) {
+                this.currentWorkletNode = new WorkletScriptProcessorNodeAdapter(context, processor, this.configService!.getBufferSize());
+            } else {
+                throw new Error(`No processor registered with name ${workletName} for filter ${this.id} to use the fallback/polyfill for AudioWorklet. Make sure you have created the class.`);
+            }
         }
     }
 

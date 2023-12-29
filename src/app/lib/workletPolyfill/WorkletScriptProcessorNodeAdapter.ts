@@ -64,7 +64,7 @@ export default class WorkletScriptProcessorNodeAdapter {
             }
         };
 
-        const descriptors = this.workletProcessor.getDefaultParameterDescriptors();
+        const descriptors = this.workletProcessor.defaultParameterDescriptors;
 
         if(descriptors) {
             descriptors.forEach(descriptor => {

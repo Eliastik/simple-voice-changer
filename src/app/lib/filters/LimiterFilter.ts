@@ -1,8 +1,8 @@
 import AbstractAudioFilterWorklet from "./interfaces/AbstractAudioFilterWorklet";
 import Constants from "../model/Constants";
-import worklets from "./worklets";
 import LimiterSettings from "../model/filtersSettings/LimiterSettings";
 import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
+import "./worklets/Limiter.worklet";
 
 export default class LimiterFilter extends AbstractAudioFilterWorklet {
     private preGain = 0; // dB
@@ -39,10 +39,6 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
 
     get id(): string {
         return Constants.FILTERS_NAMES.LIMITER;
-    }
-
-    constructAudioWorkletProcessor(): any {
-        return new worklets.LimiterProcessor();
     }
 
     getAddingTime() {

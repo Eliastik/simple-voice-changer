@@ -46,7 +46,7 @@ export default class SimpleAudioWorkletProcessor implements AudioWorkletProcesso
         throw new Error("Method not implemented.");
     }
 
-    getDefaultParameterDescriptors(): ParameterDescriptors {
+    get defaultParameterDescriptors(): ParameterDescriptors {
         return [];
     }
 };

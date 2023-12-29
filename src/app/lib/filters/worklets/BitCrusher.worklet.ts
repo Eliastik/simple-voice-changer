@@ -21,7 +21,7 @@ export default class BitCrusherProcessor extends AudioWorkletProcessor {
         ];
     }
 
-    getDefaultParameterDescriptors() {
+    get defaultParameterDescriptors() {
         return BitCrusherProcessor.parameterDescriptors;
     }
 
