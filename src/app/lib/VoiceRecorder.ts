@@ -20,9 +20,6 @@
 // The Voice Recorder class
 // Used to record a sound (voice, etc.) with the user microphone
 // Offer control with play/pause and audio feedback
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-import { Recorder } from "recorderjs";
 import TimerSaveTime from "./utils/TimerSaveTime";
 import EventEmitter from "./utils/EventEmitter";
 import { EventType } from "./model/EventTypeEnum";
@@ -33,6 +30,7 @@ import AbstractAudioElement from "./filters/interfaces/AbstractAudioElement";
 import Constants from "./model/Constants";
 import { EventEmitterCallback } from "./model/EventEmitterCallback";
 import AudioConstraint from "./model/AudioConstraint";
+import Recorder from "./recorder/Recorder";
 
 export default class VoiceRecorder extends AbstractAudioElement {
     
@@ -248,7 +246,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
             this.stream = stream;
         }
 
-        if (this.recorder) {
+        if (this.recorder && this.input) {
             this.recorder.setup(this.input);
 
             if (precRecording) {
@@ -330,12 +328,21 @@ export default class VoiceRecorder extends AbstractAudioElement {
      * Start audio recording
      */
     record() {
-        if (this.alreadyInit) {
-            if (!this.recorder) this.recorder = new Recorder(this.input);
+        if (this.alreadyInit && this.configService && this.input) {
+            if (!this.recorder) this.recorder = new Recorder(this.input, {
+                bufferLen: this.configService.getBufferSize(),
+                sampleRate: this.configService.getSampleRate(),
+                numChannels: 2,
+                mimeType: "audio/wav"
+            });
+
             this.recorder && this.recorder.record();
             this.timer && this.timer.start();
             this.recording = true;
-            this.eventEmitter?.emit(EventType.RECORDER_RECORDING);
+
+            if (this.eventEmitter) {
+                this.eventEmitter.emit(EventType.RECORDER_RECORDING);
+            }
         }
     }
 

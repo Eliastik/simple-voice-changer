@@ -18,9 +18,6 @@ import BufferFetcherService from "./services/BufferFetcherService";
 import EventEmitter from "./utils/EventEmitter";
 import { EventType } from "./model/EventTypeEnum";
 import Constants from "./model/Constants";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-import { Recorder, getRecorderWorker } from "recorderjs";
 import AbstractAudioFilterWorklet from "./filters/interfaces/AbstractAudioFilterWorklet";
 import { AudioFilterNodes } from "./model/AudioNodes";
 import VocoderFilter from "./filters/VocoderFilter";
@@ -31,6 +28,8 @@ import RecorderWorkerMessage from "./model/RecorderWorkerMessage";
 import { EventEmitterCallback } from "./model/EventEmitterCallback";
 import { FilterState } from "./model/FilterState";
 import GenericConfigService from "./utils/GenericConfigService";
+import getRecorderWorker from "./recorder/RecorderWorker";
+import { Recorder } from "./recorder/Recorder";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -691,7 +690,7 @@ export default class AudioEditor extends AbstractAudioElement {
                     return resolve(false);
                 }
 
-                const worker = getRecorderWorker.default();
+                const worker = getRecorderWorker();
 
                 if (worker) {
                     worker.onmessage = (e: RecorderWorkerMessage) => {
@@ -730,7 +729,17 @@ export default class AudioEditor extends AbstractAudioElement {
                 }
             } else {
                 this.bufferPlayer.start().then(() => {
-                    const rec = new Recorder(this.currentNodes!.output);
+                    if(!this.configService) {
+                        return reject();
+                    }
+
+                    const rec = new Recorder(this.currentNodes!.output, {
+                        bufferLen: this.configService.getBufferSize(),
+                        sampleRate: this.configService.getSampleRate(),
+                        numChannels: 2,
+                        mimeType: "audio/wav"
+                    });
+
                     rec.record();
 
                     const finishedCallback = () => {

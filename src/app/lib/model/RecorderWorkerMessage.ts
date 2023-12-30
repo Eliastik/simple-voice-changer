@@ -5,5 +5,4 @@ interface RecorderWorkerData {
 
 export default interface RecorderWorkerMessage {
     data: RecorderWorkerData,
-    
 };
