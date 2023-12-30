@@ -5,7 +5,8 @@ import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
 import glob from "glob";
 
-const workletFiles = glob.sync(path.join(__dirname, "src/app/lib/filters/worklets/*.worklet.ts"));
+const workletFiles = [...glob.sync(path.join(__dirname, "src/app/lib/filters/worklets/*.worklet.ts")), "src/app/lib/recorder/worklet/RecorderWorklet.ts"];
+
 
 const config = workletFiles.map((input) => ({
     input,

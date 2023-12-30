@@ -33,7 +33,7 @@ import AudioConstraint from "./model/AudioConstraint";
 import Recorder from "./recorder/Recorder";
 
 export default class VoiceRecorder extends AbstractAudioElement {
-    
+
     private context: AudioContext | null | undefined;
     private input: MediaStreamAudioSourceNode | null = null;
     private stream: MediaStream | null = null;
@@ -66,11 +66,11 @@ export default class VoiceRecorder extends AbstractAudioElement {
 
     /** Initialize this voice recorder */
     async init() {
-        if(!this.isRecordingAvailable()) {
+        if (!this.isRecordingAvailable()) {
             return;
         }
 
-        if(!this.context) {
+        if (!this.context) {
             await this.createNewContext(this.previousSampleRate);
         } else {
             await this.createNewContextIfNeeded();
@@ -250,7 +250,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
             this.recorder.setup(this.input);
 
             if (precRecording) {
-                this.record();
+                await this.record();
             }
         }
 
@@ -327,16 +327,22 @@ export default class VoiceRecorder extends AbstractAudioElement {
     /**
      * Start audio recording
      */
-    record() {
+    async record() {
         if (this.alreadyInit && this.configService && this.input) {
-            if (!this.recorder) this.recorder = new Recorder(this.input, {
-                bufferLen: this.configService.getBufferSize(),
-                sampleRate: this.configService.getSampleRate(),
-                numChannels: 2,
-                mimeType: "audio/wav"
-            });
+            if (!this.recorder) {
+                this.recorder = new Recorder({
+                    bufferLen: this.configService.getBufferSize(),
+                    sampleRate: this.configService.getSampleRate(),
+                    numChannels: 2,
+                    mimeType: "audio/wav"
+                });
+            }
 
-            this.recorder && this.recorder.record();
+            if (this.recorder) {
+                await this.recorder.setup(this.input);
+                this.recorder.record();
+            }
+
             this.timer && this.timer.start();
             this.recording = true;
 
@@ -455,7 +461,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
      * @returns boolean
      */
     isRecordingAvailable() {
-        return typeof(navigator.mediaDevices) !== "undefined" && typeof(navigator.mediaDevices.getUserMedia) !== "undefined";
+        return typeof (navigator.mediaDevices) !== "undefined" && typeof (navigator.mediaDevices.getUserMedia) !== "undefined";
     }
 
     get order(): number {

@@ -1,16 +1,19 @@
+import Constants from "../model/Constants";
 import { RecorderCallback, RecorderCallbacks } from "../model/RecorderCallback";
 import RecorderConfig from "../model/RecorderConfig";
 import RecorderWorkerMessage from "../model/RecorderWorkerMessage";
+import RecorderWorkletMessage from "../model/RecorderWorkletMessage";
+import utilFunctions from "../utils/Functions";
 import getRecorderWorker from "./RecorderWorker";
 
 export class Recorder {
 
     // Inline Worker
     private worker: Worker | null = null;
-    private node: ScriptProcessorNode | null = null;
+    private node: ScriptProcessorNode | AudioWorkletNode | null = null;
     private context: BaseAudioContext | null = null;
 
-    config: RecorderConfig = {
+    private config: RecorderConfig = {
         bufferLen: 4096,
         sampleRate: 44100,
         numChannels: 2,
@@ -18,16 +21,32 @@ export class Recorder {
         callback: () => { }
     };
 
-    recording = false;
-
-    callbacks: RecorderCallbacks = {
+    private callbacks: RecorderCallbacks = {
         getBuffer: [],
         exportWAV: []
     };
 
-    constructor(source: AudioNode, cfg: RecorderConfig) {
+    recording = false;
+
+    constructor(cfg: RecorderConfig) {
         Object.assign(this.config, cfg);
-        this.setup(source);
+    }
+
+    async setup(source: AudioNode) {
+        if (this.node) { // Disconnect previous node
+            this.node.disconnect();
+        }
+
+        if (source) {
+            this.context = source.context;
+
+            await this.createRecorderNode();
+
+            if (this.node && this.context) {
+                source.connect(this.node);
+                this.node.connect(this.context.destination);    //this should not be necessary
+            }
+        }
 
         if (this.context) {
             this.worker = getRecorderWorker();
@@ -64,47 +83,77 @@ export class Recorder {
         }
     }
 
-    setup(source: AudioNode) {
-        if (this.node) { // Disconnect previous node
-            this.node.disconnect();
-        }
 
-        if (source) {
-            this.context = source.context;
-
-            if (this.context) {
-                this.node = (this.context.createScriptProcessor).call(this.context,
-                    this.config.bufferLen, this.config.numChannels, this.config.numChannels);
-
-                this.node.onaudioprocess = (e) => {
-                    if (!this.recording) return;
-
-                    const buffer = [];
-                    for (let channel = 0; channel < this.config.numChannels; channel++) {
-                        buffer.push(e.inputBuffer.getChannelData(channel));
-                    }
-
-                    if (this.worker) {
-                        this.worker.postMessage({
-                            command: "record",
-                            buffer: buffer
-                        });
-                    }
-                };
-
-                source.connect(this.node);
-                this.node.connect(this.context.destination);    //this should not be necessary
+    private async createRecorderNode() {
+        if (this.context) {
+            if (utilFunctions.isAudioWorkletCompatible(this.context)) {
+                try {
+                    await this.createRecorderWorklet();
+                } catch(e) {
+                    this.createRecorderScriptProcessorNode();
+                }
+            } else {
+                this.createRecorderScriptProcessorNode();
             }
         }
     }
 
+    private async createRecorderWorklet() {
+        if (this.context) {
+            await this.context.audioWorklet.addModule(Constants.WORKLET_PATHS.RECORDER_WORKLET);
+
+            this.node = new AudioWorkletNode(this.context, Constants.WORKLET_NAMES.RECORDER_WORKLET);
+
+            if (this.node && this.node.port) {
+                this.node.port.onmessage = (e: MessageEvent<RecorderWorkletMessage>) => {
+                    if (this.worker && e.data.command == "record" && e.data.buffer.length > 0) {
+                        this.worker.postMessage({
+                            command: "record",
+                            buffer: e.data.buffer
+                        });
+                    }
+                };
+            }
+        }
+    }
+
+    private createRecorderScriptProcessorNode() {
+        if (this.context) {
+            this.node = (this.context.createScriptProcessor).call(this.context,
+                this.config.bufferLen, this.config.numChannels, this.config.numChannels);
+
+            this.node.onaudioprocess = (e) => {
+                if (!this.recording) return;
+
+                const buffer = [];
+                for (let channel = 0; channel < this.config.numChannels; channel++) {
+                    buffer.push(e.inputBuffer.getChannelData(channel));
+                }
+
+                if (this.worker) {
+                    this.worker.postMessage({
+                        command: "record",
+                        buffer: buffer
+                    });
+                }
+            };
+        }
+    }
 
     record() {
         this.recording = true;
+
+        if (this.node instanceof AudioWorkletNode) {
+            this.node.port.postMessage("record");
+        }
     }
 
     stop() {
         this.recording = false;
+
+        if (this.node instanceof AudioWorkletNode) {
+            this.node.port.postMessage("stop");
+        }
     }
 
     clear() {

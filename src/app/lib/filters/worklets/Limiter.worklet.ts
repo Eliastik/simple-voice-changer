@@ -127,9 +127,9 @@ export default class LimiterProcessor extends AudioWorkletProcessor {
                     out[k] = preGainAmp * inp[k];
                 }
             }
-    
+
             // compute the envelope
-            if(!this.disabled) {
+            if (!this.disabled) {
                 envelopeData[channel] = this.getEnvelope(out, parameters.attackTime[0], parameters.releaseTime[0], sampleRate);
             }
         }

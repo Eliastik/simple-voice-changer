@@ -61,7 +61,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
             } else {
                 // If audio worklet is enabled for soundtouch, and if the speed of audio is untouched
                 // Soundtouch Audio Worklet don't support speed editing yet
-                if(this.isAudioWorkletEnabled() && this.isAudioWorkletCompatible(context) && this.speedAudio == 1) {
+                if(this.isAudioWorkletEnabled() && utils.isAudioWorkletCompatible(context) && this.speedAudio == 1) {
                     return this.renderWithWorklet(buffer, context);
                 } else {
                     return this.renderWithScriptProcessorNode(buffer, context);

@@ -733,40 +733,42 @@ export default class AudioEditor extends AbstractAudioElement {
                         return reject();
                     }
 
-                    const rec = new Recorder(this.currentNodes!.output, {
+                    const rec = new Recorder({
                         bufferLen: this.configService.getBufferSize(),
                         sampleRate: this.configService.getSampleRate(),
                         numChannels: 2,
                         mimeType: "audio/wav"
                     });
 
-                    rec.record();
-
-                    const finishedCallback = () => {
-                        rec.stop();
-
-                        rec.exportWAV((blob: Blob) => {
-                            this.downloadAudioBlob(blob);
-
+                    rec.setup(this.currentNodes!.output).then(() => {
+                        rec.record();
+    
+                        const finishedCallback = () => {
+                            rec.stop();
+    
+                            rec.exportWAV((blob: Blob) => {
+                                this.downloadAudioBlob(blob);
+    
+                                this.savingBuffer = false;
+                                this.off(EventType.PLAYING_FINISHED, finishedCallback);
+    
+                                resolve(true);
+                            });
+                        };
+    
+                        this.on(EventType.PLAYING_FINISHED, finishedCallback);
+    
+                        const playingStoppedCallback = () => {
+                            rec.stop();
+    
                             this.savingBuffer = false;
-                            this.off(EventType.PLAYING_FINISHED, finishedCallback);
-
+                            this.off(EventType.PLAYING_STOPPED, playingStoppedCallback);
+    
                             resolve(true);
-                        });
-                    };
-
-                    this.on(EventType.PLAYING_FINISHED, finishedCallback);
-
-                    const playingStoppedCallback = () => {
-                        rec.stop();
-
-                        this.savingBuffer = false;
-                        this.off(EventType.PLAYING_STOPPED, playingStoppedCallback);
-
-                        resolve(true);
-                    };
-
-                    this.on(EventType.PLAYING_STOPPED, playingStoppedCallback);
+                        };
+    
+                        this.on(EventType.PLAYING_STOPPED, playingStoppedCallback);
+                    });
                 });
             }
         });

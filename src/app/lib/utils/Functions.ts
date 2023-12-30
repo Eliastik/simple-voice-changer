@@ -91,6 +91,17 @@ const utilFunctions = {
         }
 
         return sum;
+    },
+    /**
+    * This method checks if the browser is compatible with audio worklets
+    * @param audioContext 
+    */
+    isAudioWorkletCompatible(audioContext: BaseAudioContext) {
+        if (typeof (audioContext) !== "undefined" && typeof (audioContext.audioWorklet) !== "undefined") {
+            return true;
+        }
+
+        return false;
     }
 };
 
