@@ -31,6 +31,7 @@ export default abstract class AbstractAudioFilterWorklet extends AbstractAudioFi
         if(!utilFunctions.isAudioWorkletCompatible(audioContext)) {
             console.error("Audio Worklets not supported on this browser. Fallback to ScriptProcessor");
             this.fallbackToScriptProcessor = true;
+            return;
         }
 
         await audioContext.audioWorklet.addModule(this.workletPath)

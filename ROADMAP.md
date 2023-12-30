@@ -35,6 +35,9 @@
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
+* [ ] - Other minor fixes :
+    * [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
+    * [ ] - "Record with the microphone" feature not working on Firefox when changing the sample rate
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Edit volume/gain
 * [ ] - Transform the "classes" folder into a library (new Github repository)
@@ -50,6 +53,7 @@
 * [ ] - Enhance limiter?
 * [ ] - Filter "Autotuner"?
 * [ ] - Filter "equalizer"?
+* [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Save into localstorage filters settings?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
 * [ ] - Real-time filters editing when recording audio (reuse existing filters)?

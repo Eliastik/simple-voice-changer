@@ -406,8 +406,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
      * Reset this voice recorder
      */
     reset() {
-        this.recorder && this.recorder.stop();
-        this.recorder && this.recorder.clear();
+        this.recorder && this.recorder.kill();
         this.timer && this.timer.stop();
         this.audioFeedback(false);
 

@@ -30,6 +30,7 @@ import { FilterState } from "./model/FilterState";
 import GenericConfigService from "./utils/GenericConfigService";
 import getRecorderWorker from "./recorder/RecorderWorker";
 import { Recorder } from "./recorder/Recorder";
+import ReverbSettings from "./model/filtersSettings/ReverbSettings";
 
 export default class AudioEditor extends AbstractAudioElement {
 
@@ -61,6 +62,9 @@ export default class AudioEditor extends AbstractAudioElement {
     private previousSampleRate = Constants.DEFAULT_SAMPLE_RATE;
     /** List of audio buffers to fetch */
     private audioBuffersToFetch: string[] = [];
+
+    /** Callback used when saving audio */
+    private playingStoppedCallback: (() => void) | null = null;
 
     /** True if we are downloading initial buffer data */
     downloadingInitialData = false;
@@ -102,6 +106,10 @@ export default class AudioEditor extends AbstractAudioElement {
 
             // Callback called when playing is finished
             this.bufferPlayer.on(EventType.PLAYING_FINISHED, () => {
+                if(this.savingBuffer && this.playingStoppedCallback) {
+                    this.off(EventType.PLAYING_STOPPED, this.playingStoppedCallback);
+                }
+
                 if (this.bufferPlayer && this.bufferPlayer.loop) {
                     this.bufferPlayer.start();
                 }
@@ -184,11 +192,11 @@ export default class AudioEditor extends AbstractAudioElement {
         try {
             await this.bufferFetcherService.fetchAllBuffers(this.audioBuffersToFetch);
             this.downloadingInitialData = false;
-    
+
             if (this.eventEmitter && !refetch) {
                 this.eventEmitter.emit(EventType.LOADED_BUFFERS);
             }
-        } catch(e) {
+        } catch (e) {
             if (this.eventEmitter && !refetch) {
                 this.eventEmitter.emit(EventType.LOADING_BUFFERS_ERROR);
             }
@@ -208,10 +216,7 @@ export default class AudioEditor extends AbstractAudioElement {
                 this.previousSampleRate = this.principalBuffer.sampleRate;
 
                 // We need to refetch all buffers of the fetcher
-                if (this.bufferFetcherService) {
-                    this.bufferFetcherService.reset();
-                    await this.fetchBuffers(true);
-                }
+                await this.resetBufferFetcher();
             }
         } else {
             // Otherwise we change the context if the sample rate has changed
@@ -227,9 +232,28 @@ export default class AudioEditor extends AbstractAudioElement {
                 this.previousSampleRate = currentSampleRate;
 
                 // We need to refetch all buffers of the fetcher
-                if (this.bufferFetcherService) {
-                    this.bufferFetcherService.reset();
-                    await this.fetchBuffers(true);
+                await this.resetBufferFetcher();
+            }
+        }
+    }
+
+    /**
+     * Reset the buffer fetcher and redownload the buffers. Used when changing sample rate.
+     */
+    private async resetBufferFetcher() {
+        if (this.bufferFetcherService) {
+            this.bufferFetcherService.reset();
+            await this.fetchBuffers(true);
+
+            // Fetch the current select environment for the reverb filter
+            const filterSettings = this.getFiltersSettings();
+            const reverbSettings = filterSettings.get(Constants.FILTERS_NAMES.REVERB);
+
+            if (reverbSettings) {
+                const reverbUrl = (reverbSettings as ReverbSettings).reverbEnvironment?.value;
+
+                if (reverbUrl) {
+                    await this.bufferFetcherService.fetchBuffer(reverbUrl);
                 }
             }
         }
@@ -547,6 +571,18 @@ export default class AudioEditor extends AbstractAudioElement {
     }
 
     /**
+     * Check if AudioWorklet are available
+     * @returns boolean
+     */
+    isAudioWorkletAvailable(): boolean {
+        if (this.currentContext) {
+            return utilFunctions.isAudioWorkletCompatible(this.currentContext);
+        }
+
+        return false;
+    }
+
+    /**
      * Set compatibility/direct audio rendering mode already checked for auto enabling (if an error occurs rendering in offline context)
      * @param checked boolean
      */
@@ -745,7 +781,7 @@ export default class AudioEditor extends AbstractAudioElement {
                 }
             } else {
                 this.bufferPlayer.start().then(() => {
-                    if(!this.configService) {
+                    if (!this.configService) {
                         return reject();
                     }
 
@@ -758,32 +794,40 @@ export default class AudioEditor extends AbstractAudioElement {
 
                     rec.setup(this.currentNodes!.output).then(() => {
                         rec.record();
-    
+
+                        this.playingStoppedCallback = () => {
+                            rec.kill();
+
+                            this.savingBuffer = false;
+                            this.off(EventType.PLAYING_FINISHED, finishedCallback);
+
+                            if (this.playingStoppedCallback) {
+                                this.off(EventType.PLAYING_STOPPED, this.playingStoppedCallback);
+                            }
+
+                            resolve(true);
+                        };
+
                         const finishedCallback = () => {
+                            if (this.playingStoppedCallback) {
+                                this.off(EventType.PLAYING_STOPPED, this.playingStoppedCallback);
+                            }
+
                             rec.stop();
-    
+
                             rec.exportWAV((blob: Blob) => {
                                 this.downloadAudioBlob(blob);
-    
+
                                 this.savingBuffer = false;
                                 this.off(EventType.PLAYING_FINISHED, finishedCallback);
-    
+                                rec.kill();
+
                                 resolve(true);
                             });
                         };
-    
+
                         this.on(EventType.PLAYING_FINISHED, finishedCallback);
-    
-                        const playingStoppedCallback = () => {
-                            rec.stop();
-    
-                            this.savingBuffer = false;
-                            this.off(EventType.PLAYING_STOPPED, playingStoppedCallback);
-    
-                            resolve(true);
-                        };
-    
-                        this.on(EventType.PLAYING_STOPPED, playingStoppedCallback);
+                        this.on(EventType.PLAYING_STOPPED, this.playingStoppedCallback);
                     });
                 });
             }

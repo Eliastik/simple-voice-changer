@@ -13,7 +13,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 2.0 (11/16/2023)
+* Version: 2.1 (12/31/2023)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -34,6 +34,32 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses some icons from [Font Awesome](https://fontawesome.com/) - [License](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Changelog
+
+* Version 2.1 (12/31/2023):
+    - This version has seen a lot of changes under the hood, meaning technical improvements and bug fixes.
+    - Among the technical improvements:
+        - Migration to the AudioWorklet API instead of the obsolete ScriptProcessorNode API, which also enhances performance;
+        - The "Limiter," "8-bit Effect," and "Change speed / frequency" filters (only for frequency modification) have been ported to the AudioWorklet API;
+        - The recorder (Recorderjs) has also been ported to the AudioWorklet API;
+        - If an issue occurs when the application uses AudioWorklet, the application fallback to ScriptProcessorNode as a last resort (thanks to an adapter between the two APIs);
+        - The direct/compatibility rendering mode still uses the ScriptProcessorNode API for the "Change speed / frequency" filter for now;
+        - The Vocoder has been migrated to TypeScript;
+        - Code quality has been improved: the use of TypeScript "any" has been limited, among other enhancements.
+    - Advanced settings have been added:
+        - Ability to modify the sampling rate;
+        - Ability to disable the use of the AudioWorklet API (and revert to the ScriptProcessorNode API);
+        - Ability to set the buffer size.
+    - Among the bug fixes:
+        - Under Firefox, the initial use of the application would systematically enable compatibility mode due to a bug in this browser. This is no longer the case (especially thanks to the transition to the AudioWorklet API);
+        - The interface of the "Record with the microphone" function has been fixed on mobile;
+        - In some cases, the use of the "Record with the microphone" function (in insecure contexts) was not possible, but the button was not grayed out; this has been fixed;
+        - In case of an error during audio rendering, an error message is displayed; this was not the case before;
+        - The rendering of the "Limiter" filter has been fixed;
+        - The Vocoder has been transformed into a classic filter, allowing it to be enabled/disabled at will in direct/compatibility rendering mode;
+        - If an error occurred during the initial application data download, some filters (e.g., the "Reverb" filter) could be disabled;
+        - Bug fix when modifying settings for the "Record with the microphone" feature;
+        - The "Limiter" filter is now the last filter in the audio chain, improving the direct/compatibility rendering mode;
+        - Other minor bugs have been fixed.
 
 * Version 2.0 (11/16/2023) :
     - The application has been (almost) entirely rewritten in TypeScript/React to improve code quality and modularity
@@ -125,7 +151,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 2.0 (16/11/2023)
+* Version du programme : 2.1 (31/12/2023)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -133,6 +159,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 * TypeScript
 * React
+* NextJS
 * Tailwind CSS / DaisyUI
 * Web Audio API
 
@@ -145,6 +172,32 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise des icônes venant de chez [Font Awesome](https://fontawesome.com/) - [Licence](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Journal des changements
+
+* Version 2.1 (31/12/2023) :
+    - Cette version a vu beaucoup de changements sous le capot, c'est-à-dire des améliorations techniques et corrections de bugs.
+    - Parmi les améliorations techniques :
+        - Migration vers l'API AudioWorklet au lieu de l'API ScriptProcessorNode qui est obsolète, cela améliore également les performances ;
+        - Les filtres "Limiteur", "Effet 8-bit" et "Modifier la vitesse / fréquence" (uniquement pour la modification de la fréquence) ont été portés vers l'API AudioWorklet ;
+        - L'enregistreur (Recorderjs) a aussi été porté vers l'API AudioWorklet ;
+        - Si un problème a lieu lorsque l'application utilise les AudioWorklet, l'application bascule en dernier recours vers les ScriptProcessorNode (grâce à un adapteur entre les deux API) ;
+        - Le mode de rendu direct/compatibilité utilise encore l'API ScriptProcessorNode pour le filtre "Modifier la vitesse / fréquence" pour le moment ;
+        - Le Vocoder a été migré vers TypeScript ;
+        - La qualité du code a été améliorée : l'utilisation du "any" TypeScript a été limitée, d'autres améliorations ont été apportées.
+    - Des paramètres avancés ont été ajoutés :
+        - Possibilité de modifier la fréquence d'échantillonage ;
+        - Possibilité de désactiver l'utilisation de l'API AudioWorklet (et de revenir à l'API ScriptProcessorNode) ;
+        - Possibilité de paramétrer la taille de tampon.
+    - Parmi les corrections de bugs :
+        - Sous Firefox, l'utilisation initiale de l'application activait systématiquement le mode de compatibilité à cause d'un bug sur ce navigateur. Cela n'est désormais plus le cas (notamment grâce au passage vers l'API AudioWorklet) ;
+        - L'interface de la fonction Enregistrer via le micro a été corrigée sur mobile ;
+        - Dans certains cas, l'utilisation de la fonction Enregistrer via le micro (dans les contextes non sécurisés) n'était pas possible mais le bouton n'était pas grisé, cela a été corrigé ;
+        - En cas d'erreur lors du rendu audio, un message d'erreur est affiché, cela n'était pas le cas auparavant ;
+        - Le rendu du filtre "Limiteur" a été corrigé ;
+        - Le Vocodeur a été transformé en filtre classique, il peut ainsi être activé/désactivé à volonté en mode de rendu direct/compatibilité ;
+        - Si une erreur est survenue lors du téléchargement des données initiales de l'application, certains filtres (par exemple le filtre "Réverbération") peuvent être désactivé ;
+        - Correction d'un bug lors de la modification des paramètres de la fonction "Enregistrer via le micro" ;
+        - Le filtre "Limiteur" est le dernier filtre de la chaîne audio, ce qui améliore le mode de rendu direct/compatibilité ;
+        - D'autres bugs mineurs ont été corrigés.
 
 * Version 2.0 (16/11/2023) :
     - L'application a été (quasiment) entièrement réécrite en TypeScript/React pour en améliorer la qualité de code, et pour améliorer sa modularité

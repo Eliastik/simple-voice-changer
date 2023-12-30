@@ -60,6 +60,8 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
     const [actualSampleRate, setActualSampleRate] = useState(0);
     // State: default device sample rate
     const [defaultDeviceSampleRate, setDefaultDeviceSampleRate] = useState(0);
+    // State: true if AudioWorklet is currently available/compatible with the browser
+    const [audioWorkletAvailable, setAudioWorkletAvailable] = useState(false);
 
     const loadAudioPrincipalBuffer = useCallback(async (file: File | null, audioBuffer?: AudioBuffer) => {
         setLoadingPrincipalBuffer(true);
@@ -121,6 +123,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
         setFiltersSettings(getAudioEditor().getFiltersSettings());
         setActualSampleRate(getAudioEditor().currentSampleRate);
         setDefaultDeviceSampleRate(getAudioEditor().defaultDeviceSampleRate);
+        setAudioWorkletAvailable(getAudioEditor().isAudioWorkletAvailable());
 
         isReady = true;
     }, [loadAudioPrincipalBuffer]);
@@ -182,7 +185,7 @@ export const AudioEditorProvider: FC<AudioEditorProviderProps> = ({ children }) 
             loadAudioPrincipalBuffer, audioEditorReady, loadingPrincipalBuffer, audioProcessing, toggleFilter, filterState, validateSettings,
             exitAudioEditor, filtersSettings, changeFilterSettings, resetFilterSettings, downloadingInitialData, downloadingBufferData, errorLoadingPrincipalBuffer,
             closeErrorLoadingPrincipalBuffer, errorDownloadingBufferData, closeErrorDownloadingBufferData, downloadAudio, downloadingAudio, resetAllFiltersState,
-            pauseAudioEditor, errorProcessingAudio, closeErrorProcessingAudio, actualSampleRate, defaultDeviceSampleRate
+            pauseAudioEditor, errorProcessingAudio, closeErrorProcessingAudio, actualSampleRate, defaultDeviceSampleRate, audioWorkletAvailable
         }}>
             {children}
         </AudioEditorContext.Provider>

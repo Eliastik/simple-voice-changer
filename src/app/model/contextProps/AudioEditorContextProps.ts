@@ -26,5 +26,6 @@ export default interface AudioEditorContextProps {
     errorProcessingAudio: boolean,
     closeErrorProcessingAudio: () => void,
     actualSampleRate: number,
-    defaultDeviceSampleRate: number
+    defaultDeviceSampleRate: number,
+    audioWorkletAvailable: boolean
 };

@@ -173,6 +173,15 @@ export class Recorder {
         }
     }
 
+    kill() {
+        this.clear();
+        this.stop();
+
+        if (this.worker) {
+            this.worker.terminate();
+        }
+    }
+
     getBuffer(cb: RecorderCallback<Float32Array[]>) {
         cb = cb || this.config.callback;
         if (!cb) throw new Error("Callback not set");

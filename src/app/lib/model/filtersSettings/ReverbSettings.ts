@@ -1,6 +1,6 @@
 import { FilterSettings } from "./FilterSettings";
 import GenericSettingValue from "./GenericSettingValue";
 
-export default interface ExtendedFilterSettings extends FilterSettings {
+export default interface ReverbSettings extends FilterSettings {
     reverbEnvironment?: GenericSettingValue
 };

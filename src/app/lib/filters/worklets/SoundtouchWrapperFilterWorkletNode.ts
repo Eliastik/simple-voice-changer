@@ -4,7 +4,7 @@ import { SoundtouchWorkletOptionsWrapper } from "../../model/SoundtouchWorkletOp
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let soundtouchWrapperFilterWorkletNodeClass: any;
 
-if(typeof(window) !== "undefined") {
+if(typeof(window) !== "undefined" && typeof(window.AudioWorkletNode) !== "undefined") {
     soundtouchWrapperFilterWorkletNodeClass = class SoundtouchWrapperFilterWorkletNode extends AudioWorkletNode {
 
         name: string = "";

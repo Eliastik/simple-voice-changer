@@ -23,7 +23,8 @@
             "sampleRateHz": "Hz",
             "sampleRateKHz": "kHz",
             "actualSampleRate": "Fréquence actuelle :",
-            "samplingFrequencyTooHigh": "Vous avez sélectionné une fréquence d'échantillonage trop élevée que votre appareil ne peut potentiellement pas supporter. Vous risquez de rencontrer des problèmes inattendus."
+            "samplingFrequencyTooHigh": "Vous avez sélectionné une fréquence d'échantillonage trop élevée que votre appareil ne peut potentiellement pas supporter. Vous risquez de rencontrer des problèmes inattendus.",
+            "audioWorkletNotAvailable": "Le support des AudioWorklet est actuellement indisponible dans cet environnement. Ce paramètre n'aura donc aucun effet."
         },
         "homeMenu": {
             "selectAudioFile": "Sélectionner un fichier audio",
