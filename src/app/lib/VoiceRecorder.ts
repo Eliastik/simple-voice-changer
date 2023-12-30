@@ -224,7 +224,6 @@ export default class VoiceRecorder extends AbstractAudioElement {
                         const stream = await navigator.mediaDevices.getUserMedia(this.constraints);
 
                         await this.setup(stream, precRecording, precAudioFeedback);
-                        this.successCallback();
                     } else {
                         await this.setup(null, precRecording, precAudioFeedback);
                     }

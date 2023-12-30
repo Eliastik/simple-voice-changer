@@ -48,7 +48,7 @@ export class Recorder {
             }
         }
 
-        if (this.context) {
+        if (this.context && !this.worker) {
             this.worker = getRecorderWorker();
 
             if (this.worker) {
