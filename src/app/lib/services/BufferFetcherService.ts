@@ -14,8 +14,8 @@ export default class BufferFetcherService {
         this.eventEmitter = eventEmitter || new EventEmitter();
     }
 
-    async fetchBuffer(bufferURI: string) {
-        if(this.buffers.get(this.getKeyFromLocation(bufferURI)) != null) {
+    async fetchBuffer(bufferURI: string, force?: boolean) {
+        if(this.buffers.get(this.getKeyFromLocation(bufferURI)) != null && !force) {
             return;
         }
 
@@ -70,5 +70,9 @@ export default class BufferFetcherService {
 
     updateContext(context: AudioContext) {
         this.context = context;
+    }
+
+    reset() {
+        this.buffers.clear();
     }
 }

@@ -26,7 +26,7 @@
 * [x] - Bug hunting
     * [x] Fix audio worklet fallback/polyfill port message not working
     * [x] Fix 8-bit effect
-    * [ ] Reverb filter: when changing the sample rate, the reverb filter break (due to buffer sample rate not matching)
+    * [x] Reverb filter: when changing the sample rate, the reverb filter break (due to buffer sample rate not matching)
     * [x] Bug when changing constraints when recording
 * [x] - Recorderjs is using ScriptProcessorNode for recording, convert to AudioWorklet
 

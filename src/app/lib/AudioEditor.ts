@@ -59,6 +59,8 @@ export default class AudioEditor extends AbstractAudioElement {
     private savingBuffer = false;
     /** The previous sample rate setting */
     private previousSampleRate = Constants.DEFAULT_SAMPLE_RATE;
+    /** List of audio buffers to fetch */
+    private audioBuffersToFetch: string[] = [];
 
     /** True if we are downloading initial buffer data */
     downloadingInitialData = false;
@@ -71,12 +73,13 @@ export default class AudioEditor extends AbstractAudioElement {
         this.bufferPlayer = player || new BufferPlayer(context!);
         this.configService = configService || new GenericConfigService();
         this.bufferFetcherService = new BufferFetcherService(this.currentContext!, this.eventEmitter);
+        this.audioBuffersToFetch = audioBuffersToFetch || [];
 
         // Callback called just before starting audio player
-        this.setup(audioBuffersToFetch);
+        this.setup();
     }
 
-    private setup(audioBuffersToFetch: string[] | undefined) {
+    private setup() {
         if (this.configService) {
             this.previousSampleRate = this.configService.getSampleRate();
 
@@ -108,8 +111,8 @@ export default class AudioEditor extends AbstractAudioElement {
         this.setupDefaultFilters();
         this.setupDefaultRenderers();
 
-        if (audioBuffersToFetch) {
-            this.fetchBuffers(audioBuffersToFetch);
+        if (this.audioBuffersToFetch.length > 0) {
+            this.fetchBuffers(false);
         }
     }
 
@@ -167,28 +170,29 @@ export default class AudioEditor extends AbstractAudioElement {
      * Fetch default buffers from network
      * @param audioBuffersToFetch List of audio URL to fetch as buffer
      */
-    private fetchBuffers(audioBuffersToFetch: string[]) {
+    private async fetchBuffers(refetch: boolean) {
         if (this.downloadingInitialData || !this.bufferFetcherService) {
             return;
         }
 
         this.downloadingInitialData = true;
 
-        if (this.eventEmitter) {
+        if (this.eventEmitter && !refetch) {
             this.eventEmitter.emit(EventType.LOADING_BUFFERS);
         }
 
-        this.bufferFetcherService.fetchAllBuffers(audioBuffersToFetch).then(() => {
+        try {
+            await this.bufferFetcherService.fetchAllBuffers(this.audioBuffersToFetch);
             this.downloadingInitialData = false;
-
-            if (this.eventEmitter) {
+    
+            if (this.eventEmitter && !refetch) {
                 this.eventEmitter.emit(EventType.LOADED_BUFFERS);
             }
-        }).catch(() => {
-            if (this.eventEmitter) {
+        } catch(e) {
+            if (this.eventEmitter && !refetch) {
                 this.eventEmitter.emit(EventType.LOADING_BUFFERS_ERROR);
             }
-        });
+        }
     }
 
     /**
@@ -202,6 +206,12 @@ export default class AudioEditor extends AbstractAudioElement {
             if (this.currentSampleRate != this.principalBuffer.sampleRate) {
                 await this.createNewContext(this.principalBuffer.sampleRate);
                 this.previousSampleRate = this.principalBuffer.sampleRate;
+
+                // We need to refetch all buffers of the fetcher
+                if (this.bufferFetcherService) {
+                    this.bufferFetcherService.reset();
+                    await this.fetchBuffers(true);
+                }
             }
         } else {
             // Otherwise we change the context if the sample rate has changed
@@ -215,6 +225,12 @@ export default class AudioEditor extends AbstractAudioElement {
             if (currentSampleRate != this.previousSampleRate) {
                 await this.createNewContext(currentSampleRate);
                 this.previousSampleRate = currentSampleRate;
+
+                // We need to refetch all buffers of the fetcher
+                if (this.bufferFetcherService) {
+                    this.bufferFetcherService.reset();
+                    await this.fetchBuffers(true);
+                }
             }
         }
     }
