@@ -23,7 +23,7 @@
     * [x] - Early audio cutoff fix (when lowering frequency) + bug at audio start with lowering frequency
 * [x] - Advanced settings for the app: sample rate, buffer size (for scriptprocessornode)
 * [x] Make the limiter the last audio filter of the chain
-* [ ] - Bug hunting
+* [x] - Bug hunting
     * [x] Fix audio worklet fallback/polyfill port message not working
     * [x] Fix 8-bit effect
 
