@@ -14,15 +14,25 @@ export default class RecorderWorklet extends AudioWorkletProcessor {
         };
     }
 
-    process(inputs: Float32Array[][]): boolean {
+    static get parameterDescriptors() {
+        return [
+            { name: "numChannels", defaultValue: 2 }
+        ];
+    }
+
+    process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean {
         if (!this.recording) return true;
 
         const input = inputs[0];
         const buffer: Float32Array[] = [];
 
-        if (input) {
-            for (let channel = 0; channel < input.length; channel++) {
-                buffer.push(input[channel]);
+        if (input && input.length > 0) {
+            for (let channel = 0; channel < parameters.numChannels[0]; channel++) {
+                if (input[channel]) {
+                    buffer.push(input[channel]);
+                } else {
+                    buffer.push(input[0]);
+                }
             }
 
             this.port.postMessage({

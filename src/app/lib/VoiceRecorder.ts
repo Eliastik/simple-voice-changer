@@ -336,10 +336,11 @@ export default class VoiceRecorder extends AbstractAudioElement {
                     numChannels: 2,
                     mimeType: "audio/wav"
                 });
+
+                await this.recorder.setup(this.input);
             }
 
             if (this.recorder) {
-                await this.recorder.setup(this.input);
                 this.recorder.record();
             }
 

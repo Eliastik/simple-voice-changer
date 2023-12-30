@@ -105,6 +105,13 @@ export class Recorder {
             this.node = new AudioWorkletNode(this.context, Constants.WORKLET_NAMES.RECORDER_WORKLET);
 
             if (this.node && this.node.port) {
+                const numChannelParameter = this.node.parameters.get("numChannels");
+
+                if(numChannelParameter) {
+                    numChannelParameter.value = this.config.numChannels;
+                    numChannelParameter.setValueAtTime(this.config.numChannels, 0);
+                }
+
                 this.node.port.onmessage = (e: MessageEvent<RecorderWorkletMessage>) => {
                     if (this.worker && e.data.command == "record" && e.data.buffer.length > 0) {
                         this.worker.postMessage({

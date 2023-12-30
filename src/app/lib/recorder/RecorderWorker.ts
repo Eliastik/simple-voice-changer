@@ -85,8 +85,12 @@ export default function getRecorderWorker(): Worker {
             const result = new Float32Array(recLength);
             let offset = 0;
             for (let i = 0; i < recBuffers.length; i++) {
-                result.set(recBuffers[i], offset);
-                offset += recBuffers[i].length;
+                if (recBuffers[i]) {
+                    result.set(recBuffers[i], offset);
+                    offset += recBuffers[i].length;
+                } else {
+                    console.warn("RecorderWorker: undefined buffer has been detected");
+                }
             }
             return result;
         };
