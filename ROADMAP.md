@@ -26,13 +26,14 @@
 * [x] - Bug hunting
     * [x] Fix audio worklet fallback/polyfill port message not working
     * [x] Fix 8-bit effect
+    * [ ] Reverb filter: when changing the sample rate, the reverb filter break (due to buffer sample rate not matching)
+* [ ] - Recorderjs is using ScriptProcessorNode for recording, convert to AudioWorklet
 
 ### 2.1.1
 
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
-* [ ] - Recorderjs is using ScriptProcessorNode for recording, convert to AudioWorklet
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Edit volume/gain
 * [ ] - Transform the "classes" folder into a library (new Github repository)
