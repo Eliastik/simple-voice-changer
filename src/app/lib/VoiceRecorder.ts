@@ -247,7 +247,7 @@ export default class VoiceRecorder extends AbstractAudioElement {
         }
 
         if (this.recorder && this.input) {
-            this.recorder.setup(this.input);
+            await this.recorder.setup(this.input);
 
             if (precRecording) {
                 await this.record();

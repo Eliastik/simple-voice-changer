@@ -34,6 +34,10 @@ export class Recorder {
 
     async setup(source: AudioNode) {
         if (this.node) { // Disconnect previous node
+            if (this.node instanceof AudioWorkletNode) {
+                this.node.port.postMessage("stop");
+            }
+
             this.node.disconnect();
         }
 
@@ -86,7 +90,7 @@ export class Recorder {
 
     private async createRecorderNode() {
         if (this.context) {
-            if (utilFunctions.isAudioWorkletCompatible(this.context)) {
+            if (utilFunctions.isAudioWorkletCompatible(this.context) && Constants.ENABLE_RECORDER_AUDIO_WORKLET) {
                 try {
                     await this.createRecorderWorklet();
                 } catch(e) {
