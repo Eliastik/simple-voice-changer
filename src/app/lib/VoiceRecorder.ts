@@ -114,7 +114,8 @@ export default class VoiceRecorder extends AbstractAudioElement {
 
         // If sample rate setting has changed, create a new audio context
         if (currentSampleRate != this.previousSampleRate) {
-            this.createNewContext(currentSampleRate);
+            await this.createNewContext(currentSampleRate);
+            this.previousSampleRate = currentSampleRate;
         }
     }
 
