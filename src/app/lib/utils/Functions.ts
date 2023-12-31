@@ -1,3 +1,5 @@
+import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
+
 const utilFunctions = {
     calcAudioDuration: (audio: AudioBuffer, speed: number) => {
         if (audio) {
@@ -102,6 +104,13 @@ const utilFunctions = {
         }
 
         return false;
+    },
+    /**
+     * Check that the setting value is correct
+     * @param value FilterSettingValue
+     */
+    isSettingValueValid(value: FilterSettingValue) {
+        return typeof(value) !== "undefined" && !isNaN(Number(value)) && !(typeof(value) === "string" && value.trim() === "");
     }
 };
 

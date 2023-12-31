@@ -10,6 +10,7 @@ import SoundtouchWrapperFilterWorkletNode from "./worklets/SoundtouchWrapperFilt
 import SimpleAudioWorkletProcessor from "../workletPolyfill/SimpleAudioWorkletProcessor";
 import SoundtouchSettings from "../model/filtersSettings/SoundtouchSettings";
 import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
+import utilFunctions from "../utils/Functions";
 
 export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet implements AudioFilterEntrypointInterface {
 
@@ -241,7 +242,7 @@ export default class SoundtouchWrapperFilter extends AbstractAudioFilterWorklet 
     }
 
     async setSetting(settingId: string, value: FilterSettingValue) {
-        if(typeof(value) === "undefined" || isNaN(Number(value))) {
+        if(!utilFunctions.isSettingValueValid(value)) {
             return;
         }
 

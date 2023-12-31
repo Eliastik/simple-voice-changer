@@ -2,6 +2,7 @@ import AbstractAudioFilter from "./interfaces/AbstractAudioFilter";
 import Constants from "../model/Constants";
 import LowPassSettings from "../model/filtersSettings/LowPassSettings";
 import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
+import utilFunctions from "../utils/Functions";
 
 export default class LowPassFilter extends AbstractAudioFilter {
     private lowFrequency = 3500;
@@ -37,7 +38,7 @@ export default class LowPassFilter extends AbstractAudioFilter {
     }
 
     async setSetting(settingId: string, value: FilterSettingValue) {
-        if(typeof(value) === "undefined" || isNaN(Number(value))) {
+        if(!utilFunctions.isSettingValueValid(value)) {
             return;
         }
         

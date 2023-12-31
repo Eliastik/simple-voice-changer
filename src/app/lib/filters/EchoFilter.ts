@@ -2,6 +2,7 @@ import AbstractAudioFilter from "./interfaces/AbstractAudioFilter";
 import Constants from "../model/Constants";
 import EchoSettings from "../model/filtersSettings/EchoSettings";
 import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
+import utilFunctions from "../utils/Functions";
 
 export default class EchoFilter extends AbstractAudioFilter {
     private delay = 0.2;
@@ -49,7 +50,7 @@ export default class EchoFilter extends AbstractAudioFilter {
     }
 
     async setSetting(settingId: string, value: FilterSettingValue) {
-        if(typeof(value) === "undefined" || isNaN(Number(value))) {
+        if(!utilFunctions.isSettingValueValid(value)) {
             return;
         }
         

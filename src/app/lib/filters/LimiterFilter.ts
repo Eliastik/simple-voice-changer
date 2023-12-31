@@ -3,6 +3,7 @@ import Constants from "../model/Constants";
 import LimiterSettings from "../model/filtersSettings/LimiterSettings";
 import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
 import "./worklets/Limiter.worklet";
+import utilFunctions from "../utils/Functions";
 
 export default class LimiterFilter extends AbstractAudioFilterWorklet {
     private preGain = 0; // dB
@@ -57,7 +58,7 @@ export default class LimiterFilter extends AbstractAudioFilterWorklet {
     }
 
     async setSetting(settingId: string, value: FilterSettingValue) {
-        if(typeof(value) === "undefined" || isNaN(Number(value))) {
+        if(!utilFunctions.isSettingValueValid(value)) {
             return;
         }
         

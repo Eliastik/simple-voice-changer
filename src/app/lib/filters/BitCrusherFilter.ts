@@ -3,6 +3,7 @@ import Constants from "../model/Constants";
 import BitCrusherSettings from "../model/filtersSettings/BitCrusherSettings";
 import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
 import "./worklets/BitCrusher.worklet";
+import utilFunctions from "../utils/Functions";
 
 export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     private channels = 2;
@@ -41,7 +42,7 @@ export default class BitCrusherFilter extends AbstractAudioFilterWorklet {
     }
 
     async setSetting(settingId: string, value: FilterSettingValue) {
-        if(typeof(value) === "undefined" || isNaN(Number(value))) {
+        if(!utilFunctions.isSettingValueValid(value)) {
             return;
         }
 

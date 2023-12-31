@@ -2,6 +2,7 @@ import AbstractAudioFilter from "./interfaces/AbstractAudioFilter";
 import Constants from "../model/Constants";
 import BassBoosterSettings from "../model/filtersSettings/BassBoosterSettings";
 import { FilterSettingValue } from "../model/filtersSettings/FilterSettings";
+import utilFunctions from "../utils/Functions";
 
 export default class BassBoosterFilter extends AbstractAudioFilter {
     private frequencyBooster = 200;
@@ -53,7 +54,7 @@ export default class BassBoosterFilter extends AbstractAudioFilter {
     }
 
     async setSetting(settingId: string, value: FilterSettingValue) {
-        if(typeof(value) === "undefined" || isNaN(Number(value))) {
+        if(!utilFunctions.isSettingValueValid(value)) {
             return;
         }
 
