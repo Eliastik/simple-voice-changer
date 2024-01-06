@@ -2,7 +2,7 @@ import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { useAudioEditor } from "@/app/context/AudioEditorContext";
-import Constants from "@/app/lib/model/Constants";
+import Constants from "@eliastik/simple-sound-studio-lib/lib/model/Constants";
 
 const AppConfigDialog = () => {
     const {

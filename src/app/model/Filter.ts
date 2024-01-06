@@ -1,4 +1,4 @@
-import { FilterSettings } from "../lib/model/filtersSettings/FilterSettings";
+import { FilterSettings } from "@eliastik/simple-sound-studio-lib/lib/model/filtersSettings/FilterSettings";
 import { SettingFormType } from "./settingForm/SettingFormType";
 export default interface Filter {
     filterId: string,

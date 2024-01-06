@@ -1,7 +1,7 @@
-import Constants from "@/app/lib/model/Constants";
+import Constants from "@eliastik/simple-sound-studio-lib/lib/model/Constants";
 import Filter from "../Filter";
 import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
-import ReverbSettings from "@/app/lib/model/filtersSettings/ReverbSettings";
+import ReverbSettings from "@eliastik/simple-sound-studio-lib/lib/model/filtersSettings/ReverbSettings";
 
 export const Reverb: Filter = {
     filterId: Constants.FILTERS_NAMES.REVERB,

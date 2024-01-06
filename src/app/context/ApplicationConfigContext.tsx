@@ -6,8 +6,8 @@ import ApplicationConfigService from "./ApplicationConfigService";
 import i18next from "i18next";
 import { UpdateData } from "../model/UpdateData";
 import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
-import AudioEditor from "../lib/AudioEditor";
-import { EventType } from "../lib/model/EventTypeEnum";
+import AudioEditor from "@eliastik/simple-sound-studio-lib/lib/AudioEditor";
+import { EventType } from "@eliastik/simple-sound-studio-lib/lib/model/EventTypeEnum";
 
 const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
 

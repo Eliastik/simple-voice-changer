@@ -1,4 +1,4 @@
-import Constants from "@/app/lib/model/Constants";
+import Constants from "@eliastik/simple-sound-studio-lib/lib/model/Constants";
 import Filter from "../Filter";
 
 export const ReturnAudio: Filter = {

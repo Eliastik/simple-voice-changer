@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const isDev = process.env.NODE_ENV === "development";
 require("dotenv").config({ path: `.env.${isDev ? "dev" : "prod"}` });
+const CopyPlugin = require("copy-webpack-plugin");
 
 const withPWA = require("next-pwa")({
     dest: "public",
@@ -29,7 +30,22 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = withPWA({
     output: "export",
-    basePath: process.env.NEXT_PUBLIC_BASE_PATH
+    transpilePackages: ["@eliastik/simple-sound-studio-lib"],
+    basePath: process.env.NEXT_PUBLIC_BASE_PATH,
+    webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+        config.plugins.push(
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: "node_modules/@eliastik/simple-sound-studio-lib/dist/worklets",
+                        to: "../public/worklets"
+                    },
+                ],
+            })
+        );
+  
+        return config;
+    },
 });
 
 module.exports = nextConfig;

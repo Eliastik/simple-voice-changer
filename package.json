@@ -3,28 +3,22 @@
   "version": "2.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run build-worklets && next dev",
-    "build": "npm run build-worklets && next build",
-    "start": "npm run build-worklets && next start",
-    "lint": "next lint",
-    "build-worklets": "rollup -c rollup.config.js --bundleConfigAsCjs"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "i18next": "^23.7.13",
-    "inline-worker": "^1.1.0",
     "lodash": "^4.17.21",
     "next": "^13.5.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.5.0",
-    "semver": "^7.5.4",
-    "soundtouchjs": "^0.1.30"
+    "semver": "^7.5.4"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^11.1.5",
-    "@types/audioworklet": "^0.0.52",
+    "@types/audioworklet": "^0.0.53",
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.10.6",
     "@types/react": "^18.2.46",
@@ -42,8 +36,6 @@
     "glob": "^10.3.10",
     "next-pwa": "^5.6.0",
     "postcss": "^8.4.32",
-    "rollup": "^4.9.2",
-    "rollup-plugin-cleanup": "^3.2.1",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3"
   }

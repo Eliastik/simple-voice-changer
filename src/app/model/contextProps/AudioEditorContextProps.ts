@@ -1,5 +1,5 @@
-import { FilterState } from "@/app/lib/model/FilterState";
-import { FilterSettings } from "@/app/lib/model/filtersSettings/FilterSettings";
+import { FilterState } from "@eliastik/simple-sound-studio-lib/lib/model/FilterState";
+import { FilterSettings } from "@eliastik/simple-sound-studio-lib/lib/model/filtersSettings/FilterSettings";
 
 export default interface AudioEditorContextProps {
     loadAudioPrincipalBuffer: (buffer: File) => void;
