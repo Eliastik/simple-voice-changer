@@ -1,12 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect, useCallback } from "react";
-import AudioEditor from "@eliastik/simple-sound-studio-lib/lib/AudioEditor";
+import { AudioEditor, BufferPlayer, EventType, FilterSettings, FilterState } from "@eliastik/simple-sound-studio-lib";
 import AudioEditorContextProps from "../model/contextProps/AudioEditorContextProps";
-import { EventType } from "@eliastik/simple-sound-studio-lib/lib/model/EventTypeEnum";
-import BufferPlayer from "@eliastik/simple-sound-studio-lib/lib/BufferPlayer";
-import { FilterSettings } from "@eliastik/simple-sound-studio-lib/lib/model/filtersSettings/FilterSettings";
-import { FilterState } from "@eliastik/simple-sound-studio-lib/lib/model/FilterState";
 import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
 
 const AudioEditorContext = createContext<AudioEditorContextProps | undefined>(undefined);

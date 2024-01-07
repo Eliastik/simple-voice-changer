@@ -1,8 +1,7 @@
+import { GenericConfigService, Constants as LibConstants } from "@eliastik/simple-sound-studio-lib";
 import Constants from "../model/Constants";
-import LibConstants from "@eliastik/simple-sound-studio-lib/lib/model/Constants";
 import { UpdateData } from "../model/UpdateData";
 import semver from "semver";
-import GenericConfigService from "@eliastik/simple-sound-studio-lib/lib/utils/GenericConfigService";
 
 export default class ApplicationConfigService extends GenericConfigService {
     getConfig(key: string): string | null {

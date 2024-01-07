@@ -1,4 +1,4 @@
-import Constants from "@eliastik/simple-sound-studio-lib/lib/model/Constants";
+import { Constants } from "@eliastik/simple-sound-studio-lib";
 import Filter from "../Filter";
 import { SettingFormTypeEnum } from "../settingForm/SettingFormTypeEnum";
 import ReverbSettings from "@eliastik/simple-sound-studio-lib/lib/model/filtersSettings/ReverbSettings";

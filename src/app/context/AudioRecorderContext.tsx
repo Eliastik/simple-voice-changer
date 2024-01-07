@@ -1,10 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
+import { VoiceRecorder, EventType, RecorderSettings } from "@eliastik/simple-sound-studio-lib";
 import AudioRecorderContextProps from "../model/contextProps/AudioRecorderContextProps";
-import VoiceRecorder from "@eliastik/simple-sound-studio-lib/lib/VoiceRecorder";
-import { EventType } from "@eliastik/simple-sound-studio-lib/lib/model/EventTypeEnum";
-import { RecorderSettings } from "@eliastik/simple-sound-studio-lib/lib/model/RecorderSettings";
 import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
 
 const AudioRecorderContext = createContext<AudioRecorderContextProps | undefined>(undefined);

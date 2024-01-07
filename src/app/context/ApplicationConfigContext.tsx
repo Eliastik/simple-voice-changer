@@ -1,13 +1,12 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
+import { AudioEditor, EventType } from "@eliastik/simple-sound-studio-lib";
 import ApplicationConfigContextProps from "../model/contextProps/ApplicationConfigContextProps";
 import ApplicationConfigService from "./ApplicationConfigService";
 import i18next from "i18next";
 import { UpdateData } from "../model/UpdateData";
 import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
-import AudioEditor from "@eliastik/simple-sound-studio-lib/lib/AudioEditor";
-import { EventType } from "@eliastik/simple-sound-studio-lib/lib/model/EventTypeEnum";
 
 const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
 

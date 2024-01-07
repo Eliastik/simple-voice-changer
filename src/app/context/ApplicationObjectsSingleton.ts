@@ -1,7 +1,4 @@
-import AudioEditor from "@eliastik/simple-sound-studio-lib/lib/AudioEditor";
-import BufferPlayer from "@eliastik/simple-sound-studio-lib/lib/BufferPlayer";
-import EventEmitter from "@eliastik/simple-sound-studio-lib/lib/utils/EventEmitter";
-import VoiceRecorder from "@eliastik/simple-sound-studio-lib/lib/VoiceRecorder";
+import { AudioEditor, BufferPlayer, VoiceRecorder, EventEmitter } from "@eliastik/simple-sound-studio-lib";
 import Constants from "../model/Constants";
 import ApplicationConfigService from "./ApplicationConfigService";
 

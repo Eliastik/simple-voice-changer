@@ -6,7 +6,7 @@ import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import { SettingFormType } from "@/app/model/settingForm/SettingFormType";
 import { SettingFormTypeEnum } from "@/app/model/settingForm/SettingFormTypeEnum";
-import { FilterSettings } from "@eliastik/simple-sound-studio-lib/lib/model/filtersSettings/FilterSettings";
+import { FilterSettings } from "@eliastik/simple-sound-studio-lib";
 import SelectFormValue from "@/app/model/settingForm/SelectFormValue";
 
 const getStringFromTemplate = (data: FilterSettings | null | undefined, str?: string) =>{
