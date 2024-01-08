@@ -31,8 +31,6 @@
             "recMicrophone": "Record with the microphone"
         },
         "audioEditorMain": {
-            "validateSettings": "Validate settings",
-            "resetSettings": "Reset",
             "compatibilityModeAutoEnabled": "Compatibility mode has been automatically enabled, as a problem with your web browser has been detected",
             "hasProblemRenderingAudio": "A problem has been detected with your web browser when rendering audio. Try to enable the compatibility mode in the settings, or modify the filters applied."
         },
@@ -51,19 +49,9 @@
         },
         "dialogs": {
             "pleaseWait": "Please wait a few moments",
-            "bufferDownloading": {
-                "title": "Downloading data"
-            },
-            "bufferDownloadingError": {
-                "title": "Error when downloading data",
-                "info": "Check your Internet connection, then try again"
-            },
             "fileOpenError": {
                 "title": "Error when opening file",
                 "info": "Make sure the file you've selected is a correct audio file, then try again"
-            },
-            "filterInformations": {
-                "title": "Filter informations"
             },
             "goToHome": {
                 "title": "Go back to homepage",
@@ -75,9 +63,6 @@
             "loadingAudioFile": {
                 "title": "Loading audio file"
             },
-            "processing": {
-                "title": "Audio processing in progress"
-            },
             "audioRecorderAuthorization": {
                 "title": "Authorization",
                 "info": "Please authorize access to your device's microphone in order to use this feature"
@@ -85,116 +70,6 @@
             "errorAuthorizationAudioRecorderDialog": {
                 "title": "Authorization error",
                 "info": "You have denied access to the device's microphone, so this feature cannot be used. Reset your browser's permissions for this application, then try again"
-            },
-            "errorProcessingAudio": {
-                "title": "Error processing audio",
-                "info": "An error has occurred during audio processing. Please try again."
-            }
-        },
-        "filters": {
-            "soundtouch": {
-                "name": "Change speed / frequency",
-                "info": "This filter lets you not only change the speed of the audio, but also its frequency. You can make the audio sound higher or lower.",
-                "settings": {
-                    "title": "Settings of the filter Change speed / frequency",
-                    "label": "Here you can set audio speed and frequency (high/low).",
-                    "speedAudio": "Audio speed:",
-                    "audioFrequency": "Audio frequency:",
-                    "speedAudioMinLabel": "Slow",
-                    "speedAudioMaxLabel": "Fast",
-                    "audioFrequencyMinLabel": "Low",
-                    "audioFrequencyMaxLabel": "High"
-                }
-            },
-            "bassboost": {
-                "name": "Bass booster",
-                "info": "This filter lets you boost the bass of your audio. You can set the frequency to be boosted and the boost power (in dB). It is advisable to use this tool in conjunction with the limiter, to avoid unpleasant saturation.",
-                "settings": {
-                    "title": "Bass booster settings",
-                    "label": "Here you can set the bass booster parameters.",
-                    "frequencyBoost": "Boost frequency (boosts frequencies equal to or below - in Hz):",
-                    "gainBoost": "Boost gain (in dB):",
-                    "attenuateFrequency": "Attenuation frequency (attenuates frequencies above - in Hz):",
-                    "gainAttenuate": "Attenuation gain (in dB):"
-                }
-            },
-            "bitcrusher": {
-                "name": "8-bit Effect",
-                "info": "This filter allows you to achieve an effect similar to the sound produced by retro video game consoles.",
-                "settings": {
-                    "title": "8-bit effect settings",
-                    "label": "Here you can edit the settings for the 8-bit effect.",
-                    "resolution": "Resolution:",
-                    "cutoffFrequency": "Cutoff frequency:"
-                }
-            },
-            "echo": {
-                "name": "Echo",
-                "info": "This filter allows you to get a customizable echo effect.",
-                "settings": {
-                    "title": "Echo effect settings",
-                    "label": "Here you can edit the settings of the echo effect.",
-                    "delay": "Delay (in seconds):",
-                    "gain": "Gain (in dB):"
-                }
-            },
-            "highpass": {
-                "name": "Highpass filter",
-                "info": "This filter allows you to attenuate audio frequencies below a threshold.",
-                "settings": {
-                    "title": "Highpass filter settings",
-                    "label": "Here you can edit the settings of the highpass filter.",
-                    "highFrequency": "Cutoff frequency (in Hz):"
-                }
-            },
-            "lowpass": {
-                "name": "Lowpass filter",
-                "info": "This filter allows you to attenuate audio frequencies above a threshold.",
-                "settings": {
-                    "title": "Lowpass filter settings",
-                    "label": "Here you can edit the settings of the lowpass filter.",
-                    "lowFrequency": "Cutoff frequency (in Hz):"
-                }
-            },
-            "returnAudio": {
-                "name": "Reverse audio",
-                "info": "This filter allows you to reverse the audio."
-            },
-            "telephonizer": {
-                "name": "Telephone call effect",
-                "info": "This filter allows you to mimic the sound produced by a phone broadcasting your audio."
-            },
-            "vocoder": {
-                "name": "Vocoder (robotic voice)",
-                "info": "This filter allows you to apply a robotic voice effect to your audio."
-            },
-            "limiter": {
-                "name": "Limiter (recommended)",
-                "info": "This filter helps reduce saturation and distortion that may occur depending on the filters you activate. It is strongly recommended to keep it enabled.",
-                "settings": {
-                    "title": "Limiter settings",
-                    "label": "You can adjust the limiter's settings here. The default settings have been tested on many audio files and work in most cases.",
-                    "preGain": "Pre-gain (in dB):",
-                    "postGain": "Post-gain (in dB):",
-                    "attackTime": "Attack time (in seconds):",
-                    "releaseTime": "Release time (in seconds):",
-                    "threshold": "Threshold (in dB):",
-                    "lookAheadTime": "Look-ahead time (in seconds):"
-                }
-            },
-            "reverb": {
-                "name": "Reverb",
-                "info": "This filter allows you to apply a reverb effect to your audio. Several virtual environments are offered, each with a different reverb effect for each of these environments.",
-                "settings": {
-                    "title": "Reverb Filter Settings",
-                    "label": "You can adjust the reverb filter settings here.",
-                    "environment": "Environment:",
-                    "size": "Size: ${(reverbEnvironment.additionalData.size / 1000000).toFixed(2)} MB",
-                    "source": "Source",
-                    "downloaded": "This environment has already been temporarily downloaded to your device",
-                    "notDownloaded": "This environment has not been downloaded yet. By clicking Validate, the environment will be temporarily downloaded to your device."
-                },
-                "disabled": "This filter is currently unavailable, as no environment has yet been downloaded. Go to the filter settings, then select and download an environment, then click on Validate."
             }
         },
         "audioRecorder": {

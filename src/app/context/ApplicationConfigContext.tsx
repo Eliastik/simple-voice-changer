@@ -1,11 +1,12 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import { AudioEditor, EventType } from "@eliastik/simple-sound-studio-lib";
-import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components/lib";;
+import { AudioEditor, EventType } from "@eliastik/simple-sound-studio-lib/lib";
+import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components/lib";
 import ApplicationConfigContextProps from "../model/contextProps/ApplicationConfigContextProps";
 import ApplicationConfigService from "./ApplicationConfigService";
 import i18next from "i18next";
+import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
 import { UpdateData } from "../model/UpdateData";
 import ApplicationConfigSingleton from "./ApplicationConfigSingleton";
 import Constants from "../model/Constants";
@@ -107,6 +108,7 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const setupLanguage = () => {
         const lng = getService().getCurrentLanguagePreference();
         i18next.changeLanguage(lng);
+        i18n.i18next.changeLanguage(lng);
         setCurrentLanguageValue(lng);
     };
 

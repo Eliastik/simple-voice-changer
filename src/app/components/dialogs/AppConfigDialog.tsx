@@ -1,4 +1,4 @@
-import { Constants } from "@eliastik/simple-sound-studio-lib";
+import { Constants } from "@eliastik/simple-sound-studio-lib/lib";
 import { useAudioEditor } from "@eliastik/simple-sound-studio-components/lib";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import { useTranslation } from "react-i18next";
