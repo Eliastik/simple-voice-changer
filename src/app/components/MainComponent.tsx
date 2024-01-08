@@ -2,7 +2,7 @@
 
 import AudioEditorMain from "./audioEditor/AudioEditorMain";
 import HomeMenu from "./homeMenu/HomeMenu";
-import { useAudioEditor } from "../context/AudioEditorContext";
+import { useAudioEditor } from "@eliastik/simple-sound-studio-components/lib";
 import ErrorLoadingAudioDialog from "./dialogs/ErrorLoadingAudioDialog";
 import LoadingAppDialog from "./dialogs/LoadingAppDialog";
 import LoadingAudioFileDialog from "./dialogs/LoadingAudioFileDialog";

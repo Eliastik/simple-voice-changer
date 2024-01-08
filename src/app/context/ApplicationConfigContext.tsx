@@ -2,11 +2,13 @@
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
 import { AudioEditor, EventType } from "@eliastik/simple-sound-studio-lib";
+import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components/lib";;
 import ApplicationConfigContextProps from "../model/contextProps/ApplicationConfigContextProps";
 import ApplicationConfigService from "./ApplicationConfigService";
 import i18next from "i18next";
 import { UpdateData } from "../model/UpdateData";
-import ApplicationObjectsSingleton from "./ApplicationObjectsSingleton";
+import ApplicationConfigSingleton from "./ApplicationConfigSingleton";
+import Constants from "../model/Constants";
 
 const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
 
@@ -23,7 +25,7 @@ interface ApplicationConfigProviderProps {
 }
 
 const getService = (): ApplicationConfigService => {
-    return ApplicationObjectsSingleton.getConfigServiceInstance()!;
+    return ApplicationConfigSingleton.getConfigServiceInstance()!;
 };
 
 const getAudioEditor = (): AudioEditor => {
@@ -59,9 +61,11 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const [hasProblemRenderingAudio, setHasProblemRenderingAudio] = useState(false);
 
     useEffect(() => {
-        if(isReady) {
+        if (isReady) {
             return;
         }
+
+        ApplicationObjectsSingleton.initializeApplicationObjects(ApplicationConfigSingleton.getConfigServiceInstance(), Constants.AUDIO_BUFFERS_TO_FETCH);
 
         setCurrentTheme(getService().getCurrentTheme());
         setCurrentThemeValue(getService().getCurrentThemePreference());
@@ -137,7 +141,7 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     };
 
     const updateCurrentTheme = () => {
-        if(currentThemeValue === "auto") {
+        if (currentThemeValue === "auto") {
             setCurrentTheme(getService().getCurrentTheme());
         }
     };

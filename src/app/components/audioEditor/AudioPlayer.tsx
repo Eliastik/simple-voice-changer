@@ -1,6 +1,6 @@
 "use client";
 
-import { useAudioEditor } from "@/app/context/AudioEditorContext";
+import { useAudioEditor } from "@eliastik/simple-sound-studio-components/lib";
 import { useAudioPlayer } from "@/app/context/AudioPlayerContext";
 import { useTranslation } from "react-i18next";
 

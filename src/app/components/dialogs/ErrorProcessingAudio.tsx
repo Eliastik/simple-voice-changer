@@ -1,4 +1,4 @@
-import { useAudioEditor } from "@/app/context/AudioEditorContext";
+import { useAudioEditor } from "@eliastik/simple-sound-studio-components/lib";;
 import { useTranslation } from "react-i18next";
 
 const ErrorProcessingAudio = () => {

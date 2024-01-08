@@ -1,16 +1,13 @@
 "use client";
 
-import { useAudioEditor } from "@/app/context/AudioEditorContext";
+import { AudioEditorActionButtons, FilterButtonList } from "@eliastik/simple-sound-studio-components/lib";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
-import FilterButton from "./FilterButton";
-import filters from "@/app/model/Filters";
+import { useTranslation } from "react-i18next";
 import AudioPlayer from "./AudioPlayer";
 import LoadingAudioProcessingDialog from "../dialogs/LoadingAudioProcessingDialog";
 import DownloadingBufferDialog from "../dialogs/DownloadingBufferDialog";
-import { useTranslation } from "react-i18next";
 
 const AudioEditorMain = () => {
-    const { filterState, validateSettings, resetAllFiltersState } = useAudioEditor();
     const { isCompatibilityModeAutoEnabled, hasProblemRenderingAudio } = useApplicationConfig();
     const { t } = useTranslation();
 
@@ -26,11 +23,10 @@ const AudioEditorMain = () => {
             </div>
             <div className="flex justify-center items-center flex-grow gap-6 flex-col pt-16 pb-16">
                 <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-3 md:gap-4 gap-2 place-content-center p-2 md:mt-2 md:p-0">
-                    {filters.map(filter => <FilterButton filter={filter} enabled={filterState[filter.filterId]} key={filter.filterId}></FilterButton>)}
+                    <FilterButtonList></FilterButtonList>
                 </div>
                 <div className="flex flex-row md:gap-x-3 gap-x-1 sticky bottom-20">
-                    <button className="btn btn-accent opacity-80" onClick={() => validateSettings()}>{t("audioEditorMain.validateSettings")}</button>
-                    <button className="btn btn-error opacity-80" onClick={() => resetAllFiltersState()}>{t("audioEditorMain.resetSettings")}</button>
+                    <AudioEditorActionButtons></AudioEditorActionButtons>
                 </div>
             </div>
             <AudioPlayer></AudioPlayer>

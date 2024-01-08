@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import MainComponent from "./components/MainComponent";
-import { useAudioEditor } from "./context/AudioEditorContext";
+import { useAudioEditor } from "@eliastik/simple-sound-studio-components/lib";
 import { useApplicationConfig } from "./context/ApplicationConfigContext";
 
 const Home = () => {

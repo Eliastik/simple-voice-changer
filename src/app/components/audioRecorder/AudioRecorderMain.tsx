@@ -1,9 +1,9 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { DaisyUIModal } from "@eliastik/simple-sound-studio-components/lib";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import RecorderConfigDialog from "../dialogs/RecorderConfigDialog";
-import DaisyUIModal from "@/app/model/DaisyUIModal";
 
 const AudioRecorderMain = () => {
     const { pauseRecorderAudio, audioRecording, recordAudio, stopRecordAudio, recorderTime, recorderDisplayTime } = useAudioRecorder();

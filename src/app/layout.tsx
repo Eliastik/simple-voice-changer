@@ -1,5 +1,5 @@
 import "./globals.css";
-import { AudioEditorProvider } from "./context/AudioEditorContext";
+import { AudioEditorProvider } from "@eliastik/simple-sound-studio-components/lib";
 import { ApplicationConfigProvider } from "./context/ApplicationConfigContext";
 import { AudioPlayerProvider } from "./context/AudioPlayerContext";
 import { AudioRecorderProvider } from "./context/AudioRecorderContext";

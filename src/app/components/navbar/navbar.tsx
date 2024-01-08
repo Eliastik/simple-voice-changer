@@ -1,10 +1,9 @@
-import { useAudioEditor } from "@/app/context/AudioEditorContext";
+import { useAudioEditor, DaisyUIModal } from "@eliastik/simple-sound-studio-components/lib";;
 import AppConfigDialog from "../dialogs/AppConfigDialog";
 import GoToHomeDialog from "../dialogs/GoToHomeDialog";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import AppInfoDialog from "../dialogs/AppInfoDialog";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
-import DaisyUIModal from "@/app/model/DaisyUIModal";
 import Constants from "@/app/model/Constants";
 
 const Navbar = () => {
