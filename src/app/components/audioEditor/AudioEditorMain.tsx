@@ -1,11 +1,9 @@
 "use client";
 
-import { AudioEditorActionButtons, FilterButtonList } from "@eliastik/simple-sound-studio-components/lib";
+import { AudioEditorActionButtons, FilterButtonList, DownloadingBufferDialog, LoadingAudioProcessingDialog } from "@eliastik/simple-sound-studio-components/lib";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import { useTranslation } from "react-i18next";
 import AudioPlayer from "./AudioPlayer";
-import LoadingAudioProcessingDialog from "../dialogs/LoadingAudioProcessingDialog";
-import DownloadingBufferDialog from "../dialogs/DownloadingBufferDialog";
 
 const AudioEditorMain = () => {
     const { isCompatibilityModeAutoEnabled, hasProblemRenderingAudio } = useApplicationConfig();
