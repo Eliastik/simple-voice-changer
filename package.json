@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "i18next": "^23.7.13",
+    "@eliastik/simple-sound-studio-components": "^2.1.0",
+    "@eliastik/simple-sound-studio-lib": "^2.1.0",
+    "i18next": "^23.7.16",
     "lodash": "^4.17.21",
     "next": "^13.5.6",
     "react": "^18.2.0",
@@ -18,25 +20,25 @@
     "semver": "^7.5.4"
   },
   "devDependencies": {
-    "@types/audioworklet": "^0.0.53",
+    "@types/audioworklet": "^0.0.52",
     "@types/lodash": "^4.14.202",
-    "@types/node": "^20.10.6",
-    "@types/react": "^18.2.46",
+    "@types/node": "^20.10.8",
+    "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "@types/semver": "^7.5.6",
-    "@typescript-eslint/eslint-plugin": "^6.16.0",
-    "@typescript-eslint/parser": "^6.16.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
     "autoprefixer": "latest",
-    "copy-webpack-plugin": "^11.0.0",
-    "daisyui": "^4.4.24",
+    "copy-webpack-plugin": "^12.0.0",
+    "daisyui": "^4.5.0",
     "dotenv": "^16.3.1",
     "eslint": "^8.56.0",
     "eslint-config-next": "^13.5.6",
     "eslint-plugin-react": "^7.33.2",
     "glob": "^10.3.10",
     "next-pwa": "^5.6.0",
-    "postcss": "^8.4.32",
-    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   }
 }

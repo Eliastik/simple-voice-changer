@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,7 +23,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
     "types": [
       "@types/audioworklet",
@@ -30,6 +36,17 @@
       "@types/semver"
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "node_modules/@eliastik/simple-sound-studio-lib/lib/**/*.ts", "../simple-sound-studio-components/lib/components/dialogs/DownloadingBufferDialog.tsx", "../simple-sound-studio-components/lib/components/dialogs/ErrorDownloadingBufferDialog.tsx"],
-  "exclude": ["node_modules", "public/worklets/*.js"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "./node_modules/@eliastik/simple-sound-studio-lib/lib/**/*.ts",
+    "node_modules/@eliastik/simple-sound-studio-components/lib/**/*.ts",
+    "node_modules/@eliastik/simple-sound-studio-components/lib/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "public/worklets/*.js"
+  ]
 }

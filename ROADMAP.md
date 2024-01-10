@@ -32,6 +32,8 @@
 
 ### 2.1.1
 
+* [x] - Transform the "lib" folder into a library (new Github repository)
+* [ ] - Simplify 8-bit effect settings
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
@@ -40,7 +42,6 @@
     * [ ] - "Record with the microphone" feature not working on Firefox when changing the sample rate
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Edit volume/gain
-* [ ] - Transform the "classes" folder into a library (new Github repository)
 
 ### Future versions
 

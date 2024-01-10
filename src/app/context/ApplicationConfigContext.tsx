@@ -1,12 +1,12 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import { AudioEditor, EventType } from "@eliastik/simple-sound-studio-lib/lib";
+import { AudioEditor, EventType } from "@eliastik/simple-sound-studio-lib";
 import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components/lib";
+import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
+import i18next from "i18next";
 import ApplicationConfigContextProps from "../model/contextProps/ApplicationConfigContextProps";
 import ApplicationConfigService from "./ApplicationConfigService";
-import i18next from "i18next";
-import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
 import { UpdateData } from "../model/UpdateData";
 import ApplicationConfigSingleton from "./ApplicationConfigSingleton";
 import Constants from "../model/Constants";

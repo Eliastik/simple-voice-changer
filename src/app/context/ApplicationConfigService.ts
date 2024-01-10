@@ -1,4 +1,4 @@
-import { GenericConfigService, Constants as LibConstants } from "@eliastik/simple-sound-studio-lib/lib";
+import { GenericConfigService, Constants as LibConstants } from "@eliastik/simple-sound-studio-lib";
 import Constants from "../model/Constants";
 import { UpdateData } from "../model/UpdateData";
 import semver from "semver";

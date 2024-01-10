@@ -1,4 +1,4 @@
-import { RecorderSettings } from "@eliastik/simple-sound-studio-lib/lib";
+import { RecorderSettings } from "@eliastik/simple-sound-studio-lib";
 
 export default interface AudiRecorderContextProps {
     audioRecorderReady: boolean,

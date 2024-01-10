@@ -6,7 +6,6 @@ import Navbar from "./components/navbar/navbar";
 import { useApplicationConfig } from "./context/ApplicationConfigContext";
 // i18next imports (local and from the library)
 import "./i18n";
-import "@eliastik/simple-sound-studio-components/lib/i18n";
 import PWA from "./pwa";
 import Constants from "./model/Constants";
 

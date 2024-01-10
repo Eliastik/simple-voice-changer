@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
 import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components/lib";
-import { VoiceRecorder, EventType, RecorderSettings } from "@eliastik/simple-sound-studio-lib/lib";
+import { VoiceRecorder, EventType, RecorderSettings } from "@eliastik/simple-sound-studio-lib";
 import AudioRecorderContextProps from "../model/contextProps/AudioRecorderContextProps";
 
 const AudioRecorderContext = createContext<AudioRecorderContextProps | undefined>(undefined);
