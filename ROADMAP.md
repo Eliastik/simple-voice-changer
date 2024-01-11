@@ -33,7 +33,8 @@
 ### 2.1.1
 
 * [x] - Transform the "lib" folder into a library (new Github repository)
-* [ ] - Simplify 8-bit effect settings
+    * [ ] Watch mode for the library (auto build when changing file)?
+* [x] - Simplify 8-bit effect settings
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
