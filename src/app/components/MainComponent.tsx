@@ -1,6 +1,6 @@
 "use client";
 
-import { useAudioEditor, ErrorProcessingAudio, ErrorDownloadingBufferDialog } from "@eliastik/simple-sound-studio-components/lib";
+import { useAudioEditor, ErrorProcessingAudio, ErrorDownloadingBufferDialog } from "@eliastik/simple-sound-studio-components";
 import { useAudioRecorder } from "../context/AudioRecorderContext";
 import AudioEditorMain from "./audioEditor/AudioEditorMain";
 import HomeMenu from "./homeMenu/HomeMenu";

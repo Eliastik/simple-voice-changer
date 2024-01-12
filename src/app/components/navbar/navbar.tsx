@@ -1,4 +1,4 @@
-import { useAudioEditor, DaisyUIModal } from "@eliastik/simple-sound-studio-components/lib";
+import { useAudioEditor, DaisyUIModal } from "@eliastik/simple-sound-studio-components";
 import AppConfigDialog from "../dialogs/AppConfigDialog";
 import GoToHomeDialog from "../dialogs/GoToHomeDialog";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";

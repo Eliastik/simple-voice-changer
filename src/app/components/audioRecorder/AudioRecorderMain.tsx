@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { DaisyUIModal } from "@eliastik/simple-sound-studio-components/lib";
+import { DaisyUIModal } from "@eliastik/simple-sound-studio-components";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import RecorderConfigDialog from "../dialogs/RecorderConfigDialog";
 

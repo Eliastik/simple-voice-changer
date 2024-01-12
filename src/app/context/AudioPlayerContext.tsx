@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components/lib";
+import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components";
 import { BufferPlayer, EventType } from "@eliastik/simple-sound-studio-lib";
 import AudioPlayerContextProps from "../model/contextProps/AudioPlayerContextProps";
 

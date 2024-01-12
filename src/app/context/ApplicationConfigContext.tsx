@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
 import { AudioEditor, EventType } from "@eliastik/simple-sound-studio-lib";
-import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components/lib";
+import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components";
 import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
 import i18next from "i18next";
 import ApplicationConfigContextProps from "../model/contextProps/ApplicationConfigContextProps";

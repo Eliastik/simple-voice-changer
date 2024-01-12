@@ -8,7 +8,7 @@ import { useApplicationConfig } from "./context/ApplicationConfigContext";
 import "./i18n";
 import PWA from "./pwa";
 import Constants from "./model/Constants";
-import { AudioEditorProvider } from "@eliastik/simple-sound-studio-components/lib";
+import { AudioEditorProvider } from "@eliastik/simple-sound-studio-components";
 
 const inter = Inter({ subsets: ["latin"] });
 

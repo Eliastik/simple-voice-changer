@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import MainComponent from "./components/MainComponent";
-import { ApplicationObjectsSingleton, useAudioEditor } from "@eliastik/simple-sound-studio-components/lib";
+import { ApplicationObjectsSingleton, useAudioEditor } from "@eliastik/simple-sound-studio-components";
 import { useApplicationConfig } from "./context/ApplicationConfigContext";
 import ApplicationConfigSingleton from "./context/ApplicationConfigSingleton";
 import Constants from "./model/Constants";

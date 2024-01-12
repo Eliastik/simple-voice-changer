@@ -1,4 +1,4 @@
-import { useAudioEditor } from "@eliastik/simple-sound-studio-components/lib";
+import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
 import { useTranslation } from "react-i18next";
 
 const LoadingAudioFileDialog = () => {
