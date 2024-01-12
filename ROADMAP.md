@@ -41,6 +41,8 @@
 * [ ] - Other minor fixes :
     * [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
     * [ ] - "Record with the microphone" feature not working on Firefox when changing the sample rate
+    * [ ] - When disabling limiter and then restarting audio player, the limiter seems to be working
+    * [ ] - Limiter pre-gain is taken into account even when the filter is disabled
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Edit volume/gain
 
