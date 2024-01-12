@@ -9,7 +9,6 @@ import ApplicationConfigContextProps from "../model/contextProps/ApplicationConf
 import ApplicationConfigService from "./ApplicationConfigService";
 import { UpdateData } from "../model/UpdateData";
 import ApplicationConfigSingleton from "./ApplicationConfigSingleton";
-import Constants from "../model/Constants";
 
 const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
 
@@ -65,8 +64,6 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         if (isReady) {
             return;
         }
-
-        ApplicationObjectsSingleton.initializeApplicationObjects(ApplicationConfigSingleton.getConfigServiceInstance(), Constants.AUDIO_BUFFERS_TO_FETCH);
 
         setCurrentTheme(getService().getCurrentTheme());
         setCurrentThemeValue(getService().getCurrentThemePreference());
