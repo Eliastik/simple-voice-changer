@@ -10,7 +10,7 @@ const AudioPlayerContext = createContext<AudioPlayerContextProps | undefined>(un
 export const useAudioPlayer = (): AudioPlayerContextProps => {
     const context = useContext(AudioPlayerContext);
     if (!context) {
-        throw new Error("useAudioPlayer doit être utilisé à l'intérieur d'un AudioPlayerProvider");
+        throw new Error("useAudioPlayer must be used inside an AudioPlayerProvider");
     }
     return context;
 };

@@ -10,7 +10,7 @@ const AudioRecorderContext = createContext<AudioRecorderContextProps | undefined
 export const useAudioRecorder = (): AudioRecorderContextProps => {
     const context = useContext(AudioRecorderContext);
     if (!context) {
-        throw new Error("useAudioRecorder doit être utilisé à l'intérieur d'un AudioRecorderProvider");
+        throw new Error("useAudioRecorder must be used inside an AudioRecorderProvider");
     }
     return context;
 };

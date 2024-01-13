@@ -15,7 +15,7 @@ const ApplicationConfigContext = createContext<ApplicationConfigContextProps | u
 export const useApplicationConfig = (): ApplicationConfigContextProps => {
     const context = useContext(ApplicationConfigContext);
     if (!context) {
-        throw new Error("useApplicationConfig doit être utilisé à l'intérieur d'un ApplicationConfigProvider");
+        throw new Error("useApplicationConfig must be used inside an ApplicationConfigProvider");
     }
     return context;
 };
