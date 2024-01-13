@@ -33,16 +33,17 @@
 ### 2.1.1
 
 * [x] - Transform the "lib" folder into a library (new Github repository)
-    * [ ] Watch mode for the library (auto build when changing file)?
+    * [x] Watch mode for the library (auto build when changing file)?
+    * [ ] Fix copy of worklets when using npm link
 * [x] - Simplify 8-bit effect settings
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
 * [ ] - Other minor fixes :
+    * [x] - When disabling limiter and then restarting audio player, the limiter seems to be working
+    * [x] - Limiter pre-gain is taken into account even when the filter is disabled
     * [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
     * [ ] - "Record with the microphone" feature not working on Firefox when changing the sample rate
-    * [ ] - When disabling limiter and then restarting audio player, the limiter seems to be working
-    * [ ] - Limiter pre-gain is taken into account even when the filter is disabled
 * [ ] - Send custom audio buffer environment for the reverb filter
 * [ ] - Edit volume/gain
 
