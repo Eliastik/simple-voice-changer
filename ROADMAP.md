@@ -32,10 +32,11 @@
 
 ### 2.1.1
 
+* [x] - Simplify 8-bit effect settings
+* [x] - Implements setting for Vocoder
 * [x] - Transform the "lib" folder into a library (new Github repository)
     * [x] Watch mode for the library (auto build when changing file)?
-    * [ ] Fix copy of worklets when using npm link
-* [x] - Simplify 8-bit effect settings
+    * [x] Fix copy of worklets when using npm link
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
@@ -45,7 +46,6 @@
     * [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
     * [ ] - "Record with the microphone" feature not working on Firefox when changing the sample rate
 * [ ] - Send custom audio buffer environment for the reverb filter
-* [ ] - Edit volume/gain
 
 ### Future versions
 
@@ -54,6 +54,7 @@
 
 ## Would be good but not important
 
+* [ ] - Edit volume/gain
 * [ ] - Advanced settings for audio channel number? By default use the number of channel of the host if possible (but some filters force 2-channel)
 * [ ] - Enhance limiter?
 * [ ] - Filter "Autotuner"?
