@@ -43,23 +43,27 @@
 * [ ] - Other minor fixes :
     * [x] - When disabling limiter and then restarting audio player, the limiter seems to be working
     * [x] - Limiter pre-gain is taken into account even when the filter is disabled
-    * [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
     * [ ] - "Record with the microphone" feature not working on Firefox when changing the sample rate
-* [ ] - Send custom audio buffer environment for the reverb filter
+    * [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
+* [x] - Send custom audio buffer environment for the reverb filter
 
 ### Future versions
 
+* [ ] Components library: allow to add custom filters
+* [ ] Fix sourcemaps for libraries
 * [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible) + display processing progress
     * [ ] Cancel audio processing
 
 ## Would be good but not important
 
-* [ ] - Edit volume/gain
-* [ ] - Advanced settings for audio channel number? By default use the number of channel of the host if possible (but some filters force 2-channel)
-* [ ] - Enhance limiter?
-* [ ] - Filter "Autotuner"?
-* [ ] - Filter "equalizer"?
-* [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
+* Filters:
+    * [ ] - Edit volume/gain
+    * [ ] - Filter "equalizer"?
+    * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
+    * [ ] - Enhance limiter?
+    * [ ] - Filter "Autotuner"?
 * [ ] - Save into localstorage filters settings?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
 * [ ] - Real-time filters editing when recording audio (reuse existing filters)?
+* [ ] - Advanced settings for audio channel number? By default use the number of channel of the host if possible (but some filters force 2-channel)
+    * Soundtouch limit the possibility to use more than 2 channels
