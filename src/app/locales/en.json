@@ -49,10 +49,6 @@
         },
         "dialogs": {
             "pleaseWait": "Please wait a few moments",
-            "fileOpenError": {
-                "title": "Error when opening file",
-                "info": "Make sure the file you've selected is a correct audio file, then try again"
-            },
             "goToHome": {
                 "title": "Go back to homepage",
                 "info": "Are you sure that you want to exit and go back to the application homepage? You will lose all your unsaved changes"

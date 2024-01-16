@@ -1,6 +1,13 @@
 "use client";
 
-import { AudioEditorActionButtons, FilterButtonList, DownloadingBufferDialog, LoadingAudioProcessingDialog, DecodingAudioFileDialog } from "@eliastik/simple-sound-studio-components";
+import {
+    AudioEditorActionButtons,
+    FilterButtonList,
+    DownloadingBufferDialog,
+    LoadingAudioProcessingDialog,
+    DecodingAudioFileDialog,
+    ErrorLoadingAudioDialog
+} from "@eliastik/simple-sound-studio-components";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import { useTranslation } from "react-i18next";
 import AudioPlayer from "./AudioPlayer";
@@ -31,6 +38,7 @@ const AudioEditorMain = () => {
             <LoadingAudioProcessingDialog></LoadingAudioProcessingDialog>
             <DownloadingBufferDialog></DownloadingBufferDialog>
             <DecodingAudioFileDialog></DecodingAudioFileDialog>
+            <ErrorLoadingAudioDialog></ErrorLoadingAudioDialog>
         </>
     );
 };
