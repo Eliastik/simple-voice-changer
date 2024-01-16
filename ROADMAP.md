@@ -40,19 +40,22 @@
 * [ ] - Audio Worklet fixes (Soundtouch only) :
     * [ ] - Fix audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox)
     * [ ] - Use Audio Worklet in compatibility/direct mode
-* [ ] - Other minor fixes :
+* [x] - Other minor fixes :
     * [x] - When disabling limiter and then restarting audio player, the limiter seems to be working
     * [x] - Limiter pre-gain is taken into account even when the filter is disabled
-    * [ ] - "Record with the microphone" feature not working on Firefox when changing the sample rate
-    * [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
+    * [x] - "Record with the microphone" feature not working on Firefox when changing the sample rate
 * [x] - Send custom audio buffer environment for the reverb filter
 
 ### Future versions
 
-* [ ] Components library: allow to add custom filters
-* [ ] Fix sourcemaps for libraries
+* [ ] - Components library: allow to add custom filters
+* [ ] - Fix sourcemaps for libraries
 * [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible) + display processing progress
-    * [ ] Cancel audio processing
+    * [ ] - Cancel audio processing
+
+## Known issues
+
+* [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
 
 ## Would be good but not important
 
