@@ -42,7 +42,7 @@
     * [x] - Limiter pre-gain is taken into account even when the filter is disabled
     * [x] - "Record with the microphone" feature not working on Firefox when changing the sample rate
 * [x] - Send custom audio buffer environment for the reverb filter
-* [ ] - Components library: allow to add custom filters (FilterService + interface)
+* [x] - Components library: allow to add custom filters (FilterService + interface)
 
 ### Known issues
 
