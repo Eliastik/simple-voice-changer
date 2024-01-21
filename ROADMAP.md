@@ -44,26 +44,25 @@
 * [x] - Send custom audio buffer environment for the reverb filter
 * [x] - Components library: allow to add custom filters (FilterService + interface)
 
-### Known issues
-
-* [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
-* [ ] - Fix sourcemaps for libraries + worklets copy (cache)
-* [ ] - Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
-
 ### Future versions
 
-* [ ] - Use Soundtouch Audio Worklet in compatibility/direct mode (need to fix speed adjustment > 1 bug)
+* [ ] - Create new filters (equalizer?, volume/gain?)
+    * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible) + display processing progress
     * [ ] - Cancel audio processing
 
+#### Known issues to fix
+
+* [ ] - Fix sourcemaps for libraries + worklets copy (cache)
+* [ ] - Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
+    * [ ] - If fixed: enable Soundtouch Worklet in compatibility/direct mode
+* [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
+
 ### Would be good but not important
 
-* Filters:
-    * [ ] - Edit volume/gain
-    * [ ] - Filter "equalizer"?
-    * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
-    * [ ] - Enhance limiter?
-    * [ ] - Filter "Autotuner"?
+
+* [ ] - Enhance limiter?
+* [ ] - Filter "Autotuner"?
 * [ ] - Save into localstorage filters settings?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
 * [ ] - Real-time filters editing when recording audio (reuse existing filters)?
