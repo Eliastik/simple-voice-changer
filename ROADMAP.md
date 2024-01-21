@@ -48,7 +48,7 @@
 
 * [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
 * [ ] - Fix sourcemaps for libraries + worklets copy (cache)
-* [ ] - Fix Soundtouch audio speed adjustment > 1 not working (as now, fallback to classic script processor node, not working in Firefox)
+* [ ] - Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
 
 ### Future versions
 
