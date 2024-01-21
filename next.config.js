@@ -37,8 +37,9 @@ const nextConfig = withPWA({
             new CopyPlugin({
                 patterns: [
                     {
-                        from: "node_modules/@eliastik/simple-sound-studio-lib/dist/worklets",
-                        to: "../public/worklets"
+                        from: "*.js",
+                        to: "../../public/worklets/",
+                        context: "node_modules/@eliastik/simple-sound-studio-lib/dist/worklets"
                     },
                 ],
             })
