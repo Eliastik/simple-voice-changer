@@ -1,22 +1,15 @@
 "use client";
 
-import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
-import { useAudioPlayer } from "@/app/context/AudioPlayerContext";
+import { useAudioEditor, useAudioPlayer } from "@eliastik/simple-sound-studio-components";
 import { useTranslation } from "react-i18next";
 
 const AudioPlayer = () => {
-    const { downloadAudio, downloadingAudio } = useAudioEditor();
+    const { downloadAudio } = useAudioEditor();
     const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping } = useAudioPlayer();
     const { t } = useTranslation();
 
     return (
         <>
-            <div className="toast toast-top toast-center lg:w-1/4 md:w-2/4 w-3/4 pointer-events-none z-50">
-                {downloadingAudio && <div className="alert alert-info text-center w-auto opacity-90 flex flex-col gap-y-1 pointer-events-none">
-                    <span className="whitespace-normal">{t("audioPlayer.preparingAudioDownload")}</span>
-                    {isCompatibilityModeEnabled && <span className="whitespace-normal">{t("audioPlayer.preparingAudioDownloadWithCompatibility")}</span>}
-                </div>}
-            </div>
             <div className="fixed bottom-0 w-full">
                 <div className="block w-full">
                     <input

@@ -55,10 +55,6 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const [sampleRate, setSampleRate] = useState(0);
     // State: true if compatibility/direct mode is enabled
     const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
-    // State: true if compatibility/direct was auto enabled
-    const [isCompatibilityModeAutoEnabled, setCompatibilityModeAutoEnabled] = useState(false);
-    // State: true if there is a problem rendering audio (same problem that auto enable compatibility mode)
-    const [hasProblemRenderingAudio, setHasProblemRenderingAudio] = useState(false);
 
     useEffect(() => {
         if (isReady) {
@@ -73,23 +69,7 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setBufferSize(getService().getBufferSize());
         setSampleRate(getService().getSampleRate());
         setCompatibilityModeEnabled(getService().isCompatibilityModeEnabled());
-
-        getAudioEditor().on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => {
-            setCompatibilityModeAutoEnabled(true);
-            setCompatibilityModeEnabled(true);
-
-            setTimeout(() => {
-                setCompatibilityModeAutoEnabled(false);
-            }, 10000);
-        });
-
-        getAudioEditor().on(EventType.RENDERING_AUDIO_PROBLEM_DETECTED, () => {
-            setHasProblemRenderingAudio(true);
-
-            setTimeout(() => {
-                setHasProblemRenderingAudio(false);
-            }, 10000);
-        });
+        getAudioEditor().on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => setCompatibilityModeEnabled(true));
 
         getService().checkAppUpdate().then(result => setUpdateData(result));
 
@@ -161,7 +141,7 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
             updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
             isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize,
             sampleRate, changeSampleRate, updateCurrentTheme, isCompatibilityModeEnabled,
-            toggleCompatibilityMode, isCompatibilityModeAutoEnabled, hasProblemRenderingAudio
+            toggleCompatibilityMode
         }}>
             {children}
         </ApplicationConfigContext.Provider>

@@ -30,18 +30,12 @@
             "selectAudioFile": "Sélectionner un fichier audio",
             "recMicrophone": "Enregistrer via le micro"
         },
-        "audioEditorMain": {
-            "compatibilityModeAutoEnabled": "Le mode de compatibilité a été automatiquement activé, car un problème avec votre navigateur web a été détecté",
-            "hasProblemRenderingAudio": "Un problème a été détecté avec votre navigateur web lors du rendu audio. Essayez d'activer le mode de compatibilité dans les paramètres, ou modifiez les filtres appliqués."
-        },
         "audioPlayer": {
             "play": "Lire",
             "pause": "Pause",
             "stop": "Stop",
             "loop": "Lire en boucle",
-            "save": "Sauvegarder l'audio",
-            "preparingAudioDownload": "Préparation du téléchargement de votre audio…",
-            "preparingAudioDownloadWithCompatibility": "En raison de l'activation du mode de compatibilité et de contraintes techniques, nous devons jouer l'audio en temps réel pour l’enregistrer"
+            "save": "Sauvegarder l'audio"
         },
         "dialogs": {
             "pleaseWait": "Merci de patienter quelques instants",
