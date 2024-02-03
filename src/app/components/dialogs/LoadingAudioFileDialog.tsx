@@ -7,7 +7,7 @@ const LoadingAudioFileDialog = () => {
     
     return (
         <>
-            <input type="checkbox" id="loadingBufferModal" className="modal-toggle" checked={loadingPrincipalBuffer} readOnly />
+            {loadingPrincipalBuffer && <input type="checkbox" id="loadingBufferModal" className="modal-toggle" defaultChecked={true} />}
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.loadingAudioFile.title")}</h3>

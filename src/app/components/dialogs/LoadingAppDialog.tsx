@@ -7,7 +7,7 @@ const LoadingAppDialog = () => {
     
     return (
         <>
-            <input type="checkbox" id="loadingDataModal" className="modal-toggle" checked={downloadingInitialData} readOnly />
+            {downloadingInitialData && <input type="checkbox" id="loadingDataModal" className="modal-toggle" defaultChecked={true} />}
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.loadingApp.title")}</h3>

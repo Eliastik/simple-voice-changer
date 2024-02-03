@@ -7,7 +7,7 @@ const ErrorAuthorizationAudioRecorderDialog = () => {
 
     return (
         <>
-            <input type="checkbox" id="errorAuthorizationAudioRecorderDialog" className="modal-toggle" checked={audioRecorderHasError} readOnly />
+            {audioRecorderHasError && <input type="checkbox" id="errorAuthorizationAudioRecorderDialog" className="modal-toggle" defaultChecked={true} />}
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.errorAuthorizationAudioRecorderDialog.title")}</h3>
