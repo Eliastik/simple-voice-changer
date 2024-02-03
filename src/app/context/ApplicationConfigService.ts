@@ -126,4 +126,12 @@ export default class ApplicationConfigService extends GenericConfigService {
 
         return null;
     }
+
+    getWorkletBasePath(): string {
+        return "worklets/";
+    }
+
+    getSoundBasePath(): string {
+        return "static/sounds/";
+    }
 };
