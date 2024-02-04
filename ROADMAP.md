@@ -60,7 +60,7 @@
 
 ### Would be good but not important
 
-
+* [ ] - Use dependency injection instead of Singleton?
 * [ ] - Enhance limiter?
 * [ ] - Filter "Autotuner"?
 * [ ] - Save into localstorage filters settings?
