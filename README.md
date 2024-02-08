@@ -35,6 +35,19 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## Changelog
 
+* Version 2.1.1 (08/02/2024) :
+    - Enhanced filters:
+        - It's now possible to import a custom environment for the Reverb filter;
+        - It's now possible to edit the settings of the Vocoder filter to change its sound;
+        - The settings of the 8-bit effect filter have been simplified
+    - The application has been split into two libraries: [simple-sound-studio-lib](https://github.com/Eliastik/simple-sound-studio-lib) and [simple-sound-studio-components](https://github.com/Eliastik/simple-sound-studio-components), to make it easier to maintain and more modular. It can also be used on other projects (e.g. my [memes-soundbox](https://github.com/Eliastik/memes-soundbox) project).
+    - Bug fixes and other minor improvements:
+        - Fixed application of on/off status to Limiter and 8-bit effect filters;
+        - Fixed a bug where the Limiter "Pre-gain" setting was applied despite the filter being disabled;
+        - Fixed a bug when resetting Reverb filter settings;
+        - Fixed a bug where, when a sampling frequency other than that of the system was selected in the advanced settings, the Record with the microphone functionality no longer worked under Firefox, with an error message. This is now possible;
+        - Other minor technical improvements to the code have been made, updating all dependencies
+
 * Version 2.1 (12/31/2023):
     - This version has seen a lot of changes under the hood, meaning technical improvements and bug fixes.
     - Among the technical improvements:
@@ -151,7 +164,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 2.1.1 (31/12/2023)
+* Version du programme : 2.1.1 (08/02/2024)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -172,6 +185,19 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise des icônes venant de chez [Font Awesome](https://fontawesome.com/) - [Licence](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Journal des changements
+
+* Version 2.1.1 (08/02/2024) :
+    - Amélioration de certains filtres :
+        - Il est désormais possible d'importer un environnement personnalisé pour le filtre Reverbération ;
+        - Il est désormais possible de modifier les paramètres du filtre Vocodeur pour modifier sa sonorité ;
+        - Les paramètres du filtre Effet 8-bit ont été simplifiés
+    - L'application a été découpée en deux librairies : [simple-sound-studio-lib](https://github.com/Eliastik/simple-sound-studio-lib) et [simple-sound-studio-components](https://github.com/Eliastik/simple-sound-studio-components), pour faciliter sa maintenance et la rendre plus modulaire. Elle peut aussi être utilisée sur d'autres projets (par exemple sur mon projet [memes-soundbox](https://github.com/Eliastik/memes-soundbox)
+    - Correction de bugs et autre améliorations mineures :
+        - Correction de l'application de l'état activé/désactivé aux filtres Limiteur et Effet 8-bit (basés sur AudioWorklet) ;
+        - Correction d'un bug où le paramètre "Pré-gain" du Limiteur était appliquée malgré que le filtre était désactivé ;
+        - Correction d'un bug lors de la réinitialisation des paramètres du filtre Reverbération ;
+        - Correction d'un bug où, lorsqu'une fréquence d'échantillonage différente de celle du système était choisie dans les paramètres avancés, la fonctionnalité Enregistrer via le micro ne fonctionnait plus sous Firefox, avec un message d'erreur. Cela est déosrmais possible ;
+        - D'autres améliorations mineures techniques du code ont été apportées, mise à jour de toutes les dépendances
 
 * Version 2.1 (31/12/2023) :
     - Cette version a vu beaucoup de changements sous le capot, c'est-à-dire des améliorations techniques et corrections de bugs.
@@ -194,7 +220,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
         - En cas d'erreur lors du rendu audio, un message d'erreur est affiché, cela n'était pas le cas auparavant ;
         - Le rendu du filtre "Limiteur" a été corrigé ;
         - Le Vocodeur a été transformé en filtre classique, il peut ainsi être activé/désactivé à volonté en mode de rendu direct/compatibilité ;
-        - Si une erreur est survenue lors du téléchargement des données initiales de l'application, certains filtres (par exemple le filtre "Réverbération") peuvent être désactivé ;
+        - Si une erreur est survenue lors du téléchargement des données initiales de l'application, certains filtres (par exemple le filtre "Réverbération") peuvent être désactivés ;
         - Correction d'un bug lors de la modification des paramètres de la fonction "Enregistrer via le micro" ;
         - Le filtre "Limiteur" est le dernier filtre de la chaîne audio, ce qui améliore le mode de rendu direct/compatibilité ;
         - D'autres bugs mineurs ont été corrigés.

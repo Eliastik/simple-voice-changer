@@ -9,7 +9,7 @@ const Constants = {
     OFFICIAL_WEBSITE: "https://www.eliastiksofts.com/simple-voice-changer/",
     SOURCE_CODE: "https://github.com/Eliastik/simple-voice-changer",
     APP_LICENSE: "GNU GPL v3",
-    RELEASE_LINK: "https://github.com/Eliastik/simple-voice-changer/releases/tag/2.1",
+    RELEASE_LINK: "https://github.com/Eliastik/simple-voice-changer/releases/tag/2.1.1",
     AUDIO_BUFFERS_TO_FETCH: ["impulse_response.wav","modulator.mp3"],
     SERVICE_WORKER_SCOPE: process.env.NEXT_PUBLIC_BASE_PATH,
     PREFERENCES_KEYS: {
