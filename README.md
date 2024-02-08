@@ -13,7 +13,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 2.1 (12/31/2023)
+* Version: 2.1.1 (2/8/2024)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -151,7 +151,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 2.1 (31/12/2023)
+* Version du programme : 2.1.1 (31/12/2023)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
