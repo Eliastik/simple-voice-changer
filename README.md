@@ -6,6 +6,8 @@
 
 Simple Voice Changer lets you to edit the voice of an audio file or a recording quicly and easily: choose an audio file, or record your voice, and then you can edit and save! All the audio processing is made on your device and no data is sent over the Internet.
 
+This application uses my libraries [simple-sound-studio-lib](https://github.com/Eliastik/simple-sound-studio-lib) and [simple-sound-studio-components](https://github.com/Eliastik/simple-sound-studio-components). A large part of the application's useful code is therefore present on these two projects.
+
 This program uses the Web Audio API. A browser supporting this API is therefore necessary.
 
 * Online version: [www.eliastiksofts.com/simple-voice-changer/demo](http://www.eliastiksofts.com/simple-voice-changer/demo/)
@@ -156,6 +158,8 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 # Français
 
 Simple Voice Changer vous permet de modifier la voix d'un fichier audio ou d'un enregistrement rapidement et simplement : choisissez un fichier audio, ou enregistrez-vous, et vous pouvez modifier et enregistrer ! Tout le traitement audio se fait sur votre appareil et aucune donnée n'est envoyée sur Internet.
+
+Cette application utilise mes bibliothèques logicielles [simple-sound-studio-lib](https://github.com/Eliastik/simple-sound-studio-lib) and [simple-sound-studio-components](https://github.com/Eliastik/simple-sound-studio-components). Une grande partie du code utile à l'application est donc présent sur ces deux projets.
 
 Ce programme utilise la Web Audio API. Un navigateur supportant cette API est donc nécessaire. Quasiment tous les navigateurs récents la supporte en date du 23/04/2019 (sauf Internet Explorer).
 
