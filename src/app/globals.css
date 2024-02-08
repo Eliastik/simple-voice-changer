@@ -22,7 +22,7 @@
 
 .tooltip.tooltip-config-dialog-input::before {
     position: absolute;
-    left: -140px;
+    left: -105px;
 }
 
 @layer utilities {
