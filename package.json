@@ -13,10 +13,10 @@
     "@eliastik/simple-sound-studio-lib": "^2.1.1",
     "i18next": "^23.8.2",
     "lodash": "^4.17.21",
-    "next": "^13.5.6",
+    "next": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-i18next": "^13.5.0",
+    "react-i18next": "^14.0.5",
     "semver": "^7.6.0"
   },
   "devDependencies": {
@@ -33,7 +33,7 @@
     "daisyui": "^4.6.2",
     "dotenv": "^16.4.1",
     "eslint": "^8.56.0",
-    "eslint-config-next": "^13.5.6",
+    "eslint-config-next": "^14.1.0",
     "eslint-plugin-react": "^7.33.2",
     "glob": "^10.3.10",
     "next-pwa": "^5.6.0",
