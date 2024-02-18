@@ -53,6 +53,7 @@
 
 #### Known issues to fix
 
+* [x] - 8-bit effect randomly crash in compatibility mode when changing filter settings
 * [ ] - Bug when changing recorder settings on Chrome mobile
 * [ ] - Enable reverb filter when choosing custom environment, and no other environment was downloaded (network error)
 * [ ] - Fix sourcemaps for libraries + worklets copy (cache)
