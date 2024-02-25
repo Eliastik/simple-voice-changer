@@ -48,15 +48,14 @@
 
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
-* [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible) + display processing progress
-    * [ ] - Cancel audio processing
+* [ ] - Display processing progress: maybe using a worklet counting processed audio samples / estimated total samples of the audio?
 
 #### Known issues to fix
 
 * [x] - 8-bit effect randomly crash in compatibility mode when changing filter settings
 * [x] - No error message when no microphone is found for the recorder. Display an error message to fix the issue
+* [x] - Enable reverb filter when choosing custom environment, and no other environment was downloaded (network error)
 * [ ] - Bug when changing recorder settings on Chrome mobile
-* [ ] - Enable reverb filter when choosing custom environment, and no other environment was downloaded (network error)
 * [ ] - Fix sourcemaps for libraries + worklets copy (cache)
 * [ ] - Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
     * [ ] - If fixed: enable Soundtouch Worklet in compatibility/direct mode
@@ -64,6 +63,8 @@
 
 ### Would be good but not important
 
+* [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible)
+    * [ ] - Cancel audio processing
 * [ ] - Use dependency injection instead of Singleton?
 * [ ] - Enhance limiter?
 * [ ] - Filter "Autotuner"?
