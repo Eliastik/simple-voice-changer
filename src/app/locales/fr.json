@@ -56,6 +56,14 @@
             "errorAuthorizationAudioRecorderDialog": {
                 "title": "Erreur d'autorisation",
                 "info": "Vous avez refusé l'accès au microphone de votre appareil, cette fonctionnalité ne peut donc pas être utilisée. Réinitialisez les autorisations de votre navigateur pour cette application, puis réessayez"
+            },
+            "errorRecorderDeviceNotFoundDialog": {
+                "title": "Aucun microphone trouvé",
+                "info": "Aucun microphone n'a été trouvé. Assurez-vous qu'un microphone soit bien branché à votre appareil, puis réessayez"
+            },
+            "errorRecorderUnknownDialog": {
+                "title": "Erreur lors de l'initialisation de l'enregistreur audio",
+                "info": "Une erreur inattendue est survenue lors de l'initialisation de l'enregistreur audio. Merci de réessayer"
             }
         },
         "audioRecorder": {

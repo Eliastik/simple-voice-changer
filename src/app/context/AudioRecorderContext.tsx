@@ -30,6 +30,10 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     const [audioRecorderReady, setAudioRecorderReady] = useState(false);
     // State: true if there are an error (when allowing acces to microphone)
     const [audioRecorderHasError, setAudioRecorderHasError] = useState(false);
+    // State: true if there are an error (microphone not found)
+    const [audioRecorderDeviceNotFound, setAudioRecorderDeviceNotFound] = useState(false);
+    // State: true if there are an error (unknown error)
+    const [audioRecorderHasUnknownError, setAudioRecorderHasUnknownError] = useState(false);
     // State: true if the authorization request is pending
     const [audioRecorderAuthorizationPending, setAudioRecorderAuthorizationPending] = useState(false);
     // State: true if recording
@@ -49,6 +53,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
         }
 
         getRecorderInstance().on(EventType.RECORDER_ERROR, () => setAudioRecorderHasError(true));
+        getRecorderInstance().on(EventType.RECORDER_NOT_FOUND_ERROR, () => setAudioRecorderDeviceNotFound(true));
+        getRecorderInstance().on(EventType.RECORDER_UNKNOWN_ERROR, () => setAudioRecorderHasUnknownError(true));
         getRecorderInstance().on(EventType.RECORDER_RECORDING, () => setAudioRecording(true));
         getRecorderInstance().on(EventType.RECORDER_PAUSED, () => setAudioRecording(false));
         getRecorderInstance().on(EventType.RECORDER_UPDATE_CONSTRAINTS, () => setRecorderSettings(getRecorderInstance().getSettings()));
@@ -109,6 +115,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
     const toggleAutoGainControl = (enable: boolean) => getRecorderInstance().setAutoGain(enable);
 
     const closeAudioRecorderError = () => setAudioRecorderHasError(false);
+    const closeAudioRecorderDeviceNotFound = () => setAudioRecorderDeviceNotFound(false);
+    const closeAudioRecorderUnknownError = () => setAudioRecorderHasUnknownError(false);
 
     return (
         <AudioRecorderContext.Provider value={{
@@ -116,7 +124,8 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
             closeAudioRecorderError, audioRecording, recordAudio, pauseRecorderAudio, stopRecordAudio,
             recorderDisplayTime, exitAudioRecorder, recorderTime, recorderSettings, changeInput,
             toggleAudioFeedback, toggleEchoCancellation, toggleNoiseReduction, toggleAutoGainControl,
-            recorderUnavailable
+            recorderUnavailable, audioRecorderDeviceNotFound, closeAudioRecorderDeviceNotFound,
+            audioRecorderHasUnknownError, closeAudioRecorderUnknownError
         }}>
             {children}
         </AudioRecorderContext.Provider>

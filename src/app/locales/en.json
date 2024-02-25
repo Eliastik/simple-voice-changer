@@ -60,6 +60,14 @@
             "errorAuthorizationAudioRecorderDialog": {
                 "title": "Authorization error",
                 "info": "You have denied access to the device's microphone, so this feature cannot be used. Reset your browser's permissions for this application, then try again"
+            },
+            "errorRecorderDeviceNotFoundDialog": {
+                "title": "Microphone not found",
+                "info": "No microphone found. Make sure a microphone is connected to your device, then try again"
+            },
+            "errorRecorderUnknownDialog": {
+                "title": "Error initializing audio recorder",
+                "info": "An unexpected error occurred while initializing the audio recorder. Please try again."
             }
         },
         "audioRecorder": {
