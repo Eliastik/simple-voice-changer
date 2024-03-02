@@ -46,9 +46,10 @@
 
 ### Future versions
 
+* [x] - Display processing progress: maybe using a worklet counting processed audio samples / estimated total samples of the audio?
+    * [ ] Fix: display estimated remaining time
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
-* [ ] - Display processing progress: maybe using a worklet counting processed audio samples / estimated total samples of the audio?
 * [ ] - Use space key to pause/play audio
 
 #### Known issues to fix
