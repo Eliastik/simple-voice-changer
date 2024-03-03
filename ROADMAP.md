@@ -47,7 +47,8 @@
 ### Future versions
 
 * [x] - Display processing progress: maybe using a worklet counting processed audio samples / estimated total samples of the audio?
-    * [ ] Fix: display estimated remaining time
+    * [x] Fix: display estimated remaining time
+* [ ] - Cancel audio processing (disconnect node and ignore callback from processAudio)
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Use space key to pause/play audio
@@ -65,13 +66,12 @@
 
 ### Would be good but not important
 
-* [ ] - Split processing into smaller chunks + threaded (Worker, not yet possible)
-    * [ ] - Cancel audio processing
-* [ ] - Use dependency injection instead of Singleton?
-* [ ] - Enhance limiter?
-* [ ] - Filter "Autotuner"?
 * [ ] - Save into localstorage filters settings?
+* [ ] - Use dependency injection instead of Singleton?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
 * [ ] - Real-time filters editing when recording audio (reuse existing filters)?
+* [ ] - Enhance limiter?
+* [ ] - Filter "Autotuner"?
 * [ ] - Advanced settings for audio channel number? By default use the number of channel of the host if possible (but some filters force 2-channel)
     * Soundtouch limit the possibility to use more than 2 channels
+* [ ] - Optimize performance: split processing into smaller chunks + threaded (Worker, not yet possible)
