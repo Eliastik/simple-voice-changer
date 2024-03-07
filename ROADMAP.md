@@ -48,7 +48,7 @@
 
 * [x] - Display processing progress: maybe using a worklet counting processed audio samples / estimated total samples of the audio?
     * [x] Fix: display estimated remaining time
-* [ ] - Cancel audio processing (disconnect node and ignore callback from processAudio)
+* [x] - Cancel audio processing (disconnect node and ignore callback from processAudio)
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Use space key to pause/play audio
