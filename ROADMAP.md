@@ -44,29 +44,36 @@
 * [x] - Send custom audio buffer environment for the reverb filter
 * [x] - Components library: allow to add custom filters (FilterService + interface)
 
-### Future versions
+### Future version - 2.1.2 or 2.2.0
 
 * [x] - Display processing progress: maybe using a worklet counting processed audio samples / estimated total samples of the audio?
     * [x] Fix: display estimated remaining time
 * [x] - Cancel audio processing (disconnect node and ignore callback from processAudio)
-* [ ] - Create new filters (equalizer?, volume/gain?)
-    * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
+    * [ ] - Display information message when canceling initial audio processing
+* [ ] - Don't do the initial audio processing (when choosing an audio file) - can be reenabled in the settings
 * [ ] - Use space key to pause/play audio
+
+#### Issues to fix
+
+* [ ] - (Minor) Bug when playing audio in compatibility mode then disabling compatibility mode, then processing audio: the audio keep playing without sound
 
 #### Known issues to fix
 
-* [x] - 8-bit effect randomly crash in compatibility mode when changing filter settings
-* [x] - No error message when no microphone is found for the recorder. Display an error message to fix the issue
-* [x] - Enable reverb filter when choosing custom environment, and no other environment was downloaded (network error)
-* [ ] - Bug when changing recorder settings on Chrome mobile
-* [ ] - Fix sourcemaps for libraries + worklets copy (cache)
-* [ ] - Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
+* [x] - (Minor) 8-bit effect randomly crash in compatibility mode when changing filter settings
+* [x] - (Minor) No error message when no microphone is found for the recorder. Display an error message to fix the issue
+* [x] - (Minor) Enable reverb filter when choosing custom environment, and no other environment was downloaded (network error)
+* [ ] - (Medium) Bug when changing recorder settings on Chrome mobile
+* [ ] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
+* [ ] - (Major) Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
     * [ ] - If fixed: enable Soundtouch Worklet in compatibility/direct mode
-* [ ] - Vocoder doesn't work well on sample rate > 96,000 Hz
+* [ ] - (Medium) Vocoder doesn't work well on sample rate > 96,000 Hz
 
 ### Would be good but not important
 
-* [ ] - Save into localstorage filters settings?
+* [ ] Save/download rendered audio in other formats (MP3, WAV)?
+* [ ] - Create new filters (equalizer?, volume/gain?)
+    * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
+* [ ] - Save into localstorage filters settings + filter presets that can be set by the user?
 * [ ] - Use dependency injection instead of Singleton?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
 * [ ] - Real-time filters editing when recording audio (reuse existing filters)?
@@ -75,3 +82,7 @@
 * [ ] - Advanced settings for audio channel number? By default use the number of channel of the host if possible (but some filters force 2-channel)
     * Soundtouch limit the possibility to use more than 2 channels
 * [ ] - Optimize performance: split processing into smaller chunks + threaded (Worker, not yet possible)
+
+### Other
+
+- Rename app to "Simple Sound Studio"?
