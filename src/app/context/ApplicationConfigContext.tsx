@@ -55,6 +55,8 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const [sampleRate, setSampleRate] = useState(0);
     // State: true if compatibility/direct mode is enabled
     const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
+    // State: true if initial rendering is disabled
+    const [isInitialRenderingEnabled, setIsInitialRenderingEnabled] = useState(false);
 
     useEffect(() => {
         if (isReady) {
@@ -69,6 +71,7 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setBufferSize(getService().getBufferSize());
         setSampleRate(getService().getSampleRate());
         setCompatibilityModeEnabled(getService().isCompatibilityModeEnabled());
+        setIsInitialRenderingEnabled(!getService().isInitialRenderingDisabled());
         getAudioEditor().on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => setCompatibilityModeEnabled(true));
 
         getService().checkAppUpdate().then(result => setUpdateData(result));
@@ -135,13 +138,23 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setCompatibilityModeEnabled(enabled);
     };
 
+    const toggleEnableInitialRendering = (enabled: boolean) => {
+        if (enabled) {
+            getService().toggleInitialRendering(true);
+        } else {
+            getService().toggleInitialRendering(false);
+        }
+
+        setIsInitialRenderingEnabled(enabled);
+    };
+
     return (
         <ApplicationConfigContext.Provider value={{
             currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
             updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
             isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize,
             sampleRate, changeSampleRate, updateCurrentTheme, isCompatibilityModeEnabled,
-            toggleCompatibilityMode
+            toggleCompatibilityMode, isInitialRenderingEnabled, toggleEnableInitialRendering
         }}>
             {children}
         </ApplicationConfigContext.Provider>

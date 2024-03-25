@@ -19,7 +19,9 @@ const AppConfigDialog = () => {
         sampleRate,
         changeSampleRate,
         isCompatibilityModeEnabled,
-        toggleCompatibilityMode
+        toggleCompatibilityMode,
+        isInitialRenderingEnabled,
+        toggleEnableInitialRendering
     } = useApplicationConfig();
     const { actualSampleRate, defaultDeviceSampleRate, audioWorkletAvailable } = useAudioEditor();
     const { t } = useTranslation();
@@ -72,6 +74,19 @@ const AppConfigDialog = () => {
                             <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
                                 <input type="checkbox" className="toggle" id="compatibilityMode" checked={isCompatibilityModeEnabled} onChange={(e) => toggleCompatibilityMode(e.target.checked)} />
                                 <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.compatibilityModeInfos")}>
+                                    {InfoIcon}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-3">
+                        <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                            <div className="md:w-3/6">
+                                <label htmlFor="enableInitialRendering">{t("appSettings.enableInitialRendering")}</label>
+                            </div>
+                            <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
+                                <input type="checkbox" className="toggle" id="compatibilityMode" checked={isInitialRenderingEnabled} onChange={(e) => toggleEnableInitialRendering(e.target.checked)} />
+                                <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.enableInitialRenderingInfos")}>
                                     {InfoIcon}
                                 </div>
                             </div>

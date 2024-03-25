@@ -4,6 +4,7 @@ import { UpdateData } from "../model/UpdateData";
 import semver from "semver";
 
 export default class ApplicationConfigService extends GenericConfigService {
+
     getConfig(key: string): string | null {
         const setting = typeof window !== "undefined" ? window.localStorage.getItem(Constants.PREFERENCES_KEYS.PREFIX + key) : null;
 
@@ -74,6 +75,10 @@ export default class ApplicationConfigService extends GenericConfigService {
 
     public setSampleRate(value: number) {
         this.setConfig(LibConstants.PREFERENCES_KEYS.SAMPLE_RATE, "" + value);
+    }
+
+    public toggleInitialRendering(enable: boolean) {
+        this.setConfig(LibConstants.PREFERENCES_KEYS.DISABLE_INITIAL_RENDERING, enable ? "false" : "true");
     }
 
     /** Get current theme from OS (dark/light) */

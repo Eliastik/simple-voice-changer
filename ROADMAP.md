@@ -49,9 +49,9 @@
 * [x] - Display processing progress: maybe using a worklet counting processed audio samples / estimated total samples of the audio?
     * [x] Fix: display estimated remaining time
 * [x] - Cancel audio processing (disconnect node and ignore callback from processAudio)
-    * [ ] - Display information message when canceling initial audio processing
+    * [x] - Display information message when canceling initial audio processing
 * [x] - Use space key to pause/play audio
-* [ ] - Don't do the initial audio processing (when choosing an audio file) - can be reenabled in the settings
+* [x] - Don't do the initial audio processing (when choosing an audio file) - can be reenabled in the settings
 
 #### Issues to fix
 

@@ -20,5 +20,7 @@ export default interface ApplicationConfigContextProps {
     changeSampleRate: (frequency: number) => void,
     updateCurrentTheme: () => void,
     isCompatibilityModeEnabled: boolean,
-    toggleCompatibilityMode: (enabled: boolean) => void
+    toggleCompatibilityMode: (enabled: boolean) => void,
+    isInitialRenderingEnabled: boolean,
+    toggleEnableInitialRendering: (enabled: boolean) => void
 };
