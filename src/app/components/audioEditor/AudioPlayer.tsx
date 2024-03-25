@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect } from "react";
 import { useAudioEditor, useAudioPlayer } from "@eliastik/simple-sound-studio-components";
 import { useTranslation } from "react-i18next";
 
@@ -7,6 +8,21 @@ const AudioPlayer = () => {
     const { downloadAudio } = useAudioEditor();
     const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping } = useAudioPlayer();
     const { t } = useTranslation();
+
+    const handleEvent = useCallback((e: KeyboardEvent) => {
+        if (e.key === " ") {
+            if (playing) {
+                pauseAudioBuffer();
+            } else {
+                playAudioBuffer();
+            }
+        }
+    }, [playing, pauseAudioBuffer, playAudioBuffer]);
+
+    useEffect(() => {
+        document.body.addEventListener("keydown", handleEvent);
+        return () => document.body.removeEventListener("keydown", handleEvent);
+    }, [handleEvent]);
 
     return (
         <>

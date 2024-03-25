@@ -50,14 +50,14 @@
     * [x] Fix: display estimated remaining time
 * [x] - Cancel audio processing (disconnect node and ignore callback from processAudio)
     * [ ] - Display information message when canceling initial audio processing
+* [x] - Use space key to pause/play audio
 * [ ] - Don't do the initial audio processing (when choosing an audio file) - can be reenabled in the settings
-* [ ] - Use space key to pause/play audio
 
 #### Issues to fix
 
 * [ ] - (Minor) Bug when playing audio in compatibility mode then disabling compatibility mode, then processing audio: the audio keep playing without sound
 
-#### Known issues to fix
+### Known issues to fix
 
 * [x] - (Minor) 8-bit effect randomly crash in compatibility mode when changing filter settings
 * [x] - (Minor) No error message when no microphone is found for the recorder. Display an error message to fix the issue

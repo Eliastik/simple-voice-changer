@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { DaisyUIModal } from "@eliastik/simple-sound-studio-components";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
@@ -8,6 +9,21 @@ import RecorderConfigDialog from "../dialogs/RecorderConfigDialog";
 const AudioRecorderMain = () => {
     const { pauseRecorderAudio, audioRecording, recordAudio, stopRecordAudio, recorderTime, recorderDisplayTime } = useAudioRecorder();
     const { t } = useTranslation();
+
+    const handleEvent = useCallback((e: KeyboardEvent) => {
+        if (e.key === " ") {
+            if (audioRecording) {
+                pauseRecorderAudio();
+            } else {
+                recordAudio();
+            }
+        }
+    }, [audioRecording, pauseRecorderAudio, recordAudio]);
+
+    useEffect(() => {
+        document.body.addEventListener("keydown", handleEvent);
+        return () => document.body.removeEventListener("keydown", handleEvent);
+    }, [handleEvent]);
 
     return (
         <>
