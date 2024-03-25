@@ -55,7 +55,7 @@
 
 #### Issues to fix
 
-* [ ] - (Minor) Bug when playing audio in compatibility mode then disabling compatibility mode, then processing audio: the audio keep playing without sound
+* [x] - (Minor) Bug when playing audio in compatibility mode then disabling compatibility mode, then processing audio: the audio keep playing without sound
 
 ### Known issues to fix
 
