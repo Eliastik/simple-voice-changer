@@ -70,7 +70,7 @@
 
 ### Would be good but not important
 
-* [ ] Save/download rendered audio in other formats (MP3, WAV)?
+* [ ] Save/download rendered audio in other formats (MP3, FLAC) -> LAMEJS (MP3)
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Save into localstorage filters settings + filter presets that can be set by the user?
