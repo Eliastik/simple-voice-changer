@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import { AudioEditor, EventType } from "@eliastik/simple-sound-studio-lib";
+import { AudioEditor, EventType, Constants } from "@eliastik/simple-sound-studio-lib";
 import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components";
 import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
 import i18next from "i18next";
@@ -53,6 +53,8 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
     const [bufferSize, setBufferSize] = useState(0);
     // State: sample rate
     const [sampleRate, setSampleRate] = useState(0);
+    // State: MP3 bitrate
+    const [bitrateMP3, setBitrateMP3] = useState(Constants.DEFAULT_MP3_BITRATE);
     // State: true if compatibility/direct mode is enabled
     const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
     // State: true if initial rendering is disabled
@@ -70,6 +72,7 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setSoundtouchAudioWorkletEnabled(getService().isSoundtouchAudioWorkletEnabled());
         setBufferSize(getService().getBufferSize());
         setSampleRate(getService().getSampleRate());
+        setBitrateMP3(getService().getBitrateMP3());
         setCompatibilityModeEnabled(getService().isCompatibilityModeEnabled());
         setIsInitialRenderingEnabled(!getService().isInitialRenderingDisabled());
         getAudioEditor().on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => setCompatibilityModeEnabled(true));
@@ -148,13 +151,19 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setIsInitialRenderingEnabled(enabled);
     };
 
+    const changeBitrateMP3 = (bitrate: number) => {
+        getService().setBitrateMP3(bitrate);
+        setBitrateMP3(bitrate);
+    };
+
     return (
         <ApplicationConfigContext.Provider value={{
             currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
             updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
             isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize,
             sampleRate, changeSampleRate, updateCurrentTheme, isCompatibilityModeEnabled,
-            toggleCompatibilityMode, isInitialRenderingEnabled, toggleEnableInitialRendering
+            toggleCompatibilityMode, isInitialRenderingEnabled, toggleEnableInitialRendering,
+            bitrateMP3, changeBitrateMP3
         }}>
             {children}
         </ApplicationConfigContext.Provider>

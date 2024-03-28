@@ -22,5 +22,7 @@ export default interface ApplicationConfigContextProps {
     isCompatibilityModeEnabled: boolean,
     toggleCompatibilityMode: (enabled: boolean) => void,
     isInitialRenderingEnabled: boolean,
-    toggleEnableInitialRendering: (enabled: boolean) => void
+    toggleEnableInitialRendering: (enabled: boolean) => void,
+    bitrateMP3: number,
+    changeBitrateMP3: (bitrate: number) => void
 };

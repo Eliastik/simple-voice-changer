@@ -52,6 +52,7 @@
     * [x] - Display information message when canceling initial audio processing
 * [x] - Use space key to pause/play audio
 * [x] - Don't do the initial audio processing (when choosing an audio file) - can be reenabled in the settings
+* [x] Save/download rendered audio in other formats (MP3 for example) -> LAMEJS (MP3)
 
 #### Issues to fix
 
@@ -71,7 +72,6 @@
 
 ### Would be good but not important
 
-* [ ] Save/download rendered audio in other formats (MP3, FLAC) -> LAMEJS (MP3)
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Save into localstorage filters settings + filter presets that can be set by the user?

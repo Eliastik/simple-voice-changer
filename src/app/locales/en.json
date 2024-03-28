@@ -26,7 +26,10 @@
             "samplingFrequencyTooHigh": "You have selected a sample rate that is too high for your device to handle. You risk encountering unexpected problems.",
             "audioWorkletNotAvailable": "AudioWorklet support is currently unavailable in this environment. This setting will therefore have no effect.",
             "enableInitialRendering": "Enable initial audio rendering",
-            "enableInitialRenderingInfos": "Enables initial audio rendering when selecting an audio file or validating an audio recording. If disabled, audio initialization will be faster, but you'll have to manually validate your settings to perform initial audio rendering. This parameter has no effect in compatibility mode."
+            "enableInitialRenderingInfos": "Enables initial audio rendering when selecting an audio file or validating an audio recording. If disabled, audio initialization will be faster, but you'll have to manually validate your settings to perform initial audio rendering. This parameter has no effect in compatibility mode.",
+            "bitRateMP3": "MP3 encoding bitrate:",
+            "bitRateMP3Infos": "Defines the bitrate used by the encoder when saving audio in MP3 format. The higher the value, the better the quality, at the expense of final file size.",
+            "bitRateMP3Kbps": "kbps"
         },
         "homeMenu": {
             "selectAudioFile": "Select an audio file",
@@ -37,7 +40,9 @@
             "pause": "Pause",
             "stop": "Stop",
             "loop": "Loop playback",
-            "save": "Save audio"
+            "save": "Save audio",
+            "saveToMp3": "MP3 format",
+            "saveToWav": "WAV format"
         },
         "languages": {
             "fr": "Français",

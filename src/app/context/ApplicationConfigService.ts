@@ -77,6 +77,10 @@ export default class ApplicationConfigService extends GenericConfigService {
         this.setConfig(LibConstants.PREFERENCES_KEYS.SAMPLE_RATE, "" + value);
     }
 
+    public setBitrateMP3(value: number) {
+        this.setConfig(LibConstants.PREFERENCES_KEYS.BITRATE_MP3, "" + value);
+    }
+
     public toggleInitialRendering(enable: boolean) {
         this.setConfig(LibConstants.PREFERENCES_KEYS.DISABLE_INITIAL_RENDERING, enable ? "false" : "true");
     }
