@@ -41,6 +41,11 @@ const nextConfig = withPWA({
                         to: "../../public/worklets/",
                         context: "node_modules/@eliastik/simple-sound-studio-lib/dist/worklets"
                     },
+                    {
+                        from: "*.js",
+                        to: "../../public/workers/",
+                        context: "node_modules/@eliastik/simple-sound-studio-lib/dist/workers"
+                    },
                 ],
             })
         );

@@ -136,6 +136,10 @@ export default class ApplicationConfigService extends GenericConfigService {
         return Constants.SERVICE_WORKER_SCOPE + "/worklets/";
     }
 
+    getWorkerBasePath(): string {
+        return Constants.SERVICE_WORKER_SCOPE + "/workers/";
+    }
+
     getSoundBasePath(): string {
         return Constants.SERVICE_WORKER_SCOPE + "/static/sounds/";
     }
