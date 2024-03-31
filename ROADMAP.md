@@ -64,11 +64,11 @@
 * [x] - (Minor) 8-bit effect randomly crash in compatibility mode when changing filter settings
 * [x] - (Minor) No error message when no microphone is found for the recorder. Display an error message to fix the issue
 * [x] - (Minor) Enable reverb filter when choosing custom environment, and no other environment was downloaded (network error)
-* [ ] - (Medium) Bug when changing recorder settings on Chrome mobile
-* [ ] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
 * [ ] - (Major) Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
     * [ ] - If fixed: enable Soundtouch Worklet in compatibility/direct mode
+* [ ] - (Medium) Bug when changing recorder settings on Chrome mobile
 * [ ] - (Medium) Vocoder doesn't work well on sample rate > 96,000 Hz
+* [ ] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
 
 ### Would be good but not important
 

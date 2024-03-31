@@ -1,6 +1,6 @@
 {
   "name": "simple-voice-changer",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@eliastik/simple-sound-studio-components": "^2.1.1",
-    "@eliastik/simple-sound-studio-lib": "^2.1.1",
+    "@eliastik/simple-sound-studio-components": "^2.2.0",
+    "@eliastik/simple-sound-studio-lib": "^2.2.0",
     "i18next": "^23.10.1",
     "lodash": "^4.17.21",
     "next": "^14.1.4",
@@ -20,9 +20,9 @@
     "semver": "^7.6.0"
   },
   "devDependencies": {
-    "@types/audioworklet": "^0.0.53",
+    "@types/audioworklet": "^0.0.54",
     "@types/lodash": "^4.17.0",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.2",
     "@types/react": "^18.2.70",
     "@types/react-dom": "^18.2.22",
     "@types/semver": "^7.5.8",
