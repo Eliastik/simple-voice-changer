@@ -4,6 +4,7 @@ import { UpdateData } from "../model/UpdateData";
 import semver from "semver";
 
 export default class ApplicationConfigService extends GenericConfigService {
+
     getConfig(key: string): string | null {
         const setting = typeof window !== "undefined" ? window.localStorage.getItem(Constants.PREFERENCES_KEYS.PREFIX + key) : null;
 
@@ -76,6 +77,14 @@ export default class ApplicationConfigService extends GenericConfigService {
         this.setConfig(LibConstants.PREFERENCES_KEYS.SAMPLE_RATE, "" + value);
     }
 
+    public setBitrateMP3(value: number) {
+        this.setConfig(LibConstants.PREFERENCES_KEYS.BITRATE_MP3, "" + value);
+    }
+
+    public toggleInitialRendering(enable: boolean) {
+        this.setConfig(LibConstants.PREFERENCES_KEYS.DISABLE_INITIAL_RENDERING, enable ? "false" : "true");
+    }
+
     /** Get current theme from OS (dark/light) */
     private getUserThemePreference(): string {
         if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -129,6 +138,10 @@ export default class ApplicationConfigService extends GenericConfigService {
 
     getWorkletBasePath(): string {
         return Constants.SERVICE_WORKER_SCOPE + "/worklets/";
+    }
+
+    getWorkerBasePath(): string {
+        return Constants.SERVICE_WORKER_SCOPE + "/workers/";
     }
 
     getSoundBasePath(): string {

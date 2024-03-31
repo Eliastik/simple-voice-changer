@@ -20,7 +20,7 @@ const HomeMenu = () => {
                 accept="audio/*"
                 onChange={(e) => loadAudioPrincipalBuffer(e.target.files![0])}
             />
-            <button className="btn flex-col w-48 h-64 gap-8" onClick={() => {
+            <button className="btn flex-col w-48 h-64 lg:w-52 lg:h-72 2xl:w-60 2xl:h-80 gap-8" onClick={() => {
                 inputFile.current?.click();
             }}>
                 <div className="fill-base-content">
@@ -29,7 +29,7 @@ const HomeMenu = () => {
                 <span>{t("homeMenu.selectAudioFile")}</span>
             </button>
             <div className={recorderUnavailable ? "tooltip" : ""} data-tip={t("audioRecorder.notAvailable")}>
-                <button className="btn flex-col w-48 h-64 gap-8" disabled={recorderUnavailable} onClick={() => {
+                <button className="btn flex-col w-48 h-64 lg:w-52 lg:h-72 2xl:w-60 2xl:h-80 gap-8" disabled={recorderUnavailable} onClick={() => {
                     initRecorder();
                 }}>
                     <div className={!recorderUnavailable ? "fill-base-content" : "fill-base-content opacity-20"}>

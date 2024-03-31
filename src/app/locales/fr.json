@@ -24,7 +24,12 @@
             "sampleRateKHz": "kHz",
             "actualSampleRate": "Fréquence actuelle :",
             "samplingFrequencyTooHigh": "Vous avez sélectionné une fréquence d'échantillonage trop élevée que votre appareil ne peut potentiellement pas supporter. Vous risquez de rencontrer des problèmes inattendus.",
-            "audioWorkletNotAvailable": "Le support des AudioWorklet est actuellement indisponible dans cet environnement. Ce paramètre n'aura donc aucun effet."
+            "audioWorkletNotAvailable": "Le support des AudioWorklet est actuellement indisponible dans cet environnement. Ce paramètre n'aura donc aucun effet.",
+            "enableInitialRendering": "Activer le rendu audio initial",
+            "enableInitialRenderingInfos": "Active le rendu audio initial lors de la sélection d'un fichier audio ou la validation d'un enregistrement audio. Si désactivé, l'initialisation d'un audio sera plus rapide, mais vous devrez valider manuellement vos paramètres pour effectuer le rendu audio initial. Ce paramètre n'a aucun effet en mode de compatibilité.",
+            "bitRateMP3": "Bitrate de l'encodeur MP3 :",
+            "bitRateMP3Infos": "Défini le bitrate utilisé par l'encodeur lorsque vous sauvegardez l'audio au format MP3. Plus la valeur est élevée, meilleure est la qualité, au détriment de la taille finale du fichier.",
+            "bitRateMP3Kbps": "kbps"
         },
         "homeMenu": {
             "selectAudioFile": "Sélectionner un fichier audio",
@@ -35,7 +40,9 @@
             "pause": "Pause",
             "stop": "Stop",
             "loop": "Lire en boucle",
-            "save": "Sauvegarder l'audio"
+            "save": "Sauvegarder l'audio",
+            "saveToMp3": "Format MP3",
+            "saveToWav": "Format WAV"
         },
         "dialogs": {
             "pleaseWait": "Merci de patienter quelques instants",
@@ -56,6 +63,14 @@
             "errorAuthorizationAudioRecorderDialog": {
                 "title": "Erreur d'autorisation",
                 "info": "Vous avez refusé l'accès au microphone de votre appareil, cette fonctionnalité ne peut donc pas être utilisée. Réinitialisez les autorisations de votre navigateur pour cette application, puis réessayez"
+            },
+            "errorRecorderDeviceNotFoundDialog": {
+                "title": "Aucun microphone trouvé",
+                "info": "Aucun microphone n'a été trouvé. Assurez-vous qu'un microphone soit bien branché à votre appareil, puis réessayez"
+            },
+            "errorRecorderUnknownDialog": {
+                "title": "Erreur lors de l'initialisation de l'enregistreur audio",
+                "info": "Une erreur inattendue est survenue lors de l'initialisation de l'enregistreur audio. Merci de réessayer"
             }
         },
         "audioRecorder": {

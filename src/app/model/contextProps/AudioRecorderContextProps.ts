@@ -19,5 +19,9 @@ export default interface AudiRecorderContextProps {
     toggleEchoCancellation: (enable: boolean) => void,
     toggleNoiseReduction: (enable: boolean) => void,
     toggleAutoGainControl: (enable: boolean) => void,
-    recorderUnavailable: boolean
+    recorderUnavailable: boolean,
+    audioRecorderDeviceNotFound: boolean,
+    closeAudioRecorderDeviceNotFound: () => void,
+    audioRecorderHasUnknownError: boolean,
+    closeAudioRecorderUnknownError: () => void
 };

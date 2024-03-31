@@ -19,7 +19,11 @@ const AppConfigDialog = () => {
         sampleRate,
         changeSampleRate,
         isCompatibilityModeEnabled,
-        toggleCompatibilityMode
+        toggleCompatibilityMode,
+        isInitialRenderingEnabled,
+        toggleEnableInitialRendering,
+        bitrateMP3,
+        changeBitrateMP3
     } = useApplicationConfig();
     const { actualSampleRate, defaultDeviceSampleRate, audioWorkletAvailable } = useAudioEditor();
     const { t } = useTranslation();
@@ -77,6 +81,19 @@ const AppConfigDialog = () => {
                             </div>
                         </div>
                     </div>
+                    <div className="mt-3">
+                        <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                            <div className="md:w-3/6">
+                                <label htmlFor="enableInitialRendering">{t("appSettings.enableInitialRendering")}</label>
+                            </div>
+                            <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
+                                <input type="checkbox" className="toggle" id="compatibilityMode" checked={isInitialRenderingEnabled} onChange={(e) => toggleEnableInitialRendering(e.target.checked)} />
+                                <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.enableInitialRenderingInfos")}>
+                                    {InfoIcon}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className="flex flex-col mt-4 -m-1">
                     <div className="collapse collapse-arrow border border-base-300 bg-base-200 overflow-visible">
@@ -124,6 +141,21 @@ const AppConfigDialog = () => {
                                             {Constants.VALID_BUFFER_SIZE.map(size => <option value={size} key={size}>{size != 0 ? size : t("appSettings.defaultBufferSize")}</option>)}
                                         </select>
                                         <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.bufferSizeInfos")}>
+                                            {InfoIcon}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-3">
+                                <div className="font-normal text-base flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                                    <div className="md:w-3/6">
+                                        <label htmlFor="sampleRateMP3Select">{t("appSettings.bitRateMP3")}</label>
+                                    </div>
+                                    <div className="flex flex-row gap-x-2 items-center">
+                                        <select className="select select-bordered flex-1" id="sampleRateMP3Select" value={bitrateMP3} onChange={(e) => changeBitrateMP3(parseInt(e.target.value))}>
+                                            {Constants.VALID_MP3_BITRATES.map(bitrate => <option value={bitrate} key={bitrate}>{bitrate} {t("appSettings.bitRateMP3Kbps")}</option>)}
+                                        </select>
+                                        <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.bitRateMP3Infos")}>
                                             {InfoIcon}
                                         </div>
                                     </div>

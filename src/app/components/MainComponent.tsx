@@ -10,6 +10,8 @@ import AudioRecorderMain from "./audioRecorder/AudioRecorderMain";
 import AudioRecorderAuthorizationDialog from "./dialogs/AudioRecorderAuthorizationDialog";
 import ErrorAuthorizationAudioRecorderDialog from "./dialogs/ErrorAuthorizationAudioRecorderDialog";
 import FirstLaunchDialog from "./dialogs/FirstLaunchDialog";
+import ErrorRecorderDeviceNotFoundDialog from "./dialogs/ErrorRecorderDeviceNotFoundDialog";
+import ErrorRecorderUnknownDialog from "./dialogs/ErrorRecorderUnknownDialog";
 
 const MainComponent = () => {
     const { audioEditorReady, downloadingInitialData } = useAudioEditor();
@@ -25,6 +27,8 @@ const MainComponent = () => {
             <AudioRecorderAuthorizationDialog></AudioRecorderAuthorizationDialog>
             {!downloadingInitialData && <FirstLaunchDialog></FirstLaunchDialog>}
             <ErrorAuthorizationAudioRecorderDialog></ErrorAuthorizationAudioRecorderDialog>
+            <ErrorRecorderDeviceNotFoundDialog></ErrorRecorderDeviceNotFoundDialog>
+            <ErrorRecorderUnknownDialog></ErrorRecorderUnknownDialog>
             <ErrorLoadingAudioDialog></ErrorLoadingAudioDialog>
             <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>
             <ErrorProcessingAudio></ErrorProcessingAudio>

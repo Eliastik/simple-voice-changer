@@ -15,7 +15,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 2.1.1 (2/8/2024)
+* Version: 2.2.0 (3/31/2024)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -36,6 +36,20 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses some icons from [Font Awesome](https://fontawesome.com/) - [License](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Changelog
+
+* Version 2.2.0 (3/31/2024):
+    - The percentage of audio processing as well as the estimated remaining audio processing time is now displayed in the "Audio processing in progress" popup;
+    - It's now possible to cancel audio processing in progress;
+    - When opening an audio file, no initial processing is now performed at the beginning, to speed up application use. This behavior can be reactivated from the settings;
+    - Modified audio can now be saved in MP3 format;
+    - It's now possible to pause or play audio by pressing the Space key;
+    - Small adjustments have been made to the user interface (larger buttons on larger screens, for example);
+    - Bug fixes:
+        - An error message is now displayed if no microphone has been found when clicking on the "Record via microphone" button from the application's home screen;
+        - Fixed a rare crash with the 8-bit Effect filter;
+        - Fixed a bug in the audio player when compatibility mode was disabled and audio processing launched, or when the sampling frequency was modified;
+        - Minor code improvements;
+        - Dependencies updated.
 
 * Version 2.1.1 (08/02/2024) :
     - Enhanced filters:
@@ -168,7 +182,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 2.1.1 (08/02/2024)
+* Version du programme : 2.2.0 (31/03/2024)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -189,6 +203,20 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise des icônes venant de chez [Font Awesome](https://fontawesome.com/) - [Licence](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Journal des changements
+
+* Version 2.2.0 (31/03/2024) :
+    - Le pourcentage de traitement audio ainsi que le temps de traitement audio restant estimé s'affiche désormais dans la popup "Traitement audio en cours" ;
+    - Il est désormais possible d'annuler un traitement audio en cours ;
+    - Lors de l'ouverture d'un fichier audio, aucun traitement initial n'est désormais effectué au début pour accélérer l'utilisation de l'application. Ce comportement peut être réactivé depuis les paramètres ;
+    - Il est désormais possible de sauvegarder l'audio modifié au format MP3 ;
+    - Il est désormais possible de mettre en pause ou de jouer l'audio en appuyant sur la touche Espace ;
+    - Des petits ajustements de l'interface utilisateur ont été apportés (boutons plus gros sur les grands écrans par exemple) ;
+    - Correction de bugs :
+        - Un message d'erreur s'affiche désormais si aucun microphone n'a été trouvé lors du clic sur le bouton "Enregistrer via le micro" depuis l'écran d'accueil de l'application ;
+        - Correction d'un plantage rare avec le filtre Effet 8-bit ;
+        - Correction d'un bug du lecteur audio lorsque le mode de compatibilité était désactivé puis un traitement audio lancé, ou lorsque la fréquence d'échantillonage était modifiée ;
+        - Petites améliorations mineures du code ;
+        - Mise à jour des dépendances.
 
 * Version 2.1.1 (08/02/2024) :
     - Amélioration de certains filtres :

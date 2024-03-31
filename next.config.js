@@ -12,7 +12,7 @@ const withPWA = require("next-pwa")({
         ({ asset }) => {
             if (
                 asset.name.startsWith("server/") ||
-        asset.name.startsWith("../public/worklets/") ||
+        asset.name.startsWith("../../public/worklets/") ||
         asset.name.match(
             /^((app-|^)build-manifest\.json|react-loadable-manifest\.json)$/
         )
@@ -40,6 +40,11 @@ const nextConfig = withPWA({
                         from: "*.js",
                         to: "../../public/worklets/",
                         context: "node_modules/@eliastik/simple-sound-studio-lib/dist/worklets"
+                    },
+                    {
+                        from: "*.js",
+                        to: "../../public/workers/",
+                        context: "node_modules/@eliastik/simple-sound-studio-lib/dist/workers"
                     },
                 ],
             })

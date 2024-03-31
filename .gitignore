@@ -39,4 +39,5 @@ public/service-worker.js
 public/service-worker.js.map
 public/workbox-*
 public/worklets/*
+public/workers/*
 .rollup.cache
