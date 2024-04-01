@@ -1,7 +1,7 @@
 {
   "name": "simple-voice-changer",
   "version": "2.2.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
