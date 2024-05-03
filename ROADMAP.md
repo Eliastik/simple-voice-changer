@@ -72,10 +72,11 @@
 
 ### Would be good but not important
 
+* [x] - Simplify code: split AudioEditor classe into smaller classes
+* [ ] - Use dependency injection (instead of Singleton) - for AudioEditor subclasses and AudioEditorObjectsSingleton
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Save into localstorage filters settings + filter presets that can be set by the user?
-* [ ] - Use dependency injection instead of Singleton?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
 * [ ] - Real-time filters editing when recording audio (reuse existing filters)?
 * [ ] - Enhance limiter?
