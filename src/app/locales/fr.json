@@ -17,7 +17,7 @@
             "bufferSize": "Taille de tampon :",
             "bufferSizeInfos": "Cette taille de tampon est utilisée dans les traitements audio lorsque le support des AudioWorklet est désactivé. En laissant cette valeur à auto, votre navigateur détermine automatiquement la meilleure taille pour votre environnement. Une valeur plus élevée améliore la qualité audio, mais au détriment de la latence.",
             "defaultBufferSize": "Auto",
-            "samplingFrequency": "Fréquence d'échantillonage :",
+            "samplingFrequency": "Fréquence d'échantillonnage :",
             "samplingFrequencyInfo": "Paramètre la fréquence d'échantillonage utilisée pour les traitements audio. Plus elle est élevée, meilleure est la qualité, mais le traitement audio nécessitera plus de mémoire. Utilise par défaut la fréquence d'échantillonage paramétrée sur votre système.",
             "defaultSampleRate": "Par défaut",
             "sampleRateHz": "Hz",

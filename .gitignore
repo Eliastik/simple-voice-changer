@@ -41,3 +41,7 @@ public/workbox-*
 public/worklets/*
 public/workers/*
 .rollup.cache
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
