@@ -66,6 +66,7 @@
 * [x] - (Minor) Enable reverb filter when choosing custom environment, and no other environment was downloaded (network error)
 * [ ] - (Major) Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
     * [ ] - If fixed: enable Soundtouch Worklet in compatibility/direct mode
+* [ ] - (Minor) When compatibility mode is enabled and initial audio rendering is disabled, when loading a new audio file then playing audio, the compatibility mode setting is ignored (normal mode instead)
 * [ ] - (Medium) Bug when changing recorder settings on Chrome mobile
 * [ ] - (Medium) Vocoder doesn't work well on sample rate > 96,000 Hz
 * [ ] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
