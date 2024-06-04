@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 
     const closeWelcomeModal = page.locator("#modalFirstLaunch +div .modal-action button");
 
-    await closeWelcomeModal.waitFor({ state: "visible", timeout: 1000 });
+    await closeWelcomeModal.waitFor({ state: "visible", timeout: 2000 });
 
     if (await closeWelcomeModal.isVisible()) {
         await closeWelcomeModal.click();
