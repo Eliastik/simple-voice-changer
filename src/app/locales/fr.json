@@ -25,7 +25,7 @@
             "actualSampleRate": "Fréquence actuelle :",
             "samplingFrequencyTooHigh": "Vous avez sélectionné une fréquence d'échantillonage trop élevée que votre appareil ne peut potentiellement pas supporter. Vous risquez de rencontrer des problèmes inattendus.",
             "audioWorkletNotAvailable": "Le support des AudioWorklet est actuellement indisponible dans cet environnement. Ce paramètre n'aura donc aucun effet.",
-            "enableInitialRendering": "Activer le rendu audio initial",
+            "enableInitialRendering": "Activer le rendu audio initial :",
             "enableInitialRenderingInfos": "Active le rendu audio initial lors de la sélection d'un fichier audio ou la validation d'un enregistrement audio. Si désactivé, l'initialisation d'un audio sera plus rapide, mais vous devrez valider manuellement vos paramètres pour effectuer le rendu audio initial. Ce paramètre n'a aucun effet en mode de compatibilité.",
             "bitRateMP3": "Bitrate de l'encodeur MP3 :",
             "bitRateMP3Infos": "Défini le bitrate utilisé par l'encodeur lorsque vous sauvegardez l'audio au format MP3. Plus la valeur est élevée, meilleure est la qualité, au détriment de la taille finale du fichier.",

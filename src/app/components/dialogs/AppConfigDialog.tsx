@@ -87,7 +87,7 @@ const AppConfigDialog = () => {
                                 <label htmlFor="enableInitialRendering">{t("appSettings.enableInitialRendering")}</label>
                             </div>
                             <div className="flex flex-row gap-x-2 justify-center md:justify-items-end">
-                                <input type="checkbox" className="toggle" id="compatibilityMode" checked={isInitialRenderingEnabled} onChange={(e) => toggleEnableInitialRendering(e.target.checked)} />
+                                <input type="checkbox" className="toggle" id="enableInitialRendering" checked={isInitialRenderingEnabled} onChange={(e) => toggleEnableInitialRendering(e.target.checked)} />
                                 <div className="tooltip tooltip-top tooltip-config-dialog md:tooltip-config-dialog-md" data-tip={t("appSettings.enableInitialRenderingInfos")}>
                                     {InfoIcon}
                                 </div>
