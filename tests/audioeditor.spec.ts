@@ -112,3 +112,56 @@ test("resetting settings of filter should work", async ({ page }) => {
 
     expect(input.inputValue).not.toBe("25");
 });
+
+test("validating settings should work", async ({ page }) => {
+    const filter = page.locator("button", { hasText: "Bass booster" });
+
+    await filter.waitFor({ state: "visible", timeout: 10000 });
+
+    await filter.click();
+
+    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
+    
+    await validateButton.click();
+
+    const loadingPopup = page.locator("#loadingAudioProcessing");
+
+    await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
+
+    expect(await loadingPopup.count()).toBe(1);
+
+    await loadingPopup.waitFor({ state: "detached", timeout: 5000 });
+
+    const errorPopup = page.locator("#errorProcessingAudioDialog");
+
+    expect(await errorPopup.count()).toBe(0);
+});
+
+test("cancelling audio processing should work", async ({ page }) => {
+    const bassBooster = page.locator("button", { hasText: "Bass booster" });
+    const vocoder = page.locator("button", { hasText: "Vocoder" });
+    const bitcrusher = page.locator("button", { hasText: "8-bit effect" });
+
+    await bassBooster.waitFor({ state: "visible", timeout: 10000 });
+
+    await bassBooster.click();
+    await vocoder.click();
+    await bitcrusher.click();
+
+    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
+    
+    await validateButton.click();
+
+    const loadingPopup = page.locator("#loadingAudioProcessing");
+    const cancelButton = page.locator("#loadingAudioProcessing + div button", { hasText: "Cancel" });
+
+    await cancelButton.waitFor({ state: "visible", timeout: 10000 });
+
+    expect(await loadingPopup.count()).toBe(1);
+
+    await cancelButton.click();
+
+    await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
+
+    expect(await loadingPopup.count()).toBe(0);
+});
