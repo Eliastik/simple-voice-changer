@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 import path from "path";
 
 // Mute audio
@@ -51,24 +51,67 @@ test.beforeEach(async ({ page }) => {
     await loadingPopup.waitFor({ state: "detached", timeout: 5000 });
 });
 
-test("playing audio should work", async ({ page }) => {
+async function enableCompatibilityMode(page: Page) {
+    const settingsButton = page.locator("#appSettingsButton");
+    
+    await settingsButton.waitFor({ state: "visible", timeout: 500 });
+
+    await settingsButton.click();
+
+    const settingsDialog = page.locator("#modalSettings");
+    
+    await settingsDialog.waitFor({ state: "attached", timeout: 5000 });
+
+    const compatibilityModeCheckbox = page.locator("#compatibilityMode");
+    
+    await compatibilityModeCheckbox.waitFor({ state: "visible", timeout: 500 });
+
+    await compatibilityModeCheckbox.check();
+
+    const closeButton = settingsDialog.locator("button", { hasText: "Close" });
+
+    await closeButton.click();
+
+    await page.waitForTimeout(2000);
+
+    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
+
+    await validateButton.click();
+
+    const loadingPopup = page.locator("#loadingAudioProcessing");
+
+    await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
+}
+
+async function playingAudioTest(page: Page, isCompatibilityMode: boolean) {
     const playButton = page.locator("#playButton");
 
     await playButton.waitFor({ state: "visible", timeout: 500 });
 
     await playButton.click();
-    
+
     await page.waitForTimeout(5500);
 
-    const pauseButton = page.locator("#pauseButton");
-
-    await pauseButton.click();
+    if (!isCompatibilityMode) {
+        const pauseButton = page.locator("#pauseButton");
     
-    await page.waitForTimeout(500);
+        await pauseButton.click();
+
+        await page.waitForTimeout(500);
+    }
 
     const playerStatus = page.locator("#playerCurrentTime");
 
     expect(await playerStatus.innerText()).toBe("00:05");
+}
+
+test("playing audio should work", async ({ page }) => {
+    await playingAudioTest(page, false);
+});
+
+test("playing audio should work - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+    await playingAudioTest(page, true);
 });
 
 test("pausing and resuming audio should work", async ({ page }) => {
@@ -97,7 +140,38 @@ test("pausing and resuming audio should work", async ({ page }) => {
     expect(await playerStatus.innerText()).toBe("00:05");
 });
 
-test("playing audio to the end should work", async ({ page }) => {
+test("pausing and stopping audio should work - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+
+    const playButton = page.locator("#playButton");
+    const pauseButton = page.locator("#pauseButton");
+    const stopButton = page.locator("#stopPlayingButton");
+
+    await playButton.waitFor({ state: "visible", timeout: 500 });
+
+    await playButton.click();
+    
+    await page.waitForTimeout(3000);
+
+    expect(await pauseButton.count()).toBe(0);
+
+    await stopButton.click();
+    
+    const playerStatus = page.locator("#playerCurrentTime");
+    const timeAfterPause = await playerStatus.innerText();
+
+    expect(timeAfterPause).toBe("00:00");
+
+    await page.waitForTimeout(1000);
+
+    await playButton.click();
+
+    await page.waitForTimeout(3500);
+
+    expect(await playerStatus.innerText()).toBe("00:03");
+});
+
+async function playingAudioToEnd(page: Page) {
     const playButton = page.locator("#playButton");
 
     await playButton.waitFor({ state: "visible", timeout: 500 });
@@ -109,7 +183,7 @@ test("playing audio to the end should work", async ({ page }) => {
     await page.waitForFunction(
         selector => document.querySelector(selector)!.textContent === "00:00",
         "#playerCurrentTime",
-        { timeout: 20000 }
+        { timeout: 22000 }
     );
     
     await page.waitForTimeout(3000);
@@ -117,9 +191,18 @@ test("playing audio to the end should work", async ({ page }) => {
     const playerStatus = page.locator("#playerCurrentTime");
 
     expect(await playerStatus.innerText()).toBe("00:00");
+}
+
+test("playing audio to the end should work", async ({ page }) => {
+    await playingAudioToEnd(page);
 });
 
-test("looping play audio should work", async ({ page }) => {
+test("playing audio to the end should work - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+    await playingAudioToEnd(page);
+});
+
+async function loopAudioTest(page: Page, isCompatibilityMode: boolean) {
     const loopButton = page.locator("#loopPlayingButton");
 
     await loopButton.waitFor({ state: "visible", timeout: 500 });
@@ -142,11 +225,22 @@ test("looping play audio should work", async ({ page }) => {
         { timeout: 20000 }
     );
 
-    const pauseButton = page.locator("#pauseButton");
-
-    await pauseButton.click();
+    if (!isCompatibilityMode) {
+        const pauseButton = page.locator("#pauseButton");
+    
+        await pauseButton.click();
+    }
 
     expect(await playerStatus.innerText()).toBe("00:01");
+}
+
+test("looping play audio should work", async ({ page }) => {
+    await loopAudioTest(page, false);
+});
+
+test("looping play audio should work - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+    await loopAudioTest(page, true);
 });
 
 test("seeking within the audio should work", async ({ page }) => {
@@ -158,7 +252,7 @@ test("seeking within the audio should work", async ({ page }) => {
 
     await playButton.click();
     
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(3500);
 
     expect(await playerStatus.innerText()).toBe("00:03");
 
@@ -171,8 +265,7 @@ test("seeking within the audio should work", async ({ page }) => {
     expect(await playerStatus.innerText()).not.toBe("00:03");
 });
 
-
-test("validating settings should stop audio playing and seek to start of audio", async ({ page }) => {
+async function validatingSettingsStopAudio(page: Page) {
     const playButton = page.locator("#playButton");
     const playerStatus = page.locator("#playerCurrentTime");
 
@@ -193,4 +286,13 @@ test("validating settings should stop audio playing and seek to start of audio",
     await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
 
     expect(await playerStatus.innerText()).toBe("00:00");
+}
+
+test("validating settings should stop audio playing and seek to start of audio", async ({ page }) => {
+    await validatingSettingsStopAudio(page);
+});
+
+test("validating settings should stop audio playing and seek to start of audio - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+    await validatingSettingsStopAudio(page);
 });
