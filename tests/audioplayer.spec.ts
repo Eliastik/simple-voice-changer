@@ -71,6 +71,54 @@ test("playing audio should work", async ({ page }) => {
     expect(await playerStatus.innerText()).toBe("00:05");
 });
 
+test("pausing and resuming audio should work", async ({ page }) => {
+    const playButton = page.locator("#playButton");
+    const pauseButton = page.locator("#pauseButton");
+
+    await playButton.waitFor({ state: "visible", timeout: 500 });
+
+    await playButton.click();
+    
+    await page.waitForTimeout(3000);
+
+    await pauseButton.click();
+    
+    const playerStatus = page.locator("#playerCurrentTime");
+    const timeAfterPause = await playerStatus.innerText();
+
+    expect(timeAfterPause).toBe("00:03");
+
+    await page.waitForTimeout(1000);
+
+    await playButton.click();
+
+    await page.waitForTimeout(2500);
+
+    expect(await playerStatus.innerText()).toBe("00:05");
+});
+
+test("playing audio to the end should work", async ({ page }) => {
+    const playButton = page.locator("#playButton");
+
+    await playButton.waitFor({ state: "visible", timeout: 500 });
+
+    await playButton.click();
+    
+    await page.waitForTimeout(2000);
+    
+    await page.waitForFunction(
+        selector => document.querySelector(selector)!.textContent === "00:00",
+        "#playerCurrentTime",
+        { timeout: 20000 }
+    );
+    
+    await page.waitForTimeout(3000);
+
+    const playerStatus = page.locator("#playerCurrentTime");
+
+    expect(await playerStatus.innerText()).toBe("00:00");
+});
+
 test("looping play audio should work", async ({ page }) => {
     const loopButton = page.locator("#loopPlayingButton");
 
@@ -89,7 +137,7 @@ test("looping play audio should work", async ({ page }) => {
     expect(await playerStatus.innerText()).toBe("00:02");
     
     await page.waitForFunction(
-        selector => document.querySelector(selector)!.textContent === "00:00",
+        selector => document.querySelector(selector)!.textContent === "00:01",
         "#playerCurrentTime",
         { timeout: 20000 }
     );
@@ -98,5 +146,27 @@ test("looping play audio should work", async ({ page }) => {
 
     await pauseButton.click();
 
-    expect(await playerStatus.innerText()).toBe("00:00");
+    expect(await playerStatus.innerText()).toBe("00:01");
+});
+
+test("seeking within the audio should work", async ({ page }) => {
+    const playButton = page.locator("#playButton");
+    const pauseButton = page.locator("#pauseButton");
+    const playerStatus = page.locator("#playerCurrentTime");
+
+    await playButton.waitFor({ state: "visible", timeout: 500 });
+
+    await playButton.click();
+    
+    await page.waitForTimeout(3000);
+
+    expect(await playerStatus.innerText()).toBe("00:03");
+
+    await pauseButton.click();
+
+    const progressBar = page.locator("#audioPlayerProgress");
+
+    await progressBar.click({ position: { x: 500, y: 10 } });
+
+    expect(await playerStatus.innerText()).not.toBe("00:03");
 });

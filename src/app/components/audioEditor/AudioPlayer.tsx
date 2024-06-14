@@ -37,6 +37,7 @@ const AudioPlayer = () => {
                 <div className="block w-full">
                     <input
                         type="range"
+                        id="audioPlayerProgress"
                         min={0}
                         max={maxTime}
                         value={currentTime}
