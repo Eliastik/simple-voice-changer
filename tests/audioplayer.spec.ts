@@ -170,3 +170,27 @@ test("seeking within the audio should work", async ({ page }) => {
 
     expect(await playerStatus.innerText()).not.toBe("00:03");
 });
+
+
+test("validating settings should stop audio playing and seek to start of audio", async ({ page }) => {
+    const playButton = page.locator("#playButton");
+    const playerStatus = page.locator("#playerCurrentTime");
+
+    await playButton.waitFor({ state: "visible", timeout: 500 });
+
+    await playButton.click();
+    
+    await page.waitForTimeout(3500);
+
+    expect(await playerStatus.innerText()).toBe("00:03");
+
+    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
+
+    await validateButton.click();
+
+    const loadingPopup = page.locator("#loadingAudioProcessing");
+
+    await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
+
+    expect(await playerStatus.innerText()).toBe("00:00");
+});
