@@ -10,13 +10,19 @@ test.beforeEach(async ({ page }) => {
 async function testNotificationOpened(page: Page) {
     const notification = page.locator(".toast.toast-top > .alert.alert-info");
 
-    await notification.waitFor({ state: "attached", timeout: 2000 });
+    await expect.poll(async () => await notification.count() == 1, {
+        timeout: 5000,
+        message: "Audio download notification was not visible which is not expected"
+    }).toBe(true);
 }
 
 async function testNotificationClosed(page: Page) {
     const notification = page.locator(".toast.toast-top > .alert.alert-info");
 
-    await notification.waitFor({ state: "detached", timeout: 2000 });
+    await expect.poll(async () => await notification.count() == 0, {
+        timeout: 5000,
+        message: "Audio download notification was visible which is not expected"
+    }).toBe(true);
 }
 
 async function testDownloadAudio(page: Page, format: string, downloadTimeout: number) {
