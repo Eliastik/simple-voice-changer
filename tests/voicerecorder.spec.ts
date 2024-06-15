@@ -7,8 +7,7 @@ test.use({
             "--use-fake-ui-for-media-stream",
             "--use-fake-device-for-media-stream",
             "--use-file-for-fake-audio-capture=path/to/your/audio.wav"
-        ],
-        headless: false,
+        ]
     },
     browserName: "chromium",
 });
