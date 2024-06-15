@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import MainComponent from "./components/MainComponent";
-import { SoundStudioApplicationFactory, useAudioEditor } from "@eliastik/simple-sound-studio-components";
+import { ApplicationObjectsSingleton, useAudioEditor } from "@eliastik/simple-sound-studio-components";
 import { useApplicationConfig } from "./context/ApplicationConfigContext";
 import ApplicationConfigSingleton from "./context/ApplicationConfigSingleton";
 import Constants from "./model/Constants";
@@ -13,7 +13,7 @@ const Home = () => {
 
     useEffect(() => {
         // Initialize SoundStudioApplicationFactory
-        SoundStudioApplicationFactory.initializeApplication(ApplicationConfigSingleton.getConfigServiceInstance(), Constants.AUDIO_BUFFERS_TO_FETCH);
+        ApplicationObjectsSingleton.initializeApplicationObjects(ApplicationConfigSingleton.getConfigServiceInstance(), Constants.AUDIO_BUFFERS_TO_FETCH);
     }, []);
 
     useEffect(() => {
