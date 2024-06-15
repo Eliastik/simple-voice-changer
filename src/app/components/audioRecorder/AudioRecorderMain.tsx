@@ -28,7 +28,7 @@ const AudioRecorderMain = () => {
     return (
         <>
             <div className="flex justify-center items-center flex-grow flex-col pt-16 lg:gap-8 md:gap-6 gap-4" id="audioRecorder">
-                <span className="font-light text-6xl">{recorderDisplayTime}</span>
+                <span className="font-light text-6xl" id="audioRecorderTime">{recorderDisplayTime}</span>
                 <div className="flex gap-2 flex-row">
                     {!audioRecording && <button id="recordAudio" className="btn flex-col justify-evenly pl-2 2xl:w-60 2xl:h-72 pr-2 lg:w-52 lg:h-60 md:w-44 md:h-52 w-40 h-48" onClick={() => recordAudio()}>
                         <div className="fill-base-content">

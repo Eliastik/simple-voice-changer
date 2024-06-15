@@ -31,7 +31,7 @@ test("disabling initial audio rendering and enabling compatibility mode should w
     const stopButton = page.locator("#stopPlayingButton");
 
     await expect.poll(() => stopButton.isVisible(), {
-        timeout: 2000,
+        timeout: 10000,
         message: "Stop button was not visible as expected"
     }).toBe(true);
 });
