@@ -156,7 +156,6 @@ export async function stopAudioPlaying(page: Page) {
 }
 
 export function muteAudio() {
-    // Mute audio
     test.use({
         launchOptions: {
             args: ["--mute-audio"]

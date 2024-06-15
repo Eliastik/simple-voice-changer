@@ -1,5 +1,7 @@
-import { expect, test } from "@playwright/test";
-import { disableInitialAudioRendering, enableCompatibilityMode, enableInitialAudioRendering, openAudioFile, openPageAndCloseWelcomeModal } from "./testsutils";
+import { test } from "@playwright/test";
+import { disableInitialAudioRendering, enableCompatibilityMode, enableInitialAudioRendering, muteAudio, openAudioFile, openPageAndCloseWelcomeModal } from "./testsutils";
+
+muteAudio();
 
 test("enabling initial audio rendering should work", async ({ page }) => {
     await openPageAndCloseWelcomeModal(page);
@@ -28,10 +30,9 @@ test("disabling initial audio rendering and enabling compatibility mode should w
 
     await playButton.click();
 
+    await page.waitForTimeout(3000);
+
     const stopButton = page.locator("#stopPlayingButton");
 
-    await expect.poll(() => stopButton.isVisible(), {
-        timeout: 10000,
-        message: "Stop button was not visible as expected"
-    }).toBe(true);
+    await stopButton.waitFor({ state: "visible", timeout: 10000 });
 });

@@ -1,7 +1,6 @@
 import { test, expect, Page } from "@playwright/test";
 import { enableCompatibilityMode, loopAudioPlayer, muteAudio, openAudioFileAndProcess, stopAudioPlaying, validateSettings } from "./testsutils";
 
-// Mute audio
 muteAudio();
 
 test.beforeEach(async ({ page }) => {
