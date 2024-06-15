@@ -1,48 +1,36 @@
 import { test, expect, Page } from "@playwright/test";
-import { enableCompatibilityMode, openAudioFileAndProcess } from "./testsutils";
+import { enableCompatibilityMode, loopAudioPlayer, muteAudio, openAudioFileAndProcess, saveAudio, stopAudioPlaying, validateSettings } from "./testsutils";
 
-// Mute audio
-test.use({
-    launchOptions: {
-        args: ["--mute-audio"]
-    }
-});
-
-test.use({
-    browserName: "firefox",
-    launchOptions: {
-        firefoxUserPrefs: {
-            "media.volume_scale": "0.0"
-        }
-    }
-});
+muteAudio();
 
 test.beforeEach(async ({ page }) => {
     await openAudioFileAndProcess(page);
 });
 
-async function testDownloadAudio(page: Page, format: string, downloadTimeout: number) {
-    const saveAudioButton = page.locator("#dropdownDownloadAudio");
-
-    await saveAudioButton.waitFor({ state: "visible", timeout: 500 });
-
-    await saveAudioButton.click();
-
-    const saveToWavButton = page.locator("#dropdownDownloadAudio li", { hasText: format + " format" });
-
-    await saveToWavButton.click();
-
+async function testNotificationOpened(page: Page) {
     const notification = page.locator(".toast.toast-top > .alert.alert-info");
 
-    await notification.waitFor({ state: "visible", timeout: 500 });
+    await notification.waitFor({ state: "visible", timeout: 2000 });
 
     expect(notification).toBeVisible();
+}
+
+async function testNotificationClosed(page: Page) {
+    const notification = page.locator(".toast.toast-top > .alert.alert-info");
+
+    await notification.waitFor({ state: "hidden", timeout: 2000 });
+
+    expect(notification).not.toBeVisible();
+}
+
+async function testDownloadAudio(page: Page, format: string, downloadTimeout: number) {
+    await saveAudio(page, format);
+
+    await testNotificationOpened(page);
 
     const download = await page.waitForEvent("download", { timeout: downloadTimeout });
 
-    await notification.waitFor({ state: "hidden", timeout: 500 });
-
-    expect(notification).not.toBeVisible();
+    await testNotificationClosed(page);
 
     expect(download.suggestedFilename()).toContain("." + format.toLowerCase());
 }
@@ -66,4 +54,62 @@ test("saving audio as wav should work - compatibility mode", async ({ page }) =>
 test("saving audio as mp3 should work - compatibility mode", async ({ page }) => {
     await enableCompatibilityMode(page);
     await testDownloadAudio(page, "MP3", 30000);
+});
+
+test("saving audio and looping audio player should work - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+
+    await loopAudioPlayer(page);
+
+    await testDownloadAudio(page, "WAV", 35000);
+
+    const playerStatus = page.locator("#playerCurrentTime");
+
+    await page.waitForFunction(
+        selector => document.querySelector(selector)!.textContent === "00:01",
+        "#playerCurrentTime",
+        { timeout: 20000 }
+    );
+
+    expect(await playerStatus.innerText()).toBe("00:01");
+});
+
+async function expectNoDownload(page: Page) {
+    let downloadEventFired = false;
+
+    page.on("download", () => {
+        downloadEventFired = true;
+    });
+
+    await page.waitForTimeout(5000);
+
+    expect(downloadEventFired).toBe(false);
+}
+
+test("saving audio and stopping audio player should stop recording - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+
+    await saveAudio(page, "WAV");
+    
+    await testNotificationOpened(page);
+    
+    await stopAudioPlaying(page);
+   
+    await testNotificationClosed(page);
+
+    await expectNoDownload(page);
+});
+
+test("saving audio and validating settings should stop recording - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+
+    await saveAudio(page, "MP3");
+    
+    await testNotificationOpened(page);
+    
+    await validateSettings(page);
+    
+    await testNotificationClosed(page);
+    
+    await expectNoDownload(page);
 });

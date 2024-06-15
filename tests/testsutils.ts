@@ -1,7 +1,7 @@
-import { Page } from "@playwright/test";
+import test, { Page } from "@playwright/test";
 import path from "path";
 
-export async function openPageAndcloseWelcomeModal(page: Page) {
+export async function openPageAndCloseWelcomeModal(page: Page) {
     await page.goto("http://localhost:3000/");
 
     const closeWelcomeModal = page.locator("#modalFirstLaunch +div .modal-action button");
@@ -40,7 +40,7 @@ export async function processAudio(page: Page) {
 }
 
 export async function openAudioFileAndProcess(page: Page) {
-    await openPageAndcloseWelcomeModal(page);
+    await openPageAndCloseWelcomeModal(page);
     await openAudioFile(page);
     await processAudio(page);
 }
@@ -75,4 +75,58 @@ export async function enableCompatibilityMode(page: Page) {
     const loadingPopup = page.locator("#loadingAudioProcessing");
 
     await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
+}
+
+export async function saveAudio(page: Page, format: string) {
+    const saveAudioButton = page.locator("#dropdownDownloadAudio");
+
+    await saveAudioButton.waitFor({ state: "visible", timeout: 500 });
+
+    await saveAudioButton.click();
+
+    const saveToFormatAudioButton = page.locator("#dropdownDownloadAudio li", { hasText: format + " format" });
+
+    await saveToFormatAudioButton.click();
+}
+
+export async function loopAudioPlayer(page: Page) {
+    const loopButton = page.locator("#loopPlayingButton");
+
+    await loopButton.waitFor({ state: "visible", timeout: 500 });
+
+    await loopButton.click();
+}
+
+export async function validateSettings(page: Page) {
+    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
+
+    await validateButton.waitFor({ state: "visible", timeout: 2000 });
+    
+    await validateButton.click();
+}
+
+export async function stopAudioPlaying(page: Page) {
+    const stopButton = page.locator("#stopPlayingButton");
+
+    await stopButton.waitFor({ state: "visible", timeout: 2000 });
+
+    await stopButton.click();
+}
+
+export async function muteAudio() {
+    // Mute audio
+    test.use({
+        launchOptions: {
+            args: ["--mute-audio"]
+        }
+    });
+
+    test.use({
+        browserName: "firefox",
+        launchOptions: {
+            firefoxUserPrefs: {
+                "media.volume_scale": "0.0"
+            }
+        }
+    });
 }

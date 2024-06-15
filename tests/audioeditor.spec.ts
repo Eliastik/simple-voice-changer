@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { openAudioFile, openPageAndcloseWelcomeModal } from "./testsutils";
+import { openAudioFile, openPageAndCloseWelcomeModal, validateSettings } from "./testsutils";
 
 test.beforeEach(async ({ page }) => {
-    await openPageAndcloseWelcomeModal(page);
+    await openPageAndCloseWelcomeModal(page);
     await openAudioFile(page);
 });
  
@@ -100,10 +100,8 @@ test("validating settings should work", async ({ page }) => {
     await filter.waitFor({ state: "visible", timeout: 10000 });
 
     await filter.click();
-
-    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
     
-    await validateButton.click();
+    await validateSettings(page);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
 
@@ -128,10 +126,8 @@ test("cancelling audio processing should work", async ({ page }) => {
     await bassBooster.click();
     await vocoder.click();
     await bitcrusher.click();
-
-    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
     
-    await validateButton.click();
+    await validateSettings(page);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
     const cancelButton = page.locator("#loadingAudioProcessing + div button", { hasText: "Cancel" });

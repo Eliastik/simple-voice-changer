@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 import path from "path";
-import { openPageAndcloseWelcomeModal } from "./testsutils";
+import { openPageAndCloseWelcomeModal } from "./testsutils";
 
 test.beforeEach(async ({ page }) => {
-    await openPageAndcloseWelcomeModal(page);
+    await openPageAndCloseWelcomeModal(page);
 });
  
 test("should display title", async ({ page }) => {

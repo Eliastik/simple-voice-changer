@@ -1,21 +1,8 @@
 import { test, expect, Page } from "@playwright/test";
-import { enableCompatibilityMode, openAudioFileAndProcess } from "./testsutils";
+import { enableCompatibilityMode, loopAudioPlayer, muteAudio, openAudioFileAndProcess, stopAudioPlaying, validateSettings } from "./testsutils";
 
 // Mute audio
-test.use({
-    launchOptions: {
-        args: ["--mute-audio"]
-    }
-});
-
-test.use({
-    browserName: "firefox",
-    launchOptions: {
-        firefoxUserPrefs: {
-            "media.volume_scale": "0.0"
-        }
-    }
-});
+muteAudio();
 
 test.beforeEach(async ({ page }) => {
     await openAudioFileAndProcess(page);
@@ -83,7 +70,6 @@ test("pausing and stopping audio should work - compatibility mode", async ({ pag
 
     const playButton = page.locator("#playButton");
     const pauseButton = page.locator("#pauseButton");
-    const stopButton = page.locator("#stopPlayingButton");
 
     await playButton.waitFor({ state: "visible", timeout: 500 });
 
@@ -93,7 +79,7 @@ test("pausing and stopping audio should work - compatibility mode", async ({ pag
 
     expect(await pauseButton.count()).toBe(0);
 
-    await stopButton.click();
+    await stopAudioPlaying(page);
     
     const playerStatus = page.locator("#playerCurrentTime");
     const timeAfterPause = await playerStatus.innerText();
@@ -141,11 +127,7 @@ test("playing audio to the end should work - compatibility mode", async ({ page 
 });
 
 async function loopAudioTest(page: Page, isCompatibilityMode: boolean) {
-    const loopButton = page.locator("#loopPlayingButton");
-
-    await loopButton.waitFor({ state: "visible", timeout: 500 });
-
-    await loopButton.click();
+    await loopAudioPlayer(page);
 
     const playButton = page.locator("#playButton");
 
@@ -215,9 +197,7 @@ async function validatingSettingsStopAudio(page: Page) {
 
     expect(await playerStatus.innerText()).toBe("00:03");
 
-    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
-
-    await validateButton.click();
+    await validateSettings(page);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
 
