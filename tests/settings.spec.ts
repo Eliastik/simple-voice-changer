@@ -11,8 +11,6 @@ test("enabling initial audio rendering should work", async ({ page }) => {
     const loadingPopup = page.locator("#loadingAudioProcessing");
     
     await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
-
-    expect(loadingPopup).toBeAttached();
 });
 
 test("disabling initial audio rendering and enabling compatibility mode should work - audio player", async ({ page }) => {
@@ -32,7 +30,8 @@ test("disabling initial audio rendering and enabling compatibility mode should w
 
     const stopButton = page.locator("#stopPlayingButton");
 
-    await stopButton.waitFor({ state: "visible", timeout: 2000 });
-
-    expect(stopButton).toBeVisible();
+    await expect.poll(() => stopButton.isVisible(), {
+        timeout: 2000,
+        message: "Stop button was not visible as expected"
+    }).toBe(true);
 });

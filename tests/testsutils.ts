@@ -145,7 +145,7 @@ export async function stopAudioPlaying(page: Page) {
     await stopButton.click();
 }
 
-export async function muteAudio() {
+export function muteAudio() {
     // Mute audio
     test.use({
         launchOptions: {
