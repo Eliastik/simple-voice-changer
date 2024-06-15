@@ -76,4 +76,3 @@ export async function enableCompatibilityMode(page: Page) {
 
     await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
 }
-
