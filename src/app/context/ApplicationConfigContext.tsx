@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
 import { AudioEditor, EventType, Constants } from "@eliastik/simple-sound-studio-lib";
-import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components";
+import { SoundStudioApplicationFactory } from "@eliastik/simple-sound-studio-components";
 import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
 import i18next from "i18next";
 import ApplicationConfigContextProps from "../model/contextProps/ApplicationConfigContextProps";
@@ -29,7 +29,7 @@ const getService = (): ApplicationConfigService => {
 };
 
 const getAudioEditor = (): AudioEditor => {
-    return ApplicationObjectsSingleton.getAudioEditorInstance()!;
+    return SoundStudioApplicationFactory.getAudioEditorInstance()!;
 };
 
 let isReady = false;

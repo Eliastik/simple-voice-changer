@@ -66,16 +66,19 @@
 * [x] - (Minor) Enable reverb filter when choosing custom environment, and no other environment was downloaded (network error)
 * [ ] - (Major) Fix Soundtouch Worklet audio speed adjustment not working (as now, fallback to classic script processor node, not working in Firefox) - use another library for time stretch?
     * [ ] - If fixed: enable Soundtouch Worklet in compatibility/direct mode
+* [x] - (Minor) When compatibility mode is enabled and initial audio rendering is disabled, when loading a new audio file then playing audio, the compatibility mode setting is ignored (normal mode instead)
 * [ ] - (Medium) Bug when changing recorder settings on Chrome mobile
 * [ ] - (Medium) Vocoder doesn't work well on sample rate > 96,000 Hz
 * [ ] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
 
 ### Would be good but not important
 
+* [x] - Simplify code: split AudioEditor classe into smaller classes
+* [x] - Use dependency injection (instead of Singleton) - for AudioEditor subclasses and AudioEditorObjectsSingleton
+* [x] - Unit tests (Jest) + E2E tests (Playwright)
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Save into localstorage filters settings + filter presets that can be set by the user?
-* [ ] - Use dependency injection instead of Singleton?
 * [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
 * [ ] - Real-time filters editing when recording audio (reuse existing filters)?
 * [ ] - Enhance limiter?

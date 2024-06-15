@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import { ApplicationObjectsSingleton } from "@eliastik/simple-sound-studio-components";
+import { SoundStudioApplicationFactory } from "@eliastik/simple-sound-studio-components";
 import { VoiceRecorder, EventType, RecorderSettings } from "@eliastik/simple-sound-studio-lib";
 import AudioRecorderContextProps from "../model/contextProps/AudioRecorderContextProps";
 
@@ -20,7 +20,7 @@ interface AudioRecorderProviderProps {
 }
 
 const getRecorderInstance = (): VoiceRecorder => {
-    return ApplicationObjectsSingleton.getAudioRecorderInstance()!;
+    return SoundStudioApplicationFactory.getAudioRecorderInstance()!;
 };
 
 let isReady = false;
