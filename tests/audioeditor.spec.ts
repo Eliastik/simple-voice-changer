@@ -101,7 +101,7 @@ test("validating settings should work", async ({ page }) => {
 
     await filter.click();
     
-    await validateSettings(page);
+    await validateSettings(page, false);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
 
@@ -127,7 +127,7 @@ test("cancelling audio processing should work", async ({ page }) => {
     await vocoder.click();
     await bitcrusher.click();
     
-    await validateSettings(page);
+    await validateSettings(page, false);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
     const cancelButton = page.locator("#loadingAudioProcessing + div button", { hasText: "Cancel" });

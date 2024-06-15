@@ -27,14 +27,26 @@ export async function openAudioFile(page: Page) {
     await loadingBufferModal.waitFor({ state: "hidden", timeout: 10000 });
 }
 
-export async function processAudio(page: Page) {
+export async function validateSettings(page: Page, compatibilityMode: boolean) {
     const validateButton = page.locator("div > button", { hasText: "Validate settings" });
+
+    await validateButton.waitFor({ state: "visible", timeout: 2000 });
     
-    await validateButton.click();
+    if (await validateButton.isVisible()) {
+        await validateButton.click();
+    
+        if (!compatibilityMode) {
+            const loadingPopup = page.locator("#loadingAudioProcessing");
+    
+            await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
+        }
+    }
+}
+
+export async function processAudio(page: Page) {
+    await validateSettings(page, false);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
-
-    await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
 
     await loadingPopup.waitFor({ state: "detached", timeout: 5000 });
 }
@@ -45,36 +57,52 @@ export async function openAudioFileAndProcess(page: Page) {
     await processAudio(page);
 }
 
-export async function enableCompatibilityMode(page: Page) {
+export async function openSettingsDialog(page: Page) {
     const settingsButton = page.locator("#appSettingsButton");
-    
+
     await settingsButton.waitFor({ state: "visible", timeout: 500 });
 
     await settingsButton.click();
 
     const settingsDialog = page.locator("#modalSettings");
-    
+
     await settingsDialog.waitFor({ state: "attached", timeout: 5000 });
+}
+
+export async function closeSettingsDialog(page: Page) {
+    const settingsDialog = page.locator("#modalSettings");
+
+    const closeButton = settingsDialog.locator("button", { hasText: "Close" });
+
+    await closeButton.click();
+}
+
+export async function enableCompatibilityMode(page: Page) {
+    await openSettingsDialog(page);
 
     const compatibilityModeCheckbox = page.locator("#compatibilityMode");
     
     await compatibilityModeCheckbox.waitFor({ state: "visible", timeout: 500 });
 
     await compatibilityModeCheckbox.check();
+    
+    await closeSettingsDialog(page);
 
-    const closeButton = settingsDialog.locator("button", { hasText: "Close" });
+    await validateSettings(page, true);
+}
 
-    await closeButton.click();
+export async function enableInitialAudioRendering(page: Page) {
+    await openSettingsDialog(page);
 
-    await page.waitForTimeout(2000);
+    const enableInitialRenderingCheckbox = page.locator("#enableInitialRendering");
+    
+    await enableInitialRenderingCheckbox.waitFor({ state: "visible", timeout: 500 });
 
-    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
+    await enableInitialRenderingCheckbox.check();
+    
+    await closeSettingsDialog(page);
 
-    await validateButton.click();
-
-    const loadingPopup = page.locator("#loadingAudioProcessing");
-
-    await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
+    await validateSettings(page, false);
 }
 
 export async function saveAudio(page: Page, format: string) {
@@ -95,14 +123,6 @@ export async function loopAudioPlayer(page: Page) {
     await loopButton.waitFor({ state: "visible", timeout: 500 });
 
     await loopButton.click();
-}
-
-export async function validateSettings(page: Page) {
-    const validateButton = page.locator("div > button", { hasText: "Validate settings" });
-
-    await validateButton.waitFor({ state: "visible", timeout: 2000 });
-    
-    await validateButton.click();
 }
 
 export async function stopAudioPlaying(page: Page) {

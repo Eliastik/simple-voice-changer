@@ -107,7 +107,7 @@ test("saving audio and validating settings should stop recording - compatibility
     
     await testNotificationOpened(page);
     
-    await validateSettings(page);
+    await validateSettings(page, true);
     
     await testNotificationClosed(page);
     

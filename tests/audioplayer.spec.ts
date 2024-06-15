@@ -185,7 +185,7 @@ test("seeking within the audio should work", async ({ page }) => {
     expect(await playerStatus.innerText()).not.toBe("00:03");
 });
 
-async function validatingSettingsStopAudio(page: Page) {
+async function validatingSettingsStopAudio(page: Page, compatibilityMode: boolean) {
     const playButton = page.locator("#playButton");
     const playerStatus = page.locator("#playerCurrentTime");
 
@@ -197,7 +197,7 @@ async function validatingSettingsStopAudio(page: Page) {
 
     expect(await playerStatus.innerText()).toBe("00:03");
 
-    await validateSettings(page);
+    await validateSettings(page, compatibilityMode);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
 
@@ -207,10 +207,10 @@ async function validatingSettingsStopAudio(page: Page) {
 }
 
 test("validating settings should stop audio playing and seek to start of audio", async ({ page }) => {
-    await validatingSettingsStopAudio(page);
+    await validatingSettingsStopAudio(page, false);
 });
 
 test("validating settings should stop audio playing and seek to start of audio - compatibility mode", async ({ page }) => {
     await enableCompatibilityMode(page);
-    await validatingSettingsStopAudio(page);
+    await validatingSettingsStopAudio(page, true);
 });
