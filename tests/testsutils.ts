@@ -14,7 +14,7 @@ export async function openPageAndCloseWelcomeModal(page: Page) {
 }
 
 export async function openAudioFile(page: Page) {
-    const openFileButton = page.locator("body > div:not(.navbar) > button");
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select an audio file" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();
@@ -23,6 +23,16 @@ export async function openAudioFile(page: Page) {
     await fileChooser.setFiles(path.join(__dirname, "files/audio.mp3"));
 
     const loadingBufferModal = page.locator("#loadingBufferModal +.modal");
+
+    await loadingBufferModal.waitFor({ state: "hidden", timeout: 10000 });
+}
+
+export async function openVoiceRecorder(page: Page) {
+    const openAudioRecording = page.locator("body > div:not(.navbar) button", { hasText: "Record with the microphone" });
+
+    openAudioRecording.click();
+
+    const loadingBufferModal = page.locator("#audioRecorderAuthorizationDialog +.modal");
 
     await loadingBufferModal.waitFor({ state: "hidden", timeout: 10000 });
 }
