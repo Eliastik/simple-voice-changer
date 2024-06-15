@@ -1,5 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
-import { openAudioFileAndProcess } from "./testsutils";
+import { enableCompatibilityMode, openAudioFileAndProcess } from "./testsutils";
 
 // Mute audio
 test.use({
@@ -32,7 +32,7 @@ async function testDownloadAudio(page: Page, format: string, downloadTimeout: nu
 
     await saveToWavButton.click();
 
-    const notification = page.locator(".toast.toast-top > .alert");
+    const notification = page.locator(".toast.toast-top > .alert.alert-info");
 
     await notification.waitFor({ state: "visible", timeout: 500 });
 
@@ -53,5 +53,17 @@ test("saving audio as wav should work", async ({ page }) => {
 
 
 test("saving audio as mp3 should work", async ({ page }) => {
+    await testDownloadAudio(page, "MP3", 15000);
+});
+
+
+test("saving audio as wav should work - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
+    await testDownloadAudio(page, "WAV", 20000);
+});
+
+
+test("saving audio as mp3 should work - compatibility mode", async ({ page }) => {
+    await enableCompatibilityMode(page);
     await testDownloadAudio(page, "MP3", 30000);
 });
