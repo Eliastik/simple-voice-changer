@@ -1,16 +1,9 @@
 import { test, expect } from "@playwright/test";
 import path from "path";
+import { openPageAndcloseWelcomeModal } from "./testsutils";
 
 test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000/");
-
-    const closeWelcomeModal = page.locator("#modalFirstLaunch +div .modal-action button");
-
-    await closeWelcomeModal.waitFor({ state: "visible", timeout: 2000 });
-
-    if (await closeWelcomeModal.isVisible()) {
-        await closeWelcomeModal.click();
-    }
+    await openPageAndcloseWelcomeModal(page);
 });
  
 test("should display title", async ({ page }) => {

@@ -1,28 +1,9 @@
 import { test, expect } from "@playwright/test";
-import path from "path";
+import { openAudioFile, openPageAndcloseWelcomeModal } from "./testsutils";
 
 test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000/");
-
-    const closeWelcomeModal = page.locator("#modalFirstLaunch +div .modal-action button");
-
-    await closeWelcomeModal.waitFor({ state: "visible", timeout: 2000 });
-
-    if (await closeWelcomeModal.isVisible()) {
-        await closeWelcomeModal.click();
-    }
-
-    const openFileButton = page.locator("body > div:not(.navbar) > button");
-    const fileChooserPromise = page.waitForEvent("filechooser");
-
-    openFileButton.click();
-
-    const fileChooser = await fileChooserPromise;
-    await fileChooser.setFiles(path.join(__dirname, "files/audio.mp3"));
-
-    const loadingBufferModal = page.locator("#loadingBufferModal +.modal");
-
-    await loadingBufferModal.waitFor({ state: "hidden", timeout: 10000 });
+    await openPageAndcloseWelcomeModal(page);
+    await openAudioFile(page);
 });
  
 test("enabling filter should work", async ({ page }) => {
