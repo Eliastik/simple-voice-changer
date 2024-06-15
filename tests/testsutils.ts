@@ -29,8 +29,6 @@ export async function openAudioFile(page: Page) {
 
 export async function validateSettings(page: Page, compatibilityMode: boolean) {
     const validateButton = page.locator("div > button", { hasText: "Validate settings" });
-
-    await validateButton.waitFor({ state: "visible", timeout: 2000 });
     
     if (await validateButton.isVisible()) {
         await validateButton.click();
@@ -99,6 +97,20 @@ export async function enableInitialAudioRendering(page: Page) {
     await enableInitialRenderingCheckbox.waitFor({ state: "visible", timeout: 500 });
 
     await enableInitialRenderingCheckbox.check();
+    
+    await closeSettingsDialog(page);
+
+    await validateSettings(page, false);
+}
+
+export async function disableInitialAudioRendering(page: Page) {
+    await openSettingsDialog(page);
+
+    const enableInitialRenderingCheckbox = page.locator("#enableInitialRendering");
+    
+    await enableInitialRenderingCheckbox.waitFor({ state: "visible", timeout: 500 });
+
+    await enableInitialRenderingCheckbox.uncheck();
     
     await closeSettingsDialog(page);
 

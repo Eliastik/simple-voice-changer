@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 async function testNotificationOpened(page: Page) {
     const notification = page.locator(".toast.toast-top > .alert.alert-info");
 
-    await notification.waitFor({ state: "visible", timeout: 2000 });
+    await notification.waitFor({ state: "visible", timeout: 500 });
 
     expect(notification).toBeVisible();
 }
@@ -18,7 +18,7 @@ async function testNotificationOpened(page: Page) {
 async function testNotificationClosed(page: Page) {
     const notification = page.locator(".toast.toast-top > .alert.alert-info");
 
-    await notification.waitFor({ state: "hidden", timeout: 2000 });
+    await notification.waitFor({ state: "hidden", timeout: 500 });
 
     expect(notification).not.toBeVisible();
 }
