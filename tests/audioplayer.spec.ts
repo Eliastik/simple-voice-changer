@@ -76,7 +76,7 @@ test("pausing and stopping audio should work - compatibility mode", async ({ pag
     
     await page.waitForTimeout(3000);
 
-    expect(await pauseButton.count()).toBe(0);
+    await expect(pauseButton).toHaveCount(0);
 
     await stopAudioPlaying(page);
     

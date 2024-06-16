@@ -107,13 +107,13 @@ test("validating settings should work", async ({ page }) => {
 
     await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
 
-    expect(await loadingPopup.count()).toBe(1);
+    await expect(loadingPopup).toHaveCount(1);
 
     await loadingPopup.waitFor({ state: "detached", timeout: 5000 });
 
     const errorPopup = page.locator("#errorProcessingAudioDialog");
 
-    expect(await errorPopup.count()).toBe(0);
+    await expect(errorPopup).toHaveCount(0);
 });
 
 test("cancelling audio processing should work", async ({ page }) => {
@@ -134,11 +134,11 @@ test("cancelling audio processing should work", async ({ page }) => {
 
     await cancelButton.waitFor({ state: "visible", timeout: 10000 });
 
-    expect(await loadingPopup.count()).toBe(1);
+    await expect(loadingPopup).toHaveCount(1);
 
     await cancelButton.click();
 
     await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
 
-    expect(await loadingPopup.count()).toBe(0);
+    await expect(loadingPopup).toHaveCount(0);
 });

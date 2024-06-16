@@ -24,13 +24,13 @@ test("disabling initial audio rendering and enabling compatibility mode should w
     
     await openAudioFile(page);
 
+    await page.waitForTimeout(2000);
+
     const playButton = page.locator("#playButton");
 
     await playButton.waitFor({ state: "visible", timeout: 500 });
 
     await playButton.click();
-
-    await page.waitForTimeout(3000);
 
     const stopButton = page.locator("#stopPlayingButton");
 
