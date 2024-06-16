@@ -11,7 +11,7 @@ test("should display title", async ({ page }) => {
 });
 
 test("opening wrong file should display error", async ({ page }) => {
-    const openFileButton = page.locator("body > div:not(.navbar) > button");
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select an audio file" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();
@@ -21,11 +21,13 @@ test("opening wrong file should display error", async ({ page }) => {
 
     const modalErrorLoadingDialog = page.locator("#errorLoadingAudioDialog +.modal");
 
-    expect(await modalErrorLoadingDialog.isVisible());
+    await modalErrorLoadingDialog.waitFor({ state: "attached", timeout: 5000 });
+
+    await expect(modalErrorLoadingDialog).toHaveCount(1);
 });
 
 test("opening audio file should not display error", async ({ page }) => {
-    const openFileButton = page.locator("body > div:not(.navbar) > button");
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select an audio file" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();
@@ -35,12 +37,13 @@ test("opening audio file should not display error", async ({ page }) => {
 
     const modalErrorLoadingDialog = page.locator("#errorLoadingAudioDialog +.modal");
 
-    expect(!(await modalErrorLoadingDialog.isVisible()));
+    await modalErrorLoadingDialog.waitFor({ state: "detached", timeout: 5000 });
+
+    await expect(modalErrorLoadingDialog).toHaveCount(0);
 });
 
-
 test("returning to homepage should work", async ({ page }) => {
-    const openFileButton = page.locator("body > div:not(.navbar) > button");
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select an audio file" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();
@@ -66,5 +69,5 @@ test("returning to homepage should work", async ({ page }) => {
 
     await returnToHomeModalButton.click();
 
-    expect(await openFileButton.isVisible());
+    await expect(openFileButton).toBeVisible();
 });
