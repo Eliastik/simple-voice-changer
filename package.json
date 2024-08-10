@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "npx playwright test tests/settings.spec.ts"
+    "test": "npx playwright test"
   },
   "repository": {
     "type": "git",
