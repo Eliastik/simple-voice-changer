@@ -8,7 +8,7 @@ import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 const AudioPlayer = () => {
     const { downloadAudio, loadPreviousAudio, loadNextAudio, audioFilesCount } = useAudioEditor();
     const { bitrateMP3 } = useApplicationConfig();
-    const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping } = useAudioPlayer();
+    const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping, loopingAll, loopAllAudioBuffer } = useAudioPlayer();
     const { t } = useTranslation();
 
     const handleEvent = useCallback((e: KeyboardEvent) => {
@@ -30,6 +30,35 @@ const AudioPlayer = () => {
         document.body.addEventListener("keydown", handleEvent);
         return () => document.body.removeEventListener("keydown", handleEvent);
     }, [handleEvent]);
+
+    const loopAudioButton = (
+        <div className="tooltip" data-tip={t("audioPlayer.loop")}>
+            <button className={`btn btn-ghost pr-2 pl-2 md:pr-4 md:pl-4 ${(loopingAll || (audioFilesCount <= 1 && looping)) ? "bg-secondary text-black " : ""}`} id="loopPlayingButton" onClick={() => {
+                if (audioFilesCount > 1 && !loopingAll) {
+                    loopAllAudioBuffer();
+                } else {
+                    loopAudioBuffer();
+                }
+            }}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+            </button>
+        </div>
+    );
+
+    const loopOneAudioButton = (
+        <div className="tooltip" data-tip={t("audioPlayer.loop")}>
+            <button className={`btn btn-ghost pr-2 pl-2 md:pr-4 md:pl-4 ${looping ? "bg-secondary text-black" : ""}`} id="loopPlayingButton" onClick={() => loopAudioBuffer()}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path d="m16.023 9.3484h4.9926v-0.00178m-18.031 10.298v-4.9927m0 0h4.9926m-4.9926 0 3.1809 3.183c0.99053 0.9924 2.2476 1.7453 3.6993 2.1343 4.401 1.1793 8.9248-1.4326 10.104-5.8337m-15.938-4.2705c1.1793-4.4011 5.703-7.0129 10.104-5.8336 1.4517 0.38899 2.7088 1.1419 3.6993 2.1343l3.1812 3.1811m0-4.9908v4.9908" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                    <g fill="currentColor" stroke="currentColor" stroke-width="1px" aria-label="1">
+                        <path d="m10.295 15.168h1.7333v-6.1227q0-0.18133 0.016-0.384l-1.664 1.4773q-0.07467 0.064-0.14933 0.048-0.07467-0.016-0.11733-0.064l-0.15467-0.21333 2.1813-1.9253h0.4v7.184h1.648v0.39467h-3.8933z"/>
+                    </g>
+                </svg>
+            </button>
+        </div>
+    );
 
     return (
         <>
@@ -80,13 +109,9 @@ const AudioPlayer = () => {
                                 </svg>
                             </button>
                         </div>}
-                        <div className="tooltip" data-tip={t("audioPlayer.loop")}>
-                            <button className={`btn btn-ghost pr-2 pl-2 md:pr-4 md:pl-4 ${looping ? "bg-secondary" : ""}`} id="loopPlayingButton" onClick={() => loopAudioBuffer()}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                                </svg>
-                            </button>
-                        </div>
+                        {audioFilesCount <= 1 && loopAudioButton}
+                        {audioFilesCount > 1 && !looping && loopAudioButton}
+                        {audioFilesCount > 1 && looping && loopOneAudioButton}
                         {audioFilesCount > 1 && <div className="tooltip tooltip-left" data-tip={t("audioPlayer.nextMedia")}>
                             <button className="btn btn-ghost pr-1 pl-1 md:pr-2 md:pl-2" id="loopPlayingButton" onClick={() => loadNextAudio()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
