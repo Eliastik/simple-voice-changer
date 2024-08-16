@@ -6,7 +6,7 @@ import { useAudioEditor, useAudioPlayer } from "@eliastik/simple-sound-studio-co
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 
 const AudioPlayer = () => {
-    const { downloadAudio, loadPreviousAudio, loadNextAudio } = useAudioEditor();
+    const { downloadAudio, loadPreviousAudio, loadNextAudio, audioFilesCount } = useAudioEditor();
     const { bitrateMP3 } = useApplicationConfig();
     const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping } = useAudioPlayer();
     const { t } = useTranslation();
@@ -67,13 +67,13 @@ const AudioPlayer = () => {
                         <span className="ml-4 pointer-events-none" id="playerTimestamp"><span id="playerCurrentTime">{currentTimeDisplay}</span> / <span id="playerMaxTime">{maxTimeDisplay}</span></span>
                     </div>
                     <div className="flex items-center">
-                        <div className="tooltip" data-tip={t("audioPlayer.previousMedia")}>
-                            <button className="btn btn-ghost" id="loopPlayingButton" onClick={() => loadPreviousAudio()}>
+                        {audioFilesCount > 1 && <div className="tooltip" data-tip={t("audioPlayer.previousMedia")}>
+                            <button className="btn btn-ghost pl-0 pr-0" id="loopPlayingButton" onClick={() => loadPreviousAudio()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
                                 </svg>
                             </button>
-                        </div>
+                        </div>}
                         <div className="tooltip" data-tip={t("audioPlayer.loop")}>
                             <button className={`btn btn-ghost ${looping ? "bg-secondary" : ""}`} id="loopPlayingButton" onClick={() => loopAudioBuffer()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -81,13 +81,13 @@ const AudioPlayer = () => {
                                 </svg>
                             </button>
                         </div>
-                        <div className="tooltip" data-tip={t("audioPlayer.nextMedia")}>
-                            <button className="btn btn-ghost" id="loopPlayingButton" onClick={() => loadNextAudio()}>
+                        {audioFilesCount > 1 && <div className="tooltip tooltip-left" data-tip={t("audioPlayer.nextMedia")}>
+                            <button className="btn btn-ghost pl-0 pr-0" id="loopPlayingButton" onClick={() => loadNextAudio()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
                                 </svg>
                             </button>
-                        </div>
+                        </div>}
                         <div className="tooltip tooltip-left" data-tip={t("audioPlayer.save")}>
                             <details className="dropdown dropdown-top dropdown-end" id="dropdownDownloadAudio">
                                 <summary role="button" className="btn btn-ghost">

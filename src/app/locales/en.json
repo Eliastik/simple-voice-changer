@@ -32,7 +32,7 @@
             "bitRateMP3Kbps": "kbps"
         },
         "homeMenu": {
-            "selectAudioFile": "Select an audio file",
+            "selectAudioFile": "Select one or more audio files",
             "recMicrophone": "Record with the microphone"
         },
         "audioPlayer": {
@@ -42,7 +42,9 @@
             "loop": "Loop playback",
             "save": "Save audio",
             "saveToMp3": "MP3 format",
-            "saveToWav": "WAV format"
+            "saveToWav": "WAV format",
+            "previousMedia": "Load previous audio",
+            "nextMedia": "Load next audio"
         },
         "languages": {
             "fr": "Français",
