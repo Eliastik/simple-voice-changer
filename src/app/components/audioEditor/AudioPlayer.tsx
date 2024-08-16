@@ -6,7 +6,7 @@ import { useAudioEditor, useAudioPlayer } from "@eliastik/simple-sound-studio-co
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 
 const AudioPlayer = () => {
-    const { downloadAudio } = useAudioEditor();
+    const { downloadAudio, loadPreviousAudio, loadNextAudio } = useAudioEditor();
     const { bitrateMP3 } = useApplicationConfig();
     const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping } = useAudioPlayer();
     const { t } = useTranslation();
@@ -67,10 +67,24 @@ const AudioPlayer = () => {
                         <span className="ml-4 pointer-events-none" id="playerTimestamp"><span id="playerCurrentTime">{currentTimeDisplay}</span> / <span id="playerMaxTime">{maxTimeDisplay}</span></span>
                     </div>
                     <div className="flex items-center">
+                        <div className="tooltip" data-tip={t("audioPlayer.previousMedia")}>
+                            <button className="btn btn-ghost" id="loopPlayingButton" onClick={() => loadPreviousAudio()}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+                                </svg>
+                            </button>
+                        </div>
                         <div className="tooltip" data-tip={t("audioPlayer.loop")}>
                             <button className={`btn btn-ghost ${looping ? "bg-secondary" : ""}`} id="loopPlayingButton" onClick={() => loopAudioBuffer()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="tooltip" data-tip={t("audioPlayer.nextMedia")}>
+                            <button className="btn btn-ghost" id="loopPlayingButton" onClick={() => loadNextAudio()}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
                                 </svg>
                             </button>
                         </div>
