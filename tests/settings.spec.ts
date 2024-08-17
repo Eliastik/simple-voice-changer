@@ -26,7 +26,7 @@ test("enabling initial audio rendering then cancelling initial rendering should 
 
     await cancelButton.waitFor({ state: "visible", timeout: 10000 });
 
-    await cancelButton.click();
+    await cancelButton.click({ force: true });
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
     

@@ -14,7 +14,7 @@ export async function openPageAndCloseWelcomeModal(page: Page) {
 }
 
 export async function openAudioFile(page: Page) {
-    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select an audio file" });
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select one or more audio files" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();

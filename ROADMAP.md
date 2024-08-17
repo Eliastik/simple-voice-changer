@@ -76,6 +76,11 @@
 * [x] - Simplify code: split AudioEditor classe into smaller classes
 * [x] - Use dependency injection (instead of Singleton) - for AudioEditor subclasses and AudioEditorObjectsSingleton
 * [x] - Unit tests (Jest) + E2E tests (Playwright)
+* [x] - Load a list of files
+    * [x] - Navigate next/previous audio file
+    * [x] - Enable loop audio player on list of file
+    * [ ] - Display list of file in popup
+* [ ] - Batch processing (list of file)
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
 * [ ] - Save into localstorage filters settings + filter presets that can be set by the user?

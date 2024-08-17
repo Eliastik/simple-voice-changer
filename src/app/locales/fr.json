@@ -40,6 +40,7 @@
             "pause": "Pause",
             "stop": "Stop",
             "loop": "Lire en boucle",
+            "loopMultipleFile": "Lire en boucle la liste audio, ou uniquement l'audio actuel",
             "save": "Sauvegarder l'audio",
             "saveToMp3": "Format MP3",
             "saveToWav": "Format WAV",
@@ -92,7 +93,7 @@
         },
         "appInfos": {
             "title": "Informations sur l'application",
-            "infos": "{{appName}} vous permet de modifier un fichier audio et d'y appliquer des filtres en toute simplificité. Pour cela, sélectionnez un fichier audio ou enregistrez un son (votre voix, par exemple). Vous pouvez ensuite télécharger le résultat. Tout le traitement audio est fait sur votre appareil, aucune donnée n'est envoyée vers Internet, et l'application est libre et open-source.",
+            "infos": "{{appName}} vous permet de modifier un fichier audio et d'y appliquer des filtres en toute simplificité. Pour cela, sélectionnez un ou plusieurs fichiers audio ou enregistrez un son (votre voix, par exemple). Vous pouvez ensuite télécharger le résultat. Tout le traitement audio est fait sur votre appareil, aucune donnée n'est envoyée vers Internet, et l'application est libre et open-source.",
             "appVersion": "Version de l'application :",
             "versionDate": "Date de version :",
             "license": "Licence :",
