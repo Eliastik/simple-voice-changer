@@ -142,3 +142,13 @@ test("cancelling audio processing should work", async ({ page }) => {
 
     await expect(loadingPopup).toHaveCount(0);
 });
+
+test("opening single audio file should not display audio list specific buttons", async ({ page }) => {
+    const previousMediaButton = page.locator("#previousMediaButton");
+    const playlistButton = page.locator("#playlistButton");
+    const nextMediaButton = page.locator("#nextMediaButton");
+
+    await expect(previousMediaButton).not.toBeVisible();
+    await expect(playlistButton).not.toBeVisible();
+    await expect(nextMediaButton).not.toBeVisible();
+});

@@ -27,6 +27,20 @@ export async function openAudioFile(page: Page) {
     await loadingBufferModal.waitFor({ state: "hidden", timeout: 10000 });
 }
 
+export async function openMultipleAudioFile(page: Page) {
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select one or more audio files" });
+    const fileChooserPromise = page.waitForEvent("filechooser");
+
+    openFileButton.click();
+
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles([path.join(__dirname, "files/audio.mp3"), path.join(__dirname, "files/audio_2.mp3"), path.join(__dirname, "files/audio_3.mp3")]);
+
+    const loadingBufferModal = page.locator("#loadingBufferModal +.modal");
+
+    await loadingBufferModal.waitFor({ state: "hidden", timeout: 10000 });
+}
+
 export async function openVoiceRecorder(page: Page) {
     const openAudioRecording = page.locator("body > div:not(.navbar) button", { hasText: "Record with the microphone" });
 
