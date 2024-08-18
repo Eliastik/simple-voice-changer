@@ -45,7 +45,8 @@
             "saveToMp3": "MP3 format",
             "saveToWav": "WAV format",
             "previousMedia": "Load previous audio",
-            "nextMedia": "Load next audio"
+            "nextMedia": "Load next audio",
+            "playlist": "Playlist"
         },
         "languages": {
             "fr": "Français",
@@ -78,6 +79,9 @@
             "errorRecorderUnknownDialog": {
                 "title": "Error initializing audio recorder",
                 "info": "An unexpected error occurred while initializing the audio recorder. Please try again."
+            },
+            "audioFileListDialog": {
+                "title": "Playlist"
             }
         },
         "audioRecorder": {
@@ -97,7 +101,7 @@
         },
         "appInfos": {
             "title": "Application informations",
-            "infos": "{{appName}} allows you to edit a sound and apply filters with ease. To do this, select one or more audio files or record a sound (such as your voice). You can then download the result. All audio processing is done on your device, no data is sent to the Internet, and the application is free and open-source.",
+            "infos": "{{appName}} allows you to edit sounds and apply filters with ease. To do this, select one or more audio files or record a sound (such as your voice). You can then download the result. All audio processing is done on your device, no data is sent to the Internet, and the application is free and open-source.",
             "appVersion": "Application version:",
             "versionDate": "Version date:",
             "license": "License:",

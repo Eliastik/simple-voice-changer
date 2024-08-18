@@ -45,7 +45,8 @@
             "saveToMp3": "Format MP3",
             "saveToWav": "Format WAV",
             "previousMedia": "Charger l'audio précédent",
-            "nextMedia": "Charger l'audio suivant"
+            "nextMedia": "Charger l'audio suivant",
+            "playlist": "Liste de lecture"
         },
         "dialogs": {
             "pleaseWait": "Merci de patienter quelques instants",
@@ -74,6 +75,9 @@
             "errorRecorderUnknownDialog": {
                 "title": "Erreur lors de l'initialisation de l'enregistreur audio",
                 "info": "Une erreur inattendue est survenue lors de l'initialisation de l'enregistreur audio. Merci de réessayer"
+            },
+            "audioFileListDialog": {
+                "title": "Liste de lecture"
             }
         },
         "audioRecorder": {
@@ -93,7 +97,7 @@
         },
         "appInfos": {
             "title": "Informations sur l'application",
-            "infos": "{{appName}} vous permet de modifier un fichier audio et d'y appliquer des filtres en toute simplificité. Pour cela, sélectionnez un ou plusieurs fichiers audio ou enregistrez un son (votre voix, par exemple). Vous pouvez ensuite télécharger le résultat. Tout le traitement audio est fait sur votre appareil, aucune donnée n'est envoyée vers Internet, et l'application est libre et open-source.",
+            "infos": "{{appName}} vous permet de modifier des fichiers audio et d'y appliquer des filtres en toute simplificité. Pour cela, sélectionnez un ou plusieurs fichiers audio ou enregistrez un son (votre voix, par exemple). Vous pouvez ensuite télécharger le résultat. Tout le traitement audio est fait sur votre appareil, aucune donnée n'est envoyée vers Internet, et l'application est libre et open-source.",
             "appVersion": "Version de l'application :",
             "versionDate": "Date de version :",
             "license": "Licence :",
