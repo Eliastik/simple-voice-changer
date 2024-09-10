@@ -70,6 +70,7 @@
 * [ ] - (Medium) Bug when changing recorder settings on Chrome mobile
 * [ ] - (Medium) Vocoder doesn't work well on sample rate > 96,000 Hz
 * [ ] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
+* [ ] - (Medium) Memory usage fixes
 
 ### Would be good but not important
 
@@ -79,18 +80,21 @@
 * [x] - Load a list of files
     * [x] - Navigate next/previous audio file
     * [x] - Enable loop audio player on list of file
-    * [ ] - Display list of file in popup
+    * [x] - Display list of file in popup
+* [x] - Enhance limiter?
 * [ ] - Batch processing (list of file)
+* [ ] - Save into localstorage filters settings + filter presets that can be set by the user?
 * [ ] - Create new filters (equalizer?, volume/gain?)
     * [ ] - If adding new filters: hide some advanced filters, and make possible to add them if needed in the UI
-* [ ] - Save into localstorage filters settings + filter presets that can be set by the user?
-* [ ] - Graphical visualization of audio + apply filters in a portion of the audio?
-* [ ] - Real-time filters editing when recording audio (reuse existing filters)?
-* [ ] - Enhance limiter?
-* [ ] - Filter "Autotuner"?
+* [ ] - "Pro mode"
+    * [ ] - Graphical visualization of audio + apply filters in a portion of the audio (or apply one filter a time)
+    * [ ] - Real-time filters editing when recording audio (reuse existing filters)?
+    * [ ] - Cut/paste audio?
+
 * [ ] - Advanced settings for audio channel number? By default use the number of channel of the host if possible (but some filters force 2-channel)
     * Soundtouch limit the possibility to use more than 2 channels
 * [ ] - Optimize performance: split processing into smaller chunks + threaded (Worker, not yet possible)
+* [ ] - Filter "Autotuner"?
 
 ### Other
 
