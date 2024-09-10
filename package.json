@@ -14,8 +14,8 @@
     "url": "git+https://github.com/Eliastik/simple-voice-changer.git"
   },
   "dependencies": {
-    "@eliastik/simple-sound-studio-components": "^2.2.0",
-    "@eliastik/simple-sound-studio-lib": "^2.2.0",
+    "@eliastik/simple-sound-studio-components": "^2.2.1",
+    "@eliastik/simple-sound-studio-lib": "^2.2.1",
     "i18next": "^23.15.1",
     "lodash": "^4.17.21",
     "next": "^14.2.9",
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.47.0",
-    "@types/audioworklet": "^0.0.54",
+    "@types/audioworklet": "^0.0.60",
     "@types/lodash": "^4.17.7",
     "@types/node": "^22.5.4",
     "@types/react": "^18.3.4",
