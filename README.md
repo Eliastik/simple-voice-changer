@@ -15,7 +15,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 2.2.0 (3/31/2024)
+* Version: 2.2.1 (9/10/2024)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -36,6 +36,15 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses some icons from [Font Awesome](https://fontawesome.com/) - [License](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Changelog
+
+* Version 2.2.1 (9/10/2024):
+    - Added the ability to open multiple audio files at once. Audios can be browsed in the interface. It's also possible to loop through the list of audios.
+    - Bug fixes and technical improvements:
+        - Bug fixes with the "Enable initial audio rendering" and "Compatibility mode" settings;
+        - Added unit tests and E2E (interface) tests with Playwright;
+        - Code architecture improvements (library side), dependency injection, code separations, refactoring, etc.;
+        - Dependency updates;
+        - Other bug fixes, minor text corrections.
 
 * Version 2.2.0 (3/31/2024):
     - The percentage of audio processing as well as the estimated remaining audio processing time is now displayed in the "Audio processing in progress" popup;
@@ -182,7 +191,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 2.2.0 (31/03/2024)
+* Version du programme : 2.2.1 (10/09/2024)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -203,6 +212,15 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise des icônes venant de chez [Font Awesome](https://fontawesome.com/) - [Licence](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Journal des changements
+
+* Version 2.2.1 (10/09/2024) :
+    - Ajout de la possibilité d'ouvrir plusieurs fichiers audio à la fois. Il est possible de naviguer à travers les audios dans l'interface. Il est également possible de lire en boucle la liste des audios.
+    - Corrections de bugs et améliorations techniques :
+        - Correction de bugs avec le paramétrage "Activer le rendu audio initial" et "Mode de compatibilité" ;
+        - Ajout de tests unitaires et tests E2E (d'interface) avec Playwright ;
+        - Amélioration de l'architecture du code (côté librairie), injection de dépendances, séparations du code, refactoring, notamment ;
+        - Mises à jour des dépendances ;
+        - Correction d'autres bugs, corrections mineures de textes
 
 * Version 2.2.0 (31/03/2024) :
     - Le pourcentage de traitement audio ainsi que le temps de traitement audio restant estimé s'affiche désormais dans la popup "Traitement audio en cours" ;

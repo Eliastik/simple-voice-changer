@@ -7,7 +7,7 @@ import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const HomeMenu = () => {
     const inputFile = useRef<HTMLInputElement | null>(null);
-    const { loadAudioPrincipalBuffer } = useAudioEditor();
+    const { loadAudioFileList } = useAudioEditor();
     const { initRecorder, recorderUnavailable } = useAudioRecorder();
     const { t } = useTranslation();
 
@@ -18,7 +18,8 @@ const HomeMenu = () => {
                 ref={inputFile}
                 style={{ display: "none" }}
                 accept="audio/*"
-                onChange={(e) => loadAudioPrincipalBuffer(e.target.files![0])}
+                multiple={true}
+                onChange={(e) => loadAudioFileList(e.target.files)}
             />
             <button className="btn flex-col w-48 h-64 lg:w-52 lg:h-72 2xl:w-60 2xl:h-80 gap-8" onClick={() => {
                 inputFile.current?.click();

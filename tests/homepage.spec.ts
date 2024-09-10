@@ -11,7 +11,7 @@ test("should display title", async ({ page }) => {
 });
 
 test("opening wrong file should display error", async ({ page }) => {
-    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select an audio file" });
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select one or more audio files" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();
@@ -27,7 +27,7 @@ test("opening wrong file should display error", async ({ page }) => {
 });
 
 test("opening audio file should not display error", async ({ page }) => {
-    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select an audio file" });
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select one or more audio files" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();
@@ -43,7 +43,7 @@ test("opening audio file should not display error", async ({ page }) => {
 });
 
 test("returning to homepage should work", async ({ page }) => {
-    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select an audio file" });
+    const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select one or more audio files" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();

@@ -12,7 +12,7 @@
     @apply bg-gray-300/70 rounded-none
 }
 
-.btn:not(.btn-ghost) {
+.btn:not(.btn-ghost):not(.btn-no-uppercase) {
     @apply uppercase;
 }
 .tooltip.tooltip-config-dialog::before {

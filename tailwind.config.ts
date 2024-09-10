@@ -5,7 +5,7 @@ const config: Config = {
         "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-        "./node_modules/@eliastik/simple-sound-studio-components/**/*.{js,ts,jsx,tsx,mdx}",
+        "./node_modules/@eliastik/simple-sound-studio-components/lib/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     theme: {
         extend: {
