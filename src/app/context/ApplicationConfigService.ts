@@ -85,6 +85,16 @@ export default class ApplicationConfigService extends GenericConfigService {
         this.setConfig(LibConstants.PREFERENCES_KEYS.DISABLE_INITIAL_RENDERING, enable ? "false" : "true");
     }
 
+    isInitialRenderingDisabled(): boolean {
+        const setting = this.getConfig(LibConstants.PREFERENCES_KEYS.DISABLE_INITIAL_RENDERING);
+
+        if(setting != null) {
+            return setting == "true";
+        }
+
+        return true;
+    }
+
     /** Get current theme from OS (dark/light) */
     private getUserThemePreference(): string {
         if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
