@@ -46,7 +46,8 @@
             "saveToWav": "WAV format",
             "previousMedia": "Load previous audio",
             "nextMedia": "Load next audio",
-            "playlist": "Playlist"
+            "playlist": "Playlist",
+            "volume": "Volume"
         },
         "languages": {
             "fr": "Français",

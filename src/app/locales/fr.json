@@ -46,7 +46,8 @@
             "saveToWav": "Format WAV",
             "previousMedia": "Charger l'audio précédent",
             "nextMedia": "Charger l'audio suivant",
-            "playlist": "Liste de lecture"
+            "playlist": "Liste de lecture",
+            "volume": "Volume"
         },
         "dialogs": {
             "pleaseWait": "Merci de patienter quelques instants",
