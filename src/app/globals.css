@@ -45,3 +45,7 @@
       scrollbar-gutter: revert !important;
     }
 }
+
+nextjs-portal {
+    display: none;
+}
