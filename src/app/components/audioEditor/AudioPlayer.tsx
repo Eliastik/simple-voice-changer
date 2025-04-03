@@ -72,10 +72,10 @@ const AudioPlayer = () => {
                         min={0}
                         max={maxTime}
                         value={currentTime}
-                        className="range range-player range-accent range-sm w-full rounded-none block bg-gray-250 after:bg-gray-800 backdrop-blur-sm"
+                        className="range range-player range-accent range-sm w-full rounded-none block bg-gray-250 after:bg-gray-800 backdrop-blur-xs"
                         onChange={(event) => setTimePlayer(parseFloat(event.target.value))} />
                 </div>
-                <div className="flex items-center justify-between w-full bg-base-300">
+                <div className="flex items-center justify-between w-full bg-base-300 h-12">
                     <div className="flex items-center">
                         {!playing &&
                             <div className="tooltip" id="playButton" data-tip={t("audioPlayer.play")}>
@@ -143,7 +143,7 @@ const AudioPlayer = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
                                     </svg>
                                 </summary>
-                                <div className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box h-40 w-14">
+                                <div className="p-2 shadow-sm menu dropdown-content z-1 bg-base-100 rounded-box h-40 w-14">
                                     <input type="range" min={0} max={1} step={0.01} value={audioVolume} className="range range-primary -rotate-90 origin-left absolute -bottom-3 left-7 w-40" onChange={event => setVolume(parseFloat(event.target.value))} />
                                 </div>
                             </details>
@@ -155,7 +155,7 @@ const AudioPlayer = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                     </svg>
                                 </summary>
-                                <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
+                                <ul className="p-2 shadow-sm menu dropdown-content z-1 bg-base-100 rounded-box w-52">
                                     <li onClick={() => removeOpenAttribute() && downloadAudio({ format: "mp3", bitrate: bitrateMP3 })}><a>{t("audioPlayer.saveToMp3")}</a></li>
                                     <li onClick={() => removeOpenAttribute() && downloadAudio({ format: "wav" })}><a>{t("audioPlayer.saveToWav")}</a></li>
                                 </ul>

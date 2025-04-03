@@ -1,43 +1,150 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui";
 
-.range.range-player::-webkit-slider-runnable-track {
-    height: 100%;
-    @apply bg-gray-300/70 rounded-none
+@config "../../tailwind.config.ts";
+
+@plugin "daisyui/theme" {
+  name: "light";
+  color-scheme: light;
+
+  --color-base-100: oklch(1 0 0);
+  --color-base-200: oklch(0.2 0 0 / 0.04);
+  --color-base-content: oklch(0.2 0 0);
+  --color-primary: oklch(71% 0.143 254.13);
+  --color-primary-content: oklch(98% 0.01 240);
+  --color-secondary: oklch(88% 0.0571 254.13);
+  --color-secondary-content: oklch(17% 0.011411 254.128);
+  --color-accent: oklch(76% 0.1313 184.17);
+  --color-accent-content: oklch(98% 0.01 160);
+  --color-neutral: oklch(32% 0.0248 255.7);
+  --color-neutral-content: oklch(98% 0.01 240);
+  --color-info: oklch(70% 0.2 220); /* #3abff8 */
+  --color-info-content: oklch(98% 0.01 220);
+  --color-success: oklch(65% 0.25 140); /* #36d399 */
+  --color-success-content: oklch(98% 0.01 140);
+  --color-warning: oklch(80% 0.25 80); /* #fbbd23 */
+  --color-warning-content: oklch(20% 0.05 80);
+  --color-error: oklch(65% 0.3 30); /* #f87272 */
+  --color-error-content: oklch(98% 0.01 30);
+
+  /* border radius */
+  --radius-selector: 8px;
+  --radius-field: 8px;
+  --radius-box: 8px;
+
+  /* base sizes */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* border size */
+  --border: 1px;
+
+  /* effects */
+  --depth: 0;
+  --noise: 0;
 }
 
-.range.range-player::-moz-range-track {
-    height: 100%;
-    @apply bg-gray-300/70 rounded-none
+@plugin "daisyui/theme" {
+  name: "dark";
+  color-scheme: dark;
+
+  --color-base-100: oklch(26% 0.020407 251.602);
+  --color-base-200: oklch(100% 0 0 / 0.025);
+  --color-base-content: oklch(85% 0.004081 251.602);
+  --color-primary: oklch(63% 0.198 259.75);
+  --color-primary-content: oklch(98% 0.01 240);
+  --color-secondary: oklch(71% 0.1495 268.51);
+  --color-secondary-content: oklch(32% 0 0);
+  --color-accent: oklch(70% 0.111 188.12);
+  --color-accent-content: oklch(13% 0.022197 188.119);
+  --color-neutral: oklch(76% 0.0389 268.79);
+  --color-neutral-content: oklch(13% 0.022197 188.119);
+  --color-info: oklch(70% 0.2 220);
+  --color-info-content: oklch(13% 0.022197 188.119);
+  --color-success: oklch(77% 0.1529 163.1);
+  --color-success-content: oklch(13% 0.022197 188.119);
+  --color-warning: oklch(83% 0.1642 83.42);
+  --color-warning-content: oklch(20% 0.05 80);
+  --color-error: oklch(71% 0.1649 22.15);
+  --color-error-content: oklch(13% 0.022197 188.119);
+
+  /* border radius */
+  --radius-selector: 8px;
+  --radius-field: 8px;
+  --radius-box: 8px;
+
+  /* base sizes */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* border size */
+  --border: 1px;
+
+  /* effects */
+  --depth: 0;
+  --noise: 0;
 }
 
-.btn:not(.btn-ghost):not(.btn-no-uppercase) {
-    @apply uppercase;
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
 }
-.tooltip.tooltip-config-dialog::before {
+
+@utility tooltip {
+  &.tooltip-config-dialog-md::before {
     position: absolute;
-    left: -18px;
+    left: -125px;
+  }
 }
 
-.tooltip.tooltip-config-dialog-input::before {
+@utility tooltip-config-dialog-md {
+  &.tooltip::before {
     position: absolute;
-    left: -105px;
+    left: -125px;
+  }
 }
 
 @layer utilities {
-    .tooltip.tooltip-config-dialog-md::before {
-        position: absolute;
-        left: -125px;
-    }
+  .range.range-player::-webkit-slider-runnable-track {
+    height: 100%;
+    @apply bg-gray-300/70 rounded-none;
+  }
+
+  .range.range-player::-moz-range-track {
+    height: 100%;
+    @apply bg-gray-300/70 rounded-none;
+  }
+
+  .btn:not(.btn-ghost):not(.btn-no-uppercase) {
+    @apply uppercase;
+  }
 }
 
-.collapse-content {
+@layer utilities {
+  .collapse-content {
     display: none;
-}
+  }
 
-.collapse[open] > .collapse-content, .collapse-open > .collapse-content, .collapse:focus:not(.collapse-close) > .collapse-content, .collapse:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-content, .collapse:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-content {
+  .collapse[open] > .collapse-content,
+  .collapse-open > .collapse-content,
+  .collapse:focus:not(.collapse-close) > .collapse-content,
+  .collapse:not(.collapse-close)
+    > input[type='checkbox']:checked
+    ~ .collapse-content,
+  .collapse:not(.collapse-close)
+    > input[type='radio']:checked
+    ~ .collapse-content {
     display: initial;
+  }
+
+  .md\:flex-row, .md\:flex-row > div.md\:w-3\/6, .join.join-vertical {
+    padding-left: 0;
+  }
 }
 
 @layer base {

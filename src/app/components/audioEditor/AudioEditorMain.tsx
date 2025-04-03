@@ -8,7 +8,7 @@ const AudioEditorMain = () => {
     return (
         <>
             <AudioEditorNotifications></AudioEditorNotifications>
-            <div className="flex justify-center items-center flex-grow gap-6 flex-col pt-16 pb-16">
+            <div className="flex justify-center items-center grow gap-6 flex-col pt-16 pb-16">
                 <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-3 md:gap-4 gap-2 place-content-center p-2 md:mt-2 md:p-0">
                     <FilterButtonList></FilterButtonList>
                 </div>

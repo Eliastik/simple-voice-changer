@@ -69,7 +69,7 @@
 * [x] - (Minor) When compatibility mode is enabled and initial audio rendering is disabled, when loading a new audio file then playing audio, the compatibility mode setting is ignored (normal mode instead)
 * [ ] - (Medium) Bug when changing recorder settings on Chrome mobile
 * [ ] - (Medium) Vocoder doesn't work well on sample rate > 96,000 Hz
-* [ ] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
+* [x] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
 * [ ] - (Medium) Memory usage fixes
 
 ### Ideas
