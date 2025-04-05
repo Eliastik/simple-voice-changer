@@ -65,7 +65,7 @@ test("changing settings of filter should work", async ({ page }) => {
 
     await page.waitForTimeout(5000);
 
-    const isOpen = await modalSettings.evaluate(modal => window.getComputedStyle(modal).opacity != "0");
+    const isOpen = await modalSettings.evaluate(modal => window.getComputedStyle(modal).visibility != "hidden");
 
     expect(isOpen).toBe(false);
 });

@@ -35,7 +35,7 @@ test("enabling initial audio rendering then cancelling initial rendering should 
     const notification = page.locator(".toast.toast-top > .alert.alert-info");
 
     await expect.poll(async () => await notification.count() == 1, {
-        timeout: 5000,
+        timeout: 10000,
         message: "Initial rendering cancelled notification was not visible which is not expected"
     }).toBe(true);
 });

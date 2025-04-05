@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 });
  
 test("should display title", async ({ page }) => {
-    await expect(page.locator(".navbar .btn:first-child div:first-child")).toContainText("Simple Voice Changer");
+    await expect(page.locator("body > .navbar .btn span:first-child")).toContainText("Simple Voice Changer");
 });
 
 test("opening wrong file should display error", async ({ page }) => {

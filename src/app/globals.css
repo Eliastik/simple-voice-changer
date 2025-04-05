@@ -86,6 +86,26 @@
   --noise: 0;
 }
 
+@theme {
+  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
+  --background-image-gradient-conic: conic-gradient(
+    from 180deg at 50% 50%,
+    var(--tw-gradient-stops)
+  );
+
+  --container-28: 7rem;
+  --container-32: 8rem;
+  --container-36: 9rem;
+
+  --max-height-68: 17rem;
+
+  --text-filters: 12.5px;
+
+  --breakpoint-3xl: 1940px;
+
+  --transition-duration-50: 50ms;
+}
+
 @layer base {
   *,
   ::after,
