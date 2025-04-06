@@ -8,24 +8,24 @@
   color-scheme: light;
 
   --color-base-100: oklch(1 0 0);
-  --color-base-200: oklch(0.2 0 0 / 0.04);
+  --color-base-200: oklch(0.2 0 0 / 0.05);
   --color-base-content: oklch(0.2 0 0);
   --color-primary: oklch(71% 0.143 254.13);
   --color-primary-content: oklch(98% 0.01 240);
   --color-secondary: oklch(88% 0.0571 254.13);
   --color-secondary-content: oklch(17% 0.011411 254.128);
   --color-accent: oklch(76% 0.1313 184.17);
-  --color-accent-content: oklch(98% 0.01 160);
+  --color-accent-content: oklch(0.152853 0.026261 184.169);
   --color-neutral: oklch(32% 0.0248 255.7);
-  --color-neutral-content: oklch(98% 0.01 240);
-  --color-info: oklch(70% 0.2 220); /* #3abff8 */
-  --color-info-content: oklch(98% 0.01 220);
-  --color-success: oklch(65% 0.25 140); /* #36d399 */
-  --color-success-content: oklch(98% 0.01 140);
-  --color-warning: oklch(80% 0.25 80); /* #fbbd23 */
+  --color-neutral-content: oklch(0.864357 0.004952 255.702);
+  --color-info: oklch(70% 0.2 220);
+  --color-info-content: oklch(0.152853 0.026261 184.169);
+  --color-success: oklch(65% 0.25 140);
+  --color-success-content: oklch(0.152853 0.026261 184.169);
+  --color-warning: oklch(80% 0.25 80);
   --color-warning-content: oklch(20% 0.05 80);
-  --color-error: oklch(65% 0.3 30); /* #f87272 */
-  --color-error-content: oklch(98% 0.01 30);
+  --color-error: oklch(0.712196 0.164893 22.1506);
+  --color-error-content: oklch(0.142439 0.032979 22.1506);
 
   /* border radius */
   --radius-selector: 8px;
@@ -48,8 +48,8 @@
   name: "dark";
   color-scheme: dark;
 
-  --color-base-100: oklch(26% 0.020407 251.602);
-  --color-base-200: oklch(100% 0 0 / 0.08);
+  --color-base-100: oklch(24.5% 0.020407 251.602);
+  --color-base-200: oklch(28.5% 0.0285 260);
   --color-base-300: oklch(26% 0.019511 257.277);
   --color-base-content: oklch(85% 0.004081 251.602);
   --color-primary: oklch(63% 0.198 259.75);
@@ -114,6 +114,15 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+  
+  :root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
+    scrollbar-gutter: revert !important;
+  }
+
+  .btn:active:focus, .btn:active:hover {
+    animation: button-pop 0s ease-out;
+    transform: scale(var(--btn-focus-scale, .95));
+  }
 }
 
 @utility tooltip {
@@ -121,12 +130,24 @@
     position: absolute;
     left: -125px;
   }
+
+  &.tooltip-config-dialog-input::before {
+    position: absolute;
+    left: -105px !important;
+  }
 }
 
 @utility tooltip-config-dialog-md {
   &.tooltip::before {
     position: absolute;
     left: -125px;
+  }
+}
+
+@utility tooltip-config-dialog-input {
+  &.tooltip::before {
+    position: absolute;
+    left: -105px !important;
   }
 }
 
@@ -144,9 +165,11 @@
   .btn:not(.btn-ghost):not(.btn-no-uppercase) {
     @apply uppercase;
   }
-}
 
-@layer utilities {
+  input.file-input {
+    padding-left: 0;
+  }
+
   .collapse-content {
     display: none;
   }
@@ -166,12 +189,42 @@
   .md\:flex-row, .md\:flex-row > div.md\:w-3\/6, .join.join-vertical {
     padding-left: 0;
   }
-}
 
-@layer base {
-    :root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
-      scrollbar-gutter: revert !important;
+  .btn-ghost {
+    border: none !important;
+  }
+
+  .modal {
+    transition-duration: 0.2s !important;
+  }
+
+  @media(prefers-reduced-motion: no-preference) {
+    .btn {
+      animation: button-pop var(--animation-btn, .25s) ease-out;
+      animation-duration: auto;
+      animation-timing-function: ease;
+      animation-delay: 0s;
+      animation-iteration-count: 1;
+      animation-direction: normal;
+      animation-fill-mode: none;
+      animation-play-state: running;
+      animation-name: button-pop;
+      animation-timeline: auto;
+      animation-range-start: normal;
+      animation-range-end: normal;
+      transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+      transition-duration: .2s;
+      transition-timing-function: cubic-bezier(0,0,.2,1);
     }
+  }
+
+  @media(hover: hover) {
+    @supports(color:oklch(0% 0 0)) {
+        html[data-theme="dark"] .btn-ghost:hover {
+            background-color: oklch(85.2982% 0.004081 251.602051 / .2);
+        }
+    }
+  }
 }
 
 nextjs-portal {
