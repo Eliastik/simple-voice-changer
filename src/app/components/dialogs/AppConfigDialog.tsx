@@ -49,7 +49,7 @@ const AppConfigDialog = () => {
                             <div className="md:w-4/6">
                                 <label htmlFor="colorTheme">{t("appSettings.colorTheme")}</label>
                             </div>
-                            <select className="select select-bordered md:w-4/6" id="colorTheme" value={currentThemeValue} onChange={e => setTheme(e.target.value)}>
+                            <select className="select select-bordered md:w-4/6 w-full" id="colorTheme" value={currentThemeValue} onChange={e => setTheme(e.target.value)}>
                                 <option value="auto">{t("appSettings.colorThemeAuto")}</option>
                                 <option value="light">{t("appSettings.colorThemeLight")}</option>
                                 <option value="dark">{t("appSettings.colorThemeDark")}</option>
@@ -61,7 +61,7 @@ const AppConfigDialog = () => {
                             <div className="md:w-4/6">
                                 <label htmlFor="selectLanguage">{t("appSettings.language")}</label>
                             </div>
-                            <select className="select select-bordered md:w-4/6" id="selectLanguage" value={currentLanguageValue} onChange={e => setLanguage(e.target.value)}>
+                            <select className="select select-bordered md:w-4/6 w-full" id="selectLanguage" value={currentLanguageValue} onChange={e => setLanguage(e.target.value)}>
                                 {i18next.languages.map(language => {
                                     return <option value={language} key={language}>{t("languages." + language)}</option>;
                                 })}
