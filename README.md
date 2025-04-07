@@ -246,7 +246,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
         - Correction de l'application de l'état activé/désactivé aux filtres Limiteur et Effet 8-bit (basés sur AudioWorklet) ;
         - Correction d'un bug où le paramètre "Pré-gain" du Limiteur était appliquée malgré que le filtre était désactivé ;
         - Correction d'un bug lors de la réinitialisation des paramètres du filtre Reverbération ;
-        - Correction d'un bug où, lorsqu'une fréquence d'échantillonage différente de celle du système était choisie dans les paramètres avancés, la fonctionnalité Enregistrer via le micro ne fonctionnait plus sous Firefox, avec un message d'erreur. Cela est déosrmais possible ;
+        - Correction d'un bug où, lorsqu'une fréquence d'échantillonage différente de celle du système était choisie dans les paramètres avancés, la fonctionnalité Enregistrer via le micro ne fonctionnait plus sous Firefox, avec un message d'erreur. Cela est désormais possible ;
         - D'autres améliorations mineures techniques du code ont été apportées, mise à jour de toutes les dépendances
 
 * Version 2.1 (31/12/2023) :
