@@ -194,10 +194,6 @@
     border: none !important;
   }
 
-  .modal {
-    transition-duration: 0.2s !important;
-  }
-
   @media(prefers-reduced-motion: no-preference) {
     .btn {
       animation: button-pop var(--animation-btn, .25s) ease-out;

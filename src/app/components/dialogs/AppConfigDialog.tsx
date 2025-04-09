@@ -3,6 +3,7 @@ import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { useMemo } from "react";
 
 const AppConfigDialog = () => {
     const {
@@ -27,6 +28,32 @@ const AppConfigDialog = () => {
     } = useApplicationConfig();
     const { actualSampleRate, defaultDeviceSampleRate, audioWorkletAvailable } = useAudioEditor();
     const { t } = useTranslation();
+
+    const languages = useMemo(() => {
+        return i18next.languages.map(language => 
+            <option value={language} key={language}>{t("languages." + language)}</option>
+        );
+    }, [i18next.languages]);
+
+    const sampleRates = useMemo(() => {
+        return Constants.VALID_SAMPLE_RATES.map(frequency =>
+            <option value={frequency} key={frequency}>
+                {frequency != 0 ? new Intl.NumberFormat(currentLanguageValue).format(frequency) : t("appSettings.defaultSampleRate")} {frequency > 0 && t("appSettings.sampleRateHz")}
+            </option>
+        );
+    }, [Constants.VALID_SAMPLE_RATES, currentLanguageValue, t]);
+
+    const bufferSizes = useMemo(() => {
+        return Constants.VALID_BUFFER_SIZE.map(size =>
+            <option value={size} key={size}>{size != 0 ? size : t("appSettings.defaultBufferSize")}</option>
+        );
+    }, [Constants.VALID_BUFFER_SIZE, t]);
+
+    const bitRatesMP3 = useMemo(() => {
+        return Constants.VALID_MP3_BITRATES.map(bitrate =>
+            <option value={bitrate} key={bitrate}>{bitrate} {t("appSettings.bitRateMP3Kbps")}</option>
+        );
+    }, [Constants.VALID_MP3_BITRATES, t]);
 
     const InfoIcon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
@@ -62,9 +89,7 @@ const AppConfigDialog = () => {
                                 <label htmlFor="selectLanguage">{t("appSettings.language")}</label>
                             </div>
                             <select className="select select-bordered md:w-4/6 w-full" id="selectLanguage" value={currentLanguageValue} onChange={e => setLanguage(e.target.value)}>
-                                {i18next.languages.map(language => {
-                                    return <option value={language} key={language}>{t("languages." + language)}</option>;
-                                })}
+                                {languages}
                             </select>
                         </div>
                     </div>
@@ -110,11 +135,7 @@ const AppConfigDialog = () => {
                                     <div className="flex flex-col">
                                         <div className="flex flex-row gap-x-2 items-center justify-end">
                                             <select className="select select-bordered flex-1" id="samplingFrequencySelect" value={sampleRate} onChange={(e) => changeSampleRate(parseInt(e.target.value))}>
-                                                {Constants.VALID_SAMPLE_RATES.map(frequency =>
-                                                    <option value={frequency} key={frequency}>
-                                                        {frequency != 0 ? new Intl.NumberFormat(currentLanguageValue).format(frequency) : t("appSettings.defaultSampleRate")} {frequency > 0 && t("appSettings.sampleRateHz")}
-                                                    </option>
-                                                )}
+                                                {sampleRates}
                                             </select>
                                             {sampleRate > defaultDeviceSampleRate && (
                                                 <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md text-warning" data-tip={t("appSettings.samplingFrequencyTooHigh")}>
@@ -138,7 +159,7 @@ const AppConfigDialog = () => {
                                     </div>
                                     <div className="flex flex-row gap-x-2 items-center">
                                         <select className="select select-bordered flex-1" id="bufferSizeSelect" value={bufferSize} onChange={(e) => changeBufferSize(parseInt(e.target.value))}>
-                                            {Constants.VALID_BUFFER_SIZE.map(size => <option value={size} key={size}>{size != 0 ? size : t("appSettings.defaultBufferSize")}</option>)}
+                                            {bufferSizes}
                                         </select>
                                         <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.bufferSizeInfos")}>
                                             {InfoIcon}
@@ -153,7 +174,7 @@ const AppConfigDialog = () => {
                                     </div>
                                     <div className="flex flex-row gap-x-2 items-center">
                                         <select className="select select-bordered flex-1" id="sampleRateMP3Select" value={bitrateMP3} onChange={(e) => changeBitrateMP3(parseInt(e.target.value))}>
-                                            {Constants.VALID_MP3_BITRATES.map(bitrate => <option value={bitrate} key={bitrate}>{bitrate} {t("appSettings.bitRateMP3Kbps")}</option>)}
+                                            {bitRatesMP3}
                                         </select>
                                         <div className="tooltip tooltip-top tooltip-config-dialog-input md:tooltip-config-dialog-md" data-tip={t("appSettings.bitRateMP3Infos")}>
                                             {InfoIcon}
