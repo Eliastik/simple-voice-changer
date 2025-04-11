@@ -9,6 +9,7 @@
 
   --color-base-100: oklch(1 0 0);
   --color-base-200: oklch(0.2 0 0 / 0.05);
+  --color-base-300: oklch(0.2 0 0 / 0.08);
   --color-base-content: oklch(0.2 0 0);
   --color-primary: oklch(71% 0.143 254.13);
   --color-primary-content: oklch(98% 0.01 240);
@@ -192,6 +193,10 @@
 
   .btn-ghost {
     border: none !important;
+  }
+
+  .loading-lg {
+    width: calc(var(--size-selector, 0.25rem) * 8);
   }
 
   @media(prefers-reduced-motion: no-preference) {
