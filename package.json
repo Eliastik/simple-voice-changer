@@ -29,7 +29,7 @@
     "@tailwindcss/postcss": "^4.1.3",
     "@types/audioworklet": "^0.0.65",
     "@types/lodash": "^4.17.16",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.2",
     "@types/semver": "^7.7.0",
