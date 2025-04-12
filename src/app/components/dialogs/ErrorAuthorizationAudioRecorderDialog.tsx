@@ -1,13 +1,22 @@
-import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const ErrorAuthorizationAudioRecorderDialog = () => {
     const { audioRecorderHasError, closeAudioRecorderError } = useAudioRecorder();
     const { t } = useTranslation();
+                        
+    const errorAuthorizationAudioRecorderDialogCheckbox = useMemo(() => {
+        if (audioRecorderHasError) {
+            return <input type="checkbox" id="errorAuthorizationAudioRecorderDialog" className="modal-toggle" defaultChecked={true} />;
+        } else {
+            return <></>
+        }
+    }, [audioRecorderHasError]);
 
     return (
         <>
-            {audioRecorderHasError && <input type="checkbox" id="errorAuthorizationAudioRecorderDialog" className="modal-toggle" defaultChecked={true} />}
+            {errorAuthorizationAudioRecorderDialogCheckbox}
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.errorAuthorizationAudioRecorderDialog.title")}</h3>

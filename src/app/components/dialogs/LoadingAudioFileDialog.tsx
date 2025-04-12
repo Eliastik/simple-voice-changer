@@ -1,13 +1,22 @@
-import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
 
 const LoadingAudioFileDialog = () => {
     const { t } = useTranslation();
     const { loadingPrincipalBuffer } = useAudioEditor();
+                                            
+    const loadingPrincipalBufferCheckbox = useMemo(() => {
+        if (loadingPrincipalBuffer) {
+            return <input type="checkbox" id="loadingBufferModal" className="modal-toggle" defaultChecked={true} />;
+        } else {
+            return <></>
+        }
+    }, [loadingPrincipalBuffer]);
     
     return (
         <>
-            {loadingPrincipalBuffer && <input type="checkbox" id="loadingBufferModal" className="modal-toggle" defaultChecked={true} />}
+            {loadingPrincipalBufferCheckbox}
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.loadingAudioFile.title")}</h3>

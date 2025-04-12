@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import { AudioEditor, EventType, Constants } from "@eliastik/simple-sound-studio-lib";
+import { AudioEditor, EventType, Constants, EventEmitter } from "@eliastik/simple-sound-studio-lib";
 import { SoundStudioApplicationFactory } from "@eliastik/simple-sound-studio-components";
 import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
 import i18next from "i18next";
@@ -30,6 +30,10 @@ const getService = (): ApplicationConfigService => {
 
 const getAudioEditor = (): AudioEditor => {
     return SoundStudioApplicationFactory.getAudioEditorInstance()!;
+};
+
+const getEventEmitter = (): EventEmitter => {
+    return SoundStudioApplicationFactory.getEventEmitterInstance()!;
 };
 
 let isReady = false;
@@ -75,7 +79,7 @@ export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ 
         setBitrateMP3(getService().getBitrateMP3());
         setCompatibilityModeEnabled(getService().isCompatibilityModeEnabled());
         setIsInitialRenderingEnabled(!getService().isInitialRenderingDisabled());
-        getAudioEditor().on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => setCompatibilityModeEnabled(true));
+        getEventEmitter().on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => setCompatibilityModeEnabled(true));
 
         getService().checkAppUpdate().then(result => setUpdateData(result));
 

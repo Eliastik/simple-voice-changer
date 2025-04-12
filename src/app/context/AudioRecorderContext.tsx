@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
 import { SoundStudioApplicationFactory } from "@eliastik/simple-sound-studio-components";
-import { VoiceRecorder, EventType, RecorderSettings } from "@eliastik/simple-sound-studio-lib";
+import { VoiceRecorder, EventType, RecorderSettings, EventEmitter } from "@eliastik/simple-sound-studio-lib";
 import AudioRecorderContextProps from "../model/contextProps/AudioRecorderContextProps";
 
 const AudioRecorderContext = createContext<AudioRecorderContextProps | undefined>(undefined);
@@ -21,6 +21,10 @@ interface AudioRecorderProviderProps {
 
 const getRecorderInstance = (): VoiceRecorder => {
     return SoundStudioApplicationFactory.getAudioRecorderInstance()!;
+};
+
+const getEventEmitter = (): EventEmitter => {
+    return SoundStudioApplicationFactory.getEventEmitterInstance()!;
 };
 
 let isReady = false;
@@ -52,25 +56,25 @@ export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children
             return;
         }
 
-        getRecorderInstance().on(EventType.RECORDER_ERROR, () => setAudioRecorderHasError(true));
-        getRecorderInstance().on(EventType.RECORDER_NOT_FOUND_ERROR, () => setAudioRecorderDeviceNotFound(true));
-        getRecorderInstance().on(EventType.RECORDER_UNKNOWN_ERROR, () => setAudioRecorderHasUnknownError(true));
-        getRecorderInstance().on(EventType.RECORDER_RECORDING, () => setAudioRecording(true));
-        getRecorderInstance().on(EventType.RECORDER_PAUSED, () => setAudioRecording(false));
-        getRecorderInstance().on(EventType.RECORDER_UPDATE_CONSTRAINTS, () => setRecorderSettings(getRecorderInstance().getSettings()));
-        getRecorderInstance().on(EventType.RECORDER_RESETED, () => resetRecorderState());
+        getEventEmitter().on(EventType.RECORDER_ERROR, () => setAudioRecorderHasError(true));
+        getEventEmitter().on(EventType.RECORDER_NOT_FOUND_ERROR, () => setAudioRecorderDeviceNotFound(true));
+        getEventEmitter().on(EventType.RECORDER_UNKNOWN_ERROR, () => setAudioRecorderHasUnknownError(true));
+        getEventEmitter().on(EventType.RECORDER_RECORDING, () => setAudioRecording(true));
+        getEventEmitter().on(EventType.RECORDER_PAUSED, () => setAudioRecording(false));
+        getEventEmitter().on(EventType.RECORDER_UPDATE_CONSTRAINTS, () => setRecorderSettings(getRecorderInstance().getSettings()));
+        getEventEmitter().on(EventType.RECORDER_RESETED, () => resetRecorderState());
 
-        getRecorderInstance().on(EventType.RECORDER_COUNT_UPDATE, () => {
+        getEventEmitter().on(EventType.RECORDER_COUNT_UPDATE, () => {
             setRecorderDisplayTime(getRecorderInstance().currentTimeDisplay);
             setRecorderTime(getRecorderInstance().currentTime);
         });
 
-        getRecorderInstance().on(EventType.RECORDER_STOPPED, () => {
+        getEventEmitter().on(EventType.RECORDER_STOPPED, () => {
             setAudioRecording(false);
             setAudioRecorderReady(false);
         });
 
-        getRecorderInstance().on(EventType.RECORDER_SUCCESS, () => {
+        getEventEmitter().on(EventType.RECORDER_SUCCESS, () => {
             setAudioRecorderReady(true);
             setAudioRecorderHasError(false);
             resetRecorderState();

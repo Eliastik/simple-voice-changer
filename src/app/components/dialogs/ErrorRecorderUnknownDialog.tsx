@@ -1,13 +1,22 @@
-import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const ErrorRecorderUnknownDialog = () => {
     const { audioRecorderHasUnknownError, closeAudioRecorderUnknownError } = useAudioRecorder();
     const { t } = useTranslation();
+                                
+    const audioRecorderHasUnknownErrorCheckbox = useMemo(() => {
+        if (audioRecorderHasUnknownError) {
+            return <input type="checkbox" id="errorRecorderUnknownDialog" className="modal-toggle" defaultChecked={true} />;
+        } else {
+            return <></>
+        }
+    }, [audioRecorderHasUnknownError]);
 
     return (
         <>
-            {audioRecorderHasUnknownError && <input type="checkbox" id="errorRecorderUnknownDialog" className="modal-toggle" defaultChecked={true} />}
+            {audioRecorderHasUnknownErrorCheckbox}
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.errorRecorderUnknownDialog.title")}</h3>
