@@ -57,7 +57,7 @@ test("changing settings of filter should work", async ({ page }) => {
 
     expect(modalSettings).toHaveAttribute("open", { timeout: 10000 });
 
-    await page.locator("#bassboost_frequencyBooster").fill("25");
+    await page.locator("#bassboost-frequencyBooster").fill("25");
 
     const validateButton = modalSettings.locator("button", { hasText: "Validate" });
 
@@ -83,7 +83,7 @@ test("resetting settings of filter should work", async ({ page }) => {
 
     await modalSettings.waitFor({ state: "visible", timeout: 3000 });
 
-    const input = page.locator("#bassboost_frequencyBooster");
+    const input = page.locator("#bassboost-frequencyBooster");
 
     await input.fill("25");
 

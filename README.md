@@ -15,7 +15,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 2.2.1 (9/10/2024)
+* Version: 2.3.0 (4/13/2025)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -36,6 +36,22 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses some icons from [Font Awesome](https://fontawesome.com/) - [License](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Changelog
+
+* Version 2.3.0 (4/13/2025):
+    - Added the ability to adjust the audio player's output volume.
+    - Added the "Key" parameter to the "Change speed / frequency" filter.
+    - The "Change speed / frequency" filter (based on SoundtouchJS) now fully operates using the AudioWorklet, regardless of the mode. This improves the filter’s compatibility with Firefox.
+    - Fixed a bug with the Limiter, enhancing the audio quality produced by the filter.
+    - Added the ability to apply filter parameters in real-time (compatibility/direct rendering mode only).
+    - Added an "Apply" button to the filter settings popup.
+    - Reduced the application's memory usage by fixing a memory leak issue. Additional optimizations have also been implemented.
+    - Following updates to the application’s dependencies, the general visual theme of the app has been adapted:
+        - The contrast of the dark theme has been optimized.
+        - Other design adjustments have been made.
+    - Bug fixes:
+        - Fixed an issue with audio player speed handling according to the audio speed (when using the "Change speed / frequency" filter).
+    - Technical improvements:
+        - Updated all dependencies, including DaisyUI to version 5 and TailwindCSS to version 4 (major versions).
 
 * Version 2.2.1 (9/10/2024):
     - Added the ability to open multiple audio files at once. Audios can be browsed in the interface. It's also possible to loop through the list of audios.
@@ -191,7 +207,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version du programme : 2.2.1 (10/09/2024)
+* Version : 2.3.0 (13/04/2025)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -212,6 +228,22 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise des icônes venant de chez [Font Awesome](https://fontawesome.com/) - [Licence](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Journal des changements
+
+* Version 2.3.0 (13/04/2025) :
+    - Ajout de la possibilité de régler le volume de sortie du lecteur audio ;
+    - Ajout du paramètre "Note" au filtre Modifier la vitesse / fréquence ;
+    - Le filtre Modifier la vitesse / fréquence (basé sur SoundtouchJS) fonctionne désormais entièrement grâce à l'AudioWorklet peu importe le mode. Cela améliore la compatibilité du filtre avec Firefox ;
+    - Un bug a été corrigé avec le Limiteur, améliorant la qualité audio produite par le filtre ;
+    - Ajout de la possibilité d'appliquer en temps réel les paramètres des filtres (uniquement en mode de compatibilité/rendu direct) ;
+    - Ajout du bouton "Appliquer" à la popup des paramètres des filtres ;
+    - L'utilisation mémoire de l'application a été réduite grâce à la correction d'un problème de fuite de mémoire. D'autres optimisations ont également été apportées ;
+    - Suite à la mise à jour des dépendances de l'application, le thème graphique général de l'application a dû être adapté :
+        - Le contraste du thème sombre a été optimisé ;
+        - D'autres changements ont été apportés ;
+    - Correction de bugs : 
+        - Correction d'un bug avec la gestion de la vitesse du lecteur audio selon la vitesse de l'audio (lors de l'utilisation du filtre Modifier la vitesse / fréquence) ;
+    - Améliorations techniques :
+        - Mise à jour de toutes les dépendances, dont DaisyUI vers la version 5 et TailwindCSS vers la version 4 (versions majeures).
 
 * Version 2.2.1 (10/09/2024) :
     - Ajout de la possibilité d'ouvrir plusieurs fichiers audio à la fois. Il est possible de naviguer à travers les audios dans l'interface. Il est également possible de lire en boucle la liste des audios.
