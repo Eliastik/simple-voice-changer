@@ -1,7 +1,6 @@
-import { useAudioEditor, DaisyUIModal } from "@eliastik/simple-sound-studio-components";
+import { useAudioEditor, DaisyUIModal, useAudioRecorder } from "@eliastik/simple-sound-studio-components";
 import AppConfigDialog from "../dialogs/AppConfigDialog";
 import GoToHomeDialog from "../dialogs/GoToHomeDialog";
-import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import AppInfoDialog from "../dialogs/AppInfoDialog";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import Constants from "@/app/model/Constants";

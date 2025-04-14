@@ -6,13 +6,11 @@ import { SoundStudioApplicationFactory, useAudioEditor } from "@eliastik/simple-
 import { useApplicationConfig } from "./context/ApplicationConfigContext";
 import ApplicationConfigSingleton from "./context/ApplicationConfigSingleton";
 import Constants from "./model/Constants";
-import { useAudioRecorder } from "./context/AudioRecorderContext";
 
 const Home = () => {
     const pauseAudioEditor = useAudioEditor(state => state.pauseAudioEditor);
     const updateCurrentTheme = useApplicationConfig(state => state.updateCurrentTheme);
     const initializeConfigStore = useApplicationConfig(state => state.initializeStore);
-    const initializeRecorderStore = useAudioRecorder(state => state.initializeStore);
 
     useEffect(() => {
         // Initialize SoundStudioApplicationFactory
@@ -20,7 +18,6 @@ const Home = () => {
 
         // Initialize contexts
         initializeConfigStore();
-        initializeRecorderStore();
     }, []);
 
     useEffect(() => {

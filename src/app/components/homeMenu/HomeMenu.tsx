@@ -1,9 +1,8 @@
 "use client";
 
-import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
+import { useAudioEditor, useAudioRecorder } from "@eliastik/simple-sound-studio-components";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const HomeMenu = () => {
     const inputFile = useRef<HTMLInputElement | null>(null);

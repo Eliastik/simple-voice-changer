@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/shallow";
-import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
+import { useAudioRecorder } from "@eliastik/simple-sound-studio-components";
 
 const RecorderConfigDialog = () => {
     const { t } = useTranslation();

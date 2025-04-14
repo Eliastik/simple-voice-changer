@@ -1,5 +1,4 @@
-import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
-import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
+import { useAudioEditor, useAudioRecorder } from "@eliastik/simple-sound-studio-components";
 import { useTranslation } from "react-i18next";
 
 const GoToHomeDialog = () => {

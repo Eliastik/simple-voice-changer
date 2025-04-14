@@ -3,8 +3,7 @@
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/shallow";
-import { DaisyUIModal } from "@eliastik/simple-sound-studio-components";
-import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
+import { DaisyUIModal, useAudioRecorder } from "@eliastik/simple-sound-studio-components";
 import RecorderConfigDialog from "../dialogs/RecorderConfigDialog";
 
 const AudioRecorderMain = () => {
