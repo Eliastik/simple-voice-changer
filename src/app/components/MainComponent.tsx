@@ -14,8 +14,9 @@ import ErrorRecorderDeviceNotFoundDialog from "./dialogs/ErrorRecorderDeviceNotF
 import ErrorRecorderUnknownDialog from "./dialogs/ErrorRecorderUnknownDialog";
 
 const MainComponent = () => {
-    const { audioEditorReady, downloadingInitialData } = useAudioEditor();
-    const { audioRecorderReady } = useAudioRecorder();
+    const audioEditorReady = useAudioEditor(state => state.audioEditorReady);
+    const downloadingInitialData = useAudioEditor(state => state.downloadingInitialData);
+    const audioRecorderReady = useAudioRecorder(state => state.audioRecorderReady);
 
     return (
         <>

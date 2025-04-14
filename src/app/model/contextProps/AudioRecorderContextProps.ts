@@ -1,6 +1,7 @@
 import { RecorderSettings } from "@eliastik/simple-sound-studio-lib";
 
 export default interface AudiRecorderContextProps {
+    isInitialized: boolean,
     audioRecorderReady: boolean,
     audioRecorderHasError: boolean,
     initRecorder: () => void,
@@ -23,5 +24,6 @@ export default interface AudiRecorderContextProps {
     audioRecorderDeviceNotFound: boolean,
     closeAudioRecorderDeviceNotFound: () => void,
     audioRecorderHasUnknownError: boolean,
-    closeAudioRecorderUnknownError: () => void
+    closeAudioRecorderUnknownError: () => void,
+    initializeStore: () => void
 };

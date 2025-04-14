@@ -2,13 +2,29 @@
 
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useShallow } from "zustand/shallow";
 import { DaisyUIModal } from "@eliastik/simple-sound-studio-components";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import RecorderConfigDialog from "../dialogs/RecorderConfigDialog";
 
 const AudioRecorderMain = () => {
-    const { pauseRecorderAudio, audioRecording, recordAudio, stopRecordAudio, recorderTime, recorderDisplayTime } = useAudioRecorder();
     const { t } = useTranslation();
+
+    const [
+        pauseRecorderAudio,
+        audioRecording,
+        recordAudio,
+        stopRecordAudio,
+        recorderTime,
+        recorderDisplayTime,
+    ] = useAudioRecorder(useShallow(state => [
+        state.pauseRecorderAudio,
+        state.audioRecording,
+        state.recordAudio,
+        state.stopRecordAudio,
+        state.recorderTime,
+        state.recorderDisplayTime,
+    ]));
 
     const handleEvent = useCallback((e: KeyboardEvent) => {
         if (e.key === " ") {

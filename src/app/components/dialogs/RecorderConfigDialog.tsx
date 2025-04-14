@@ -1,9 +1,25 @@
 import { useTranslation } from "react-i18next";
+import { useShallow } from "zustand/shallow";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const RecorderConfigDialog = () => {
-    const { recorderSettings, changeInput, toggleAudioFeedback, toggleEchoCancellation, toggleNoiseReduction, toggleAutoGainControl } = useAudioRecorder();
     const { t } = useTranslation();
+
+    const [
+        recorderSettings,
+        changeInput,
+        toggleAudioFeedback,
+        toggleEchoCancellation,
+        toggleNoiseReduction,
+        toggleAutoGainControl,
+    ] = useAudioRecorder(useShallow(state => [
+        state.recorderSettings,
+        state.changeInput,
+        state.toggleAudioFeedback,
+        state.toggleEchoCancellation,
+        state.toggleNoiseReduction,
+        state.toggleAutoGainControl,
+    ]));
 
     return (
         <dialog id="recorderSettingsModal" className="modal">

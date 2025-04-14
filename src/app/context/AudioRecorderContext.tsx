@@ -1,136 +1,143 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
+import { create } from "zustand";
+import { createContext, ReactNode, FC } from "react";
 import { SoundStudioApplicationFactory } from "@eliastik/simple-sound-studio-components";
-import { VoiceRecorder, EventType, RecorderSettings, EventEmitter } from "@eliastik/simple-sound-studio-lib";
+import { EventType } from "@eliastik/simple-sound-studio-lib";
 import AudioRecorderContextProps from "../model/contextProps/AudioRecorderContextProps";
 
-const AudioRecorderContext = createContext<AudioRecorderContextProps | undefined>(undefined);
+const getRecorderInstance = () => SoundStudioApplicationFactory.getAudioRecorderInstance();
+const getEventEmitter = () => SoundStudioApplicationFactory.getEventEmitterInstance();
 
-export const useAudioRecorder = (): AudioRecorderContextProps => {
-    const context = useContext(AudioRecorderContext);
-    if (!context) {
-        throw new Error("useAudioRecorder must be used inside an AudioRecorderProvider");
-    }
-    return context;
-};
+export const useAudioRecorder = create<AudioRecorderContextProps>((set, get) => {
+    const resetRecorderState = () => {
+        const recorder = getRecorderInstance();
+
+        if (recorder) {
+            set({
+                audioRecording: false,
+                recorderDisplayTime: recorder.currentTimeDisplay,
+                recorderTime: recorder.currentTime,
+                recorderSettings: recorder.getSettings(),
+            });
+        }
+    };
+
+    const initializeStore = () => {
+        if (get().isInitialized) {
+            return;
+        }
+
+        const emitter = getEventEmitter();
+        const recorder = getRecorderInstance();
+
+        if (emitter && recorder) {
+            emitter.on(EventType.RECORDER_ERROR, () => set({ audioRecorderHasError: true }));
+            emitter.on(EventType.RECORDER_NOT_FOUND_ERROR, () => set({ audioRecorderDeviceNotFound: true }));
+            emitter.on(EventType.RECORDER_UNKNOWN_ERROR, () => set({ audioRecorderHasUnknownError: true }));
+            emitter.on(EventType.RECORDER_RECORDING, () => set({ audioRecording: true }));
+            emitter.on(EventType.RECORDER_PAUSED, () => set({ audioRecording: false }));
+            emitter.on(EventType.RECORDER_UPDATE_CONSTRAINTS, () => set({ recorderSettings: recorder.getSettings() }));
+            emitter.on(EventType.RECORDER_RESETED, resetRecorderState);
+            emitter.on(EventType.RECORDER_STOPPED, () => set({ audioRecording: false, audioRecorderReady: false }));
+
+            emitter.on(EventType.RECORDER_COUNT_UPDATE, () => {
+                const recorder = getRecorderInstance();
+
+                if (recorder) {
+                    set({
+                        recorderDisplayTime: recorder.currentTimeDisplay,
+                        recorderTime: recorder.currentTime,
+                    });
+                }
+            });
+
+            emitter.on(EventType.RECORDER_SUCCESS, () => {
+                resetRecorderState();
+                set({
+                    audioRecorderReady: true,
+                    audioRecorderHasError: false,
+                });
+            });
+
+            set({ recorderUnavailable: !recorder.isRecordingAvailable() });
+    
+            get().isInitialized = true;
+        } else {
+            console.error("Event Emitter or Audio Recorder is not available!");
+        }
+    };
+
+    return {
+        isInitialized: false,
+        audioRecorderReady: false,
+        audioRecorderHasError: false,
+        audioRecorderDeviceNotFound: false,
+        audioRecorderHasUnknownError: false,
+        audioRecorderAuthorizationPending: false,
+        audioRecording: false,
+        recorderDisplayTime: "00:00",
+        recorderTime: 0,
+        recorderSettings: { constraints: {}, deviceList: [], audioFeedback: false },
+        recorderUnavailable: false,
+        initRecorder: async () => {
+            const recorder = getRecorderInstance();
+
+            try {
+                if(!recorder) {
+                    throw new Error("Recorder is not available!");
+                }
+
+                set({ audioRecorderAuthorizationPending: true });
+                await recorder.init();
+                set({
+                    audioRecorderAuthorizationPending: false,
+                    recorderSettings: recorder.getSettings(),
+                });
+            } catch (e) {
+                console.error(e);
+                set({ audioRecorderAuthorizationPending: false });
+            }
+        },
+        exitAudioRecorder: () => {
+            const recorder = getRecorderInstance();
+
+            if (recorder) {
+                recorder.reset();
+                set({ audioRecorderReady: false });
+            }
+        },
+        recordAudio: () => getRecorderInstance()?.record(),
+        pauseRecorderAudio: () => getRecorderInstance()?.pause(),
+        stopRecordAudio: () => getRecorderInstance()?.stop(),
+        changeInput: (deviceId, groupId) => getRecorderInstance()?.changeInput(deviceId, groupId),
+        toggleAudioFeedback: (enable) => getRecorderInstance()?.audioFeedback(enable),
+        toggleEchoCancellation: (enable) => getRecorderInstance()?.setEchoCancellation(enable),
+        toggleNoiseReduction: (enable) => getRecorderInstance()?.setNoiseSuppression(enable),
+        toggleAutoGainControl: (enable) => getRecorderInstance()?.setAutoGain(enable),
+        closeAudioRecorderError: () => set({ audioRecorderHasError: false }),
+        closeAudioRecorderDeviceNotFound: () => set({ audioRecorderDeviceNotFound: false }),
+        closeAudioRecorderUnknownError: () => set({ audioRecorderHasUnknownError: false }),
+        initializeStore
+    };
+});
+
+const AudioRecorderContext = createContext<AudioRecorderContextProps | undefined>(undefined);
 
 interface AudioRecorderProviderProps {
     children: ReactNode;
 }
 
-const getRecorderInstance = (): VoiceRecorder => {
-    return SoundStudioApplicationFactory.getAudioRecorderInstance()!;
-};
-
-const getEventEmitter = (): EventEmitter => {
-    return SoundStudioApplicationFactory.getEventEmitterInstance()!;
-};
-
-let isReady = false;
-
+/**
+ * @deprecated Will be removed in a future release. It is not needed anymore.
+ */
 export const AudioRecorderProvider: FC<AudioRecorderProviderProps> = ({ children }) => {
-    // State: true if the recorder is ready (the user has allowed access to microphone)
-    const [audioRecorderReady, setAudioRecorderReady] = useState(false);
-    // State: true if there are an error (when allowing acces to microphone)
-    const [audioRecorderHasError, setAudioRecorderHasError] = useState(false);
-    // State: true if there are an error (microphone not found)
-    const [audioRecorderDeviceNotFound, setAudioRecorderDeviceNotFound] = useState(false);
-    // State: true if there are an error (unknown error)
-    const [audioRecorderHasUnknownError, setAudioRecorderHasUnknownError] = useState(false);
-    // State: true if the authorization request is pending
-    const [audioRecorderAuthorizationPending, setAudioRecorderAuthorizationPending] = useState(false);
-    // State: true if recording
-    const [audioRecording, setAudioRecording] = useState(false);
-    // State: current display time
-    const [recorderDisplayTime, setRecorderDisplayTime] = useState("00:00");
-    // State: current time
-    const [recorderTime, setRecorderTime] = useState(0);
-    // State: settings
-    const [recorderSettings, setRecorderSettings] = useState<RecorderSettings>({ constraints: {}, deviceList: [], audioFeedback: false });
-    // State: recorder unavailable (in not secure context for example)
-    const [recorderUnavailable, setRecorderUnavailable] = useState(false);
+    const audioRecorderStore = useAudioRecorder();
 
-    useEffect(() => {
-        if (isReady) {
-            return;
-        }
-
-        getEventEmitter().on(EventType.RECORDER_ERROR, () => setAudioRecorderHasError(true));
-        getEventEmitter().on(EventType.RECORDER_NOT_FOUND_ERROR, () => setAudioRecorderDeviceNotFound(true));
-        getEventEmitter().on(EventType.RECORDER_UNKNOWN_ERROR, () => setAudioRecorderHasUnknownError(true));
-        getEventEmitter().on(EventType.RECORDER_RECORDING, () => setAudioRecording(true));
-        getEventEmitter().on(EventType.RECORDER_PAUSED, () => setAudioRecording(false));
-        getEventEmitter().on(EventType.RECORDER_UPDATE_CONSTRAINTS, () => setRecorderSettings(getRecorderInstance().getSettings()));
-        getEventEmitter().on(EventType.RECORDER_RESETED, () => resetRecorderState());
-
-        getEventEmitter().on(EventType.RECORDER_COUNT_UPDATE, () => {
-            setRecorderDisplayTime(getRecorderInstance().currentTimeDisplay);
-            setRecorderTime(getRecorderInstance().currentTime);
-        });
-
-        getEventEmitter().on(EventType.RECORDER_STOPPED, () => {
-            setAudioRecording(false);
-            setAudioRecorderReady(false);
-        });
-
-        getEventEmitter().on(EventType.RECORDER_SUCCESS, () => {
-            setAudioRecorderReady(true);
-            setAudioRecorderHasError(false);
-            resetRecorderState();
-        });
-
-        setRecorderUnavailable(!getRecorderInstance().isRecordingAvailable());
-
-        isReady = true;
-    }, []);
-
-    const initRecorder = async () => {
-        try {
-            setAudioRecorderAuthorizationPending(true);
-            await getRecorderInstance().init();
-            setAudioRecorderAuthorizationPending(false);
-            setRecorderSettings(getRecorderInstance().getSettings());
-        } catch (e) {
-            console.error(e);
-            setAudioRecorderAuthorizationPending(false);
-        }
-    };
-
-    const resetRecorderState = () => {
-        setAudioRecording(false);
-        setRecorderDisplayTime(getRecorderInstance().currentTimeDisplay);
-        setRecorderTime(getRecorderInstance().currentTime);
-        setRecorderSettings(getRecorderInstance().getSettings());
-    };
-
-    const exitAudioRecorder = () => {
-        getRecorderInstance().reset();
-        setAudioRecorderReady(false);
-    };
-
-    const recordAudio = () => getRecorderInstance().record();
-    const pauseRecorderAudio = () => getRecorderInstance().pause();
-    const stopRecordAudio = () => getRecorderInstance().stop();
-    const changeInput = (deviceId: string, groupId: string | undefined) => getRecorderInstance().changeInput(deviceId, groupId);
-    const toggleAudioFeedback = (enable: boolean) => getRecorderInstance().audioFeedback(enable);
-    const toggleEchoCancellation = (enable: boolean) => getRecorderInstance().setEchoCancellation(enable);
-    const toggleNoiseReduction = (enable: boolean) => getRecorderInstance().setNoiseSuppression(enable);
-    const toggleAutoGainControl = (enable: boolean) => getRecorderInstance().setAutoGain(enable);
-
-    const closeAudioRecorderError = () => setAudioRecorderHasError(false);
-    const closeAudioRecorderDeviceNotFound = () => setAudioRecorderDeviceNotFound(false);
-    const closeAudioRecorderUnknownError = () => setAudioRecorderHasUnknownError(false);
-
+    console.warn("AudioRecorderProvider is deprecated and will be removed in a future release. It is not needed anymore.");
+  
     return (
-        <AudioRecorderContext.Provider value={{
-            audioRecorderReady, audioRecorderHasError, initRecorder, audioRecorderAuthorizationPending,
-            closeAudioRecorderError, audioRecording, recordAudio, pauseRecorderAudio, stopRecordAudio,
-            recorderDisplayTime, exitAudioRecorder, recorderTime, recorderSettings, changeInput,
-            toggleAudioFeedback, toggleEchoCancellation, toggleNoiseReduction, toggleAutoGainControl,
-            recorderUnavailable, audioRecorderDeviceNotFound, closeAudioRecorderDeviceNotFound,
-            audioRecorderHasUnknownError, closeAudioRecorderUnknownError
-        }}>
+        <AudioRecorderContext.Provider value={audioRecorderStore}>
             {children}
         </AudioRecorderContext.Provider>
     );

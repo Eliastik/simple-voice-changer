@@ -3,9 +3,13 @@ import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 import { useTranslation } from "react-i18next";
 
 const GoToHomeDialog = () => {
-    const { audioEditorReady, exitAudioEditor } = useAudioEditor();
-    const { audioRecorderReady, exitAudioRecorder } = useAudioRecorder();
     const { t } = useTranslation();
+
+    const audioEditorReady = useAudioEditor(state => state.audioEditorReady);
+    const exitAudioEditor = useAudioEditor(state => state.exitAudioEditor);
+
+    const audioRecorderReady = useAudioRecorder(state => state.audioRecorderReady);
+    const exitAudioRecorder = useAudioRecorder(state => state.exitAudioRecorder);
 
     return (
         <dialog id="modalGoToHome" className="modal">

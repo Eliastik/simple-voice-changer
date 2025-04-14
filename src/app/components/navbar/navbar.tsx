@@ -7,9 +7,9 @@ import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import Constants from "@/app/model/Constants";
 
 const Navbar = () => {
-    const { audioEditorReady } = useAudioEditor();
-    const { audioRecorderReady } = useAudioRecorder();
-    const { updateData } = useApplicationConfig();
+    const audioEditorReady = useAudioEditor(state => state.audioEditorReady);
+    const audioRecorderReady = useAudioRecorder(state => state.audioRecorderReady);
+    const updateData = useApplicationConfig(state => state.updateData);
 
     return (
         <>

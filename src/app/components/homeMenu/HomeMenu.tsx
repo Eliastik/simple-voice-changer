@@ -7,9 +7,11 @@ import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const HomeMenu = () => {
     const inputFile = useRef<HTMLInputElement | null>(null);
-    const { loadAudioFileList } = useAudioEditor();
-    const { initRecorder, recorderUnavailable } = useAudioRecorder();
     const { t } = useTranslation();
+
+    const loadAudioFileList = useAudioEditor(state => state.loadAudioFileList);
+    const recorderUnavailable = useAudioRecorder(state => state.recorderUnavailable);
+    const initRecorder = useAudioRecorder(state => state.initRecorder);
 
     return (
         <div className="flex justify-center items-center grow gap-6 flex-col lg:flex-row pt-16">

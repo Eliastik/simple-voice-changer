@@ -5,8 +5,8 @@ import Constants from "@/app/model/Constants";
 
 const FirstLaunchDialog = () => {
     const { t } = useTranslation();
-    const { closeFirstLaunchModal } = useApplicationConfig();
-    const { alreadyUsed } = useApplicationConfig();
+    const closeFirstLaunchModal = useApplicationConfig(state => state.closeFirstLaunchModal);
+    const alreadyUsed = useApplicationConfig(state => state.alreadyUsed);
                                     
     const modalFirstLaunchCheckbox = useMemo(() => {
         if (!alreadyUsed) {

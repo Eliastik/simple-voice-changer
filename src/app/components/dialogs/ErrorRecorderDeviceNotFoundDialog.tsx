@@ -3,20 +3,14 @@ import { useTranslation } from "react-i18next";
 import { useAudioRecorder } from "@/app/context/AudioRecorderContext";
 
 const ErrorRecorderDeviceNotFoundDialog = () => {
-    const { audioRecorderDeviceNotFound, closeAudioRecorderDeviceNotFound } = useAudioRecorder();
     const { t } = useTranslation();
-                            
-    const errorRecorderDeviceNotFoundDialogCheckbox = useMemo(() => {
-        if (audioRecorderDeviceNotFound) {
-            return <input type="checkbox" id="errorRecorderDeviceNotFoundDialog" className="modal-toggle" defaultChecked={true} />;
-        } else {
-            return <></>
-        }
-    }, [audioRecorderDeviceNotFound]);
+
+    const audioRecorderDeviceNotFound = useAudioRecorder(state => state.audioRecorderDeviceNotFound);
+    const closeAudioRecorderDeviceNotFound = useAudioRecorder(state => state.closeAudioRecorderDeviceNotFound);
 
     return (
         <>
-            {errorRecorderDeviceNotFoundDialogCheckbox}
+            {audioRecorderDeviceNotFound && <input type="checkbox" id="errorRecorderDeviceNotFoundDialog" className="modal-toggle" defaultChecked={true} />}
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.errorRecorderDeviceNotFoundDialog.title")}</h3>

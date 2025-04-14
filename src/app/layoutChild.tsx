@@ -13,7 +13,9 @@ const inter = Inter({ subsets: ["latin"] });
 const LayoutChild = ({
     children,
 }: { children: React.ReactNode }) => {
-    const { currentTheme, setupLanguage, currentLanguageValue } = useApplicationConfig();
+    const currentTheme = useApplicationConfig(state => state.currentTheme);
+    const setupLanguage = useApplicationConfig(state => state.setupLanguage);
+    const currentLanguageValue = useApplicationConfig(state => state.currentLanguageValue);
 
     useEffect(() => {
         setupLanguage();

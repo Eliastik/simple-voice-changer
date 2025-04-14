@@ -8,7 +8,7 @@ import AudioFileListDialog from "../dialogs/AudioFileListDialog";
 
 const AudioPlayer = () => {
     const { downloadAudio, loadPreviousAudio, loadNextAudio, audioFilesCount } = useAudioEditor();
-    const { bitrateMP3 } = useApplicationConfig();
+    const bitrateMP3 = useApplicationConfig(state => state.bitrateMP3);
     const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping, loopingAll, loopAllAudioBuffer, audioVolume, setVolume } = useAudioPlayer();
     const { t } = useTranslation();
 

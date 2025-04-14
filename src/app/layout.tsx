@@ -11,9 +11,7 @@ const RootLayout = ({
     children,
 }: { children: React.ReactNode }) => {
     return (
-        <AudioRecorderProvider>
-            <LayoutChild>{children}</LayoutChild>
-        </AudioRecorderProvider>
+        <LayoutChild>{children}</LayoutChild>
     );
 };
 
