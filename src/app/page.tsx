@@ -8,12 +8,15 @@ import ApplicationConfigSingleton from "./context/ApplicationConfigSingleton";
 import Constants from "./model/Constants";
 
 const Home = () => {
-    const { pauseAudioEditor } = useAudioEditor();
-    const { updateCurrentTheme } = useApplicationConfig();
+    const pauseAudioEditor = useAudioEditor(state => state.pauseAudioEditor);
+    const { updateCurrentTheme, initializeStore } = useApplicationConfig();
 
     useEffect(() => {
         // Initialize SoundStudioApplicationFactory
         SoundStudioApplicationFactory.initializeApplication(ApplicationConfigSingleton.getConfigServiceInstance(), Constants.AUDIO_BUFFERS_TO_FETCH);
+
+        // Initialize contexts
+        initializeStore();
     }, []);
 
     useEffect(() => {

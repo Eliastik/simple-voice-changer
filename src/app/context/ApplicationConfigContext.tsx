@@ -1,175 +1,166 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, FC, useEffect } from "react";
-import { AudioEditor, EventType, Constants, EventEmitter } from "@eliastik/simple-sound-studio-lib";
-import { SoundStudioApplicationFactory } from "@eliastik/simple-sound-studio-components";
-import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
+import { create } from "zustand";
 import i18next from "i18next";
-import ApplicationConfigContextProps from "../model/contextProps/ApplicationConfigContextProps";
+import { EventType, Constants, EventEmitter } from "@eliastik/simple-sound-studio-lib";
+import { SoundStudioApplicationFactory } from "@eliastik/simple-sound-studio-components";
 import ApplicationConfigService from "./ApplicationConfigService";
-import { UpdateData } from "../model/UpdateData";
 import ApplicationConfigSingleton from "./ApplicationConfigSingleton";
+import ApplicationConfigContextProps from "../model/contextProps/ApplicationConfigContextProps";
 
-const ApplicationConfigContext = createContext<ApplicationConfigContextProps | undefined>(undefined);
+const getService = (): ApplicationConfigService | undefined => ApplicationConfigSingleton.getConfigServiceInstance();
+const getEventEmitter = (): EventEmitter | null => SoundStudioApplicationFactory.getEventEmitterInstance();
 
-export const useApplicationConfig = (): ApplicationConfigContextProps => {
-    const context = useContext(ApplicationConfigContext);
-    if (!context) {
-        throw new Error("useApplicationConfig must be used inside an ApplicationConfigProvider");
-    }
-    return context;
-};
-
-interface ApplicationConfigProviderProps {
-    children: ReactNode;
-}
-
-const getService = (): ApplicationConfigService => {
-    return ApplicationConfigSingleton.getConfigServiceInstance()!;
-};
-
-const getAudioEditor = (): AudioEditor => {
-    return SoundStudioApplicationFactory.getAudioEditorInstance()!;
-};
-
-const getEventEmitter = (): EventEmitter => {
-    return SoundStudioApplicationFactory.getEventEmitterInstance()!;
-};
-
-let isReady = false;
-
-export const ApplicationConfigProvider: FC<ApplicationConfigProviderProps> = ({ children }) => {
-    // State: current theme (light/dark)
-    const [currentTheme, setCurrentTheme] = useState("dark");
-    // State: theme setting (auto/dark/light)
-    const [currentThemeValue, setCurrentThemeValue] = useState("auto");
-    // State: current language
-    const [currentLanguageValue, setCurrentLanguageValue] = useState("en");
-    // State: current language
-    const [updateData, setUpdateData] = useState<UpdateData | null>(null);
-    // State: true if the user already used the time one time
-    const [alreadyUsed, setAlreadyUsed] = useState(false);
-    // State: audio worklet enabled/disabled
-    const [isAudioWorkletEnabled, setAudioWorkletEnabled] = useState(false);
-    // State: audio worklet enabled/disabled
-    const [isSoundtouchAudioWorkletEnabled, setSoundtouchAudioWorkletEnabled] = useState(false);
-    // State: buffer size
-    const [bufferSize, setBufferSize] = useState(0);
-    // State: sample rate
-    const [sampleRate, setSampleRate] = useState(0);
-    // State: MP3 bitrate
-    const [bitrateMP3, setBitrateMP3] = useState(Constants.DEFAULT_MP3_BITRATE);
-    // State: true if compatibility/direct mode is enabled
-    const [isCompatibilityModeEnabled, setCompatibilityModeEnabled] = useState(false);
-    // State: true if initial rendering is disabled
-    const [isInitialRenderingEnabled, setIsInitialRenderingEnabled] = useState(false);
-
-    useEffect(() => {
-        if (isReady) {
+export const useApplicationConfig = create<ApplicationConfigContextProps>((set, get) => {
+    const initializeStore = () => {
+        if (get().isInitialized) {
             return;
         }
 
-        setCurrentTheme(getService().getCurrentTheme());
-        setCurrentThemeValue(getService().getCurrentThemePreference());
-        setAlreadyUsed(getService().hasAlreadyUsedApp());
-        setAudioWorkletEnabled(getService().isAudioWorkletEnabled());
-        setSoundtouchAudioWorkletEnabled(getService().isSoundtouchAudioWorkletEnabled());
-        setBufferSize(getService().getBufferSize());
-        setSampleRate(getService().getSampleRate());
-        setBitrateMP3(getService().getBitrateMP3());
-        setCompatibilityModeEnabled(getService().isCompatibilityModeEnabled());
-        setIsInitialRenderingEnabled(!getService().isInitialRenderingDisabled());
-        getEventEmitter().on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => setCompatibilityModeEnabled(true));
+        const service = getService();
+        const emitter = getEventEmitter();
 
-        getService().checkAppUpdate().then(result => setUpdateData(result));
+        if (service && emitter) {
+            set({
+                currentTheme: service.getCurrentTheme(),
+                currentThemeValue: service.getCurrentThemePreference(),
+                alreadyUsed: service.hasAlreadyUsedApp(),
+                isAudioWorkletEnabled: service.isAudioWorkletEnabled(),
+                isSoundtouchAudioWorkletEnabled: service.isSoundtouchAudioWorkletEnabled(),
+                bufferSize: service.getBufferSize(),
+                sampleRate: service.getSampleRate(),
+                bitrateMP3: service.getBitrateMP3(),
+                isCompatibilityModeEnabled: service.isCompatibilityModeEnabled(),
+                isInitialRenderingEnabled: !service.isInitialRenderingDisabled(),
+            });
+    
+            emitter.on(EventType.COMPATIBILITY_MODE_AUTO_ENABLED, () => {
+                set({ isCompatibilityModeEnabled: true });
+            });
+    
+            service.checkAppUpdate().then(result => set({ updateData: result }));
 
-        isReady = true;
-    }, []);
-
-    const setTheme = (theme: string) => {
-        getService().setCurrentTheme(theme);
-        setCurrentTheme(getService().getCurrentTheme());
-        setCurrentThemeValue(getService().getCurrentThemePreference());
-    };
-
-    const setupLanguage = () => {
-        const lng = getService().getCurrentLanguagePreference();
-        i18next.changeLanguage(lng);
-        i18n.i18next.changeLanguage(lng);
-        setCurrentLanguageValue(lng);
-    };
-
-    const setLanguage = (lng: string) => {
-        getService().setCurrentLanguage(lng);
-        setupLanguage();
-    };
-
-    const closeFirstLaunchModal = () => {
-        getService().setAlreadyUsedApp();
-        setAlreadyUsed(true);
-    };
-
-    const toggleAudioWorklet = (enabled: boolean) => {
-        getService().enableAudioWorklet(enabled);
-        setAudioWorkletEnabled(enabled);
-    };
-
-    const toggleSoundtouchAudioWorklet = (enabled: boolean) => {
-        getService().enableSoundtouchAudioWorklet(enabled);
-        setSoundtouchAudioWorkletEnabled(enabled);
-    };
-
-    const changeBufferSize = (size: number) => {
-        getService().setBufferSize(size);
-        setBufferSize(size);
-    };
-
-    const changeSampleRate = (frequency: number) => {
-        getService().setSampleRate(frequency);
-        setSampleRate(frequency);
-    };
-
-    const updateCurrentTheme = () => {
-        if (currentThemeValue === "auto") {
-            setCurrentTheme(getService().getCurrentTheme());
-        }
-    };
-
-    const toggleCompatibilityMode = (enabled: boolean) => {
-        if (enabled) {
-            getService().enableCompatibilityMode();
+            set({ isInitialized: true });
         } else {
-            getService().disableCompatibilityMode();
+            console.error("ConfigService or EventEmitter is not available!");
         }
-
-        setCompatibilityModeEnabled(enabled);
     };
 
-    const toggleEnableInitialRendering = (enabled: boolean) => {
-        if (enabled) {
-            getService().toggleInitialRendering(true);
-        } else {
-            getService().toggleInitialRendering(false);
-        }
+    return {
+        isInitialized: false,
+        currentTheme: "dark",
+        currentThemeValue: "auto",
+        currentLanguageValue: "en",
+        updateData: null,
+        alreadyUsed: false,
+        isAudioWorkletEnabled: false,
+        isSoundtouchAudioWorkletEnabled: false,
+        bufferSize: 0,
+        sampleRate: 0,
+        bitrateMP3: Constants.DEFAULT_MP3_BITRATE,
+        isCompatibilityModeEnabled: false,
+        isInitialRenderingEnabled: false,
+        setTheme: (theme) => {
+            const service = getService();
+            
+            if (service) {
+                service.setCurrentTheme(theme);
 
-        setIsInitialRenderingEnabled(enabled);
+                set({
+                    currentTheme: service.getCurrentTheme(),
+                    currentThemeValue: service.getCurrentThemePreference(),
+                });
+            }
+        },
+        setupLanguage: () => {
+            const service = getService();
+
+            if (service) {
+                const lng = service.getCurrentLanguagePreference();
+                i18next.changeLanguage(lng);
+                set({ currentLanguageValue: lng });
+            }
+        },
+        setLanguage: (lng) => {
+            const service = getService();
+            
+            if (service) {
+                service.setCurrentLanguage(lng);
+                get().setupLanguage();
+            }
+        },
+        closeFirstLaunchModal: () => {
+            const service = getService();
+            
+            if (service) {
+                service.setAlreadyUsedApp();
+                set({ alreadyUsed: true });
+            }
+        },
+        toggleAudioWorklet: (enabled) => {
+            const service = getService();
+            
+            if (service) {
+                service.enableAudioWorklet(enabled);
+                set({ isAudioWorkletEnabled: enabled });
+            }
+        },
+        toggleSoundtouchAudioWorklet: (enabled) => {
+            const service = getService();
+            
+            if (service) {
+                service.enableSoundtouchAudioWorklet(enabled);
+                set({ isSoundtouchAudioWorkletEnabled: enabled });
+            }
+        },
+        changeBufferSize: (size) => {
+            const service = getService();
+            
+            if (service) {
+                service.setBufferSize(size);
+                set({ bufferSize: size });
+            }
+        },
+        changeSampleRate: (frequency) => {
+            const service = getService();
+
+            if (service) {
+                service.setSampleRate(frequency);
+                set({ sampleRate: frequency });
+            }
+        },
+        updateCurrentTheme: () => {
+            const { currentThemeValue } = get();
+            const service = getService();
+
+            if (currentThemeValue === "auto" && service) {
+                set({ currentTheme: service.getCurrentTheme() });
+            }
+        },
+        toggleCompatibilityMode: (enabled) => {
+            const service = getService();
+
+            if (service) {
+                enabled ? service.enableCompatibilityMode() : service.disableCompatibilityMode();
+                set({ isCompatibilityModeEnabled: enabled });
+            }
+        },
+        toggleEnableInitialRendering: (enabled) => {
+            const service = getService();
+            
+            if (service) {
+                service.toggleInitialRendering(enabled);
+                set({ isInitialRenderingEnabled: enabled });
+            }
+        },
+        changeBitrateMP3: (bitrate) => {
+            const service = getService();
+            
+            if (service) {
+                service.setBitrateMP3(bitrate);
+                set({ bitrateMP3: bitrate });
+            }
+        },
+        initializeStore
     };
-
-    const changeBitrateMP3 = (bitrate: number) => {
-        getService().setBitrateMP3(bitrate);
-        setBitrateMP3(bitrate);
-    };
-
-    return (
-        <ApplicationConfigContext.Provider value={{
-            currentTheme, currentThemeValue, setTheme, setupLanguage, currentLanguageValue, setLanguage,
-            updateData, alreadyUsed, closeFirstLaunchModal, isAudioWorkletEnabled, toggleAudioWorklet,
-            isSoundtouchAudioWorkletEnabled, toggleSoundtouchAudioWorklet, bufferSize, changeBufferSize,
-            sampleRate, changeSampleRate, updateCurrentTheme, isCompatibilityModeEnabled,
-            toggleCompatibilityMode, isInitialRenderingEnabled, toggleEnableInitialRendering,
-            bitrateMP3, changeBitrateMP3
-        }}>
-            {children}
-        </ApplicationConfigContext.Provider>
-    );
-};
+});

@@ -1,6 +1,7 @@
 import { UpdateData } from "../UpdateData";
 
 export default interface ApplicationConfigContextProps {
+    isInitialized: boolean,
     currentTheme: string,
     currentThemeValue: string,
     setTheme: (theme: string) => void,
@@ -24,5 +25,6 @@ export default interface ApplicationConfigContextProps {
     isInitialRenderingEnabled: boolean,
     toggleEnableInitialRendering: (enabled: boolean) => void,
     bitrateMP3: number,
-    changeBitrateMP3: (bitrate: number) => void
+    changeBitrateMP3: (bitrate: number) => void,
+    initializeStore: () => void
 };
