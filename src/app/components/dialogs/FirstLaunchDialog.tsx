@@ -1,24 +1,16 @@
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import Constants from "@/app/model/Constants";
 
 const FirstLaunchDialog = () => {
     const { t } = useTranslation();
+    
     const closeFirstLaunchModal = useApplicationConfig(state => state.closeFirstLaunchModal);
     const alreadyUsed = useApplicationConfig(state => state.alreadyUsed);
-                                    
-    const modalFirstLaunchCheckbox = useMemo(() => {
-        if (!alreadyUsed) {
-            return <input type="checkbox" id="modalFirstLaunch" className="modal-toggle" defaultChecked={true} />;
-        } else {
-            return <></>
-        }
-    }, [alreadyUsed]);
 
     return (
         <>
-            {modalFirstLaunchCheckbox}
+            {alreadyUsed && <input type="checkbox" id="modalFirstLaunch" className="modal-toggle" defaultChecked={true} />}
             <div className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("firstLaunch.title")}</h3>
