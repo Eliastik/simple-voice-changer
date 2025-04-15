@@ -1,6 +1,7 @@
 "use client";
 
-import { create } from "zustand";
+import { create } from "zustand/react";
+import i18n from "@eliastik/simple-sound-studio-components/lib/i18n";
 import i18next from "i18next";
 import { EventType, Constants, EventEmitter } from "@eliastik/simple-sound-studio-lib";
 import { SoundStudioApplicationFactory } from "@eliastik/simple-sound-studio-components";
@@ -78,6 +79,8 @@ export const useApplicationConfig = create<ApplicationConfigContextProps>((set, 
             if (service) {
                 const lng = service.getCurrentLanguagePreference();
                 i18next.changeLanguage(lng);
+                i18n.i18next.changeLanguage(lng);
+
                 set({ currentLanguageValue: lng });
             }
         },
