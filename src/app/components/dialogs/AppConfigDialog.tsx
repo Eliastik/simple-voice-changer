@@ -1,12 +1,15 @@
+import i18next from "i18next";
+import { useMemo } from "react";
+import { useShallow } from "zustand/shallow";
 import { Constants } from "@eliastik/simple-sound-studio-lib";
 import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import { useMemo } from "react";
 
 const AppConfigDialog = () => {
-    const {
+    const { t } = useTranslation();
+
+    const [
         currentThemeValue,
         setTheme,
         currentLanguageValue,
@@ -25,9 +28,30 @@ const AppConfigDialog = () => {
         toggleEnableInitialRendering,
         bitrateMP3,
         changeBitrateMP3
-    } = useApplicationConfig();
-    const { actualSampleRate, defaultDeviceSampleRate, audioWorkletAvailable } = useAudioEditor();
-    const { t } = useTranslation();
+    ] = useApplicationConfig(useShallow(state => [
+        state.currentThemeValue,
+        state.setTheme,
+        state.currentLanguageValue,
+        state.setLanguage,
+        state.isAudioWorkletEnabled,
+        state.toggleAudioWorklet,
+        state.isSoundtouchAudioWorkletEnabled,
+        state.toggleSoundtouchAudioWorklet,
+        state.bufferSize,
+        state.changeBufferSize,
+        state.sampleRate,
+        state.changeSampleRate,
+        state.isCompatibilityModeEnabled,
+        state.toggleCompatibilityMode,
+        state.isInitialRenderingEnabled,
+        state.toggleEnableInitialRendering,
+        state.bitrateMP3,
+        state.changeBitrateMP3
+    ]));
+
+    const actualSampleRate = useAudioEditor(state => state.actualSampleRate);
+    const defaultDeviceSampleRate = useAudioEditor(state => state.defaultDeviceSampleRate);
+    const audioWorkletAvailable = useAudioEditor(state => state.audioWorkletAvailable);
 
     const languages = useMemo(() => {
         return i18next.languages.map(language => 

@@ -2,15 +2,56 @@
 
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useShallow } from "zustand/shallow";
 import { DaisyUIModal, useAudioEditor, useAudioPlayer } from "@eliastik/simple-sound-studio-components";
 import { useApplicationConfig } from "@/app/context/ApplicationConfigContext";
 import AudioFileListDialog from "../dialogs/AudioFileListDialog";
 
 const AudioPlayer = () => {
-    const { downloadAudio, loadPreviousAudio, loadNextAudio, audioFilesCount } = useAudioEditor();
-    const bitrateMP3 = useApplicationConfig(state => state.bitrateMP3);
-    const { playAudioBuffer, pauseAudioBuffer, loopAudioBuffer, setTimePlayer, isCompatibilityModeEnabled, stopAudioBuffer, playing, maxTime, maxTimeDisplay, currentTime, currentTimeDisplay, looping, loopingAll, loopAllAudioBuffer, audioVolume, setVolume } = useAudioPlayer();
     const { t } = useTranslation();
+    
+    const downloadAudio = useAudioEditor(state => state.downloadAudio);
+    const loadPreviousAudio = useAudioEditor(state => state.loadPreviousAudio);
+    const loadNextAudio = useAudioEditor(state => state.loadNextAudio);
+    const audioFilesCount = useAudioEditor(state => state.audioFilesCount);
+
+    const bitrateMP3 = useApplicationConfig(state => state.bitrateMP3);
+
+    const [
+        playAudioBuffer,
+        pauseAudioBuffer,
+        loopAudioBuffer,
+        setTimePlayer,
+        isCompatibilityModeEnabled,
+        stopAudioBuffer,
+        playing,
+        maxTime,
+        maxTimeDisplay,
+        currentTime,
+        currentTimeDisplay,
+        looping,
+        loopingAll,
+        loopAllAudioBuffer,
+        audioVolume,
+        setVolume
+    ] = useAudioPlayer(useShallow(state => [
+        state.playAudioBuffer,
+        state.pauseAudioBuffer,
+        state.loopAudioBuffer,
+        state.setTimePlayer,
+        state.isCompatibilityModeEnabled,
+        state.stopAudioBuffer,
+        state.playing,
+        state.maxTime,
+        state.maxTimeDisplay,
+        state.currentTime,
+        state.currentTimeDisplay,
+        state.looping,
+        state.loopingAll,
+        state.loopAllAudioBuffer,
+        state.audioVolume,
+        state.setVolume
+    ]));
 
     const handleEvent = useCallback((e: KeyboardEvent) => {
         if (e.key === " ") {

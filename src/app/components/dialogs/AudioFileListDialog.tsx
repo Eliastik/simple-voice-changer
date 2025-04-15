@@ -4,7 +4,9 @@ import { DaisyUIModal, useAudioEditor } from "@eliastik/simple-sound-studio-comp
 
 const AudioFileListDialog = () => {
     const { t } = useTranslation();
-    const { currentFileList, loadAudioFromFileListIndex } = useAudioEditor();
+
+    const currentFileList = useAudioEditor(state => state.currentFileList);
+    const loadAudioFromFileListIndex = useAudioEditor(state => state.loadAudioFromFileListIndex);
 
     const audioFileList = useMemo(() => {
         return Array.from(currentFileList.entries()).map((element, index) => {
