@@ -239,7 +239,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 * Version 2.3.1 (04/05/2025) :
     - Le mode de compatibilité a été renommé Mode rendu direct ;
-    - Aémlioration des performances ;
+    - Amélioration des performances ;
     - Améliorations techniques :
         - Mise à jour vers la version 2.3.1 de simple-sound-studio-lib et simple-sound-studio-components ;
         - Migration vers la librairie Zustand pour la gestion de l'état (au lieu de React Context), cela améliore les performances de l'application ;
