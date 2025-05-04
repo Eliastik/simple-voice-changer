@@ -144,7 +144,12 @@ export const useApplicationConfig = create<ApplicationConfigContextProps>((set, 
             const service = getService();
 
             if (service) {
-                enabled ? service.enableCompatibilityMode() : service.disableCompatibilityMode();
+                if(enabled) {
+                    service.enableCompatibilityMode();
+                } else {
+                    service.disableCompatibilityMode()
+                }
+
                 set({ isCompatibilityModeEnabled: enabled });
             }
         },
