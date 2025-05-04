@@ -21,7 +21,7 @@ const MainComponent = () => {
         <>
             {!audioEditorReady && !audioRecorderReady && <HomeMenu></HomeMenu>}
             {audioEditorReady && <AudioEditorMain></AudioEditorMain>}
-            {audioRecorderReady && <AudioRecorderMain></AudioRecorderMain>}
+            {audioRecorderReady && !audioEditorReady && <AudioRecorderMain></AudioRecorderMain>}
             <LoadingAppDialog></LoadingAppDialog>
             <LoadingAudioFileDialog></LoadingAudioFileDialog>
             <AudioRecorderAuthorizationDialog></AudioRecorderAuthorizationDialog>

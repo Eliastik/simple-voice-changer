@@ -15,7 +15,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 2.3.0 (4/13/2025)
+* Version: 2.3.1 (5/4/2025)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -36,6 +36,14 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses some icons from [Font Awesome](https://fontawesome.com/) - [License](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Changelog
+
+* Version 2.3.1 (5/4/2025):
+    - Compatibility mode renamed to Direct rendering mode;
+    - Performance improvements;
+    - Technical improvements:
+        - simple-sound-studio-lib and simple-sound-studio-components updated to version 2.3.1;
+        - Migration to the Zustand library for state management (instead of React Context), which improves application performance;
+        - Other dependencies updated.
 
 * Version 2.3.0 (4/13/2025):
     - Added the ability to adjust the audio player's output volume.
@@ -207,7 +215,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version : 2.3.0 (13/04/2025)
+* Version : 2.3.1 (04/05/2025)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -228,6 +236,14 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise des icônes venant de chez [Font Awesome](https://fontawesome.com/) - [Licence](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Journal des changements
+
+* Version 2.3.1 (04/05/2025) :
+    - Le mode de compatibilité a été renommé Mode rendu direct ;
+    - Aémlioration des performances ;
+    - Améliorations techniques :
+        - Mise à jour vers la version 2.3.1 de simple-sound-studio-lib et simple-sound-studio-components ;
+        - Migration vers la librairie Zustand pour la gestion de l'état (au lieu de React Context), cela améliore les performances de l'application ;
+        - Mise à jour des autres dépendances.
 
 * Version 2.3.0 (13/04/2025) :
     - Ajout de la possibilité de régler le volume de sortie du lecteur audio ;

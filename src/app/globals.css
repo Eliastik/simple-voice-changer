@@ -1,5 +1,8 @@
 @import "tailwindcss";
-@plugin "daisyui";
+
+@plugin "daisyui" {
+  exclude: rootscrollgutter;
+}
 
 @config "../../tailwind.config.ts";
 
