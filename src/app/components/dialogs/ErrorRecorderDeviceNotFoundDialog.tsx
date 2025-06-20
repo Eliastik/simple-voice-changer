@@ -10,7 +10,7 @@ const ErrorRecorderDeviceNotFoundDialog = () => {
     return (
         <>
             {audioRecorderDeviceNotFound && <input type="checkbox" id="errorRecorderDeviceNotFoundDialog" className="modal-toggle" defaultChecked={true} />}
-            <div className="modal">
+            <dialog className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.errorRecorderDeviceNotFoundDialog.title")}</h3>
                     <form method="dialog">
@@ -32,7 +32,7 @@ const ErrorRecorderDeviceNotFoundDialog = () => {
                         </form>
                     </div>
                 </div>
-            </div>
+            </dialog>
         </>
     );
 };

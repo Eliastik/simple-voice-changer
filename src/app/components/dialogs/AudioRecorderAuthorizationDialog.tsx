@@ -8,7 +8,7 @@ const AudioRecorderAuthorizationDialog = () => {
     return (
         <>
             {audioRecorderAuthorizationPending && <input type="checkbox" id="audioRecorderAuthorizationDialog" className="modal-toggle" defaultChecked={true} />}
-            <div className="modal">
+            <dialog className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.audioRecorderAuthorization.title")}</h3>
                     <p className="py-4 flex items-center gap-x-4">
@@ -18,7 +18,7 @@ const AudioRecorderAuthorizationDialog = () => {
                         <span className="shrink">{t("dialogs.audioRecorderAuthorization.info")}</span>
                     </p>
                 </div>
-            </div>
+            </dialog>
         </>
     );
 };

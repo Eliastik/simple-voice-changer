@@ -10,7 +10,7 @@ const ErrorRecorderUnknownDialog = () => {
     return (
         <>
             {audioRecorderHasUnknownError && <input type="checkbox" id="errorRecorderUnknownDialog" className="modal-toggle" defaultChecked={true} />}
-            <div className="modal">
+            <dialog className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("dialogs.errorRecorderUnknownDialog.title")}</h3>
                     <form method="dialog">
@@ -32,7 +32,7 @@ const ErrorRecorderUnknownDialog = () => {
                         </form>
                     </div>
                 </div>
-            </div>
+            </dialog>
         </>
     );
 };

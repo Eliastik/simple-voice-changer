@@ -11,7 +11,7 @@ const FirstLaunchDialog = () => {
     return (
         <>
             {!alreadyUsed && <input type="checkbox" id="modalFirstLaunch" className="modal-toggle" defaultChecked={true} />}
-            <div className="modal">
+            <dialog className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">{t("firstLaunch.title")}</h3>
                     <form method="dialog">
@@ -32,7 +32,7 @@ const FirstLaunchDialog = () => {
                         </form>
                     </div>
                 </div>
-            </div>
+            </dialog>
         </>
     );
 };
