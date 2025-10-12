@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { DaisyUIModal, useAudioEditor } from "@eliastik/simple-sound-studio-components";
+import { useAudioEditor } from "@eliastik/simple-sound-studio-components";
 
 const AudioFileListDialog = () => {
     const { t } = useTranslation();
@@ -16,7 +16,7 @@ const AudioFileListDialog = () => {
                     key={index}
                     onClick={() => {
                         loadAudioFromFileListIndex(index);
-                        (document.getElementById("modalAudioFileList")! as DaisyUIModal).close();
+                        (document.getElementById("modalAudioFileList")! as HTMLDialogElement).close();
                     }}
                 >
                     {element[1] && 
