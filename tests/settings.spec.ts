@@ -8,11 +8,11 @@ test("enabling initial audio rendering should work", async ({ page }) => {
 
     await enableInitialAudioRendering(page);
     
-    await openAudioFile(page);
+    await openAudioFile(page, false);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
     
-    await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
+    await loadingPopup.waitFor({ state: "visible", timeout: 10000 });
 });
 
 test("enabling initial audio rendering then cancelling initial rendering should display a notification", async ({ page }) => {
@@ -20,7 +20,11 @@ test("enabling initial audio rendering then cancelling initial rendering should 
 
     await enableInitialAudioRendering(page);
     
-    await openAudioFile(page);
+    await openAudioFile(page, false);
+
+    const loadingAudioProcessingModal = page.locator("#loadingAudioProcessing");
+
+    await loadingAudioProcessingModal.waitFor({ state: "visible", timeout: 10000 });
 
     const cancelButton = page.locator("#loadingAudioProcessing button", { hasText: "Cancel" });
 

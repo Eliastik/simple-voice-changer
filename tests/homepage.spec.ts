@@ -21,7 +21,7 @@ test("opening wrong file should display error", async ({ page }) => {
 
     const modalErrorLoadingDialog = page.locator("#errorLoadingAudioDialog");
 
-    await modalErrorLoadingDialog.waitFor({ state: "attached", timeout: 5000 });
+    await modalErrorLoadingDialog.waitFor({ state: "visible", timeout: 5000 });
 
     await expect(modalErrorLoadingDialog).toHaveCount(1);
 });
@@ -61,7 +61,7 @@ test("returning to homepage should work", async ({ page }) => {
 
     const modalGoToHome = page.locator("#modalGoToHome");
     
-    await modalGoToHome.waitFor({ state: "attached", timeout: 5000 });
+    await modalGoToHome.waitFor({ state: "visible", timeout: 5000 });
 
     const returnToHomeModalButton = page.locator("#modalGoToHome .btn", { hasText: "OK" });
 

@@ -13,7 +13,7 @@ export async function openPageAndCloseWelcomeModal(page: Page) {
     }
 }
 
-export async function openAudioFile(page: Page) {
+export async function openAudioFile(page: Page, waitForLoading = true) {
     const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select one or more audio files" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
@@ -22,9 +22,11 @@ export async function openAudioFile(page: Page) {
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(path.join(__dirname, "files/audio.mp3"));
 
-    const loadingBufferModal = page.locator("#loadingBufferModal");
+    if(waitForLoading) {
+        const loadingBufferModal = page.locator("#loadingBufferModal");
 
-    await loadingBufferModal.waitFor({ state: "hidden", timeout: 10000 });
+        await loadingBufferModal.waitFor({ state: "hidden", timeout: 10000 });
+    }
 }
 
 export async function openMultipleAudioFile(page: Page) {
@@ -60,7 +62,7 @@ export async function validateSettings(page: Page, compatibilityMode: boolean) {
         if (!compatibilityMode) {
             const loadingPopup = page.locator("#loadingAudioProcessing");
     
-            await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
+            await loadingPopup.waitFor({ state: "visible", timeout: 5000 });
         }
     }
 }
@@ -88,7 +90,7 @@ export async function openSettingsDialog(page: Page) {
 
     const settingsDialog = page.locator("#modalSettings");
 
-    await settingsDialog.waitFor({ state: "attached", timeout: 5000 });
+    await settingsDialog.waitFor({ state: "visible", timeout: 5000 });
 }
 
 export async function closeSettingsDialog(page: Page) {
