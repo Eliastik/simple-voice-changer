@@ -19,19 +19,19 @@ const MainComponent = () => {
 
     return (
         <>
-            {!audioEditorReady && !audioRecorderReady && <HomeMenu></HomeMenu>}
-            {audioEditorReady && <AudioEditorMain></AudioEditorMain>}
-            {audioRecorderReady && !audioEditorReady && <AudioRecorderMain></AudioRecorderMain>}
             <LoadingAppDialog></LoadingAppDialog>
             <LoadingAudioFileDialog></LoadingAudioFileDialog>
             <AudioRecorderAuthorizationDialog></AudioRecorderAuthorizationDialog>
-            {!downloadingInitialData && <FirstLaunchDialog></FirstLaunchDialog>}
             <ErrorAuthorizationAudioRecorderDialog></ErrorAuthorizationAudioRecorderDialog>
             <ErrorRecorderDeviceNotFoundDialog></ErrorRecorderDeviceNotFoundDialog>
             <ErrorRecorderUnknownDialog></ErrorRecorderUnknownDialog>
             <ErrorLoadingAudioDialog></ErrorLoadingAudioDialog>
             <ErrorDownloadingBufferDialog></ErrorDownloadingBufferDialog>
             <ErrorProcessingAudio></ErrorProcessingAudio>
+            {!audioEditorReady && !audioRecorderReady && <HomeMenu></HomeMenu>}
+            {audioEditorReady && <AudioEditorMain></AudioEditorMain>}
+            {audioRecorderReady && !audioEditorReady && <AudioRecorderMain></AudioRecorderMain>}
+            {!downloadingInitialData && <FirstLaunchDialog></FirstLaunchDialog>}
         </>
     );
 };
