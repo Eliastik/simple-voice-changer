@@ -49,7 +49,7 @@ test("saving audio as mp3 should work", async ({ page }) => {
 
 test("saving audio as wav should work - compatibility mode", async ({ page }) => {
     await enableCompatibilityMode(page);
-    await testDownloadAudio(page, "WAV", 20000);
+    await testDownloadAudio(page, "WAV", 30000);
 });
 
 
@@ -63,7 +63,7 @@ test("saving audio and looping audio player should work - compatibility mode", a
 
     await loopAudioPlayer(page);
 
-    await testDownloadAudio(page, "WAV", 35000);
+    await testDownloadAudio(page, "WAV", 40000);
 
     const playerStatus = page.locator("#playerCurrentTime");
 

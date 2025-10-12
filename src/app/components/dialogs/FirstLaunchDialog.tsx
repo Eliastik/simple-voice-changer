@@ -22,7 +22,7 @@ const FirstLaunchDialog = () => {
     }, [alreadyUsed]);
 
     return (
-        <dialog ref={dialogRef} className="modal">
+        <dialog ref={dialogRef} className="modal" id="modalFirstLaunch">
             <div className="modal-box">
                 <h3 className="font-bold text-lg">{t("firstLaunch.title")}</h3>
                 <form method="dialog">

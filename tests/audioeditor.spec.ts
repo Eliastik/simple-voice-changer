@@ -105,11 +105,11 @@ test("validating settings should work", async ({ page }) => {
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
 
-    await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
+    await loadingPopup.waitFor({ state: "visible", timeout: 5000 });
 
     await expect(loadingPopup).toHaveCount(1);
 
-    await loadingPopup.waitFor({ state: "detached", timeout: 5000 });
+    await loadingPopup.waitFor({ state: "hidden", timeout: 5000 });
 
     const errorPopup = page.locator("#errorProcessingAudioDialog");
 
@@ -130,17 +130,17 @@ test("cancelling audio processing should work", async ({ page }) => {
     await validateSettings(page, false);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
-    const cancelButton = page.locator("#loadingAudioProcessing + div button", { hasText: "Cancel" });
+    const cancelButton = page.locator("#loadingAudioProcessing button", { hasText: "Cancel" });
 
     await cancelButton.waitFor({ state: "visible", timeout: 10000 });
 
-    await expect(loadingPopup).toHaveCount(1);
+    await expect(loadingPopup).toBeVisible();
 
     await cancelButton.click();
 
-    await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
+    await loadingPopup.waitFor({ state: "hidden", timeout: 10000 });
 
-    await expect(loadingPopup).toHaveCount(0);
+    await expect(loadingPopup).toBeHidden();
 });
 
 test("opening single audio file should not display audio list specific buttons", async ({ page }) => {

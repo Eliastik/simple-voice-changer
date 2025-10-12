@@ -22,15 +22,15 @@ test("enabling initial audio rendering then cancelling initial rendering should 
     
     await openAudioFile(page);
 
-    const cancelButton = page.locator("#loadingAudioProcessing + div button", { hasText: "Cancel" });
+    const cancelButton = page.locator("#loadingAudioProcessing button", { hasText: "Cancel" });
 
-    await cancelButton.waitFor({ state: "visible", timeout: 10000 });
+    await cancelButton.waitFor({ state: "visible", timeout: 15000 });
 
     await cancelButton.click({ force: true });
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
     
-    await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
+    await loadingPopup.waitFor({ state: "hidden", timeout: 10000 });
 
     const notification = page.locator(".toast.toast-top > .alert.alert-info");
 

@@ -19,7 +19,7 @@ test("opening wrong file should display error", async ({ page }) => {
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(path.join(__dirname, "files/document.pdf"));
 
-    const modalErrorLoadingDialog = page.locator("#errorLoadingAudioDialog +.modal");
+    const modalErrorLoadingDialog = page.locator("#errorLoadingAudioDialog");
 
     await modalErrorLoadingDialog.waitFor({ state: "attached", timeout: 5000 });
 
@@ -35,11 +35,11 @@ test("opening audio file should not display error", async ({ page }) => {
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(path.join(__dirname, "files/audio.mp3"));
 
-    const modalErrorLoadingDialog = page.locator("#errorLoadingAudioDialog +.modal");
+    const modalErrorLoadingDialog = page.locator("#errorLoadingAudioDialog");
 
-    await modalErrorLoadingDialog.waitFor({ state: "detached", timeout: 5000 });
+    await modalErrorLoadingDialog.waitFor({ state: "hidden", timeout: 5000 });
 
-    await expect(modalErrorLoadingDialog).toHaveCount(0);
+    await expect(modalErrorLoadingDialog).toBeHidden();
 });
 
 test("returning to homepage should work", async ({ page }) => {

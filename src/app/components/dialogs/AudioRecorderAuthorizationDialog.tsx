@@ -19,7 +19,7 @@ const AudioRecorderAuthorizationDialog = () => {
     }, [audioRecorderAuthorizationPending]);
 
     return (
-        <dialog ref={dialogRef} className="modal">
+        <dialog ref={dialogRef} className="modal" id="audioRecorderAuthorizationDialog">
             <div className="modal-box">
                 <h3 className="font-bold text-lg">{t("dialogs.audioRecorderAuthorization.title")}</h3>
                 <p className="py-4 flex items-center gap-x-4">
