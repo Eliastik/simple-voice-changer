@@ -1,6 +1,6 @@
 {
   "name": "simple-voice-changer",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "private": false,
   "scripts": {
     "dev": "next dev",
@@ -14,8 +14,8 @@
     "url": "git+https://github.com/Eliastik/simple-voice-changer.git"
   },
   "dependencies": {
-    "@eliastik/simple-sound-studio-components": "^2.3.1",
-    "@eliastik/simple-sound-studio-lib": "^2.3.1",
+    "@eliastik/simple-sound-studio-components": "^2.3.2",
+    "@eliastik/simple-sound-studio-lib": "^2.3.2",
     "i18next": "^25.6.0",
     "lodash": "^4.17.21",
     "next": "^15.5.5",

@@ -15,7 +15,7 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 
 ## About
 
-* Version: 2.3.1 (5/4/2025)
+* Version: 2.3.2 (10/13/2025)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * License: GNU GPLv3 (see the LICENCE.txt file)
 
@@ -36,6 +36,17 @@ This program uses the Web Audio API. A browser supporting this API is therefore 
 * Uses some icons from [Font Awesome](https://fontawesome.com/) - [License](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Changelog
+
+* Version 2.3.2 (10/13/2025):
+    - Fixed a bug with the Change speed / frequency filter: it did not disable correctly in direct rendering mode;
+    - Fixed a random crash when switching between classic mode and direct rendering mode while audio was being saved;
+    - The "Apply settings in real time" checkbox is not checked by default for the Reverb filter;
+    - Fixed a bug when changing the sample rate;
+    - Fixed a bug with the visibility of certain modal windows in some cases;
+    - Fixed other minor bugs;
+    - Technical improvements:
+        - Updated to version 2.3.2 of simple-sound-studio-lib and simple-sound-studio-components, which includes some of the above bug fixes;
+        - Updated other dependencies.
 
 * Version 2.3.1 (5/4/2025):
     - Compatibility mode renamed to Direct rendering mode;
@@ -215,7 +226,7 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 
 ## À propos du programme
 
-* Version : 2.3.1 (04/05/2025)
+* Version : 2.3.2 (13/10/2025)
 * Made in France by Eliastik - [eliastiksofts.com](http://eliastiksofts.com) - Contact : [eliastiksofts.com/contact](http://eliastiksofts.com/contact)
 * Licence : GNU GPLv3 (voir le fichier LICENCE.txt)
 
@@ -236,6 +247,17 @@ Ce programme utilise la Web Audio API. Un navigateur supportant cette API est do
 * Utilise des icônes venant de chez [Font Awesome](https://fontawesome.com/) - [Licence](https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 ## Journal des changements
+
+* Version 2.3.2 (13/10/2025) :
+    - Correction d'un bug avec le filtre Changer la vitesse / fréquence : il ne se désactivait pas correctement en mode rendu direct ;
+    - Correction d'un crash aléatoire lors du changement entre le mode classique et le mode rendu direct lorsque l'audio était en cours de sauvegarde ;
+    - La case à cocher "Appliquer les paramètres en temps réel" n'est pas cochée par défaut pour le filtre Réverbération ;
+    - Correction d'un bug lors du changement de la fréquence d'échantillonnage ;
+    - Correction d'un bug avec la visibilité de certaines fenêtres modales dans certains cas ;
+    - Correction d'autres bugs mineurs ;
+    - Améliorations techniques :
+        - Mise à jour vers la version 2.3.2 de simple-sound-studio-lib et simple-sound-studio-components apportant en partie les corrections de bugs ci-dessus ;
+        - Mise à jour des autres dépendances.
 
 * Version 2.3.1 (04/05/2025) :
     - Le mode de compatibilité a été renommé Mode rendu direct ;
