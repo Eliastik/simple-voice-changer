@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "npm run copy-static-files",
+    "copy-static-files": "mkdir -p out/worklets out/workers && cp node_modules/@eliastik/simple-sound-studio-lib/dist/worklets/*.js out/worklets/ && cp node_modules/@eliastik/simple-sound-studio-lib/dist/workers/*.js out/workers/",
     "start": "next start",
     "lint": "next lint",
     "test": "npx playwright test"
