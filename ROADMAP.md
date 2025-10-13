@@ -70,6 +70,7 @@
 * [x] - (Very minor) Fix sourcemaps for libraries + worklets copy (cache)
 * [x] - (Medium) Memory usage fixes
 * [x] - (Minor) Fix issues with dialogs priority (z-index)
+* [ ] - (Medium) Fix audio cracking when changing settings in real time mode
 * [ ] - (Medium) Bug when changing recorder settings on Chrome mobile
 * [ ] - (Medium) Vocoder doesn't work well on sample rate > 96,000 Hz
 
