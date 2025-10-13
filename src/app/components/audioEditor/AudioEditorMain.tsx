@@ -1,7 +1,7 @@
 "use client";
 
 import { AudioEditorActionButtons, FilterButtonList, AudioEditorDialogs, AudioEditorNotifications } from "@eliastik/simple-sound-studio-components";
-import AudioPlayer from "./AudioPlayer";
+import AudioPlayer from "../audioPlayer/AudioPlayer";
 
 const AudioEditorMain = () => (
     <>
@@ -14,8 +14,8 @@ const AudioEditorMain = () => (
                 <AudioEditorActionButtons></AudioEditorActionButtons>
             </div>
         </div>
-        <AudioPlayer></AudioPlayer>
         <AudioEditorDialogs></AudioEditorDialogs>
+        <AudioPlayer></AudioPlayer>
     </>
 );
 

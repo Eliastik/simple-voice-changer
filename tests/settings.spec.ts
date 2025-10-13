@@ -8,11 +8,11 @@ test("enabling initial audio rendering should work", async ({ page }) => {
 
     await enableInitialAudioRendering(page);
     
-    await openAudioFile(page);
+    await openAudioFile(page, false);
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
     
-    await loadingPopup.waitFor({ state: "attached", timeout: 5000 });
+    await loadingPopup.waitFor({ state: "visible", timeout: 10000 });
 });
 
 test("enabling initial audio rendering then cancelling initial rendering should display a notification", async ({ page }) => {
@@ -20,17 +20,21 @@ test("enabling initial audio rendering then cancelling initial rendering should 
 
     await enableInitialAudioRendering(page);
     
-    await openAudioFile(page);
+    await openAudioFile(page, false);
 
-    const cancelButton = page.locator("#loadingAudioProcessing + div button", { hasText: "Cancel" });
+    const loadingAudioProcessingModal = page.locator("#loadingAudioProcessing");
 
-    await cancelButton.waitFor({ state: "visible", timeout: 10000 });
+    await loadingAudioProcessingModal.waitFor({ state: "visible", timeout: 10000 });
+
+    const cancelButton = page.locator("#loadingAudioProcessing button", { hasText: "Cancel" });
+
+    await cancelButton.waitFor({ state: "visible", timeout: 15000 });
 
     await cancelButton.click({ force: true });
 
     const loadingPopup = page.locator("#loadingAudioProcessing");
     
-    await loadingPopup.waitFor({ state: "detached", timeout: 10000 });
+    await loadingPopup.waitFor({ state: "hidden", timeout: 10000 });
 
     const notification = page.locator(".toast.toast-top > .alert.alert-info");
 
