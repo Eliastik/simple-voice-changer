@@ -3,13 +3,13 @@
   "version": "2.3.2",
   "private": false,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run copy-worklets-worklets && next dev",
     "build": "next build",
-    "postbuild": "npm run copy-static-files",
-    "copy-static-files": "mkdir -p out/worklets out/workers && cp node_modules/@eliastik/simple-sound-studio-lib/dist/worklets/*.js out/worklets/ && cp node_modules/@eliastik/simple-sound-studio-lib/dist/workers/*.js out/workers/",
     "start": "next start",
     "lint": "next lint",
-    "test": "npx playwright test"
+    "test": "npx playwright test",
+    "prebuild": "npm run copy-worklets-worklets",
+    "copy-worklets-worklets": "mkdir -p public/worklets public/workers && cp node_modules/@eliastik/simple-sound-studio-lib/dist/worklets/*.js public/worklets/ && cp node_modules/@eliastik/simple-sound-studio-lib/dist/workers/*.js public/workers/"
   },
   "repository": {
     "type": "git",
@@ -39,7 +39,6 @@
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
     "autoprefixer": "^10.4.21",
-    "copy-webpack-plugin": "^13.0.1",
     "daisyui": "^5.2.3",
     "dotenv": "^17.2.3",
     "eslint": "^9.37.0",
