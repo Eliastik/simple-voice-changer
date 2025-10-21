@@ -6,21 +6,21 @@ export async function openPageAndCloseWelcomeModal(page: Page) {
 
     const closeWelcomeModal = page.locator("#modalFirstLaunch .modal-action button");
 
-    await closeWelcomeModal.waitFor({ state: "visible", timeout: 2000 });
+    await closeWelcomeModal.waitFor({ state: "visible", timeout: 5000 });
 
     if (await closeWelcomeModal.isVisible()) {
         await closeWelcomeModal.click();
     }
 }
 
-export async function openAudioFile(page: Page, waitForLoading = true) {
+export async function openAudioFile(page: Page, waitForLoading = true, audioFile = "files/audio.mp3") {
     const openFileButton = page.locator("body > div:not(.navbar) button", { hasText: "Select one or more audio files" });
     const fileChooserPromise = page.waitForEvent("filechooser");
 
     openFileButton.click();
 
     const fileChooser = await fileChooserPromise;
-    await fileChooser.setFiles(path.join(__dirname, "files/audio.mp3"));
+    await fileChooser.setFiles(path.join(__dirname, audioFile));
 
     if(waitForLoading) {
         const loadingBufferModal = page.locator("#loadingBufferModal");
@@ -75,9 +75,9 @@ export async function processAudio(page: Page) {
     await loadingPopup.waitFor({ state: "hidden", timeout: 5000 });
 }
 
-export async function openAudioFileAndProcess(page: Page) {
+export async function openAudioFileAndProcess(page: Page, audioFile = "files/audio.mp3") {
     await openPageAndCloseWelcomeModal(page);
-    await openAudioFile(page);
+    await openAudioFile(page, true, audioFile);
     await processAudio(page);
 }
 

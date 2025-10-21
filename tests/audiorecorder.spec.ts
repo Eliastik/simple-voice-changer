@@ -4,7 +4,7 @@ import { enableCompatibilityMode, loopAudioPlayer, muteAudio, openAudioFileAndPr
 muteAudio();
 
 test.beforeEach(async ({ page }) => {
-    await openAudioFileAndProcess(page);
+    await openAudioFileAndProcess(page, "files/audio_short.mp3");
 });
 
 async function testNotificationOpened(page: Page) {
