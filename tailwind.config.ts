@@ -21,7 +21,7 @@ const config: Config = {
             fontSize: {
                 "filters": "12.5px"
             }
-        },
+        }
     }
 };
 

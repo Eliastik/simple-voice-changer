@@ -13,7 +13,7 @@ const HomeMenu = () => {
     const initRecorder = useAudioRecorder(state => state.initRecorder);
 
     return (
-        <div className="flex justify-center items-center grow gap-6 flex-col lg:flex-row pt-16">
+        <div className="flex justify-center items-center grow gap-6 flex-col md:flex-row pt-16">
             <input type="file"
                 id="file"
                 ref={inputFile}
